@@ -1,0 +1,145 @@
+PROPUESTA — MÓDULO 1: AUTENTICACIÓN
+=====================================
+Fecha: 2026-06-05
+Rama: feature/auth
+
+────────────────────────────────────────────────────────
+1. OBJETIVO
+────────────────────────────────────────────────────────
+Implementar el flujo completo de autenticación JWT en el frontend:
+login, almacenamiento del token, inyección automática en cada request,
+manejo de sesión expirada, guards de rutas y adaptación de la UI
+(sidebar, topbar) según el rol del usuario autenticado.
+
+────────────────────────────────────────────────────────
+2. CONTRATO CON EL BACKEND
+────────────────────────────────────────────────────────
+
+Login:
+  POST /api/v1/auth/login
+  Body:    { "username": string, "password": string }
+  200 OK:  { "token": string }          (JWT firmado con HMAC-SHA256)
+  401:     credenciales incorrectas
+
+JWT payload (claims):
+  sub   → username (string)
+  roles → ["ROLE_ADMIN"] | ["ROLE_MANAGER"] | ["ROLE_WAREHOUSEMAN"] | ["ROLE_SALES"]
+  iat   → issued at (epoch seconds)
+  exp   → expiration (epoch seconds, 2 horas desde iat)
+
+Sesión expirada:
+  El backend devuelve 403 Forbidden (Spring Security) cuando el token
+  es inválido o ha expirado. NO devuelve 401 para tokens expirados.
+
+Ruta pública (sin JWT):
+  POST /api/v1/auth/login
+
+Todas las demás rutas requieren:
+  Authorization: Bearer <token>
+
+────────────────────────────────────────────────────────
+3. ALCANCE DEL MÓDULO
+────────────────────────────────────────────────────────
+
+3.1 Modelos TypeScript
+  - AuthRequest    { username, password }
+  - AuthResponse   { token }
+  - UserPayload    { sub, roles, iat, exp }  ← JWT decodificado en cliente
+  - UserResponse   { id, username, email, active, createdAt, updatedAt, roles }
+  - UserCreate     { username, email, password, roles }
+  - UserUpdate     { username, email }
+  - ChangePassword { currentPassword, newPassword }
+
+3.2 AuthService (singleton)
+  - login(credentials): Observable<AuthResponse>
+  - logout(): void
+  - getToken(): string | null
+  - getUserPayload(): UserPayload | null
+  - isAuthenticated(): boolean   (token existe y no expiró)
+  - hasRole(role): boolean
+  - getPrimaryRole(): string     (ej. "ADMIN" sin el prefijo "ROLE_")
+  - getUsername(): string
+
+3.3 Interceptores HTTP (Angular functional interceptors)
+  - JwtInterceptor   → agrega header Authorization: Bearer en todas las
+                        peticiones excepto /auth/login
+  - ErrorInterceptor → 403 → limpia token y redirige a /login con mensaje
+                        "Tu sesión ha expirado. Inicia sesión nuevamente."
+
+3.4 AuthGuard (canActivateFn)
+  - Verifica isAuthenticated(); si no → redirige a /login
+  - Verifica rol si la ruta tiene data.roles; si no → redirige a /
+
+3.5 LoginComponent
+  - Formulario Reactive: username + password
+  - Validación en tiempo real (required, minLength)
+  - Mensaje de error inline bajo cada campo
+  - MatSnackBar para error de credenciales (401) y error de servidor (500)
+  - Redirect a /dashboard tras login exitoso
+  - Si ya está autenticado al navegar a /login → redirigir a /
+  - Diseño: pantalla completa con fondo #6B3C6B, card centrada en blanco
+
+3.6 Integración en el layout
+  - TopbarComponent: muestra username y rol real desde AuthService
+  - SidebarComponent: filtra navItems según el rol del JWT
+  - Botón "Cerrar sesión" en la topbar (menú de usuario)
+  - La ruta /login NO muestra sidebar ni topbar (layout independiente)
+
+3.7 Actualización de rutas
+  app.routes.ts:
+    /login           → LoginComponent (público)
+    /                → MainLayoutComponent + canActivate: authGuard
+      /dashboard     → (placeholder para Módulo 5)
+    /**              → redirect ''
+
+────────────────────────────────────────────────────────
+4. FASES DE IMPLEMENTACIÓN
+────────────────────────────────────────────────────────
+
+Fase 1.1 — Modelos y AuthService
+Fase 1.2 — Interceptores JWT y Error
+Fase 1.3 — AuthGuard + actualización de rutas
+Fase 1.4 — LoginComponent (UI + lógica)
+Fase 1.5 — Integración: Topbar, Sidebar, botón logout
+Fase 1.6 — Tests unitarios (AuthService, Guard, Pipe)
+Fase 1.7 — Documentación: completar memoria técnica secciones 7-10
+
+────────────────────────────────────────────────────────
+5. DECISIONES DE DISEÑO
+────────────────────────────────────────────────────────
+
+- Token en localStorage (no sessionStorage): el usuario no pierde sesión
+  al cerrar y reabrir el navegador. Riesgo XSS mitigado por política de
+  no ejecutar código externo y CSP en producción.
+
+- Decodificar JWT en cliente con atob() sin librería externa: el JWT no
+  necesita verificarse en el cliente (eso lo hace el servidor). Solo
+  necesitamos leer el payload para saber el rol y la expiración.
+  Mantiene el bundle pequeño.
+
+- Functional interceptors (Angular 15+): sin decoradores, más testeables
+  y composables que los class-based interceptors.
+
+- Manejo de 403 como "sesión expirada": el backend Spring Security devuelve
+  403 para tokens expirados/inválidos. El frontend interpreta cualquier 403
+  en endpoints protegidos como sesión terminada y redirige a login.
+
+- Un solo rol activo por usuario: el backend permite múltiples roles pero
+  en la práctica cada usuario tiene un solo rol. getPrimaryRole() toma el
+  primero de la lista para determinar permisos de UI.
+
+────────────────────────────────────────────────────────
+6. CRITERIOS DE ACEPTACIÓN
+────────────────────────────────────────────────────────
+
+□ Login con admin/Admin123! funciona y redirige al layout
+□ Login con credenciales incorrectas muestra error en snackbar
+□ JWT almacenado en localStorage con clave "almacenes_token"
+□ Cada request a /api/v1/* lleva header Authorization: Bearer
+□ Al expirar el token (403), redirige a /login con mensaje
+□ /login redirige a / si ya hay token válido
+□ Rutas protegidas redirigen a /login si no hay token
+□ Sidebar muestra solo ítems del rol del usuario
+□ Topbar muestra username y rol reales
+□ Botón "Cerrar sesión" limpia token y redirige a /login
+□ Tests: cobertura ≥ 70% en AuthService y AuthGuard

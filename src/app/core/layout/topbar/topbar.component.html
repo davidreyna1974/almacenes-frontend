@@ -24,8 +24,14 @@
       <mat-icon>notifications_none</mat-icon>
     </button>
 
-    <div class="topbar__user">
+    <button
+      mat-button
+      class="topbar__user-btn"
+      [matMenuTriggerFor]="userMenu"
+      aria-label="Menú de usuario"
+    >
       <span class="topbar__username">{{ userName }}</span>
+      <span class="topbar__divider" aria-hidden="true"></span>
       <span
         class="topbar__role-chip"
         [style.background-color]="getRoleColor(userRole)"
@@ -33,7 +39,16 @@
       >
         {{ userRole }}
       </span>
-    </div>
+      <mat-icon class="topbar__chevron">arrow_drop_down</mat-icon>
+    </button>
+
+    <mat-menu #userMenu="matMenu" xPosition="before">
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Cerrar sesión</span>
+      </button>
+    </mat-menu>
+
   </div>
 
 </header>
