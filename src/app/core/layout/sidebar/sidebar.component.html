@@ -1,0 +1,40 @@
+<nav class="sidebar" [class.collapsed]="collapsed$ | async" aria-label="Navegación principal">
+
+  <div class="sidebar__header">
+    <span class="sidebar__title">Almacenes</span>
+  </div>
+
+  <ul class="sidebar__nav" role="menubar">
+    @for (item of navItems; track item.route) {
+      <li role="none">
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="sidebar__item--active"
+          role="menuitem"
+          class="sidebar__item"
+          [matTooltip]="(collapsed$ | async) ? item.label : ''"
+          matTooltipPosition="right"
+          matTooltipShowDelay="300"
+          matRipple
+        >
+          <mat-icon class="sidebar__icon" aria-hidden="true">{{ item.icon }}</mat-icon>
+          <span class="sidebar__label">{{ item.label }}</span>
+        </a>
+      </li>
+    }
+  </ul>
+
+  <div class="sidebar__footer">
+    <button
+      class="sidebar__toggle"
+      (click)="toggle()"
+      [attr.aria-label]="(collapsed$ | async) ? 'Expandir menú' : 'Colapsar menú'"
+      matRipple
+    >
+      <mat-icon aria-hidden="true">
+        {{ (collapsed$ | async) ? 'chevron_right' : 'chevron_left' }}
+      </mat-icon>
+    </button>
+  </div>
+
+</nav>

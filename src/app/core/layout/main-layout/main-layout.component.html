@@ -1,0 +1,20 @@
+<a class="skip-link" href="#main-content">Ir al contenido principal</a>
+
+<mat-sidenav-container class="layout-container">
+
+  <mat-sidenav
+    mode="side"
+    opened
+    [style.width]="(collapsed$ | async) ? 'var(--sidebar-width-collapsed)' : 'var(--sidebar-width-expanded)'"
+  >
+    <app-sidebar></app-sidebar>
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+    <app-topbar></app-topbar>
+    <main id="main-content" class="layout-content">
+      <router-outlet></router-outlet>
+    </main>
+  </mat-sidenav-content>
+
+</mat-sidenav-container>

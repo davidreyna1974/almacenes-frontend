@@ -1,0 +1,257 @@
+================================================================================
+PROPUESTA — MÓDULO 0: INFRAESTRUCTURA BASE
+Proyecto: Frontend Almacenes (Angular)
+Fecha: 2026-06-05
+Rama: feature/infra-base
+================================================================================
+
+ÍNDICE
+------
+1.  Descripción y alcance
+2.  Justificación
+3.  Decisiones de diseño previas al código
+4.  Estructura de archivos a crear
+5.  Plan de implementación por fases
+6.  Criterios de éxito globales
+
+
+================================================================================
+1. DESCRIPCIÓN Y ALCANCE
+================================================================================
+
+El Módulo 0 establece la fundación técnica y visual sobre la que se construirán
+los cinco módulos de negocio (Auth, Inventory, Purchases, Sales, Reports).
+
+Alcance:
+  - Proyecto Angular creado con configuración estricta (strict mode, SCSS, routing)
+  - Angular Material instalado y configurado con tema personalizado de marca
+  - Layout shell completo: sidebar colapsable + top bar + router-outlet
+  - Proxy de desarrollo configurado para evitar problemas CORS
+  - Environments configurados (dev y prod)
+  - Componentes shared reutilizables disponibles para todos los módulos
+  - Modelos TypeScript de contratos del backend (PageResponse<T>, ApiError)
+  - Pipe StatusLabelPipe centralizado
+  - ESLint configurado
+  - Suite de tests base pasando
+
+Fuera de alcance en este módulo:
+  - Cualquier llamada HTTP real al backend
+  - Lógica de autenticación (JWT, guards, interceptores — Módulo 1)
+  - Componentes de módulos de negocio
+
+
+================================================================================
+2. JUSTIFICACIÓN
+================================================================================
+
+2.1 ¿Por qué construir esto primero?
+
+  Sin este módulo ningún módulo de negocio puede existir. Los componentes
+  shared (MasterDetailComponent, ConfirmDialogComponent, EmptyStateComponent)
+  son usados por los cinco módulos. El PageResponse<T> debe existir antes del
+  primer servicio HTTP. El tema visual debe aplicarse desde el inicio para no
+  tener que rehacer estilos módulo a módulo.
+
+  Lección L1 del backend: implementar la infraestructura transversal desde el
+  inicio evita tener que actualizar múltiples archivos después. En el backend,
+  no configurar paginación desde el principio obligó a actualizar 9 archivos.
+  En el frontend, no configurar PageResponse<T> y el proxy desde el inicio
+  generaría el mismo problema.
+
+2.2 ¿Por qué Angular Material y no una librería custom?
+
+  Angular Material proporciona:
+  - Componentes accesibles (WCAG 2.1) por defecto
+  - Theming con SCSS que permite aplicar la paleta corporativa globalmente
+  - Integración nativa con Angular (change detection, forms, etc.)
+  - Mantenimiento garantizado por el equipo de Angular
+
+2.3 ¿Por qué proxy.conf.json desde el inicio?
+
+  El backend tiene CORS configurado para desarrollo, pero el navegador añade
+  una capa adicional de verificación en preflight OPTIONS. El proxy de Angular
+  CLI redirige las peticiones del frontend al backend en el servidor de Node.js,
+  evitando que el navegador aplique CORS. Sin esto, cada desarrollador
+  necesitaría configurar extensiones o modificar el backend.
+
+
+================================================================================
+3. DECISIONES DE DISEÑO PREVIAS AL CÓDIGO
+================================================================================
+
+| Decisión | Alternativa descartada | Justificación |
+|---|---|---|
+| mat-sidenav-container para el layout | CSS Grid puro | Material ya gestiona la animación de colapso, el overlay en mobile y el z-index correctamente |
+| BehaviorSubject<boolean> para el estado del sidebar | @Input() entre componentes | El sidebar y el topbar son hermanos (no padre-hijo), por lo que se necesita un servicio compartido |
+| Variables CSS (custom properties) en variables.scss | Solo variables SCSS ($var) | Las variables CSS son accesibles en runtime desde TypeScript si se necesita leer el color actual; las SCSS solo en compilación |
+| Skeleton loader como filas <tr> animadas | MatSpinner centrado | Los skeleton loaders preservan el layout de la tabla, evitan el CLS (layout shift) y comunican mejor la estructura que viene |
+| Archivos de environment separados (dev/prod) | Un solo archivo con condicional | Es el estándar de Angular CLI; la build de producción reemplaza el archivo automáticamente |
+| --directory=. en ng new | Crear en subdirectorio | El repositorio git ya existe en este directorio; crear un subdirectorio rompería la estructura del repo |
+| --skip-git en ng new | ng new por defecto | El repositorio ya tiene git inicializado con historial; ng new crearía un repo nuevo y sobreescribiría el .gitignore |
+
+
+================================================================================
+4. ESTRUCTURA DE ARCHIVOS A CREAR
+================================================================================
+
+src/
+├── app/
+│   ├── core/
+│   │   └── layout/
+│   │       ├── sidebar/
+│   │       │   ├── sidebar.component.ts
+│   │       │   ├── sidebar.component.html
+│   │       │   └── sidebar.component.scss
+│   │       ├── topbar/
+│   │       │   ├── topbar.component.ts
+│   │       │   ├── topbar.component.html
+│   │       │   └── topbar.component.scss
+│   │       ├── main-layout/
+│   │       │   ├── main-layout.component.ts
+│   │       │   ├── main-layout.component.html
+│   │       │   └── main-layout.component.scss
+│   │       └── layout.service.ts          (estado del sidebar: collapsed$)
+│   └── shared/
+│       ├── models/
+│       │   ├── page-response.model.ts
+│       │   └── api-error.model.ts
+│       ├── components/
+│       │   ├── master-detail/
+│       │   │   ├── master-detail.component.ts
+│       │   │   ├── master-detail.component.html
+│       │   │   └── master-detail.component.scss
+│       │   ├── confirm-dialog/
+│       │   │   ├── confirm-dialog.component.ts
+│       │   │   └── confirm-dialog.component.html
+│       │   └── empty-state/
+│       │       ├── empty-state.component.ts
+│       │       └── empty-state.component.html
+│       ├── pipes/
+│       │   └── status-label.pipe.ts
+│       └── shared.module.ts
+├── environments/
+│   ├── environment.ts
+│   └── environment.prod.ts
+└── styles/
+    ├── theme.scss
+    ├── variables.scss
+    └── global.scss
+
+Archivos de configuración en raíz del proyecto:
+  proxy.conf.json
+  .eslintrc.json
+
+
+================================================================================
+5. PLAN DE IMPLEMENTACIÓN POR FASES
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+FASE 0.1 — CREACIÓN DEL PROYECTO ANGULAR
+────────────────────────────────────────────────────────────────────────────────
+
+Paso 1: Verificar entorno
+  node --version          → debe ser 18+
+  npm --version           → debe estar disponible
+  ng version              → si no está, npm install -g @angular/cli
+
+Paso 2: Crear el proyecto en el directorio actual
+  ng new almacenes \
+    --style=scss \
+    --routing=true \
+    --strict=true \
+    --skip-git=true \
+    --directory=.
+
+Paso 3: Instalar Angular Material
+  ng add @angular/material \
+    --theme=custom \
+    --typography=true \
+    --animations=enabled
+
+Paso 4: Configurar proxy
+  Crear proxy.conf.json
+  Registrar en angular.json bajo serve.options.proxyConfig
+
+Paso 5: Configurar environments
+  environment.ts      → apiUrl: 'http://localhost:8080/api/v1'
+  environment.prod.ts → apiUrl: placeholder para producción
+
+Criterio de éxito:
+  ng serve        → app en http://localhost:4200 sin errores
+  ng build        → bundle limpio sin errores
+  ng test --watch=false --browsers=ChromeHeadless → 0 fallos
+
+
+────────────────────────────────────────────────────────────────────────────────
+FASE 0.2 — TEMA VISUAL ANGULAR MATERIAL
+────────────────────────────────────────────────────────────────────────────────
+
+Paso 1: Crear src/styles/variables.scss con todas las variables CSS del proyecto
+Paso 2: Crear src/styles/theme.scss con la paleta corporativa
+Paso 3: Crear src/styles/global.scss con estilos base mínimos
+Paso 4: Registrar en angular.json: theme.scss, variables.scss, global.scss
+Paso 5: Verificar visualmente que los colores de marca aplican
+
+Paleta corporativa:
+  Primary:  #6B3C6B  (púrpura oscuro)
+  Accent:   #CE6EEB  (púrpura vibrante)
+  Surface:  #F2E4F2  (lavanda claro)
+  Error:    #C62828
+
+Criterio de éxito:
+  ng build sin errores SCSS
+  Botón primary muestra #6B3C6B
+
+
+────────────────────────────────────────────────────────────────────────────────
+FASE 0.3 — LAYOUT PRINCIPAL
+────────────────────────────────────────────────────────────────────────────────
+
+Paso 1: LayoutService con collapsed$: BehaviorSubject<boolean>
+Paso 2: SidebarComponent con toggle de colapso, ítems de navegación mock
+Paso 3: TopbarComponent con botón hamburguesa y chip de usuario placeholder
+Paso 4: MainLayoutComponent con mat-sidenav-container y router-outlet
+Paso 5: Conectar hamburguesa del topbar con el colapso del sidebar via LayoutService
+Paso 6: Aplicar estilos: colores de marca, transición 200ms, hover states
+
+Criterio de éxito:
+  Sidebar colapsa y expande con animación fluida
+  En 1280px+: layout completo visible sin overflow
+
+
+────────────────────────────────────────────────────────────────────────────────
+FASE 0.4 — COMPONENTES SHARED Y MODELOS BASE
+────────────────────────────────────────────────────────────────────────────────
+
+Paso 1: Modelos TypeScript (PageResponse<T>, ApiError)
+Paso 2: StatusLabelPipe (PENDING→Pendiente, APPROVED→Aprobado, etc.)
+Paso 3: MasterDetailComponent (layout 40/60, @Output itemSelected)
+Paso 4: ConfirmDialogComponent (MatDialog, título + mensaje + botones)
+Paso 5: EmptyStateComponent (@Input variant: 'empty' | 'no-results')
+Paso 6: SharedModule que declara y exporta todos los anteriores
+Paso 7: Tests unitarios de cada componente y el pipe
+
+Criterio de éxito:
+  ng test --watch=false → 0 fallos, cobertura de shared ≥ 70%
+
+
+================================================================================
+6. CRITERIOS DE ÉXITO GLOBALES
+================================================================================
+
+  □ ng serve arranca en http://localhost:4200 sin errores ni warnings críticos
+  □ ng build --configuration=production sin errores
+  □ ng test --watch=false --browsers=ChromeHeadless → 0 fallos
+  □ ng lint → 0 errores ESLint
+  □ Sidebar colapsa/expande con transición 200ms
+  □ Tema visual: primary #6B3C6B, accent #CE6EEB, surface #F2E4F2
+  □ proxy.conf.json apuntando a localhost:8080
+  □ PageResponse<T> y ApiError disponibles en shared/models/
+  □ StatusLabelPipe traduce los 5 estados del sistema
+  □ MasterDetailComponent, ConfirmDialogComponent, EmptyStateComponent testeados
+  □ SharedModule exporta todos los componentes shared
+
+================================================================================
+FIN DE LA PROPUESTA — MÓDULO 0: INFRAESTRUCTURA BASE
+================================================================================

@@ -1,0 +1,80 @@
+@use './variables' as *;
+
+// ============================================================
+// ESTILOS GLOBALES MÍNIMOS — Almacenes
+// ============================================================
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  background-color: var(--color-bg-app);
+  color: var(--color-text-primary);
+}
+
+// Skip link de accesibilidad (WCAG 2.1)
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-primary);
+  color: #fff;
+  padding: 8px 16px;
+  z-index: 9999;
+  text-decoration: none;
+  border-radius: 0 0 4px 0;
+
+  &:focus {
+    top: 0;
+  }
+}
+
+// Truncado de texto con tooltip
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Fila/ítem seleccionado en tablas y listas
+.row-selected {
+  background-color: var(--color-surface) !important;
+}
+
+// Alertas de stock bajo en tablas
+.row-low-stock {
+  background-color: var(--color-warning-bg) !important;
+}
+
+// Skeleton loader — filas animadas en tablas
+.skeleton-row {
+  background: linear-gradient(90deg, #e0e0e0 25%, #f0f0f0 50%, #e0e0e0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.4s ease infinite;
+  border-radius: 4px;
+  height: 20px;
+}
+
+@keyframes skeleton-loading {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+// Snackbar de éxito (verde)
+.snackbar-success {
+  --mdc-snackbar-container-color: #2E7D32;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #ffffff;
+}
+
+// Snackbar de error (rojo)
+.snackbar-error {
+  --mdc-snackbar-container-color: #C62828;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+  --mat-snack-bar-button-color: #ffffff;
+}

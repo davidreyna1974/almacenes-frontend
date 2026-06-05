@@ -1,0 +1,39 @@
+<header class="topbar" role="banner">
+
+  <div class="topbar__left">
+    <button
+      mat-icon-button
+      class="topbar__hamburger"
+      (click)="toggle()"
+      aria-label="Alternar menú lateral"
+      matTooltip="Alternar menú"
+      matTooltipShowDelay="300"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span class="topbar__brand">Almacenes</span>
+  </div>
+
+  <div class="topbar__right">
+    <button
+      mat-icon-button
+      aria-label="Notificaciones"
+      matTooltip="Notificaciones"
+      matTooltipShowDelay="300"
+    >
+      <mat-icon>notifications_none</mat-icon>
+    </button>
+
+    <div class="topbar__user">
+      <span class="topbar__username">{{ userName }}</span>
+      <span
+        class="topbar__role-chip"
+        [style.background-color]="getRoleColor(userRole)"
+        [attr.aria-label]="'Rol: ' + userRole"
+      >
+        {{ userRole }}
+      </span>
+    </div>
+  </div>
+
+</header>
