@@ -1,0 +1,43 @@
+# Dependencias
+node_modules/
+.pnp
+.pnp.js
+
+# Build
+dist/
+tmp/
+out-tsc/
+bazel-out/
+
+# Caché y herramientas
+.angular/
+.sass-cache/
+/.cache
+.parcel-cache
+
+# Tests
+/coverage
+
+# IDEs y editores
+.idea/
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Variables de entorno (nunca commitear)
+.env
+.env.local
+.env.*.local
+src/environments/environment.local.ts
