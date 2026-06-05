@@ -25,6 +25,18 @@ Consume el backend REST API del repositorio `almacenes-backend` (GitHub: davidre
 
 ---
 
+## Memoria técnica global del proyecto
+
+Para entender el sistema completo (visión, decisiones arquitectónicas, contratos
+de integración, RBAC transversal, guía de configuración y roadmap) consultar:
+
+**`memoria_tecnica_global_proyecto.md`** — en el repositorio `almacenes-backend`  
+`github.com/davidreyna1974/almacenes-backend`
+
+Se actualiza al finalizar cada módulo si hay nuevas decisiones transversales.
+
+---
+
 ## ⚠️ Convenciones de Git — REGLAS CRÍTICAS
 
 **NUNCA commitear directamente en `main` o `develop`.**
