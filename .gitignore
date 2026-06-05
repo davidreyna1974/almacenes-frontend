@@ -1,24 +1,22 @@
-# Dependencias
-node_modules/
-.pnp
-.pnp.js
+# Compiled output
+/dist
+/tmp
+/out-tsc
+/bazel-out
 
-# Build
-dist/
-tmp/
-out-tsc/
-bazel-out/
+# Node
+/node_modules
+npm-debug.log
+yarn-error.log
 
-# Caché y herramientas
-.angular/
+# Angular cache
+/.angular/cache
 .sass-cache/
-/.cache
-.parcel-cache
 
-# Tests
+# Coverage
 /coverage
 
-# IDEs y editores
+# IDEs and editors
 .idea/
 .project
 .classpath
@@ -26,13 +24,23 @@ bazel-out/
 *.launch
 .settings/
 *.sublime-workspace
+.history/*
+
+# Visual Studio Code
 .vscode/*
-!.vscode/extensions.json
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
+!.vscode/extensions.json
 
-# Sistema operativo
+# Miscellaneous
+/connect.lock
+/libpeerconnection.log
+testem.log
+/typings
+__screenshots__/
+
+# System files
 .DS_Store
 Thumbs.db
 
@@ -41,3 +49,7 @@ Thumbs.db
 .env.local
 .env.*.local
 src/environments/environment.local.ts
+environment.prod.ts
+
+# npm cache alternativo usado en desarrollo
+/tmp/npm-cache-almacenes

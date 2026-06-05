@@ -1,0 +1,14 @@
+.layout-container {
+  height: 100vh;
+
+  .mat-sidenav {
+    border-right: none;
+    transition: width var(--sidebar-transition);
+  }
+}
+
+.layout-content {
+  padding: var(--space-3);
+  min-height: calc(100vh - var(--topbar-height));
+  background-color: var(--color-bg-app);
+}
