@@ -1,5 +1,12 @@
-.layout-container {
+.layout-wrapper {
+  display: flex;
+  flex-direction: column;
   height: 100vh;
+}
+
+.layout-body {
+  flex: 1;
+  overflow: hidden;
 
   .mat-sidenav {
     border-right: none;
@@ -9,6 +16,7 @@
 
 .layout-content {
   padding: var(--space-3);
-  min-height: calc(100vh - var(--topbar-height));
+  height: 100%;
   background-color: var(--color-bg-app);
+  overflow-y: auto;
 }

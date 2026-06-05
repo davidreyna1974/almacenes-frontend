@@ -1,9 +1,5 @@
 <nav class="sidebar" [class.collapsed]="collapsed$ | async" aria-label="Navegación principal">
 
-  <div class="sidebar__header">
-    <span class="sidebar__title">Almacenes</span>
-  </div>
-
   <ul class="sidebar__nav" role="menubar">
     @for (item of navItems; track item.route) {
       <li role="none">
