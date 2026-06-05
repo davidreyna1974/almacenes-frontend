@@ -1,7 +1,7 @@
 <nav class="sidebar" [class.collapsed]="collapsed$ | async" aria-label="Navegación principal">
 
   <ul class="sidebar__nav" role="menubar">
-    @for (item of navItems; track item.route) {
+    @for (item of navItems$ | async; track item.route) {
       <li role="none">
         <a
           [routerLink]="item.route"

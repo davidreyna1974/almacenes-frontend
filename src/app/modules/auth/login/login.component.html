@@ -1,0 +1,69 @@
+<div class="login-page">
+
+  <div class="login-card" role="main">
+
+    <div class="login-card__header">
+      <span class="login-card__brand">Almacenes</span>
+      <p class="login-card__subtitle">Inicia sesión para continuar</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="login-card__form">
+
+      <mat-form-field appearance="outline" class="login-card__field">
+        <mat-label>Usuario</mat-label>
+        <input
+          matInput
+          formControlName="username"
+          autocomplete="username"
+          aria-describedby="username-error"
+        />
+        <mat-icon matSuffix>person_outline</mat-icon>
+        @if (username.invalid && username.touched) {
+          <mat-error id="username-error">El usuario es obligatorio</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="login-card__field">
+        <mat-label>Contraseña</mat-label>
+        <input
+          matInput
+          [type]="hidePassword ? 'password' : 'text'"
+          formControlName="password"
+          autocomplete="current-password"
+          aria-describedby="password-error"
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="hidePassword = !hidePassword"
+          [attr.aria-label]="hidePassword ? 'Mostrar contraseña' : 'Ocultar contraseña'"
+        >
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        @if (password.invalid && password.touched) {
+          <mat-error id="password-error">
+            @if (password.hasError('required')) { La contraseña es obligatoria }
+            @else { Mínimo 6 caracteres }
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <button
+        mat-flat-button
+        type="submit"
+        class="login-card__submit"
+        [disabled]="loading"
+      >
+        @if (loading) {
+          <mat-spinner diameter="20" class="login-card__spinner"></mat-spinner>
+        } @else {
+          Iniciar sesión
+        }
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
