@@ -10,8 +10,11 @@ export const routes: Routes = [
     component: MainLayoutComponent,
     canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
-      // Los módulos de negocio se agregan aquí en sus módulos respectivos
+      {
+        path: 'inventory',
+        loadChildren: () =>
+          import('./modules/inventory/inventory.routes').then(m => m.INVENTORY_ROUTES)
+      },
     ]
   },
   { path: '**', redirectTo: '' }

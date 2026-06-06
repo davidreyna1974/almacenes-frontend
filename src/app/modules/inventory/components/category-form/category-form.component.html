@@ -1,0 +1,40 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="category-form">
+
+  <h3 class="category-form__title">
+    {{ isEdit ? 'Editar categoría' : 'Nueva categoría' }}
+  </h3>
+
+  <mat-form-field appearance="outline" class="category-form__field">
+    <mat-label>Nombre <span class="required">*</span></mat-label>
+    <input matInput formControlName="name" maxlength="120" autocomplete="off" />
+    @if (form.get('name')?.hasError('required') && form.get('name')?.touched) {
+      <mat-error>El nombre es obligatorio.</mat-error>
+    }
+    @if (form.get('name')?.hasError('maxlength')) {
+      <mat-error>Máximo 120 caracteres.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="category-form__field">
+    <mat-label>Descripción</mat-label>
+    <textarea matInput formControlName="description" rows="3" maxlength="500"></textarea>
+    @if (form.get('description')?.hasError('maxlength')) {
+      <mat-error>Máximo 500 caracteres.</mat-error>
+    }
+  </mat-form-field>
+
+  <div class="category-form__actions">
+    <button type="button" mat-stroked-button (click)="cancel.emit()" [disabled]="saving">
+      Cancelar
+    </button>
+    <button type="submit" mat-flat-button color="primary"
+            [disabled]="form.invalid || saving">
+      @if (saving) {
+        <mat-spinner diameter="18" />
+      } @else {
+        {{ isEdit ? 'Guardar cambios' : 'Crear categoría' }}
+      }
+    </button>
+  </div>
+
+</form>

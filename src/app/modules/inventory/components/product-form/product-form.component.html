@@ -1,0 +1,128 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="product-form">
+
+  <h3 class="product-form__title">
+    {{ isEdit ? 'Editar producto' : 'Nuevo producto' }}
+  </h3>
+
+  <div class="product-form__grid">
+
+    <!-- SKU -->
+    <mat-form-field appearance="outline">
+      <mat-label>SKU <span class="required">*</span></mat-label>
+      <input matInput formControlName="sku" maxlength="50" autocomplete="off" />
+      @if (form.get('sku')?.hasError('required') && form.get('sku')?.touched) {
+        <mat-error>El SKU es obligatorio.</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Nombre -->
+    <mat-form-field appearance="outline">
+      <mat-label>Nombre <span class="required">*</span></mat-label>
+      <input matInput formControlName="name" maxlength="150" autocomplete="off" />
+      @if (form.get('name')?.hasError('required') && form.get('name')?.touched) {
+        <mat-error>El nombre es obligatorio.</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Precio -->
+    <mat-form-field appearance="outline">
+      <mat-label>Precio <span class="required">*</span></mat-label>
+      <span matTextPrefix>$&nbsp;</span>
+      <input matInput type="number" formControlName="price" min="0.01" step="0.01" />
+      @if (form.get('price')?.hasError('required') && form.get('price')?.touched) {
+        <mat-error>El precio es obligatorio.</mat-error>
+      }
+      @if (form.get('price')?.hasError('min')) {
+        <mat-error>El precio debe ser mayor a 0.</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Costo unitario -->
+    <mat-form-field appearance="outline">
+      <mat-label>Costo unitario <span class="required">*</span></mat-label>
+      <span matTextPrefix>$&nbsp;</span>
+      <input matInput type="number" formControlName="unitCost" min="0.01" step="0.01" />
+      @if (form.get('unitCost')?.hasError('required') && form.get('unitCost')?.touched) {
+        <mat-error>El costo unitario es obligatorio.</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Stock actual -->
+    <mat-form-field appearance="outline">
+      <mat-label>Stock actual</mat-label>
+      <input matInput type="number" formControlName="currentStock" min="0" />
+    </mat-form-field>
+
+    <!-- Stock mínimo -->
+    <mat-form-field appearance="outline">
+      <mat-label>Stock mínimo</mat-label>
+      <input matInput type="number" formControlName="minimumStock" min="0" />
+    </mat-form-field>
+
+    <!-- Estado -->
+    <mat-form-field appearance="outline">
+      <mat-label>Estado <span class="required">*</span></mat-label>
+      <mat-select formControlName="status">
+        @for (opt of statusOptions; track opt.value) {
+          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Categoría -->
+    <mat-form-field appearance="outline">
+      <mat-label>Categoría <span class="required">*</span></mat-label>
+      <mat-select formControlName="categoryId">
+        @for (cat of categories; track cat.id) {
+          <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
+        }
+      </mat-select>
+      @if (form.get('categoryId')?.hasError('required') && form.get('categoryId')?.touched) {
+        <mat-error>La categoría es obligatoria.</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Proveedor -->
+    <mat-form-field appearance="outline" class="product-form__full-width">
+      <mat-label>Proveedor <span class="required">*</span></mat-label>
+      <mat-select formControlName="supplierId">
+        @for (sup of suppliers; track sup.id) {
+          <mat-option [value]="sup.id">{{ sup.name }}</mat-option>
+        }
+      </mat-select>
+      @if (form.get('supplierId')?.hasError('required') && form.get('supplierId')?.touched) {
+        <mat-error>El proveedor es obligatorio.</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Descripción -->
+    <mat-form-field appearance="outline" class="product-form__full-width">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput formControlName="description" rows="3" maxlength="500"></textarea>
+    </mat-form-field>
+
+  </div>
+
+  <div class="product-form__actions">
+    @if (isEdit && canDeactivate) {
+      <button type="button" mat-stroked-button color="warn"
+              (click)="deactivate.emit()" [disabled]="saving">
+        Desactivar
+      </button>
+    }
+    <div class="product-form__actions-right">
+      <button type="button" mat-stroked-button (click)="cancel.emit()" [disabled]="saving">
+        Cancelar
+      </button>
+      <button type="submit" mat-flat-button color="primary"
+              [disabled]="form.invalid || saving">
+        @if (saving) {
+          <mat-spinner diameter="18" />
+        } @else {
+          {{ isEdit ? 'Guardar cambios' : 'Crear producto' }}
+        }
+      </button>
+    </div>
+  </div>
+
+</form>

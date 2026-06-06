@@ -1,0 +1,186 @@
+PROPUESTA — Módulo 2: Inventario (frontend)
+==========================================
+Fecha: 2026-06-05
+Rama: feature/inventory
+Autor: David Reyna Pineda
+
+
+1. OBJETIVO
+-----------
+Implementar el módulo de Inventario en el frontend Angular: gestión de
+Categorías y Productos con CRUD completo, registro de movimientos de stock
+(entradas y salidas) y visualización del Kardex por producto.
+
+Este módulo es la base de los módulos siguientes (Compras y Ventas) porque
+ambos necesitan los catálogos de productos y proveedores.
+
+
+2. ALCANCE DEL MÓDULO
+---------------------
+a) Categorías
+   - Listado paginado con búsqueda por nombre
+   - Crear y editar (panel detalle inline)
+   - Desactivar (soft delete) con confirmación
+   - Acceso escritura: ADMIN, MANAGER
+   - Acceso lectura: todos los roles
+
+b) Productos
+   - Listado paginado con búsqueda por nombre/SKU y filtro por categoría
+   - Vista de productos con bajo stock (minimumStock >= currentStock)
+   - Crear y editar (panel detalle inline)
+   - Desactivar (soft delete) — solo ADMIN
+   - Registrar movimiento de stock (dialog): entrada (IN) / salida (OUT)
+   - Kardex por producto: historial de movimientos paginado, dentro del panel
+     detalle del producto
+   - Acceso escritura: ADMIN, MANAGER
+   - Acceso lectura: todos los roles
+   - Registrar movimiento: ADMIN, MANAGER, WAREHOUSEMAN
+
+c) NO incluye en este módulo
+   - Reportes de inventario (ABC, valoración, rotación) → Módulo 5 Reports
+   - Gestión de proveedores → Módulo 3 Purchases
+
+
+3. ENDPOINTS DEL BACKEND QUE SE CONSUMEN
+-----------------------------------------
+Categorías:
+  GET    /api/v1/inventory/categories/active?page&size   → PageResponse<CategoryDTO>
+  POST   /api/v1/inventory/categories                    → CategoryDTO
+  PUT    /api/v1/inventory/categories/{id}               → CategoryDTO
+  DELETE /api/v1/inventory/categories/{id}               → 204
+
+Productos:
+  GET    /api/v1/inventory/products?page&size            → PageResponse<ProductResponseDTO>
+  GET    /api/v1/inventory/products/{id}                 → ProductResponseDTO
+  GET    /api/v1/inventory/products/sku/{sku}            → ProductResponseDTO
+  GET    /api/v1/inventory/products/category/{id}?page   → PageResponse<ProductResponseDTO>
+  GET    /api/v1/inventory/products/low-stock?page       → PageResponse<ProductResponseDTO>
+  POST   /api/v1/inventory/products                      → ProductResponseDTO
+  PUT    /api/v1/inventory/products/{id}                 → ProductResponseDTO
+  DELETE /api/v1/inventory/products/{id}                 → 204
+
+Movimientos:
+  POST   /api/v1/inventory/products/movement             → StockMovementResponseDTO
+  GET    /api/v1/inventory/products/{id}/movements?page  → PageResponse<StockMovementResponseDTO>
+
+
+4. CONTRATOS DE DTOs
+--------------------
+CategoryDTO (request: solo name+description):
+  id, name*, description, active, createdAt, createdByUsername
+
+ProductRequestDTO:
+  sku*, name*, description, price*, currentStock, minimumStock,
+  status* (AVAILABLE | DISCONTINUED | OUT_OF_STOCK), categoryId*, supplierId*, unitCost*
+
+ProductResponseDTO:
+  id, sku, name, description, price, currentStock, minimumStock, status,
+  active, reservedStock, availableStock, unitCost, categoryId, categoryName,
+  supplierId, createdAt, createdByUsername, updatedAt
+
+StockMovementRequestDTO:
+  productId*, quantity*, reason*, type* (IN | OUT)
+
+StockMovementResponseDTO:
+  id, quantity, reason, createdAt, type, productId, productName, createdByUsername
+
+
+5. ESTRUCTURA DE RUTAS ANGULAR
+-------------------------------
+/inventory                → redirect a /inventory/products
+/inventory/products       → ProductsPageComponent (master-detail)
+/inventory/categories     → CategoriesPageComponent (master-detail)
+
+Todas protegidas con authGuard (acceso a cualquier rol autenticado).
+Las acciones de escritura se controlan a nivel de componente verificando el rol
+(ocultar/deshabilitar botones según authService.hasRole()).
+
+
+6. ESTRUCTURA DE COMPONENTES
+-----------------------------
+src/app/modules/inventory/
+  inventory.routes.ts
+  models/
+    category.model.ts          (CategoryDTO, CategoryRequest)
+    product.model.ts           (ProductResponseDTO, ProductRequest)
+    stock-movement.model.ts    (StockMovementRequest, StockMovementResponse)
+  services/
+    category.service.ts        (CRUD categorías)
+    product.service.ts         (CRUD productos + movimientos + kardex)
+  components/
+    categories-page/           (shell master-detail de categorías)
+    category-form/             (formulario crear/editar — dumb)
+    products-page/             (shell master-detail de productos)
+    product-form/              (formulario crear/editar — dumb)
+    product-detail/            (detalle + Kardex — smart)
+    movement-dialog/           (dialog registrar movimiento — smart)
+    stock-badge/               (badge de stock — dumb, reutilizable)
+
+
+7. DECISIONES DE DISEÑO
+------------------------
+a) Sub-navegación en /inventory mediante tabs (MatTabsModule) en el shell
+   InventoryComponent: "Productos" | "Categorías". URL refleja el tab activo.
+
+b) Kardex dentro del panel de detalle del producto (sección colapsable o scroll),
+   no en ruta separada — evita pérdida de contexto.
+
+c) Registro de movimiento mediante MatDialog centrado con formulario reactivo.
+   El dialog emite el resultado; el componente padre recarga el kardex.
+
+d) Status del producto como MatSelect con opciones descriptivas:
+   AVAILABLE → "Disponible" | DISCONTINUED → "Descontinuado" | OUT_OF_STOCK → "Sin stock"
+
+e) Chip de stock visual en la tabla:
+   - Verde si currentStock > minimumStock
+   - Naranja si currentStock <= minimumStock (bajo stock)
+   - Rojo si currentStock === 0 (agotado)
+
+f) supplierId es obligatorio en ProductRequestDTO pero el módulo de Proveedores
+   aún no existe en el frontend. Solución: cargar la lista de proveedores desde
+   el endpoint de Purchases (GET /api/v1/purchases/suppliers/active) — estos
+   endpoints ya existen en el backend.
+
+
+8. PLAN DE IMPLEMENTACIÓN (fases)
+-----------------------------------
+Fase 1 — Modelos, servicios y rutas
+  - Crear models (CategoryDTO, ProductResponseDTO, StockMovementDTO)
+  - CategoryService, ProductService
+  - inventory.routes.ts + registrar en app.routes.ts
+
+Fase 2 — Categorías (master-detail)
+  - CategoriesPageComponent (shell con MasterDetailComponent)
+  - CategoryFormComponent (dumb: @Input item, @Output save/cancel)
+  - Tests unitarios de CategoryService y CategoryFormComponent
+
+Fase 3 — Productos (master-detail)
+  - ProductsPageComponent
+  - ProductFormComponent
+  - StockBadgeComponent (dumb, reutilizable)
+  - Tests unitarios
+
+Fase 4 — Movimientos y Kardex
+  - MovementDialogComponent (MatDialog)
+  - KardexPanelComponent (tabla paginada dentro del detalle)
+  - Tests unitarios
+
+Fase 5 — Tests de integración y validación E2E
+
+
+9. CRITERIOS DE ACEPTACIÓN
+---------------------------
+□ Crear categoría → aparece en la lista inmediatamente
+□ Editar categoría → cambios reflejados en la lista
+□ Desactivar categoría → desaparece de la lista (soft delete)
+□ Crear producto con todos los campos → aparece en la lista
+□ Filtrar productos por categoría → tabla muestra solo esa categoría
+□ Buscar por SKU → encuentra el producto exacto
+□ Badge de stock muestra color correcto según nivel
+□ Registrar movimiento IN → stock del producto aumenta
+□ Registrar movimiento OUT → stock del producto disminuye
+□ Kardex muestra el historial correcto del producto
+□ WAREHOUSEMAN puede registrar movimientos pero no crear/editar productos
+□ SALES solo puede leer, no ve botones de escritura
+□ ADMIN puede desactivar productos; MANAGER no puede
+□ ng test → 0 failures, cobertura ≥ 70%

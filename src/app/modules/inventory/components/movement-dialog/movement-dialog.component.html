@@ -1,0 +1,55 @@
+<h2 mat-dialog-title>Registrar movimiento de stock</h2>
+
+<mat-dialog-content>
+  <p class="movement-dialog__product">
+    <strong>Producto:</strong> {{ data.product.name }} ({{ data.product.sku }})
+  </p>
+  <p class="movement-dialog__stock">
+    <strong>Stock actual:</strong> {{ data.product.currentStock }}
+  </p>
+
+  <form [formGroup]="form" class="movement-dialog__form">
+
+    <!-- Tipo -->
+    <mat-form-field appearance="outline" class="movement-dialog__field">
+      <mat-label>Tipo de movimiento <span class="required">*</span></mat-label>
+      <mat-select formControlName="type">
+        <mat-option value="IN">Entrada (IN)</mat-option>
+        <mat-option value="OUT">Salida (OUT)</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Cantidad -->
+    <mat-form-field appearance="outline" class="movement-dialog__field">
+      <mat-label>Cantidad <span class="required">*</span></mat-label>
+      <input matInput type="number" formControlName="quantity" min="1" />
+      @if (form.get('quantity')?.hasError('required') && form.get('quantity')?.touched) {
+        <mat-error>La cantidad es obligatoria.</mat-error>
+      }
+      @if (form.get('quantity')?.hasError('min')) {
+        <mat-error>La cantidad debe ser al menos 1.</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Motivo -->
+    <mat-form-field appearance="outline" class="movement-dialog__field movement-dialog__reason">
+      <mat-label>Motivo <span class="required">*</span></mat-label>
+      <textarea matInput formControlName="reason" rows="3" maxlength="300"></textarea>
+      @if (form.get('reason')?.hasError('required') && form.get('reason')?.touched) {
+        <mat-error>El motivo es obligatorio.</mat-error>
+      }
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button mat-dialog-close [disabled]="saving">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="submit()" [disabled]="form.invalid || saving">
+    @if (saving) {
+      <mat-spinner diameter="18" />
+    } @else {
+      Registrar
+    }
+  </button>
+</mat-dialog-actions>

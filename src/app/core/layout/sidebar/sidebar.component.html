@@ -1,21 +1,68 @@
 <nav class="sidebar" [class.collapsed]="collapsed$ | async" aria-label="Navegación principal">
 
   <ul class="sidebar__nav" role="menubar">
-    @for (item of navItems$ | async; track item.route) {
+    @for (item of navItems; track item.label) {
       <li role="none">
-        <a
-          [routerLink]="item.route"
-          routerLinkActive="sidebar__item--active"
-          role="menuitem"
-          class="sidebar__item"
-          [matTooltip]="(collapsed$ | async) ? item.label : ''"
-          matTooltipPosition="right"
-          matTooltipShowDelay="300"
-          matRipple
-        >
-          <mat-icon class="sidebar__icon" aria-hidden="true">{{ item.icon }}</mat-icon>
-          <span class="sidebar__label">{{ item.label }}</span>
-        </a>
+
+        @if (!item.children) {
+          <!-- Ítem simple: enlace directo -->
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="sidebar__item--active"
+            [routerLinkActiveOptions]="{ exact: false }"
+            role="menuitem"
+            class="sidebar__item"
+            [matTooltip]="(collapsed$ | async) ? item.label : ''"
+            matTooltipPosition="right"
+            matTooltipShowDelay="300"
+            matRipple
+          >
+            <mat-icon class="sidebar__icon" aria-hidden="true">{{ item.icon }}</mat-icon>
+            <span class="sidebar__label">{{ item.label }}</span>
+          </a>
+
+        } @else {
+          <!-- Ítem grupo: con submenú expandible -->
+          <button
+            class="sidebar__item sidebar__item--group"
+            [class.sidebar__item--active]="isGroupActive(item)"
+            (click)="onGroupClick(item)"
+            [matTooltip]="(collapsed$ | async) ? item.label : ''"
+            matTooltipPosition="right"
+            matTooltipShowDelay="300"
+            matRipple
+            role="menuitem"
+            [attr.aria-expanded]="expandedGroups.has(item.label)"
+          >
+            <mat-icon class="sidebar__icon" aria-hidden="true">{{ item.icon }}</mat-icon>
+            <span class="sidebar__label">{{ item.label }}</span>
+            @if (!(collapsed$ | async)) {
+              <mat-icon class="sidebar__expand-icon" aria-hidden="true">
+                {{ expandedGroups.has(item.label) ? 'expand_less' : 'expand_more' }}
+              </mat-icon>
+            }
+          </button>
+
+          @if (expandedGroups.has(item.label) && !(collapsed$ | async)) {
+            <ul class="sidebar__subnav" role="group">
+              @for (child of item.children; track child.route) {
+                <li role="none">
+                  <a
+                    [routerLink]="child.route"
+                    routerLinkActive="sidebar__subitem--active"
+                    role="menuitem"
+                    class="sidebar__subitem"
+                    matRipple
+                  >
+                    <mat-icon class="sidebar__subicon" aria-hidden="true">{{ child.icon }}</mat-icon>
+                    <span class="sidebar__label">{{ child.label }}</span>
+                  </a>
+                </li>
+              }
+            </ul>
+          }
+        }
+
       </li>
     }
   </ul>

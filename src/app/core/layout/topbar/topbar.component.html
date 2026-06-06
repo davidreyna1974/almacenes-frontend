@@ -12,6 +12,12 @@
       <mat-icon>menu</mat-icon>
     </button>
     <span class="topbar__brand">Almacenes</span>
+    @if (breadcrumb) {
+      <span class="topbar__breadcrumb" aria-label="Ubicación actual: {{ breadcrumb }}">
+        <mat-icon class="topbar__breadcrumb-sep" aria-hidden="true">chevron_right</mat-icon>
+        {{ breadcrumb }}
+      </span>
+    }
   </div>
 
   <div class="topbar__right">

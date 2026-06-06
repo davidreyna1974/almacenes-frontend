@@ -78,3 +78,15 @@ html, body {
   --mdc-snackbar-supporting-text-color: #ffffff;
   --mat-snack-bar-button-color: #ffffff;
 }
+
+// Backdrop semi-transparente para dialogs de formulario de catálogo
+// Permite ver la tabla en el fondo mientras el formulario flota encima
+.catalog-backdrop {
+  background: rgba(0, 0, 0, 0.32) !important;
+}
+
+// Panel container del dialog de catálogo (borde redondeado)
+.catalog-form-dialog .mat-mdc-dialog-surface {
+  border-radius: 10px !important;
+  overflow-y: auto;
+}

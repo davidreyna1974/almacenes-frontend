@@ -10,6 +10,10 @@ export class LayoutService {
     this.collapsedSubject.next(!this.collapsedSubject.value);
   }
 
+  get isCollapsed(): boolean {
+    return this.collapsedSubject.value;
+  }
+
   collapse(): void {
     this.collapsedSubject.next(true);
   }

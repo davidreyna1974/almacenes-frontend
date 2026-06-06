@@ -30,10 +30,12 @@ Consume el backend REST API del repositorio `almacenes-backend` (GitHub: davidre
 Para entender el sistema completo (visión, decisiones arquitectónicas, contratos
 de integración, RBAC transversal, guía de configuración y roadmap) consultar:
 
-**`memoria_tecnica_global_proyecto.md`** — en el repositorio `almacenes-backend`  
-`github.com/davidreyna1974/almacenes-backend`
+**`memoria_tecnica_global_proyecto.md`** — disponible **localmente en este repositorio** (raíz)  
+*(copia de origen: `github.com/davidreyna1974/almacenes-backend`)*
 
-Se actualiza al finalizar cada módulo si hay nuevas decisiones transversales.
+⚠️ **Esta es la fuente de contexto primaria para cualquier sesión de desarrollo.**  
+Leer siempre al iniciar trabajo en un nuevo módulo. Actualizar al finalizar cada módulo
+si hay nuevas decisiones transversales que apliquen a ambas capas.
 
 ---
 
@@ -87,9 +89,59 @@ Todo módulo nuevo requiere dos archivos en la raíz antes de implementar:
 **Sección 7 — Ejecución de tests (evidencia verificable):**
 - Por clase de test: comando `ng test --include=...`, resultado `X specs, 0 failures`
 - Suite consolidada: `ng test` → `X specs, 0 failures`
-- Cobertura: `ng test --code-coverage` → líneas/statements/branches
+- Cobertura: `ng test --coverage` → líneas/statements/branches
 - E2E: comando Cypress/Playwright, endpoints verificados, resultado X/Y — 0 fallos
 - Regresiones: suite pre-módulo X/X → post-módulo X/X
+
+---
+
+## ⚠️ Protocolo obligatorio pre-código — Consulta de contratos API
+
+**ANTES de escribir cualquier servicio, modelo o interfaz TypeScript que consuma el backend,
+se DEBEN verificar los contratos reales de la API. No hacerlo causa bugs de integración
+difíciles de detectar que solo aparecen en el browser con datos reales.**
+
+### Pasos obligatorios
+
+**1. Obtener los contratos de la API** (en orden de preferencia):
+   - Leer `memoria_tecnica_global_proyecto.md` — sección 3 (contratos ya documentados)
+   - Leer la memoria técnica del módulo — sección 4 (contratos específicos del módulo)
+   - Si no están documentados: consultar Swagger UI en `http://localhost:8080/swagger-ui/index.html`
+   - Alternativa programática: `GET http://localhost:8080/v3/api-docs` (OpenAPI JSON)
+   - Si el backend no está corriendo: leer el código fuente del controller en  
+     `/Users/davidreynapineda/Documents/Proyecto desarrollo/codigo/backend/almacenes/src/`
+
+**2. Verificar para CADA endpoint:**
+
+| Dato | Por qué verificarlo | Error típico si se omite |
+|---|---|---|
+| Ruta exacta (método + path) | Puede no existir | 404 o 403 en browser |
+| Código de respuesta HTTP | Puede ser 204 (sin body) | `null` al parsear el JSON inexistente |
+| Nombres exactos de campos del response | Backend y frontend usan nombres distintos | Campos `undefined` silenciosos |
+| Estructura del request body | Campos opcionales vs obligatorios | 400 Bad Request |
+| `PageResponse<T>` vs objeto simple vs `void` | Un endpoint de colección NUNCA retorna `[]` | `TypeError: collection[Symbol.iterator] is not a function` |
+
+**3. Antes de escribir código, documentar en la Sección 4** de la memoria técnica del módulo:
+   - Tabla de endpoints verificados (método, ruta, request, response, HTTP status)
+   - Interfaces TypeScript de TODOS los DTOs con nombres de campo EXACTOS del backend
+
+**4. Nunca asumir nombres de campos** — leer el JSON real o el DTO del backend.
+
+> **Lección real (Módulo 2 — Inventory):** El backend usa `companyName` en `SupplierDTO`;
+> el frontend asumió `name`. El error pasó desapercibido en tests y solo se detectó en el browser
+> al ver el dropdown de proveedores vacío. El endpoint `GET /products` sin filtro no existe —
+> tampoco estaba documentado correctamente en la propuesta del módulo, lo que causó un 403.
+
+### Checklist de verificación pre-código
+
+```
+[ ] Leí memoria_tecnica_global_proyecto.md (sección 3 — contratos de integración)
+[ ] Leí la memoria técnica del módulo actual (sección 4 — si ya existe)
+[ ] Para cada endpoint: verifiqué ruta exacta, método HTTP y código de respuesta
+[ ] Para cada response: verifiqué si es PageResponse<T>, objeto simple o void (204)
+[ ] Para cada DTO: verifiqué nombres exactos de campos (no asumí ninguno)
+[ ] Documenté contratos verificados en la Sección 4 de la memoria técnica antes de codificar
+```
 
 ---
 

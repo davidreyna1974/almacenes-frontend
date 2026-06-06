@@ -4,22 +4,16 @@
 
   <app-topbar></app-topbar>
 
-  <mat-sidenav-container class="layout-body">
+  <div class="layout-body">
 
-    <mat-sidenav
-      mode="side"
-      opened
-      [style.width]="(collapsed$ | async) ? 'var(--sidebar-width-collapsed)' : 'var(--sidebar-width-expanded)'"
-    >
+    <div class="sidebar-panel" [class.collapsed]="collapsed$ | async">
       <app-sidebar></app-sidebar>
-    </mat-sidenav>
+    </div>
 
-    <mat-sidenav-content>
-      <main id="main-content" class="layout-content">
-        <router-outlet></router-outlet>
-      </main>
-    </mat-sidenav-content>
+    <main id="main-content" class="layout-content" (click)="collapseIfExpanded($event)">
+      <router-outlet></router-outlet>
+    </main>
 
-  </mat-sidenav-container>
+  </div>
 
 </div>
