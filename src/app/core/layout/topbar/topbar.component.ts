@@ -1,4 +1,8 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, DestroyRef } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -6,16 +10,44 @@ import { MatMenuModule } from '@angular/material/menu';
 import { LayoutService } from '../layout.service';
 import { AuthService } from '../../auth/auth.service';
 
+const BREADCRUMB_MAP: { path: string; label: string }[] = [
+  { path: '/inventory/products',   label: 'Inventario → Productos'  },
+  { path: '/inventory/categories', label: 'Inventario → Categorías' },
+  { path: '/purchases',            label: 'Compras'                 },
+  { path: '/sales',                label: 'Ventas'                  },
+  { path: '/reports',              label: 'Reportes'                },
+  { path: '/admin/users',          label: 'Usuarios'                },
+];
+
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [MatIconModule, MatButtonModule, MatTooltipModule, MatMenuModule],
+  imports: [CommonModule, MatIconModule, MatButtonModule, MatTooltipModule, MatMenuModule],
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.scss'
 })
 export class TopbarComponent {
   private layoutService = inject(LayoutService);
-  private authService = inject(AuthService);
+  private authService   = inject(AuthService);
+  private router        = inject(Router);
+  private destroyRef    = inject(DestroyRef);
+
+  breadcrumb = '';
+
+  constructor() {
+    this.updateBreadcrumb(this.router.url);
+
+    this.router.events.pipe(
+      filter(e => e instanceof NavigationEnd),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe((e: NavigationEnd) => this.updateBreadcrumb(e.urlAfterRedirects));
+  }
+
+  private updateBreadcrumb(url: string): void {
+    const path  = url.split('?')[0];
+    const match = BREADCRUMB_MAP.find(b => path.startsWith(b.path));
+    this.breadcrumb = match?.label ?? '';
+  }
 
   get userName(): string { return this.authService.getUsername(); }
   get userRole(): string { return this.authService.getPrimaryRole(); }

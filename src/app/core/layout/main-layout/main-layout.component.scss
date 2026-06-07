@@ -6,17 +6,24 @@
 
 .layout-body {
   flex: 1;
+  display: flex;
   overflow: hidden;
+}
 
-  .mat-sidenav {
-    border-right: none;
-    transition: width var(--sidebar-transition);
+.sidebar-panel {
+  width: var(--sidebar-width-expanded);
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: width var(--sidebar-transition);
+
+  &.collapsed {
+    width: var(--sidebar-width-collapsed);
   }
 }
 
 .layout-content {
-  padding: var(--space-3);
-  height: 100%;
-  background-color: var(--color-bg-app);
+  flex: 1;
+  min-width: 0;
   overflow-y: auto;
+  background-color: var(--color-bg-app);
 }
