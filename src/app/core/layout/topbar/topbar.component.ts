@@ -11,8 +11,9 @@ import { LayoutService } from '../layout.service';
 import { AuthService } from '../../auth/auth.service';
 
 const BREADCRUMB_MAP: { path: string; label: string }[] = [
-  { path: '/inventory/products',   label: 'Inventario → Productos'  },
-  { path: '/inventory/categories', label: 'Inventario → Categorías' },
+  { path: '/inventory/products',   label: 'Inventario → Productos'   },
+  { path: '/inventory/categories', label: 'Inventario → Categorías'  },
+  { path: '/inventory/low-stock',  label: 'Inventario → Bajo stock'  },
   { path: '/purchases',            label: 'Compras'                 },
   { path: '/sales',                label: 'Ventas'                  },
   { path: '/reports',              label: 'Reportes'                },
