@@ -24,17 +24,25 @@
   </mat-form-field>
 
   <div class="category-form__actions">
-    <button type="button" mat-stroked-button (click)="cancel.emit()" [disabled]="saving">
-      Cancelar
-    </button>
-    <button type="submit" mat-flat-button color="primary"
-            [disabled]="form.invalid || saving">
-      @if (saving) {
-        <mat-spinner diameter="18" />
-      } @else {
-        {{ isEdit ? 'Guardar cambios' : 'Crear categoría' }}
-      }
-    </button>
+    @if (isEdit && canDeactivate) {
+      <button type="button" mat-stroked-button color="warn"
+              (click)="deactivate.emit()" [disabled]="saving">
+        Desactivar
+      </button>
+    }
+    <div class="category-form__actions-right">
+      <button type="button" mat-stroked-button (click)="cancel.emit()" [disabled]="saving">
+        Cancelar
+      </button>
+      <button type="submit" mat-flat-button color="primary"
+              [disabled]="form.invalid || saving">
+        @if (saving) {
+          <mat-spinner diameter="18" />
+        } @else {
+          {{ isEdit ? 'Guardar cambios' : 'Crear categoría' }}
+        }
+      </button>
+    </div>
   </div>
 
 </form>

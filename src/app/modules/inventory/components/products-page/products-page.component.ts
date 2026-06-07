@@ -14,7 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subject, EMPTY, forkJoin } from 'rxjs';
+import { Subject, EMPTY, forkJoin, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, switchMap, catchError } from 'rxjs/operators';
 
 import { ProductService } from '../../services/product.service';
@@ -77,11 +77,10 @@ export class ProductsPageComponent implements OnInit {
   private destroyRef      = inject(DestroyRef);
   private cdr             = inject(ChangeDetectorRef);
 
-  // switchMap en este Subject cancela la petición HTTP anterior si llega
-  // una nueva antes de que el backend responda (race condition BUG-01).
+  // switchMap cancela la petición HTTP anterior ante una nueva (race condition fix).
   private searchTrigger$ = new Subject<void>();
 
-  displayedColumns = ['sku', 'name', 'categoryName', 'supplierName', 'stock', 'price', 'status', 'actions'];
+  displayedColumns: string[] = [];
 
   products: ProductResponseDTO[] = [];
   page: PageResponse<ProductResponseDTO> | null = null;
@@ -92,7 +91,8 @@ export class ProductsPageComponent implements OnInit {
   suppliers:   SupplierOption[] = [];
   statuses     = PRODUCT_STATUSES;
 
-  loading = false;
+  loading            = false;
+  selectedProductId: number | null = null;
 
   searchControl    = new FormControl('');
   categoryFilter   = new FormControl<number | null>(null);
@@ -121,6 +121,10 @@ export class ProductsPageComponent implements OnInit {
   // ─── Inicialización ─────────────────────────────────────────────────────────
 
   ngOnInit(): void {
+    const cols = ['sku', 'name', 'categoryName', 'supplierName', 'stock', 'price', 'status'];
+    if (this.canRegisterMovement()) cols.push('actions');
+    this.displayedColumns = cols;
+
     // setTimeout(0) aplaza collapse al siguiente ciclo para evitar NG0100
     // (ExpressionChangedAfterItHasBeenCheckedError) cuando MainLayout ya leyó collapsed$.
     setTimeout(() => this.layoutService.collapse(), 0);
@@ -132,7 +136,9 @@ export class ProductsPageComponent implements OnInit {
 
     forkJoin({
       cats: this.categoryService.getActive(0, 200),
-      sups: this.productService.getActiveSuppliers(),
+      sups: this.productService.getActiveSuppliers().pipe(
+        catchError(() => of({ content: [] as SupplierOption[] } as PageResponse<SupplierOption>))
+      ),
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: ({ cats, sups }) => {
         this.categories = cats.content;
@@ -226,6 +232,9 @@ export class ProductsPageComponent implements OnInit {
   }
 
   openDetail(item: ProductResponseDTO): void {
+    this.selectedProductId = item.id;
+    this.cdr.markForCheck();
+
     const data: ProductDetailDialogData = {
       item,
       categories:    this.categories,
@@ -235,18 +244,28 @@ export class ProductsPageComponent implements OnInit {
     };
     this.dialog.open(ProductDetailDialogComponent, { ...DIALOG_CONFIG, data })
       .afterClosed()
-      .pipe(filter(r => r === true), takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.searchTrigger$.next());
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(result => {
+        this.selectedProductId = null;
+        this.cdr.markForCheck();
+        if (result === true) this.searchTrigger$.next();
+      });
   }
 
   openMovementDialog(item: ProductResponseDTO): void {
+    this.selectedProductId = item.id;
+    this.cdr.markForCheck();
+
     this.dialog.open(MovementDialogComponent, {
       data:  { product: item },
       width: '480px',
     }).afterClosed().pipe(
-      filter(r => r === true),
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe(() => this.searchTrigger$.next());
+    ).subscribe(result => {
+      this.selectedProductId = null;
+      this.cdr.markForCheck();
+      if (result === true) this.searchTrigger$.next();
+    });
   }
 
   getStatusLabel(status: string): string {

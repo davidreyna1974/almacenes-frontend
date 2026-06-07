@@ -18,7 +18,6 @@ import { PageResponse } from '../../../../shared/models/page-response.model';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { LayoutService } from '../../../../core/layout/layout.service';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { CategoryFormDialogComponent, CategoryDialogData } from '../category-form-dialog/category-form-dialog.component';
 
 const DIALOG_CONFIG = {
@@ -57,7 +56,7 @@ export class CategoriesPageComponent implements OnInit {
   private destroyRef      = inject(DestroyRef);
   private cdr             = inject(ChangeDetectorRef);
 
-  displayedColumns = ['name', 'description', 'createdByUsername', 'actions'];
+  displayedColumns = ['name', 'description', 'actions'];
 
   categories: CategoryDTO[] = [];
   page: PageResponse<CategoryDTO> | null = null;
@@ -65,12 +64,11 @@ export class CategoriesPageComponent implements OnInit {
   pageSize    = 20;
   loading     = false;
 
-  canWrite(): boolean {
-    return this.authService.hasRole('ROLE_ADMIN') || this.authService.hasRole('ROLE_MANAGER');
-  }
+  canWrite():      boolean { return this.authService.hasRole('ROLE_ADMIN') || this.authService.hasRole('ROLE_MANAGER'); }
+  canDeactivate(): boolean { return this.authService.hasRole('ROLE_ADMIN'); }
 
   ngOnInit(): void {
-    this.layoutService.collapse();
+    setTimeout(() => this.layoutService.collapse(), 0);
     this.load();
   }
 
@@ -101,7 +99,7 @@ export class CategoriesPageComponent implements OnInit {
   }
 
   openNew(): void {
-    const data: CategoryDialogData = { item: null };
+    const data: CategoryDialogData = { item: null, canDeactivate: false };
     this.dialog.open(CategoryFormDialogComponent, { ...DIALOG_CONFIG, data })
       .afterClosed()
       .pipe(filter(r => r === true), takeUntilDestroyed(this.destroyRef))
@@ -109,41 +107,15 @@ export class CategoriesPageComponent implements OnInit {
   }
 
   openEdit(item: CategoryDTO): void {
-    const data: CategoryDialogData = { item };
+    const data: CategoryDialogData = { item, canDeactivate: this.canDeactivate() };
     this.dialog.open(CategoryFormDialogComponent, { ...DIALOG_CONFIG, data })
       .afterClosed()
       .pipe(filter(r => r === true), takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.load());
   }
 
-  confirmDelete(item: CategoryDTO): void {
-    const data: ConfirmDialogData = {
-      title:        'Desactivar categoría',
-      message:      `¿Deseas desactivar la categoría "${item.name}"? Esta acción ocultará la categoría del sistema.`,
-      confirmLabel: 'Desactivar',
-      dangerous:    true,
-    };
-    this.dialog.open(ConfirmDialogComponent, { data, width: '420px' })
-      .afterClosed()
-      .pipe(filter(r => r === true), takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.loading = true;
-        this.cdr.markForCheck();
-        this.categoryService.delete(item.id)
-          .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe({
-            next: () => {
-              this.snackBar.open('Categoría desactivada.', 'Cerrar', { duration: 3000, panelClass: ['snackbar-success'] });
-              this.load();
-            },
-            error: (err) => {
-              this.loading = false;
-              this.cdr.detectChanges();
-              const msg = err.error?.message || 'Error al desactivar la categoría.';
-              this.snackBar.open(msg, 'Cerrar', { duration: 4000, panelClass: ['snackbar-error'] });
-            }
-          });
-      });
+  onRowClick(item: CategoryDTO): void {
+    if (this.canWrite()) this.openEdit(item);
   }
 
   viewProducts(categoryId?: number): void {

@@ -48,10 +48,10 @@
 }
 
 .filter-field {
-  &--search   { width: 220px; }
-  &--cat      { width: 180px; }
+  &--search   { width: 280px; }
+  &--cat      { width: 220px; }
   &--status   { width: 160px; }
-  &--supplier { width: 180px; }
+  &--supplier { width: 240px; }
 }
 
 .btn-clear-filters {
@@ -74,6 +74,10 @@
 
   &:hover {
     background-color: var(--color-surface);
+  }
+
+  &--selected {
+    background-color: #F2E4F2 !important;
   }
 }
 

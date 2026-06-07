@@ -1,13 +1,16 @@
 import { Component, inject, DestroyRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { filter, switchMap } from 'rxjs/operators';
 import { CategoryService } from '../../services/category.service';
 import { CategoryDTO, CategoryRequest } from '../../models/category.model';
 import { CategoryFormComponent } from '../category-form/category-form.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 export interface CategoryDialogData {
-  item: CategoryDTO | null;
+  item:          CategoryDTO | null;
+  canDeactivate: boolean;
 }
 
 @Component({
@@ -18,8 +21,10 @@ export interface CategoryDialogData {
     <app-category-form
       [item]="data.item"
       [saving]="saving"
+      [canDeactivate]="data.canDeactivate"
       (save)="onSave($event)"
-      (cancel)="dialogRef.close(false)" />
+      (cancel)="dialogRef.close(false)"
+      (deactivate)="onDeactivate()" />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -27,6 +32,7 @@ export class CategoryFormDialogComponent {
   readonly data      = inject<CategoryDialogData>(MAT_DIALOG_DATA);
   readonly dialogRef = inject(MatDialogRef<CategoryFormDialogComponent>);
   private categoryService = inject(CategoryService);
+  private dialog     = inject(MatDialog);
   private snackBar   = inject(MatSnackBar);
   private destroyRef = inject(DestroyRef);
   private cdr        = inject(ChangeDetectorRef);
@@ -54,5 +60,33 @@ export class CategoryFormDialogComponent {
         this.snackBar.open(msg, 'Cerrar', { duration: 4000, panelClass: ['snackbar-error'] });
       }
     });
+  }
+
+  onDeactivate(): void {
+    if (!this.data.item) return;
+    const item = this.data.item;
+    const confirmData: ConfirmDialogData = {
+      title:        'Desactivar categoría',
+      message:      `¿Deseas desactivar la categoría "${item.name}"? Esta acción ocultará la categoría del sistema.`,
+      confirmLabel: 'Desactivar',
+      dangerous:    true,
+    };
+    this.dialog.open(ConfirmDialogComponent, { data: confirmData, width: '420px' })
+      .afterClosed()
+      .pipe(
+        filter(r => r === true),
+        switchMap(() => this.categoryService.delete(item.id)),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe({
+        next: () => {
+          this.snackBar.open('Categoría desactivada.', 'Cerrar', { duration: 3000, panelClass: ['snackbar-success'] });
+          this.dialogRef.close(true);
+        },
+        error: (err) => {
+          const msg = err.error?.message || 'Error al desactivar la categoría.';
+          this.snackBar.open(msg, 'Cerrar', { duration: 4000, panelClass: ['snackbar-error'] });
+        }
+      });
   }
 }

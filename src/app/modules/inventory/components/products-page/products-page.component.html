@@ -142,19 +142,11 @@
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef></th>
           <td mat-cell *matCellDef="let row" class="cell-actions">
-            @if (canRegisterMovement()) {
-              <button mat-icon-button
-                      (click)="openMovementDialog(row); $event.stopPropagation()"
-                      matTooltip="Registrar movimiento" matTooltipShowDelay="300"
-                      aria-label="Registrar movimiento para {{ row.name }}">
-                <mat-icon>swap_vert</mat-icon>
-              </button>
-            }
             <button mat-icon-button
-                    (click)="openDetail(row); $event.stopPropagation()"
-                    matTooltip="Ver / Editar" matTooltipShowDelay="300"
-                    aria-label="Ver o editar {{ row.name }}">
-              <mat-icon>edit</mat-icon>
+                    (click)="openMovementDialog(row); $event.stopPropagation()"
+                    matTooltip="Registrar movimiento" matTooltipShowDelay="300"
+                    aria-label="Registrar movimiento para {{ row.name }}">
+              <mat-icon>swap_vert</mat-icon>
             </button>
           </td>
         </ng-container>
@@ -162,6 +154,7 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"
             class="catalog-row"
+            [class.catalog-row--selected]="row.id === selectedProductId"
             (click)="openDetail(row)">
         </tr>
       </table>
