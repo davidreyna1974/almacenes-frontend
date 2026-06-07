@@ -52,7 +52,10 @@
       <mat-label>Stock {{ isEdit ? 'físico (solo lectura)' : 'inicial' }}</mat-label>
       <input matInput type="number" formControlName="currentStock" min="0" />
       @if (isEdit) {
-        <mat-hint>Usa "Registrar movimiento" para ajustar el stock.</mat-hint>
+        <mat-hint class="hint-policy">
+          <mat-icon class="hint-policy__icon">lock</mat-icon>
+          El stock físico solo puede modificarse mediante movimientos registrados.
+        </mat-hint>
       }
     </mat-form-field>
 

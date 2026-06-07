@@ -1,3 +1,18 @@
+.hint-policy {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: #1565C0;
+
+  &__icon {
+    font-size: 13px;
+    width: 13px;
+    height: 13px;
+    line-height: 13px;
+    flex-shrink: 0;
+  }
+}
+
 .product-form {
   display: flex;
   flex-direction: column;
