@@ -814,3 +814,11 @@ fila para navegar a los productos de esa categoría, y el sidebar tenía un link
 | Tests RBAC backend con Spring Security activo: `ProductControllerSecurityTest` 8 specs | ✓ | `mvn test` — 2026-06-07 |
 | Estado `AVAILABLE` mostrado como "Disponible" en detalle de producto (getStatusLabel) | ✓ | Browser 4 roles + specs — 2026-06-07 |
 | Suite total frontend post-tests: `ng test --no-watch` → 89 specs, 0 fallos | ✓ | `ng test --no-watch` — 2026-06-07 |
+| `availableStock` usado en MovementDialog (no `currentStock`) — regla de negocio OUT | ✓ | Código + análisis — 2026-06-07 |
+| MovementDialog: Validators.max(availableStock) reactivo al cambiar tipo a OUT | ✓ | Código — 2026-06-07 |
+| StockBadge: tooltip enriquecido con físico/reservado/disponible cuando reservedStock > 0 | ✓ | Código + specs — 2026-06-07 |
+| ProductDetail readonly: muestra reservedStock y availableStock cuando > 0 | ✓ | Código — 2026-06-07 |
+| currentStock bloqueado en modo edición (solo readable vía movimientos) | ✓ | Frontend: campo disabled + hint. Backend: @Mapping ignore — 2026-06-07 |
+| Columna unitCost visible solo para ADMIN/MANAGER en tabla de productos | ✓ | Código — displayedColumns condicional — 2026-06-07 |
+| Suite total frontend post-fix business logic: `ng test --no-watch` → 94 specs, 0 fallos | ✓ | `ng test --no-watch` — 2026-06-07 |
+| Suite total backend post-fix business logic: `mvn test` → 396 tests, 0 fallos | ✓ | `mvn test` — 2026-06-07 |
