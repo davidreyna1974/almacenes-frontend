@@ -14,8 +14,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
-import { forkJoin } from 'rxjs';
+import { Subject, EMPTY, forkJoin } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, switchMap, catchError } from 'rxjs/operators';
 
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
@@ -77,6 +77,10 @@ export class ProductsPageComponent implements OnInit {
   private destroyRef      = inject(DestroyRef);
   private cdr             = inject(ChangeDetectorRef);
 
+  // switchMap en este Subject cancela la petición HTTP anterior si llega
+  // una nueva antes de que el backend responda (race condition BUG-01).
+  private searchTrigger$ = new Subject<void>();
+
   displayedColumns = ['sku', 'name', 'categoryName', 'supplierName', 'stock', 'price', 'status', 'actions'];
 
   products: ProductResponseDTO[] = [];
@@ -117,11 +121,14 @@ export class ProductsPageComponent implements OnInit {
   // ─── Inicialización ─────────────────────────────────────────────────────────
 
   ngOnInit(): void {
-    this.layoutService.collapse();
+    // setTimeout(0) aplaza collapse al siguiente ciclo para evitar NG0100
+    // (ExpressionChangedAfterItHasBeenCheckedError) cuando MainLayout ya leyó collapsed$.
+    setTimeout(() => this.layoutService.collapse(), 0);
 
-    // Pre-aplicar filtro de categoría si viene desde la página de Categorías
+    // { emitEvent: false } evita que valueChanges dispare la búsqueda antes
+    // de que searchTrigger$ esté suscrito, previniendo la doble petición (BUG-02).
     const catId = this.route.snapshot.queryParamMap.get('categoryId');
-    if (catId) this.categoryFilter.setValue(+catId);
+    if (catId) this.categoryFilter.setValue(+catId, { emitEvent: false });
 
     forkJoin({
       cats: this.categoryService.getActive(0, 200),
@@ -134,6 +141,35 @@ export class ProductsPageComponent implements OnInit {
       }
     });
 
+    // switchMap cancela la petición anterior si llega una nueva (BUG-01 fix)
+    this.searchTrigger$.pipe(
+      switchMap(() => {
+        this.loading = true;
+        this.cdr.detectChanges();
+        return this.productService.search({
+          search:     this.searchControl.value?.trim() || undefined,
+          categoryId: this.categoryFilter.value ?? undefined,
+          status:     this.statusFilter.value ?? undefined,
+          supplierId: this.supplierFilter.value ?? undefined,
+          page:       this.currentPage,
+          size:       this.pageSize,
+        }).pipe(
+          catchError(() => {
+            this.loading = false;
+            this.cdr.detectChanges();
+            this.snackBar.open('Error al cargar productos.', 'Cerrar', { duration: 4000, panelClass: ['snackbar-error'] });
+            return EMPTY;
+          })
+        );
+      }),
+      takeUntilDestroyed(this.destroyRef)
+    ).subscribe(page => {
+      this.page     = page;
+      this.products = page.content;
+      this.loading  = false;
+      this.cdr.detectChanges();
+    });
+
     // Búsqueda de texto: debounce 400ms — permite tipeo fluido antes de llamar al backend
     this.searchControl.valueChanges.pipe(
       debounceTime(400),
@@ -141,65 +177,38 @@ export class ProductsPageComponent implements OnInit {
       takeUntilDestroyed(this.destroyRef)
     ).subscribe(() => {
       this.currentPage = 0;
-      this.load();
+      this.searchTrigger$.next();
     });
 
     // Filtros de selección: reaccionan inmediatamente al cambio
     this.categoryFilter.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => { this.currentPage = 0; this.load(); });
+      .subscribe(() => { this.currentPage = 0; this.searchTrigger$.next(); });
 
     this.statusFilter.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => { this.currentPage = 0; this.load(); });
+      .subscribe(() => { this.currentPage = 0; this.searchTrigger$.next(); });
 
     this.supplierFilter.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => { this.currentPage = 0; this.load(); });
+      .subscribe(() => { this.currentPage = 0; this.searchTrigger$.next(); });
 
-    this.load();
-  }
-
-  // ─── Carga de datos ─────────────────────────────────────────────────────────
-
-  load(): void {
-    this.loading = true;
-    this.cdr.detectChanges();
-
-    this.productService.search({
-      search:     this.searchControl.value?.trim() || undefined,
-      categoryId: this.categoryFilter.value ?? undefined,
-      status:     this.statusFilter.value ?? undefined,
-      supplierId: this.supplierFilter.value ?? undefined,
-      page:       this.currentPage,
-      size:       this.pageSize,
-    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: (page) => {
-        this.page     = page;
-        this.products = page.content;
-        this.loading  = false;
-        this.cdr.detectChanges();
-      },
-      error: () => {
-        this.loading = false;
-        this.cdr.detectChanges();
-        this.snackBar.open('Error al cargar productos.', 'Cerrar', { duration: 4000, panelClass: ['snackbar-error'] });
-      }
-    });
-  }
-
-  clearFilters(): void {
-    this.searchControl.setValue('',   { emitEvent: false });
-    this.categoryFilter.setValue(null, { emitEvent: false });
-    this.statusFilter.setValue(null,   { emitEvent: false });
-    this.supplierFilter.setValue(null,  { emitEvent: false });
-    this.currentPage = 0;
-    this.load();
+    // Carga inicial
+    this.searchTrigger$.next();
   }
 
   // ─── Eventos de UI ──────────────────────────────────────────────────────────
 
+  clearFilters(): void {
+    this.searchControl.setValue('',    { emitEvent: false });
+    this.categoryFilter.setValue(null, { emitEvent: false });
+    this.statusFilter.setValue(null,   { emitEvent: false });
+    this.supplierFilter.setValue(null,  { emitEvent: false });
+    this.currentPage = 0;
+    this.searchTrigger$.next();
+  }
+
   onPageChange(event: PageEvent): void {
     this.currentPage = event.pageIndex;
     this.pageSize    = event.pageSize;
-    this.load();
+    this.searchTrigger$.next();
   }
 
   openNew(): void {
@@ -213,7 +222,7 @@ export class ProductsPageComponent implements OnInit {
     this.dialog.open(ProductDetailDialogComponent, { ...DIALOG_CONFIG, data })
       .afterClosed()
       .pipe(filter(r => r === true), takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.load());
+      .subscribe(() => this.searchTrigger$.next());
   }
 
   openDetail(item: ProductResponseDTO): void {
@@ -227,7 +236,7 @@ export class ProductsPageComponent implements OnInit {
     this.dialog.open(ProductDetailDialogComponent, { ...DIALOG_CONFIG, data })
       .afterClosed()
       .pipe(filter(r => r === true), takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => this.load());
+      .subscribe(() => this.searchTrigger$.next());
   }
 
   openMovementDialog(item: ProductResponseDTO): void {
@@ -237,7 +246,7 @@ export class ProductsPageComponent implements OnInit {
     }).afterClosed().pipe(
       filter(r => r === true),
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe(() => this.load());
+    ).subscribe(() => this.searchTrigger$.next());
   }
 
   getStatusLabel(status: string): string {

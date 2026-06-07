@@ -2,8 +2,8 @@
 **Rama:** feature/inventory  
 **Autor:** David Reyna Pineda  
 **Fecha inicio:** 2026-06-05  
-**Fecha cierre:** —  
-**Estado:** En desarrollo
+**Fecha cierre:** 2026-06-06 (tests browser completados; tests unitarios pendientes)  
+**Estado:** Código completo — tests browser verificados — tests unitarios pendientes
 
 ---
 
@@ -298,6 +298,40 @@ Las rutas no requieren guard adicional (todos los roles autenticados pueden acce
 
 **Resultado**: el módulo Inventory no introdujo regresiones en los módulos anteriores.
 
+### Tests de browser — Módulo 2 (Productos) — 2026-06-06
+
+Ejecutados con Playwright MCP contra `http://localhost:4200` y backend Spring Boot en `http://localhost:8080`.
+Base de datos con 30 categorías, 20 proveedores y 50 productos cargados via `seed_data.sql`.
+
+| # | Caso de prueba | Resultado | Evidencia |
+|---|---|---|---|
+| T01 | Carga inicial — 50 productos, paginación "1 – 20 of 50", todas las columnas presentes | ✅ PASS | Snapshot — tabla con 20 filas, paginator "1 – 20 of 50" |
+| T02 | Búsqueda por nombre "taladro" → 1 resultado (Taladro Percutor 13mm 900W) | ✅ PASS | Snapshot — 1 fila |
+| T03 | Búsqueda por SKU "SOLD-ELE" → 1 resultado (Electrodos Acero Suave 6011) | ✅ PASS | Snapshot — 1 fila |
+| T04 | Exactamente 1 petición HTTP por búsqueda (BUG-POST-01 verificado) | ✅ PASS | Red log — 1 request por acción, sin duplicados |
+| T05 | Limpiar filtros → vuelve a 50 productos (1 sola petición) | ✅ PASS | Snapshot — "1 – 20 of 50" |
+| T06 | Filtro Estado "Sin stock" → 3 resultados (Proyector Laser, SSD NVMe, Secadora) | ✅ PASS | Snapshot — 3 filas con badge "Sin stock" |
+| T07 | Filtro Proveedor "TechSupply México" → 5 resultados | ✅ PASS | Snapshot — 5 filas |
+| T08 | Filtro combinado (TechSupply + "laptop") → 1 resultado (Laptop 15.6") | ✅ PASS | Snapshot — 1 fila |
+| T09 | Paginación "Next page" → página 2, "21 – 40 of 50" | ✅ PASS | Snapshot — paginator actualizado |
+| T10 | Diálogo detalle (Laptop): todos los campos cargados, SKU/precio/stock/estado/categoría/proveedor | ✅ PASS | Snapshot — diálogo con datos correctos |
+| T11 | Pestaña Kardex → "Sin movimientos registrados" (DB limpia) | ✅ PASS | Snapshot — mensaje vacío correcto |
+| T12 | Sin errores JavaScript en consola durante toda la sesión | ✅ PASS | `console_messages level=error` → 0 errores |
+| T13 | Diálogo movimiento: Entrada 5 uds → stock Laptop 30→35 reflejado en tabla | ✅ PASS | Snapshot — celda Stock muestra "35" |
+| T14 | Diálogo nuevo producto: título "Nuevo producto", campos vacíos, sin botón "Desactivar" | ✅ PASS | Snapshot — heading "Nuevo producto", "Crear producto" disabled |
+| T15 | Tooltip proveedor vacío → no muestra "null" (BUG-POST-03 verificado) | ✅ PASS | Snapshot — `[matTooltip]="row.supplierName \|\| ''"` |
+
+**Resultado global: 15/15 casos PASS — 0 fallos**
+
+### Suite de regresión (Módulos 0 y 1)
+
+| Comando | Resultado | Fecha |
+|---|---|---|
+| `ng test --watch=false` | **43 specs, 0 fallos** | 2026-06-05 |
+| `ng test --watch=false --coverage` | **Statements: 98.09% · Branches: 89.61% · Functions: 100% · Lines: 98.61%** | 2026-06-05 |
+
+**Resultado**: los bugs corregidos en esta sesión no introdujeron regresiones en módulos anteriores.
+
 ### Tests pendientes para el Módulo 2 (Inventory)
 
 | Archivo de spec | Tipo | Qué verificar |
@@ -401,6 +435,75 @@ El backend en realidad retorna 204 con body vacío.
 
 ---
 
+### BUG-06 (post-merge): Race condition en búsqueda de productos
+
+**Síntoma**: cambios rápidos en los filtros podían mostrar resultados desactualizados si
+una petición lenta respondía después de una petición más reciente (out-of-order responses).
+
+**Causa raíz**: `load()` usaba `takeUntilDestroyed` para cleanup del componente, pero no
+cancelaba la petición HTTP anterior al dispararse una nueva búsqueda. Si el usuario cambiaba
+un filtro dos veces en rápida sucesión, la respuesta de la primera petición podía sobrescribir
+la de la segunda.
+
+**Fix**: eliminar `load()` y centralizar toda la búsqueda en un `Subject<void> searchTrigger$`
+cuyo operador `switchMap` cancela automáticamente la petición en vuelo al llegar una nueva.
+
+**Archivo**: `products-page.component.ts` — refactor completo de la lógica de búsqueda.
+
+---
+
+### BUG-07 (post-merge): Doble petición al cargar con `?categoryId` en la URL
+
+**Síntoma**: cuando la página se abría con el query param `?categoryId=N`, se realizaban
+dos peticiones HTTP en lugar de una (visible en las herramientas de red del browser).
+
+**Causa raíz**: `categoryFilter.setValue(+catId)` (sin `{ emitEvent: false }`) disparaba
+`valueChanges`, que ejecutaba `load()`. Luego el `ngOnInit` llamaba explícitamente a `load()`
+una segunda vez.
+
+**Fix**: usar `{ emitEvent: false }` en el `setValue` del query param y reemplazar la llamada
+explícita a `load()` por `this.searchTrigger$.next()` al final del `ngOnInit`, garantizando
+exactamente una sola petición de carga inicial.
+
+**Archivo**: `products-page.component.ts:131`.
+
+---
+
+### BUG-08 (post-merge): Tooltip de proveedor mostraba "null" cuando el campo era nulo
+
+**Síntoma**: en productos sin proveedor asignado, el tooltip de la columna "Proveedor"
+mostraba la cadena "null" al pasar el cursor.
+
+**Causa raíz**: `[matTooltip]="row.supplierName"` — cuando `supplierName` es `null`,
+Angular Material materializa el binding como la cadena `"null"`.
+
+**Fix**: `[matTooltip]="row.supplierName || ''"` — tooltip vacío cuando el valor es nulo.
+
+**Archivo**: `products-page.component.html:110`.
+
+---
+
+### BUG-09 (post-merge): Error interceptor redirigía a login en respuestas 403
+
+**Síntoma**: la primera carga del módulo de Inventario redirigía al login con el mensaje
+"Tu sesión ha expirado" incluso con un token JWT válido, creando un bucle infinito de login.
+
+**Causa raíz**: el backend retorna 403 para acceso denegado (no 401). El interceptor
+original trataba cualquier 4xx que no fuera `/auth/login` como sesión expirada, incluyendo
+los 403 de rutas protegidas correctamente rechazadas. Adicionalmente, el proceso JVM del
+backend estaba corriendo con clases compiladas antes de los últimos cambios de `SecurityConfig`,
+por lo que todos los endpoints de inventario devolvían 403 incluso para ROLE_ADMIN.
+
+**Fix en código**: separar el manejo de 401 (expiración de sesión → redirect a login)
+y 403 (acceso denegado → snackbar informativo, sin redirect).
+
+**Fix en proceso**: reiniciar el proceso `spring-boot:run` para que el JVM cargue las
+clases compiladas actualizadas.
+
+**Archivo**: `error.interceptor.ts`.
+
+---
+
 ## 9. Estándares y buenas prácticas aplicadas
 
 - Reactive Forms para todos los formularios del módulo.
@@ -436,5 +539,10 @@ El backend en realidad retorna 204 con body vacío.
 | Estado vacío cuando no hay filtro activo | ✓ | Browser — early-return muestra `EmptyStateComponent` |
 | Mensaje correcto al crear vs editar | ✓ | Bug-03 corregido — captura `isNewMode` antes de `closeDetail()` |
 | `ng test --watch=false` → 0 failures (regresión módulos 0-1) | ✓ | `43 specs, 0 fallos` — 2026-06-05 |
+| Race condition en búsqueda eliminada (BUG-06) | ✓ | Browser — 1 sola petición por acción, 2026-06-06 |
+| Sin doble petición al abrir con `?categoryId` (BUG-07) | ✓ | Browser — network log, 2026-06-06 |
+| Tooltip proveedor nulo no muestra "null" (BUG-08) | ✓ | Código — `\|\| ''` en binding, 2026-06-06 |
+| 403 no redirige a login (BUG-09 error interceptor) | ✓ | Browser — módulo carga correctamente, 2026-06-06 |
+| Tests browser Módulo Productos: 15/15 PASS | ✓ | Playwright MCP — 2026-06-06 |
 | Tests unitarios del módulo Inventory | ⬜ Pendiente | Specs no escritos aún |
 | Cobertura ≥ 70% incluyendo módulo Inventory | ⬜ Pendiente | Depende de specs pendientes |
