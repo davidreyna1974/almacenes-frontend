@@ -106,6 +106,7 @@ badge de stock. Panel detalle con tabs: "Datos" (`ProductFormComponent`) y "Kard
 **Productos** (`/api/v1/inventory/products`):
 | Método | Ruta | Status | Request body | Respuesta |
 |---|---|---|---|---|
+| GET | `/?search=&categoryId=&status=&supplierId=&page=0&size=20` | 200 | — | `PageResponse<ProductResponseDTO>` |
 | GET | `/{id}` | 200 | — | `ProductResponseDTO` |
 | GET | `/sku/{sku}` | 200 | — | `ProductResponseDTO` |
 | GET | `/category/{categoryId}?page=0&size=20` | 200 | — | `PageResponse<ProductResponseDTO>` |
@@ -114,9 +115,11 @@ badge de stock. Panel detalle con tabs: "Datos" (`ProductFormComponent`) y "Kard
 | PUT | `/{id}` | 200 | `ProductRequestDTO` | `ProductResponseDTO` |
 | DELETE | `/{id}` | 204 | — | void (sin body) |
 
-> ❌ **NO EXISTE** `GET /api/v1/inventory/products?page&size` (sin filtro).
-> El backend requiere siempre un criterio: categoría, SKU o bajo-stock.
-> El componente implementa un early-return mostrando estado vacío cuando no hay filtro activo.
+> ✅ **Implementado 2026-06-06**: `GET /api/v1/inventory/products` con todos los parámetros
+> opcionales (search, categoryId, status, supplierId). Todos los filtros son opcionales;
+> sin parámetros retorna todos los productos activos paginados, ordenados por name ASC.
+> El componente `ProductsPageComponent` usa `ProductService.search(params)` para todos
+> los casos — ya no bifurca entre `getBySku()` y `getByCategory()`.
 
 **Movimientos de stock** (`/api/v1/inventory/products`):
 | Método | Ruta | Status | Request body | Respuesta |
@@ -174,6 +177,7 @@ export interface ProductResponseDTO {
   categoryId:        number;
   categoryName:      string;
   supplierId:        number;
+  supplierName:      string;   // agregado 2026-06-06 — antes solo existía supplierId
   createdAt:         string;   // ISO 8601
   createdByUsername: string;
   updatedAt:         string;   // ISO 8601
