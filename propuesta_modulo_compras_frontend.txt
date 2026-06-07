@@ -13,17 +13,17 @@ Referencia backend : módulo `purchases` — completo (43 A + 25 B tests, 0 fall
 0. CHECKLIST OBLIGATORIO PRE-CÓDIGO (CLAUDE.md)
 --------------------------------------------------------------------------------
 
-[ ] Leí memoria_tecnica_global_proyecto.md (sección 3 — contratos de integración)
+[x] Leí memoria_tecnica_global_proyecto.md (sección 3 — contratos de integración)
 [x] Leí controladores del backend: SupplierController.java, PurchaseOrderController.java
 [x] Para cada endpoint: verifiqué ruta exacta, método HTTP y código de respuesta
 [x] Para cada response: verifiqué si es PageResponse<T>, lista simple, objeto o void (204)
 [x] Para cada DTO: verifiqué nombres exactos de campos del backend — ninguno asumido
-[ ] Documentar contratos verificados en Sección 4 de la memoria técnica antes de codificar
-[ ] Para cada regla de negocio del backend: identificar componente UI, verificar dato correcto,
-    validación preventiva y mensaje de error útil
-[ ] Verifiqué campos de solo lectura (totalAmount calculado, orderNumber generado, timestamps)
-[ ] Verifiqué columnas sensibles (unitCost, totalAmount) y restricción por rol
-[ ] Protocolo de cierre definido (CLAUDE.md §Protocolo post-código)
+[x] Contratos verificados documentados en Sección 4 de la memoria técnica
+[x] Para cada regla de negocio del backend: identificar componente UI, verificar dato correcto,
+    validación preventiva y mensaje de error útil (ver tabla R1-R7 en sección 2)
+[x] Verifiqué campos de solo lectura (totalAmount, orderNumber, subtotal, timestamps — sección 2)
+[x] Verifiqué columnas sensibles (unitPrice, subtotal, totalAmount) y restricción por rol (sección 5)
+[x] Protocolo de cierre documentado — CLAUDE.md §Protocolo post-código + estandares_referencia §3.10
 
 --------------------------------------------------------------------------------
 1. CONTEXTO Y JUSTIFICACIÓN
