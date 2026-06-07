@@ -822,3 +822,6 @@ fila para navegar a los productos de esa categoría, y el sidebar tenía un link
 | Columna unitCost visible solo para ADMIN/MANAGER en tabla de productos | ✓ | Código — displayedColumns condicional — 2026-06-07 |
 | Suite total frontend post-fix business logic: `ng test --no-watch` → 94 specs, 0 fallos | ✓ | `ng test --no-watch` — 2026-06-07 |
 | Suite total backend post-fix business logic: `mvn test` → 396 tests, 0 fallos | ✓ | `mvn test` — 2026-06-07 |
+| Doble asterisco eliminado: `<span class="required">*</span>` removido de 12 labels en 3 archivos | ✓ | Código — AM genera asterisco automáticamente via Validators.required — 2026-06-07 |
+| `subscriptSizing="dynamic"` en campo Stock para que hint no se solape con Estado en el grid | ✓ | Código — 2026-06-07 |
+| Hint campo Stock: icono `lock` azul (#1565C0) + "El stock físico solo puede modificarse mediante Registrar movimiento." | ✓ | Código — MatIconModule añadido a ProductFormComponent — 2026-06-07 |

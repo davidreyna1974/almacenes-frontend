@@ -225,7 +225,16 @@ this.form = this.fb.group({
 - Mensaje de error inline bajo el campo, nunca en alert/toast
 - Botón de guardar deshabilitado mientras el form sea inválido o esté cargando
 - Labels siempre visibles (no solo placeholder)
-- Campos obligatorios marcados con asterisco `*`
+- **Campos obligatorios**: Angular Material añade `*` automáticamente via `Validators.required`.
+  Nunca añadir `<span class="required">*</span>` manual — produce doble asterisco. Ver L15.
+- **Campos de solo lectura contextual** (editables en creación, inmutables en edición):
+  usar `control.disable()` en `ngOnChanges` cuando `isEdit=true` + `mat-hint` con icono
+  `lock` y color `#1565C0` (info) nombrando la acción alternativa exacta.
+  Usar `subscriptSizing="dynamic"` en el `mat-form-field` para evitar solapamiento
+  del hint con campos adyacentes en layouts de grid. Ver L14.
+- **Datos financieros sensibles** (`unitCost`, márgenes): visibles solo para roles
+  con escritura (`canWrite()` = ADMIN + MANAGER). Usar `displayedColumns` condicional
+  en tablas y `@if (canWrite())` en formularios.
 
 ### 3.4 RxJS — Buenas prácticas
 
