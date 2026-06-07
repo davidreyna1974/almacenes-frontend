@@ -118,7 +118,8 @@
           <td mat-cell *matCellDef="let row">
             <app-stock-badge
               [currentStock]="row.currentStock"
-              [minimumStock]="row.minimumStock" />
+              [minimumStock]="row.minimumStock"
+              [reservedStock]="row.reservedStock" />
           </td>
         </ng-container>
 
@@ -126,6 +127,12 @@
         <ng-container matColumnDef="price">
           <th mat-header-cell *matHeaderCellDef>Precio</th>
           <td mat-cell *matCellDef="let row">{{ row.price | currency:'USD':'symbol':'1.2-2' }}</td>
+        </ng-container>
+
+        <!-- Costo unitario (solo ADMIN/MANAGER) -->
+        <ng-container matColumnDef="unitCost">
+          <th mat-header-cell *matHeaderCellDef>Costo unit.</th>
+          <td mat-cell *matCellDef="let row">{{ row.unitCost | currency:'USD':'symbol':'1.2-2' }}</td>
         </ng-container>
 
         <!-- Estado -->

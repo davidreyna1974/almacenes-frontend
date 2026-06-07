@@ -54,10 +54,28 @@ export class MovementDialogComponent {
     reason:   ['',   [Validators.required, Validators.maxLength(300)]],
   });
 
+  get availableStock(): number {
+    return this.data.product.currentStock - (this.data.product.reservedStock ?? 0);
+  }
+
   constructor(
     public dialogRef: MatDialogRef<MovementDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: MovementDialogData,
-  ) {}
+  ) {
+    this.form.get('type')!.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(type => this.updateQuantityValidators(type));
+  }
+
+  private updateQuantityValidators(type: string): void {
+    const qty = this.form.get('quantity')!;
+    const validators = type === 'OUT'
+      ? [Validators.required, Validators.min(1), Validators.max(this.availableStock)]
+      : [Validators.required, Validators.min(1)];
+    qty.setValidators(validators);
+    qty.updateValueAndValidity();
+    this.cdr.markForCheck();
+  }
 
   submit(): void {
     if (this.form.invalid) {

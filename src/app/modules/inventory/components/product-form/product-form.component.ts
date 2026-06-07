@@ -74,6 +74,14 @@ export class ProductFormComponent implements OnChanges {
         categoryId:   this.item?.categoryId   ?? null,
         supplierId:   this.item?.supplierId   ?? null,
       });
+
+      // currentStock solo se puede modificar a través de movimientos (Kardex);
+      // editarlo directamente rompería el historial de auditoría.
+      if (this.isEdit) {
+        this.form.get('currentStock')!.disable();
+      } else {
+        this.form.get('currentStock')!.enable();
+      }
     }
   }
 
@@ -82,6 +90,7 @@ export class ProductFormComponent implements OnChanges {
       this.form.markAllAsTouched();
       return;
     }
-    this.save.emit(this.form.value as ProductRequestDTO);
+    // getRawValue incluye controles deshabilitados (currentStock en modo edición).
+    this.save.emit(this.form.getRawValue() as ProductRequestDTO);
   }
 }

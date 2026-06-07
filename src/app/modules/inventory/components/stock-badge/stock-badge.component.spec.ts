@@ -1,18 +1,7 @@
 import { TestBed } from '@angular/core/testing';
-import { Component } from '@angular/core';
 import { StockBadgeComponent } from './stock-badge.component';
 import { provideAnimations } from '@angular/platform-browser/animations';
 
-/**
- * Tests para StockBadgeComponent.
- *
- * Cubre los dos getters con lógica de umbral:
- *   - level: 'error' | 'warning' | 'success'
- *   - tooltipText: mensaje descriptivo con valores numéricos
- *
- * Se instancia el componente directamente (sin TestBed completo) para los
- * tests de getters, y con TestBed para verificar el renderizado del template.
- */
 describe('StockBadgeComponent', () => {
 
   // ─── Tests de lógica pura (sin DOM) ───────────────────────────────────────
@@ -37,7 +26,6 @@ describe('StockBadgeComponent', () => {
     });
 
     it('debe retornar "warning" cuando stock es exactamente igual al mínimo', () => {
-      // El límite: stock === minimumStock sigue siendo alerta, no éxito.
       component.currentStock = 10;
       component.minimumStock = 10;
       expect(component.level).toBe('warning');
@@ -50,9 +38,32 @@ describe('StockBadgeComponent', () => {
     });
   });
 
+  // ─── Tests de availableStock getter ──────────────────────────────────────
+
+  describe('availableStock getter', () => {
+    let component: StockBadgeComponent;
+
+    beforeEach(() => {
+      component = new StockBadgeComponent();
+    });
+
+    it('debe ser igual a currentStock cuando reservedStock es 0 (default)', () => {
+      component.currentStock = 50;
+      component.minimumStock = 10;
+      expect(component.availableStock).toBe(50);
+    });
+
+    it('debe restar reservedStock a currentStock', () => {
+      component.currentStock = 100;
+      component.minimumStock = 10;
+      component.reservedStock = 30;
+      expect(component.availableStock).toBe(70);
+    });
+  });
+
   // ─── Tests de tooltipText ─────────────────────────────────────────────────
 
-  describe('tooltipText getter', () => {
+  describe('tooltipText getter — sin reservedStock', () => {
     let component: StockBadgeComponent;
 
     beforeEach(() => {
@@ -62,19 +73,48 @@ describe('StockBadgeComponent', () => {
     it('debe mostrar "Sin stock" cuando currentStock es 0', () => {
       component.currentStock = 0;
       component.minimumStock = 10;
-      expect(component.tooltipText).toBe('Sin stock (mínimo: 10)');
+      expect(component.tooltipText).toBe('Sin stock · Mínimo: 10');
     });
 
     it('debe mostrar "Bajo stock" con valores cuando stock es menor al mínimo', () => {
       component.currentStock = 3;
       component.minimumStock = 10;
-      expect(component.tooltipText).toBe('Bajo stock — actual: 3, mínimo: 10');
+      expect(component.tooltipText).toBe('Bajo stock · Físico: 3 · Mínimo: 10');
     });
 
     it('debe mostrar "Stock OK" con valores cuando stock supera el mínimo', () => {
       component.currentStock = 45;
       component.minimumStock = 10;
-      expect(component.tooltipText).toBe('Stock OK — actual: 45, mínimo: 10');
+      expect(component.tooltipText).toBe('Stock OK · Físico: 45 · Mínimo: 10');
+    });
+  });
+
+  describe('tooltipText getter — con reservedStock', () => {
+    let component: StockBadgeComponent;
+
+    beforeEach(() => {
+      component = new StockBadgeComponent();
+    });
+
+    it('debe incluir reservado y disponible cuando reservedStock > 0 y stock OK', () => {
+      component.currentStock = 100;
+      component.minimumStock = 10;
+      component.reservedStock = 20;
+      expect(component.tooltipText).toBe('Stock OK · Físico: 100 · Reservado: 20 · Disponible: 80 · Mínimo: 10');
+    });
+
+    it('debe incluir reservado y disponible cuando reservedStock > 0 y bajo stock', () => {
+      component.currentStock = 8;
+      component.minimumStock = 10;
+      component.reservedStock = 3;
+      expect(component.tooltipText).toBe('Bajo stock · Físico: 8 · Reservado: 3 · Disponible: 5 · Mínimo: 10');
+    });
+
+    it('no debe incluir reservado en tooltip cuando reservedStock es 0', () => {
+      component.currentStock = 50;
+      component.minimumStock = 10;
+      component.reservedStock = 0;
+      expect(component.tooltipText).not.toContain('Reservado');
     });
   });
 
