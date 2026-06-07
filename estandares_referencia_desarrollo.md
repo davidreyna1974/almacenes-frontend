@@ -411,6 +411,34 @@ Configurar `eslint` con `@angular-eslint/recommended`:
 
 `ng lint` debe pasar sin errores antes de cada commit.
 
+### 3.10 Protocolo de cierre — Definition of Done por componente y módulo
+
+Todo componente se considera terminado cuando supera ambos checklists. La verificación
+es responsabilidad del desarrollador; si algún ítem no está marcado, el componente no está done.
+
+**Por componente — mínimo obligatorio:**
+
+| Ítem | Cómo verificarlo |
+|---|---|
+| Suite de tests pasa | `ng test --no-watch` → 0 fallos |
+| RBAC visual en browser | Playwright para cada rol con acceso — botones, columnas, acciones |
+| Reglas de negocio → dato correcto en UI | Leer `*ServiceImpl` y confirmar que el campo en el form/tabla coincide con lo que valida el backend |
+| Campos inmutables deshabilitados | `disable()` + hint + `getRawValue()` al emitir |
+| Datos sensibles ocultos por rol | `canWrite()` en `displayedColumns` y en `@if` del template |
+| Sin asteriscos dobles | AM genera `*` automáticamente con `Validators.required` — nunca `<span class="required">` |
+| Hints sin solapamiento | `subscriptSizing="dynamic"` en campos con hint de altura variable |
+| Lecciones conocidas revisadas | Leer lista de bugs documentados en la memoria técnica del módulo |
+
+**Por módulo — adicional:**
+
+| Ítem | Cómo verificarlo |
+|---|---|
+| Cobertura ≥ 70% statements | `ng test --code-coverage` |
+| Regresión 0 fallos | `ng test --no-watch` suite completa |
+| RBAC browser 4 roles | Playwright — los 4 roles navegan el módulo sin errores ni consola |
+| Seguridad backend | `curl` verificando HTTP status por rol para cada endpoint del módulo |
+| Documentación actualizada | §10 memoria módulo + memoria global + estandares + CLAUDE.md |
+
 ---
 
 ## 4. UX/UI y accesibilidad
