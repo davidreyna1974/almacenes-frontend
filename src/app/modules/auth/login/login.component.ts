@@ -1,6 +1,6 @@
 import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -28,6 +28,7 @@ export class LoginComponent implements OnInit {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private snackBar = inject(MatSnackBar);
   private cdr = inject(ChangeDetectorRef);
 
@@ -38,10 +39,26 @@ export class LoginComponent implements OnInit {
 
   loading = false;
   hidePassword = true;
+  sessionAlert: { icon: string; message: string; type: 'expired' | 'invalid' } | null = null;
 
   ngOnInit(): void {
     if (this.authService.isAuthenticated()) {
       this.router.navigate(['/']);
+      return;
+    }
+    const reason = this.route.snapshot.queryParamMap.get('reason');
+    if (reason === 'expired') {
+      this.sessionAlert = {
+        icon: 'schedule',
+        message: 'Tu sesión expiró. Vuelve a iniciar sesión para continuar.',
+        type: 'expired',
+      };
+    } else if (reason === 'invalid') {
+      this.sessionAlert = {
+        icon: 'warning',
+        message: 'Tu sesión no es válida. Inicia sesión nuevamente.',
+        type: 'invalid',
+      };
     }
   }
 

@@ -65,4 +65,35 @@
       stroke: #ffffff;
     }
   }
+
+  &__session-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    margin-bottom: var(--space-3);
+
+    &--expired {
+      background-color: #FFF3E0;
+      color: #E65100;
+      border: 1px solid #FFB74D;
+    }
+
+    &--invalid {
+      background-color: #FFEBEE;
+      color: #C62828;
+      border: 1px solid #EF9A9A;
+    }
+  }
+
+  &__session-alert-icon {
+    font-size: 1.2rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
 }
