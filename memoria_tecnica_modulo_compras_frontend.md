@@ -60,12 +60,13 @@ productos del catálogo de inventory.
 - **Detalle de orden:** pantalla completa en ruta separada (`/purchases/orders/:id`).
   Sección superior: cabecera de la orden. Sección inferior: tabla de detalles.
 
-### D2. Creación de orden en ruta separada
+### D2. Creación de orden en ruta separada (/purchases/orders/new)
 
 La creación de una orden requiere seleccionar proveedor, agregar notas y construir
 la lista de detalles (al menos uno obligatorio). La complejidad justifica una ruta
-`/purchases/orders/new` en lugar de un modal, para disponer de toda la altura de
-pantalla sin restricciones de viewport.
+dedicada `/purchases/orders/new` en lugar de un modal: dispone de toda la altura de
+pantalla para el formulario de cabecera + tabla de detalles editable.
+**Decisión confirmada el 2026-06-07.**
 
 ### D3. Selector de productos como MatAutocomplete
 
@@ -150,11 +151,13 @@ src/app/modules/purchases/
 // purchases.routes.ts
 [
   { path: '',          component: PurchasesComponent, children: [
-    { path: 'suppliers',  component: SuppliersPageComponent },
-    { path: 'orders',     component: PurchaseOrdersPageComponent },
-    { path: 'orders/:id', component: PurchaseOrderDetailPageComponent },
+    { path: 'suppliers',     component: SuppliersPageComponent },
+    { path: 'orders',        component: PurchaseOrdersPageComponent },
+    { path: 'orders/new',    component: PurchaseOrderDetailPageComponent },  // creación
+    { path: 'orders/:id',    component: PurchaseOrderDetailPageComponent },  // edición / vista
   ]}
 ]
+// Nota: 'orders/new' debe ir ANTES de 'orders/:id' para que Angular no lo interprete como id="new"
 ```
 
 ### 3.3 Sidebar y breadcrumb

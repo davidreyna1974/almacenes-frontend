@@ -505,24 +505,29 @@ FASE 5 — Cierre de módulo
     → La acción "Recibir" es irreversible y dispara stock — confirmar siempre antes.
 
 --------------------------------------------------------------------------------
-10. DECISIONES PENDIENTES (a resolver en implementación)
+10. DECISIONES RESUELTAS (2026-06-07)
 --------------------------------------------------------------------------------
 
-  D1. Creación de orden: ¿modal en /purchases/orders o navegación a /purchases/orders/new?
-      → Propuesta: navegación a /purchases/orders/new (menos restricciones de altura)
-        porque la orden necesita su formulario + sección de detalles en la misma vista.
+  D1. Creación de orden → RUTA /purchases/orders/new
+      Justificación: la orden necesita formulario de cabecera + gestión de detalles
+      (tabla editable con agregar/quitar líneas) en la misma vista. Un MatDialog
+      quedaría demasiado comprimido para esa complejidad.
 
-  D2. Tab activa por defecto: ¿Pendientes o Aprobadas?
-      → Propuesta: Pendientes — son las que requieren acción inmediata del manager.
-        Pero si en browser se detecta que WAREHOUSEMAN accede más a Aprobadas, cambiar.
+  D2. Tab activa por defecto → PENDIENTES
+      Justificación: las órdenes PENDING son las que requieren acción inmediata
+      (aprobar, agregar detalles). Es el estado más frecuente en el flujo diario
+      del MANAGER, que es el usuario principal del módulo.
 
-  D3. Selector de productos en detalle: ¿MatSelect o MatAutocomplete?
-      → Propuesta: MatAutocomplete con búsqueda — puede haber muchos productos.
-        Reutiliza el patrón de búsqueda ya familiar del módulo inventory.
+  D3. Selector de producto en detalle → MATAUTOCOMPLETE con búsqueda
+      El usuario escribe parte del SKU o nombre y filtra en tiempo real.
+      Formato de opción: "[SKU] — Nombre del producto (disponible: N unidades)".
+      Opciones ya presentes en la orden se muestran deshabilitadas.
 
-  D4. Historial de estado de la orden: ¿timeline vertical o tabla?
-      → Propuesta: table de 3 filas (Aprobado/Recibido/Cancelado) con username y
-        timestamp; filas vacías si el estado no fue alcanzado.
+  D4. Historial de estado de la orden → TABLA DE 3 FILAS
+      Columnas: Estado | Usuario | Fecha.
+      Filas: Aprobado / Recibido / Cancelado.
+      Si el estado no fue alcanzado, mostrar "—" en usuario y fecha.
+      Consistente con el estilo de tabla del proyecto; sin CSS custom adicional.
 
 ================================================================================
 FIN DE PROPUESTA
