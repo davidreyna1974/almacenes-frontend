@@ -41,10 +41,22 @@ export class AuthService {
     }
   }
 
+  getTokenState(): 'valid' | 'expired' | 'invalid' | 'missing' {
+    const token = this.getToken();
+    if (!token) return 'missing';
+    try {
+      const base64Payload = token.split('.')[1];
+      if (!base64Payload) return 'invalid';
+      const payload = JSON.parse(atob(base64Payload)) as UserPayload;
+      if (!payload?.exp || !payload?.sub) return 'invalid';
+      return payload.exp > Date.now() / 1000 ? 'valid' : 'expired';
+    } catch {
+      return 'invalid';
+    }
+  }
+
   isAuthenticated(): boolean {
-    const payload = this.getUserPayload();
-    if (!payload) return false;
-    return payload.exp > Date.now() / 1000;
+    return this.getTokenState() === 'valid';
   }
 
   hasRole(role: string): boolean {

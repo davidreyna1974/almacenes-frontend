@@ -52,11 +52,14 @@
 }
 
 .catalog-row {
-  cursor: pointer;
   transition: background-color 120ms ease;
 
   &:hover {
     background-color: var(--color-surface);
+  }
+
+  &--clickable {
+    cursor: pointer;
   }
 }
 

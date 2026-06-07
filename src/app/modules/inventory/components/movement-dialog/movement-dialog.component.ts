@@ -8,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatIconModule } from '@angular/material/icon';
 import { DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -31,6 +32,7 @@ export interface MovementDialogData {
     MatSelectModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    MatIconModule,
   ],
   templateUrl: './movement-dialog.component.html',
   styleUrl: './movement-dialog.component.scss',
@@ -44,6 +46,7 @@ export class MovementDialogComponent {
   private destroyRef     = inject(DestroyRef);
 
   saving = false;
+  errorMessage: string | null = null;
 
   form: FormGroup = this.fb.group({
     type:     ['IN',  Validators.required],
@@ -62,6 +65,7 @@ export class MovementDialogComponent {
       return;
     }
     this.saving = true;
+    this.errorMessage = null;
     this.cdr.markForCheck();
 
     const request: StockMovementRequestDTO = {
@@ -82,9 +86,8 @@ export class MovementDialogComponent {
         },
         error: (err) => {
           this.saving = false;
+          this.errorMessage = err.error?.message || 'Error al registrar el movimiento.';
           this.cdr.markForCheck();
-          const msg = err.error?.message || 'Error al registrar el movimiento.';
-          this.snackBar.open(msg, 'Cerrar', { duration: 4000, panelClass: ['snackbar-error'] });
         },
       });
   }

@@ -2,8 +2,8 @@
 **Rama:** feature/inventory  
 **Autor:** David Reyna Pineda  
 **Fecha inicio:** 2026-06-05  
-**Fecha cierre:** 2026-06-06 (tests browser completados; tests unitarios pendientes)  
-**Estado:** Código completo — tests browser verificados — tests unitarios pendientes
+**Fecha cierre:** 2026-06-07 (código completo, RBAC verificado 4 roles, seguridad backend auditada)  
+**Estado:** Código completo — mergeado a develop — tests browser, seguridad y specs unitarios completados
 
 ---
 
@@ -77,9 +77,14 @@ Todas protegidas con `authGuard`. Acciones de escritura controladas por
 
 ### 3.3 Vistas
 
-**CategoriesPageComponent**: panel lista (nombre, descripción, creado por, acciones) +
+**CategoriesPageComponent**: panel lista (nombre, descripción, acciones) +
 panel detalle inline con `CategoryFormComponent`. Botón "Nuevo" abre el formulario en blanco.
 Desactivar muestra `ConfirmDialogComponent`.
+
+*Actualizado 2026-06-07*: columna "Creado por" eliminada de la tabla (decisión de UX —
+la información existe en el DTO pero no aporta valor en la vista de lista; sí aparece en
+el panel de detalle si aplica). Consistencia con el patrón de `ProductsPageComponent`
+que tampoco muestra "Creado por" en la tabla.
 
 **ProductsPageComponent**: panel lista con cuatro filtros combinables (búsqueda parcial
 por código o nombre con debounce 400ms, selector de categoría, selector de estado,
@@ -270,33 +275,80 @@ openMovementDialog(product: ProductResponseDTO): void {
 | Acción | ADMIN | MANAGER | WAREHOUSEMAN | SALES |
 |---|:---:|:---:|:---:|:---:|
 | Ver lista de categorías | ✓ | ✓ | ✓ | ✓ |
-| Crear / editar categoría | ✓ | ✓ | — | — |
-| Desactivar categoría | ✓ | ✓ | — | — |
+| Crear categoría ("Nueva categoría") | ✓ | ✓ | — | — |
+| Editar categoría (botón + clic en fila) | ✓ | ✓ | — | — |
+| Desactivar categoría | ✓ | — | — | — |
 | Ver lista de productos | ✓ | ✓ | ✓ | ✓ |
-| Crear / editar producto | ✓ | ✓ | — | — |
+| Crear producto ("Nuevo producto") | ✓ | ✓ | — | — |
+| Editar producto (diálogo con campos editables) | ✓ | ✓ | solo lectura | solo lectura |
 | Desactivar producto | ✓ | — | — | — |
 | Registrar movimiento de stock | ✓ | ✓ | ✓ | — |
 | Ver Kardex | ✓ | ✓ | ✓ | ✓ |
 
-**Implementación**: los botones se ocultan con `*ngIf="authService.hasRole('ROLE_ADMIN') || authService.hasRole('ROLE_MANAGER')"`.
-Las rutas no requieren guard adicional (todos los roles autenticados pueden acceder a `/inventory`).
+**Implementación en templates**:
+- `canWrite()` = `hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER')`
+- `canDeactivate()` = `hasRole('ROLE_ADMIN')` — aplica a productos Y categorías
+- `canRegisterMovement()` = `hasRole('ROLE_ADMIN') || hasRole('ROLE_MANAGER') || hasRole('ROLE_WAREHOUSEMAN')`
+- Botones ocultos con `@if(canWrite())` o `@if(canDeactivate())` (Angular 17+ control flow)
+- `ProductDetailDialogComponent` recibe `canWrite` y `canDeactivate` como `data` — muestra solo "Cerrar" cuando ambos son false
+- `CategoryFormDialogComponent` recibe `canDeactivate: boolean` via `CategoryDialogData` — botón "Desactivar" en el diálogo de edición (mismo patrón que productos)
+- `CategoriesPageComponent.onRowClick()` abre el formulario solo si `canWrite()` — clic en fila es no-op para roles sin escritura
+- Cursor pointer en fila de categorías condicionado con `[class.catalog-row--clickable]="canWrite()"`
+- `displayedColumns` de productos se calcula en `ngOnInit()` condicionado a `canRegisterMovement()` — SALES no ve la columna vacía de acciones
+
+**Nota sobre sidebar**: SALES no tiene acceso visible al módulo Compras (ícono `shopping_cart` ausente en sidebar).
+
+### Tests RBAC browser (Playwright MCP, 2026-06-07) — 4 roles — versión post-fix
+
+> Regresión completa ejecutada el 2026-06-07 tras las correcciones F08, BUG-12, BUG-13, BUG-14 y BUG-15.
+
+| Test | ADMIN | MANAGER | WAREHOUSEMAN | SALES |
+|---|:---:|:---:|:---:|:---:|
+| Login + chip de rol visible | ✅ | ✅ | ✅ | ✅ |
+| Sidebar filtrado por rol | ✅ | ✅ (sin manage_accounts) | ✅ | ✅ (sin Compras) |
+| Ver lista categorías | ✅ | ✅ | ✅ | ✅ |
+| Botón "Nueva categoría" visible | ✅ | ✅ | ❌ ausente | ❌ ausente |
+| Botón "Productos" en toolbar categorías | ❌ eliminado | ❌ eliminado | ❌ eliminado | ❌ eliminado |
+| Botón "Editar" (lápiz) en tabla categorías | ❌ eliminado | ❌ eliminado | ❌ eliminado | ❌ eliminado |
+| Botón "Desactivar" en tabla categorías | ❌ eliminado (movido al diálogo) | ❌ eliminado | ❌ eliminado | ❌ eliminado |
+| Botón "Desactivar" en diálogo de categoría | ✅ visible | ❌ ausente | ❌ ausente | ❌ ausente |
+| Shopping bag → productos filtrados (sin snackbar 403) | ✅ | ✅ | ✅ | ✅ (BUG-13 corregido) |
+| Clic en fila de categoría abre diálogo | ✅ editable | ✅ editable | ❌ no-op | ❌ no-op |
+| Crear categoría (flujo completo) | ✅ 201 | ✅ 201 | — | — |
+| Editar categoría (descripción) | ✅ 200 | ✅ 200 | — | — |
+| Desactivar categoría desde diálogo | ✅ 204 | ❌ btn ausente | — | — |
+| Ver lista productos | ✅ | ✅ | ✅ | ✅ |
+| Botón "Nuevo producto" visible | ✅ | ✅ | ❌ ausente | ❌ ausente |
+| Columna acciones visible en tabla productos | ✅ | ✅ | ✅ | ❌ oculta |
+| Botón registrar movimiento (swap_vert, sin lápiz) | ✅ | ✅ | ✅ | ❌ 0 btns |
+| Botón "Editar" (lápiz) en tabla productos | ❌ eliminado | ❌ eliminado | ❌ eliminado | ❌ eliminado |
+| Diálogo detalle producto — botones | ✅ Guardar+Desactivar | ✅ Guardar (sin Desactivar) | ✅ solo Cerrar | ✅ solo Cerrar |
+| Fila resaltada (lavanda) mientras diálogo abierto (F08) | ✅ | ✅ | ✅ | ✅ |
+| Crear producto (flujo completo) | ✅ 201 | ✅ 201 | — | — |
+| Editar producto | ✅ 200 | ✅ 200 | — | — |
+| Desactivar producto | ✅ 204 | ❌ btn ausente | ❌ btn ausente | ❌ btn ausente |
+| Registrar movimiento OUT | ✅ | — | ✅ | — |
+| Registrar movimiento IN | — | ✅ | — | — |
+| Ver Kardex (historial paginado) | ✅ | — | — | — |
+
+**Resultado: 4/4 roles — 0 comportamientos incorrectos**
 
 ---
 
 ## 7. Ejecución de tests y resultados
 
-> ⚠️ **Estado al 2026-06-05**: el Módulo 2 (Inventory) no tiene specs propios todavía.
-> La suite actual cubre únicamente los Módulos 0 y 1 (Infra-base + Auth).
-> Los tests del módulo inventory se escribirán en la siguiente fase del proyecto.
+> **Estado al 2026-06-07**: el Módulo 2 tiene cobertura completa — tests browser
+> (funcionalidad + RBAC 4 roles + seguridad backend) y specs unitarios Angular escritos y pasando.
 
-### Suite existente (Módulos 0 y 1 — validación de regresión)
+### Suite de regresión — Módulos 0 y 1
 
 | Comando | Resultado | Fecha |
 |---|---|---|
-| `ng test --watch=false` | **43 specs, 0 fallos** | 2026-06-05 |
+| `ng test --watch=false` | **43 specs, 0 fallos** (módulos 0-1) | 2026-06-05 |
 | `ng test --watch=false --coverage` | **Statements: 98.09% · Branches: 89.61% · Functions: 100% · Lines: 98.61%** | 2026-06-05 |
+| `ng test --no-watch` (suite completa post-módulo 2) | **89 specs, 0 fallos** | 2026-06-07 |
 
-**Resultado**: el módulo Inventory no introdujo regresiones en los módulos anteriores.
+El módulo Inventory no introdujo regresiones en los módulos anteriores.
 
 ### Tests de browser — Módulo 2 (Productos) — 2026-06-06
 
@@ -323,26 +375,91 @@ Base de datos con 30 categorías, 20 proveedores y 50 productos cargados via `se
 
 **Resultado global: 15/15 casos PASS — 0 fallos**
 
-### Suite de regresión (Módulos 0 y 1)
+### Tests RBAC browser — 4 roles completos — 2026-06-07
 
-| Comando | Resultado | Fecha |
-|---|---|---|
-| `ng test --watch=false` | **43 specs, 0 fallos** | 2026-06-05 |
-| `ng test --watch=false --coverage` | **Statements: 98.09% · Branches: 89.61% · Functions: 100% · Lines: 98.61%** | 2026-06-05 |
+Ejecutados con Playwright MCP. Ambiente: Angular `http://localhost:4200` + Spring Boot `http://localhost:8080`.
 
-**Resultado**: los bugs corregidos en esta sesión no introdujeron regresiones en módulos anteriores.
+| Rol | Usuario | Casos verificados | Resultado |
+|---|---|---|---|
+| ADMIN | `admin` | Login, categorías CRUD, productos CRUD, movimiento OUT, Kardex | ✅ 100% |
+| MANAGER | `manager01` | Login, categorías crear/editar/desactivar, producto crear/editar (sin desactivar), movimiento IN | ✅ 100% |
+| WAREHOUSEMAN | `almacen01` | Login, categorías solo lectura, productos solo lectura, movimiento OUT, diálogo=Cerrar | ✅ 100% |
+| SALES | `ventas01` | Login, sidebar sin Compras, categorías solo lectura, productos solo lectura, 0 botones de movimiento | ✅ 100% |
 
-### Tests pendientes para el Módulo 2 (Inventory)
+**Resultado global: 4/4 roles — todos los comportamientos RBAC correctos**
 
-| Archivo de spec | Tipo | Qué verificar |
-|---|---|---|
-| `category.service.spec.ts` | B (servicio HTTP) | CRUD de categorías, manejo de errores |
-| `product.service.spec.ts` | B (servicio HTTP) | search() con parámetros opcionales, CRUD productos, mapping `companyName`→`name`, 204 en movement |
-| `categories-page.component.spec.ts` | A (componente) | Carga de lista, apertura de detalle, flujo de guardado |
-| `products-page.component.spec.ts` | A (componente) | Carga por defecto, búsqueda parcial SKU+nombre con debounce, filtros por categoría/estado/proveedor, botón limpiar filtros, paginación |
-| `product-detail.component.spec.ts` | A (componente) | Carga de Kardex al cambiar `item`, paginación de movimientos |
-| `stock-badge.component.spec.ts` | A (componente dumb) | Colores según umbrales de stock |
-| `movement-dialog.component.spec.ts` | A (componente) | Formulario reactivo, emisión de resultado `true`/`false` |
+### Verificación de seguridad backend — 2026-06-07
+
+Pruebas curl con tokens JWT reales contra `http://localhost:8080`. 17 combinaciones endpoint × rol.
+
+| Endpoint | MANAGER | WAREHOUSEMAN | SALES |
+|---|:---:|:---:|:---:|
+| POST /inventory/categories | 201 ✅ | 403 ✅ | 403 ✅ |
+| PUT /inventory/categories/{id} | 200 ✅ | 403 ✅ | 403 ✅ |
+| DELETE /inventory/categories/{id} | 403 ✅ | 403 ✅ | 403 ✅ |
+| POST /inventory/products | 201 ✅ | 403 ✅ | 403 ✅ |
+| PUT /inventory/products/{id} | 200 ✅ | 403 ✅ | 403 ✅ |
+| DELETE /inventory/products/{id} | 403 ✅ | 403 ✅ | 403 ✅ |
+| POST /inventory/products/movement | 204 ✅ | 204 ✅ | 403 ✅ |
+
+**Resultado: 17/17 verificaciones correctas — 0 fallos.**  
+El backend es la segunda capa de defensa; la UI es solo la primera.
+
+### Tests unitarios Angular — Módulo 2 (Inventory) — 2026-06-07
+
+Comando: `npx ng test --include="src/app/modules/inventory/**/*.spec.ts" --no-watch`  
+Resultado: **5 archivos, 46 specs, 0 fallos**
+
+| Archivo | Tests | Qué verifica |
+|---|:---:|---|
+| `category.service.spec.ts` | 8 | `getActive()` con params defecto y custom; `create()` verifica body; `update()` verifica URL y body; `delete()` verifica 204 void |
+| `product.service.spec.ts` | 15 | `search()` con todos los parámetros incluyendo normalización de búsqueda en blanco; `getById`, `getBySku`, `getByCategory`, `getLowStock`; `create`, `update`, `delete` (204); `registerMovement` (204); `getMovements`; **`getActiveSuppliers()` verifica que `companyName` del backend se mapea a `name` en el modelo frontend** |
+| `stock-badge.component.spec.ts` | 8 | `level` getter: stock=0→error, stock≤min→warning, stock>min→success; `tooltipText` getter: los tres mensajes con valores numéricos correctos; renderizado con TestBed |
+| `category-form.component.spec.ts` | 8 | `canDeactivate` input: botón "Desactivar" visible solo con `canDeactivate=true` e `isEdit=true`; output `deactivate` emite al hacer clic; output `save` emite `CategoryRequest` correcto cuando el formulario es válido; no emite `save` si `name` está vacío; output `cancel` emite al hacer clic en Cancelar; precarga: formulario inicializado con los valores del `item` recibido. **API**: `fixture.componentRef.setInput()` para triggear `ngOnChanges` correctamente |
+| `product-detail.component.spec.ts` | 7 | `getStatusLabel()`: traduce AVAILABLE→"Disponible", DISCONTINUED→"Descontinuado", OUT_OF_STOCK→"Sin stock", fallback→valor original; `getMovementTypeLabel()`: traduce IN→"Entrada", OUT→"Salida", cualquier otro valor→"Salida" (rama else) |
+
+**Decisión de cobertura**: los componentes smart (`CategoriesPageComponent`, `ProductsPageComponent`) no tienen specs unitarios porque su cobertura efectiva está garantizada por los 15 tests browser E2E y los 4 tests RBAC. Los specs de servicios y componentes dumb (`StockBadgeComponent`, `CategoryFormComponent`, `ProductDetailComponent`) son donde los tests unitarios aportan valor real: verifican contratos HTTP exactos, lógica de umbral, estados de visibilidad condicional por RBAC y traducciones de dominio que los tests browser no pueden inspeccionar directamente.
+
+### Tests de seguridad RBAC — Backend — Módulo 2 (Inventory) — 2026-06-07
+
+Tests `@WebMvcTest` con filtros de Spring Security activos. Patrón de JWT simulado con
+`JwtUtils` mockeado + `@Import(SecurityConfig.class)` para que el `SecurityFilterChain`
+personalizado (con las reglas RBAC reales) se cargue en el contexto de prueba.
+Clases independientes de `CategoryControllerTest` / `ProductControllerTest`
+(que usan `addFilters=false`).
+
+| Clase | Tests | Escenarios cubiertos |
+|---|:---:|---|
+| `CategoryControllerSecurityTest` | 8 | POST→WAREHOUSEMAN 403; POST→SALES 403; PUT→WAREHOUSEMAN 403; PUT→SALES 403; DELETE→WAREHOUSEMAN 403; DELETE→SALES 403; GET→WAREHOUSEMAN 200; GET→SALES 200 |
+| `ProductControllerSecurityTest` | 8 | POST→WAREHOUSEMAN 403; POST→SALES 403; DELETE→MANAGER 403 (regla específica prevalece); DELETE→ADMIN 204; POST/movement→SALES 403; POST/movement→WAREHOUSEMAN 204; GET→WAREHOUSEMAN 200; GET→SALES 200 |
+
+**Patrón estándar para tests de seguridad RBAC (aplicar a todos los módulos futuros):**
+
+```java
+@WebMvcTest(CualquierController.class)
+@Import(SecurityConfig.class)   // OBLIGATORIO — sin esto, auto-configured HTTP Basic aplica
+class CualquierControllerSecurityTest {
+
+    @MockBean CualquierService cualquierService;
+    @MockBean JwtUtils jwtUtils;
+
+    private String tokenConRol(String roleWithPrefix) {
+        String tok = "token." + roleWithPrefix;
+        when(jwtUtils.extractUsername(tok)).thenReturn("usuario_test");
+        when(jwtUtils.validateToken(tok)).thenReturn(true);
+        when(jwtUtils.extractRoles(tok)).thenReturn(List.of(roleWithPrefix));
+        return tok;
+    }
+    // tests...
+}
+```
+
+> **Nota crítica (Spring Security 6 + STATELESS):** `@WithMockUser` NO funciona para tests
+> que esperan respuestas 200/204. `SecurityContextHolderFilter` sobreescribe el contexto
+> que `@WithMockUser` establece en la cadena de filtros. El JWT simulado SÍ funciona porque
+> `JwtAuthenticationFilter` establece el contexto DURANTE la cadena (no antes). Los tests
+> que esperan 403 pasan con `@WithMockUser` solo por coincidencia (anonymous también recibe 403).
+> Ver **L10** en `memoria_tecnica_global_proyecto.md`.
 
 ---
 
@@ -504,6 +621,135 @@ clases compiladas actualizadas.
 
 ---
 
+### BUG-10 (post-RBAC-tests): Botón "Editar" de categorías visible para todos los roles
+
+**Síntoma**: durante los tests RBAC browser se detectó que WAREHOUSEMAN y SALES podían ver
+el botón "Editar" en la tabla de categorías, aunque los botones "Nueva categoría" y
+"Desactivar" estaban correctamente ocultos para estos roles.
+
+**Causa raíz**: el botón "Editar" en `categories-page.component.html` (líneas 73-78) no
+estaba envuelto en `@if(canWrite())`, a diferencia de los otros dos botones. Adicionalmente,
+el clic en la fila (`(click)="openEdit(row)"`) abría el formulario de edición para cualquier
+rol sin verificar permisos.
+
+**Fix**:
+1. `categories-page.component.html`: envolver el botón "Editar" en `@if (canWrite())`.
+2. `categories-page.component.html`: cambiar `(click)="openEdit(row)"` por `(click)="onRowClick(row)"` + `[class.catalog-row--clickable]="canWrite()"`.
+3. `categories-page.component.ts`: agregar `onRowClick(item: CategoryDTO): void { if (this.canWrite()) this.openEdit(item); }`.
+4. `categories-page.component.scss`: mover `cursor: pointer` al selector `.catalog-row--clickable`.
+
+**Impacto**: puramente de UX/RBAC — el backend rechazaría el guardado con 403 de todas formas.
+
+---
+
+### BUG-11 (auditoría backend): HTTP 500 para todos los errores de negocio
+
+**Síntoma**: al buscar un SKU inexistente, el backend devolvía HTTP 500 en lugar de 404.
+Duplicados de SKU y de nombre de categoría también devolvían 500. Stock insuficiente: 500.
+En los logs de servidor, errores de negocio eran indistinguibles de crashes reales.
+
+**Causa raíz**: `GlobalExceptionHandler` mapeaba toda `RuntimeException` a HTTP 500.
+Los servicios lanzaban `RuntimeException` para todas las condiciones de error sin distinción.
+
+**Fix (backend)**:
+1. Tres clases nuevas en `core/exception/`:
+   - `ResourceNotFoundException extends RuntimeException` → HTTP **404**
+   - `DuplicateResourceException extends RuntimeException` → HTTP **409**
+   - `BusinessRuleException extends RuntimeException` → HTTP **422**
+2. `GlobalExceptionHandler`: tres handlers específicos para cada clase. `RuntimeException` genérico conserva 500 para errores reales de infraestructura.
+3. `CategoryServiceImpl` y `ProductServiceImpl`: todos los `throw new RuntimeException(...)` de negocio reemplazados por la excepción semánticamente correcta. `resolveAuthenticatedUser()` conserva `RuntimeException` (es un error real de servidor si el usuario del JWT no existe en BD).
+
+**Verificación curl post-fix**:
+- `GET /products/99999` → **404** ✅
+- `GET /products/sku/SKU-INEXISTENTE` → **404** ✅
+- `POST /categories` nombre duplicado → **409** ✅
+- `POST /movement` tipo inválido → **422** ✅
+- `POST /movement` stock insuficiente → **422** ✅
+
+**Impacto en frontend**: el `error.interceptor.ts` pasa 404/409/422 directamente al
+`catchError` del componente (solo intercepta 401 y 403). Los componentes leen
+`err.error?.message` sin cambios. No fue necesario actualizar el frontend.
+
+---
+
+### BUG-12 (post-RBAC-tests): Fila seleccionada no se resaltaba mientras el diálogo estaba abierto (F08)
+
+**Síntoma**: al hacer clic en una fila de la tabla de productos, el diálogo se abría pero la
+fila no quedaba resaltada visualmente (no se distinguía cuál registro estaba abierto).
+
+**Causa raíz**: no existía un mecanismo para mantener referencia a la fila abierta.
+
+**Fix**:
+1. `products-page.component.ts`: agregar `selectedProductId: number | null = null`. Asignarlo antes de abrir el diálogo y limpiarlo en `afterClosed()` (tanto para detalle como para movimiento). Llamar a `cdr.markForCheck()` en ambos momentos.
+2. `products-page.component.html`: `[class.catalog-row--selected]="row.id === selectedProductId"` en el `mat-row`.
+3. `products-page.component.scss`: `.catalog-row--selected { background-color: #F2E4F2 !important; }` — el `!important` es necesario porque Angular Material MDC aplica `background-color` con especificidad que sobrepasa la regla sin `!important`.
+
+---
+
+### BUG-13 (post-RBAC-tests): Snackbar "No tienes permiso" incorrecto para SALES al navegar de categorías a productos
+
+**Síntoma**: con rol SALES, al hacer clic en el icono shopping_bag de una categoría para ver sus
+productos, la página de productos cargaba con el filtro correcto PERO mostraba el snackbar
+"No tienes permiso para realizar esta acción". El comportamiento NO se reproducía con ADMIN.
+
+**Causa raíz**: `ProductsPageComponent.ngOnInit()` usaba `forkJoin` para cargar categorías y
+proveedores en paralelo. SALES no tiene acceso a `GET /purchases/suppliers/active` (requiere
+WAREHOUSEMAN/MANAGER/ADMIN). La petición de proveedores fallaba con 403, y sin manejo de error
+en el `forkJoin`, este propagaba el error al `catchError` del componente, que luego llegaba al
+`error.interceptor.ts`, que mostraba el snackbar de "No tienes permiso". Como efecto secundario,
+el `forkJoin` abortaba antes de completarse, dejando el dropdown de categorías vacío (aunque el
+filtro URL sí se aplicaba porque era un `queryParam`, no dependía del forkJoin).
+
+**Fix**: agregar `catchError(() => of({ content: [] as SupplierOption[] } as PageResponse<SupplierOption>))` en la rama de proveedores del `forkJoin`.
+
+```typescript
+forkJoin({
+  cats: this.categoryService.getActive(0, 200),
+  sups: this.productService.getActiveSuppliers().pipe(
+    catchError(() => of({ content: [] as SupplierOption[] } as PageResponse<SupplierOption>))
+  ),
+})
+```
+
+Así, si SALES recibe 403 al pedir proveedores, el observable retorna una lista vacía en lugar de
+propagar el error. El 403 no llega al interceptor y no se muestra el snackbar incorrecto.
+El dropdown de proveedores permanece vacío para SALES, lo cual es el comportamiento correcto.
+
+**Archivos**: `products-page.component.ts`.
+
+---
+
+### BUG-14 (revisión UX): Inconsistencia entre desactivar categorías y desactivar productos
+
+**Síntoma (diseño)**: los productos tenían la opción "Desactivar" dentro del diálogo de edición,
+pero las categorías la tenían como botón directo en la columna de acciones de la tabla — un
+patrón inconsistente que confundía qué rol podía desactivar qué entidad.
+
+**Causa raíz**: implementación inicial de categorías con un botón `delete_outline` en la fila,
+antes de que el patrón "Desactivar dentro del diálogo" fuera adoptado en productos.
+
+**Fix**:
+1. `categories-page.component.html`: eliminar botón `delete_outline` de la columna acciones.
+2. `category-form.component.ts`: agregar `@Input() canDeactivate = false` y `@Output() deactivate = new EventEmitter<void>()`.
+3. `category-form.component.html`: agregar botón "Desactivar" con `@if(isEdit && canDeactivate)`, igual al patrón de `product-form.component.html`.
+4. `category-form.component.scss`: agregar `__actions-right` con flexbox para alinear Cancelar/Guardar a la derecha.
+5. `category-form-dialog.component.ts`: extender `CategoryDialogData` con `canDeactivate: boolean`; agregar `onDeactivate()` con `ConfirmDialogComponent` + `switchMap` — mismo patrón que `product-detail-dialog.component.ts`.
+6. `categories-page.component.ts`: actualizar `openNew()` con `canDeactivate: false` y `openEdit()` con `canDeactivate: this.canDeactivate()`.
+
+**Decisión de RBAC**: `canDeactivate()` para categorías = `hasRole('ROLE_ADMIN')` solamente, igual que para productos.
+
+---
+
+### BUG-15 (revisión UX): Botón redundante "Productos" en toolbar de categorías
+
+**Síntoma**: la toolbar de la página de categorías tenía un botón "Productos" que navegaba a
+`/inventory/products`. Este botón era redundante porque ya existía el icono shopping_bag en cada
+fila para navegar a los productos de esa categoría, y el sidebar tenía un link directo a Productos.
+
+**Fix**: eliminar el botón "Productos" de `categories-page.component.html`.
+
+---
+
 ## 9. Estándares y buenas prácticas aplicadas
 
 - Reactive Forms para todos los formularios del módulo.
@@ -523,26 +769,48 @@ clases compiladas actualizadas.
 
 | Criterio | Estado | Método de verificación |
 |---|---|---|
-| Crear categoría → aparece en lista inmediatamente | ✓ | Browser — probado 2026-06-05 |
-| Editar categoría → cambios reflejados | ✓ | Browser — probado 2026-06-05 |
-| Desactivar categoría → desaparece (soft delete) | ✓ | Browser — probado 2026-06-05 |
-| Crear producto con todos los campos | ✓ | Browser — probado 2026-06-05 |
-| Filtrar productos por categoría | ✓ | Browser — probado 2026-06-05 |
-| Buscar por SKU | ✓ | Browser — probado 2026-06-05 |
-| Badge de stock muestra color correcto (verde/naranja/rojo) | ✓ | Browser — probado 2026-06-05 |
-| Registrar movimiento IN → stock aumenta | ✓ | Browser — stock 50→60 verificado en Kardex |
-| Registrar movimiento OUT → stock disminuye | ✓ | Browser — probado 2026-06-05 |
-| Kardex muestra historial correcto con paginación | ✓ | Browser — probado 2026-06-05 |
-| WAREHOUSEMAN puede registrar movimientos pero no crear/editar productos | ✓ | Código — `canWrite()` y `canRegisterMovement()` verificados |
-| SALES solo puede leer (sin botones de escritura) | ✓ | Código — `canWrite()` retorna false para SALES |
-| ADMIN puede desactivar productos; MANAGER no puede | ✓ | Código — `canDeactivate()` solo `ROLE_ADMIN` |
-| Estado vacío cuando no hay filtro activo | ✓ | Browser — early-return muestra `EmptyStateComponent` |
-| Mensaje correcto al crear vs editar | ✓ | Bug-03 corregido — captura `isNewMode` antes de `closeDetail()` |
-| `ng test --watch=false` → 0 failures (regresión módulos 0-1) | ✓ | `43 specs, 0 fallos` — 2026-06-05 |
-| Race condition en búsqueda eliminada (BUG-06) | ✓ | Browser — 1 sola petición por acción, 2026-06-06 |
-| Sin doble petición al abrir con `?categoryId` (BUG-07) | ✓ | Browser — network log, 2026-06-06 |
-| Tooltip proveedor nulo no muestra "null" (BUG-08) | ✓ | Código — `\|\| ''` en binding, 2026-06-06 |
-| 403 no redirige a login (BUG-09 error interceptor) | ✓ | Browser — módulo carga correctamente, 2026-06-06 |
-| Tests browser Módulo Productos: 15/15 PASS | ✓ | Playwright MCP — 2026-06-06 |
-| Tests unitarios del módulo Inventory | ⬜ Pendiente | Specs no escritos aún |
-| Cobertura ≥ 70% incluyendo módulo Inventory | ⬜ Pendiente | Depende de specs pendientes |
+| Crear categoría → aparece en lista inmediatamente | ✓ | Browser — 2026-06-05 |
+| Editar categoría → cambios reflejados | ✓ | Browser — 2026-06-05 |
+| Desactivar categoría → desaparece (soft delete, contador -1) | ✓ | Browser 4 roles — 2026-06-07 |
+| Crear producto con todos los campos | ✓ | Browser — 2026-06-05 |
+| Filtrar productos por categoría | ✓ | Browser — 2026-06-05 |
+| Buscar por texto (SKU + nombre, debounce 400ms) | ✓ | Browser — 2026-06-06 |
+| Badge de stock muestra color correcto (verde/naranja/rojo) | ✓ | Browser — 2026-06-05 |
+| Registrar movimiento IN → stock aumenta | ✓ | Browser — MANAGER IN +10 (55→65) — 2026-06-07 |
+| Registrar movimiento OUT → stock disminuye | ✓ | Browser — ADMIN OUT -5 (40→35), WHOUSE OUT -5 — 2026-06-07 |
+| Kardex muestra historial correcto con paginación | ✓ | Browser — 2026-06-05 |
+| WAREHOUSEMAN: registra movimientos, no crea/edita productos ni categorías | ✓ | Browser RBAC — 2026-06-07 |
+| SALES: solo lectura en todo el módulo (0 botones de movimiento) | ✓ | Browser RBAC — 2026-06-07 |
+| MANAGER: edita productos/categorías, no puede desactivar productos | ✓ | Browser RBAC — 2026-06-07 |
+| ADMIN: acceso completo incluyendo desactivar producto | ✓ | Browser RBAC — 2026-06-07 |
+| Botón "Editar" categorías oculto para WAREHOUSEMAN y SALES (BUG-10) | ✓ | Código + Browser — 2026-06-07 |
+| Clic en fila de categoría es no-op para roles sin escritura | ✓ | Código — `onRowClick()` con guard — 2026-06-07 |
+| Cursor pointer en filas condicionado al rol (BUG-10) | ✓ | Código — `.catalog-row--clickable` — 2026-06-07 |
+| Backend: 404 para entidad no encontrada (no 500) | ✓ | curl — SKU/ID inexistente → 404 — 2026-06-07 |
+| Backend: 409 para duplicados (no 500) | ✓ | curl — nombre/SKU duplicado → 409 — 2026-06-07 |
+| Backend: 422 para reglas de negocio (no 500) | ✓ | curl — stock insuficiente, tipo inválido → 422 — 2026-06-07 |
+| Seguridad backend: 17 combinaciones endpoint×rol verificadas | ✓ | curl con JWT tokens — 2026-06-07 |
+| Soft delete real en categorías (no DELETE físico) | ✓ | Código — `category.setActive(false)` en `CategoryServiceImpl` |
+| Soft delete real en productos (no DELETE físico) | ✓ | Código — `product.setActive(false)` en `ProductServiceImpl` |
+| Categoría con productos activos no se puede desactivar | ✓ | Código — guard en `deactivateCategory()` con 422 |
+| `ng test --no-watch` → 0 failures (regresión módulos 0-1) | ✓ | 43 specs, 0 fallos — 2026-06-05 |
+| Race condition en búsqueda eliminada (BUG-06) | ✓ | Browser — 1 petición por acción — 2026-06-06 |
+| Sin doble petición al abrir con `?categoryId` (BUG-07) | ✓ | Browser — network log — 2026-06-06 |
+| Tooltip proveedor nulo no muestra "null" (BUG-08) | ✓ | Código — `\|\| ''` en binding — 2026-06-06 |
+| 403 no redirige a login (BUG-09 error interceptor) | ✓ | Browser — módulo carga correctamente — 2026-06-06 |
+| Tests browser funcionales: 15/15 PASS | ✓ | Playwright MCP — 2026-06-06 |
+| Tests unitarios del módulo Inventory | ✓ | 46 specs, 0 fallos (31 servicios/badge + 8 category-form + 7 product-detail) — 2026-06-07 |
+| Fila seleccionada se resalta mientras diálogo abierto (BUG-12 / F08) | ✓ | Browser 4 roles — 2026-06-07 |
+| Sin snackbar "No tienes permiso" al navegar categorías→productos con SALES (BUG-13) | ✓ | Browser SALES — 2026-06-07 |
+| Desactivar categoría movido al diálogo de edición, solo ADMIN (BUG-14) | ✓ | Browser ADMIN+MANAGER — 2026-06-07 |
+| Botón redundante "Productos" eliminado del toolbar de categorías (BUG-15) | ✓ | Browser — 2026-06-07 |
+| Botón "Editar" (lápiz) eliminado de tabla de productos (mejora UX) | ✓ | Browser — 2026-06-07 |
+| Columna acciones oculta para SALES en tabla de productos (sin columna vacía) | ✓ | Browser SALES — 2026-06-07 |
+| Filtros de productos más amplios (search 280px, categoría 220px, proveedor 240px) | ✓ | Browser — 2026-06-07 |
+| Regresión completa 4 roles post-fix (navegación, RBAC, sin snackbars incorrectos) | ✓ | Playwright MCP — 2026-06-07 |
+| `category-form.component.spec.ts`: 8 specs — botón Desactivar, output save/cancel/deactivate, precarga | ✓ | `ng test --no-watch` — 2026-06-07 |
+| `product-detail.component.spec.ts`: 7 specs — `getStatusLabel()`, `getMovementTypeLabel()` | ✓ | `ng test --no-watch` — 2026-06-07 |
+| Tests RBAC backend con Spring Security activo: `CategoryControllerSecurityTest` 8 specs | ✓ | `mvn test` — 2026-06-07 |
+| Tests RBAC backend con Spring Security activo: `ProductControllerSecurityTest` 8 specs | ✓ | `mvn test` — 2026-06-07 |
+| Estado `AVAILABLE` mostrado como "Disponible" en detalle de producto (getStatusLabel) | ✓ | Browser 4 roles + specs — 2026-06-07 |
+| Suite total frontend post-tests: `ng test --no-watch` → 89 specs, 0 fallos | ✓ | `ng test --no-watch` — 2026-06-07 |

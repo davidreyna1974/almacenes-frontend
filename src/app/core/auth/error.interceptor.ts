@@ -14,7 +14,7 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     catchError((error: HttpErrorResponse) => {
       if (error.status === 401 && !req.url.includes('/auth/login')) {
         localStorage.removeItem('almacenes_token');
-        router.navigate(['/login'], { queryParams: { expired: 'true' } });
+        router.navigate(['/login'], { queryParams: { reason: 'expired' } });
         snackBar.open(
           'Tu sesión ha expirado. Inicia sesión nuevamente.',
           'Cerrar',

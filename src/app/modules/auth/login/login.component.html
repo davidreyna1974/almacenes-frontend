@@ -7,6 +7,13 @@
       <p class="login-card__subtitle">Inicia sesión para continuar</p>
     </div>
 
+    @if (sessionAlert) {
+      <div class="login-card__session-alert login-card__session-alert--{{ sessionAlert.type }}" role="alert">
+        <mat-icon class="login-card__session-alert-icon">{{ sessionAlert.icon }}</mat-icon>
+        <span>{{ sessionAlert.message }}</span>
+      </div>
+    }
+
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="login-card__form">
 
       <mat-form-field appearance="outline" class="login-card__field">

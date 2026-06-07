@@ -8,6 +8,13 @@
     <strong>Stock actual:</strong> {{ data.product.currentStock }}
   </p>
 
+  @if (errorMessage) {
+    <div class="movement-dialog__error" role="alert">
+      <mat-icon class="movement-dialog__error-icon">error_outline</mat-icon>
+      <span>{{ errorMessage }}</span>
+    </div>
+  }
+
   <form [formGroup]="form" class="movement-dialog__form">
 
     <!-- Tipo -->

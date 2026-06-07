@@ -25,8 +25,10 @@ import { CategoryDTO, CategoryRequest } from '../../models/category.model';
 export class CategoryFormComponent implements OnChanges {
   @Input() item: CategoryDTO | null = null;
   @Input() saving = false;
-  @Output() save = new EventEmitter<CategoryRequest>();
-  @Output() cancel = new EventEmitter<void>();
+  @Input() canDeactivate = false;
+  @Output() save       = new EventEmitter<CategoryRequest>();
+  @Output() cancel     = new EventEmitter<void>();
+  @Output() deactivate = new EventEmitter<void>();
 
   private fb = inject(FormBuilder);
 

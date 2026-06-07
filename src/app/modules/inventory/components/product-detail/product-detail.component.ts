@@ -103,6 +103,16 @@ export class ProductDetailComponent implements OnChanges {
     return type === 'IN' ? 'Entrada' : 'Salida';
   }
 
+  private readonly statusLabels: Record<string, string> = {
+    AVAILABLE:    'Disponible',
+    DISCONTINUED: 'Descontinuado',
+    OUT_OF_STOCK: 'Sin stock',
+  };
+
+  getStatusLabel(status: string): string {
+    return this.statusLabels[status] ?? status;
+  }
+
   reloadMovements(): void {
     this.movCurrentPage = 0;
     this.loadMovements();

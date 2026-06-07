@@ -42,7 +42,7 @@
           </div>
           <div class="product-detail__readonly-row">
             <span class="product-detail__label">Estado</span>
-            <span class="product-detail__value">{{ item.status }}</span>
+            <span class="product-detail__value">{{ getStatusLabel(item.status) }}</span>
           </div>
           @if (item.description) {
             <div class="product-detail__readonly-row product-detail__readonly-row--full">
