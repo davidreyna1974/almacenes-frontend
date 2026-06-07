@@ -49,8 +49,11 @@
 
     <!-- Stock actual -->
     <mat-form-field appearance="outline">
-      <mat-label>Stock actual</mat-label>
+      <mat-label>Stock {{ isEdit ? 'físico (solo lectura)' : 'inicial' }}</mat-label>
       <input matInput type="number" formControlName="currentStock" min="0" />
+      @if (isEdit) {
+        <mat-hint>Usa "Registrar movimiento" para ajustar el stock.</mat-hint>
+      }
     </mat-form-field>
 
     <!-- Stock mínimo -->

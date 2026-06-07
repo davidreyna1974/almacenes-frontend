@@ -4,9 +4,25 @@
   <p class="movement-dialog__product">
     <strong>Producto:</strong> {{ data.product.name }} ({{ data.product.sku }})
   </p>
-  <p class="movement-dialog__stock">
-    <strong>Stock actual:</strong> {{ data.product.currentStock }}
-  </p>
+
+  <div class="movement-dialog__stock-panel">
+    <div class="movement-dialog__stock-row">
+      <span class="movement-dialog__stock-label">Stock físico</span>
+      <span class="movement-dialog__stock-value">{{ data.product.currentStock }}</span>
+    </div>
+    <div class="movement-dialog__stock-row">
+      <span class="movement-dialog__stock-label">Reservado (órdenes pendientes)</span>
+      <span class="movement-dialog__stock-value movement-dialog__stock-value--reserved">
+        {{ data.product.reservedStock ?? 0 }}
+      </span>
+    </div>
+    <div class="movement-dialog__stock-row movement-dialog__stock-row--available">
+      <span class="movement-dialog__stock-label">Disponible para salida</span>
+      <span class="movement-dialog__stock-value movement-dialog__stock-value--available">
+        {{ availableStock }}
+      </span>
+    </div>
+  </div>
 
   @if (errorMessage) {
     <div class="movement-dialog__error" role="alert">
@@ -35,6 +51,9 @@
       }
       @if (form.get('quantity')?.hasError('min')) {
         <mat-error>La cantidad debe ser al menos 1.</mat-error>
+      }
+      @if (form.get('quantity')?.hasError('max')) {
+        <mat-error>Supera el stock disponible ({{ availableStock }} unidades).</mat-error>
       }
     </mat-form-field>
 

@@ -33,9 +33,19 @@
             <span class="product-detail__value">{{ item.price | currency:'USD':'symbol':'1.2-2' }}</span>
           </div>
           <div class="product-detail__readonly-row">
-            <span class="product-detail__label">Stock actual</span>
+            <span class="product-detail__label">Stock físico</span>
             <span class="product-detail__value">{{ item.currentStock }}</span>
           </div>
+          @if (item.reservedStock > 0) {
+            <div class="product-detail__readonly-row">
+              <span class="product-detail__label">Stock reservado</span>
+              <span class="product-detail__value product-detail__value--reserved">{{ item.reservedStock }}</span>
+            </div>
+            <div class="product-detail__readonly-row">
+              <span class="product-detail__label">Stock disponible</span>
+              <span class="product-detail__value product-detail__value--available">{{ item.currentStock - item.reservedStock }}</span>
+            </div>
+          }
           <div class="product-detail__readonly-row">
             <span class="product-detail__label">Stock mínimo</span>
             <span class="product-detail__value">{{ item.minimumStock }}</span>

@@ -121,7 +121,9 @@ export class ProductsPageComponent implements OnInit {
   // ─── Inicialización ─────────────────────────────────────────────────────────
 
   ngOnInit(): void {
-    const cols = ['sku', 'name', 'categoryName', 'supplierName', 'stock', 'price', 'status'];
+    const cols = ['sku', 'name', 'categoryName', 'supplierName', 'stock', 'price'];
+    if (this.canWrite()) cols.push('unitCost');
+    cols.push('status');
     if (this.canRegisterMovement()) cols.push('actions');
     this.displayedColumns = cols;
 

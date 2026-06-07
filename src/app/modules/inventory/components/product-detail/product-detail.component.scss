@@ -27,6 +27,16 @@
   &__value {
     flex: 1;
     color: var(--color-text-primary);
+
+    &--reserved {
+      color: #E65100;
+      font-weight: 600;
+    }
+
+    &--available {
+      color: #2E7D32;
+      font-weight: 600;
+    }
   }
 
   &__mono {
