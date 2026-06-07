@@ -1,0 +1,132 @@
+.suppliers-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &__progress { flex-shrink: 0; }
+
+  &__layout {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  // ── Panel lista ───────────────────────────────────────────────────────
+
+  &__list-panel {
+    width: 42%;
+    min-width: 320px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--color-divider);
+    overflow: hidden;
+  }
+
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: var(--space-2) var(--space-3);
+    flex-shrink: 0;
+  }
+
+  &__search { flex: 1; }
+
+  &__table {
+    flex: 1;
+    overflow: auto;
+    width: 100%;
+
+    .mat-mdc-header-cell {
+      font-weight: 600;
+      color: #6B3C6B;
+      background: #F2E4F2;
+    }
+  }
+
+  &__row {
+    &--selected td { background: #F2E4F2 !important; }
+    &--clickable  { cursor: pointer; }
+    &--clickable:hover td { background: #faf5fa; }
+  }
+
+  &__rfc {
+    font-family: monospace;
+    font-size: 13px;
+    color: #6B3C6B;
+    font-weight: 500;
+  }
+
+  &__truncate {
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+  }
+
+  // ── Estado vacío lista ────────────────────────────────────────────────
+
+  &__empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--color-text-secondary);
+    padding: var(--space-3);
+    text-align: center;
+  }
+
+  &__empty-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: #6B3C6B;
+    opacity: 0.4;
+  }
+
+  &__empty-title { font-size: 16px; font-weight: 500; color: #6B3C6B; margin: 0; }
+
+  // ── Panel detalle ─────────────────────────────────────────────────────
+
+  &__detail-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+    background: #fff;
+  }
+
+  &__form-header {
+    padding: var(--space-2) var(--space-3) 0;
+    flex-shrink: 0;
+  }
+
+  &__form-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #6B3C6B;
+    margin: 0;
+  }
+
+  &__empty-detail {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: var(--color-text-secondary);
+    text-align: center;
+  }
+
+  &__empty-detail-icon {
+    font-size: 56px;
+    width: 56px;
+    height: 56px;
+    color: #6B3C6B;
+    opacity: 0.3;
+  }
+}

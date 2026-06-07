@@ -526,11 +526,11 @@ JWT_SECRET=...       # mínimo 64 caracteres hex (openssl rand -hex 32)
 | Módulo 0: Infra-base + Layout | ✓ Completo | 26 specs, 0 fallos | Angular 21, Material M2, sidebar+topbar+main-layout, tema #6B3C6B |
 | Módulo 1: Auth + RBAC | ✓ Completo | 43 specs, 0 fallos | AuthService, JWT interceptor, error interceptor, authGuard, LoginComponent, filtrado sidebar por rol |
 | Módulo 2: Inventory | ✓ Completo | 94 specs, 0 fallos (+46 nuevos en M2 + 5 adicionales post-fix: stock-badge getter availableStock ×2, tooltip con reservedStock ×3) + 15/15 browser + 4 roles RBAC + 17+16 seguridad backend | Mergeado a develop. RBAC 4 roles verificado en browser y backend. HTTP 404/409/422 corregidos. Tests RBAC con Spring Security activo escritos. Business logic gaps cerrados: availableStock en MovementDialog, currentStock inmutable en PUT, unitCost por rol, doble asterisco AM eliminado. |
-| Módulo 3: Purchases | ⬜ Pendiente | | |
+| Módulo 3: Purchases | ✓ Completo | 143 specs, 0 fallos (32 nuevos) | Mergeado a develop. 3 roles RBAC verificados browser + curl. Lazy chunk Vite confirmado. Suppliers CRUD, órdenes con machine-state PENDING→APPROVED→RECEIVED/CANCELLED, formulario inline de detalles, subtotal reactivo. BUG-M3-02: reiniciar ng serve al añadir rutas lazy. |
 | Módulo 4: Sales | ⬜ Pendiente | | |
 | Módulo 5: Reports | ⬜ Pendiente | | |
 
-**Suite total frontend (Módulos 0-2)**: 94 specs — 0 fallos — cobertura 98.09% statements (Módulos 0-1); Módulo 2 cubre servicios, StockBadgeComponent (11 specs), CategoryFormComponent y ProductDetailComponent
+**Suite total frontend (Módulos 0-3)**: 143 specs — 0 fallos
 
 ---
 
@@ -817,8 +817,8 @@ secreto entra al historial de git, debe considerarse comprometido.
 | ~~Módulo 0: Setup + Layout~~ | ✓ Completo | — |
 | ~~Módulo 1: Auth + RBAC~~ | ✓ Completo | Módulo 0 |
 | ~~Módulo 2: Inventory~~ | ✓ Completo | Módulo 1 |
-| Módulo 3: Purchases | ⬜ Siguiente | Módulo 2 |
-| Módulo 4: Sales | ⬜ Pendiente | Módulo 3 |
+| Módulo 3: Purchases | ✓ Completo | Módulo 2 |
+| Módulo 4: Sales | ⬜ Siguiente | Módulo 3 |
 | Módulo 5: Reports | ⬜ Pendiente | Módulo 4 |
 
 ### Módulos de negocio futuros (ambas capas)

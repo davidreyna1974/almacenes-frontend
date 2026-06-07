@@ -1,0 +1,59 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="detail-form">
+
+  <mat-form-field appearance="outline" class="detail-form__field--full">
+    <mat-label>Producto</mat-label>
+    <input matInput formControlName="productSearch"
+           [matAutocomplete]="autoProduct"
+           placeholder="Buscar por SKU o nombre">
+    <mat-autocomplete #autoProduct="matAutocomplete"
+                      [displayWith]="displayProduct"
+                      (optionSelected)="onProductSelected($event.option.value)">
+      @for (product of filteredProducts; track product.id) {
+        <mat-option [value]="product" [disabled]="isProductDisabled(product)">
+          <span class="detail-form__product-sku">[{{ product.sku }}]</span>
+          {{ product.name }}
+          <span class="detail-form__product-stock"
+                [class.detail-form__product-stock--low]="product.availableStock <= product.minimumStock">
+            disponible: {{ product.availableStock }}
+          </span>
+        </mat-option>
+      }
+    </mat-autocomplete>
+    @if (!isEdit && !selectedProduct && form.get('productSearch')?.dirty) {
+      <mat-error>Selecciona un producto de la lista</mat-error>
+    }
+  </mat-form-field>
+
+  <div class="detail-form__row">
+    <mat-form-field appearance="outline" class="detail-form__field--half">
+      <mat-label>Cantidad</mat-label>
+      <input matInput formControlName="quantity" type="number" min="1">
+      <mat-error *ngIf="form.get('quantity')?.hasError('required')">Obligatorio</mat-error>
+      <mat-error *ngIf="form.get('quantity')?.hasError('min')">Mínimo 1</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="detail-form__field--half">
+      <mat-label>Precio unitario</mat-label>
+      <span matPrefix>$&nbsp;</span>
+      <input matInput formControlName="unitPrice" type="number" min="0.01" step="0.01">
+      <mat-error *ngIf="form.get('unitPrice')?.hasError('required')">Obligatorio</mat-error>
+      <mat-error *ngIf="form.get('unitPrice')?.hasError('min')">Debe ser mayor a cero</mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="detail-form__subtotal">
+    <span class="detail-form__subtotal-label">Subtotal:</span>
+    <span class="detail-form__subtotal-value">
+      {{ subtotal | currency:'MXN':'symbol-narrow':'1.2-2' }}
+    </span>
+  </div>
+
+  <div class="detail-form__actions">
+    <button mat-button type="button" (click)="cancel.emit()">Cancelar</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || (!isEdit && !selectedProduct)">
+      <mat-icon>{{ isEdit ? 'save' : 'add' }}</mat-icon>
+      {{ isEdit ? 'Guardar cambios' : 'Agregar línea' }}
+    </button>
+  </div>
+
+</form>

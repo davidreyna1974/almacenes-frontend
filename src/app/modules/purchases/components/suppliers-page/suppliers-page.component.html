@@ -1,0 +1,111 @@
+<div class="suppliers-page">
+  @if (loading) {
+    <mat-progress-bar mode="indeterminate" class="suppliers-page__progress"></mat-progress-bar>
+  }
+
+  <div class="suppliers-page__layout">
+
+    <!-- ── Panel izquierdo: lista ──────────────────────────────────────── -->
+    <div class="suppliers-page__list-panel">
+
+      <div class="suppliers-page__toolbar">
+        <mat-form-field appearance="outline" class="suppliers-page__search" subscriptSizing="dynamic">
+          <mat-label>Buscar proveedor</mat-label>
+          <mat-icon matPrefix>search</mat-icon>
+          <input matInput [formControl]="searchCtrl" placeholder="RFC o razón social">
+        </mat-form-field>
+
+        @if (canWrite()) {
+          <button mat-raised-button color="primary" (click)="openNew()">
+            <mat-icon>add</mat-icon> Nuevo proveedor
+          </button>
+        }
+      </div>
+
+      @if (!loading && filtered.length === 0) {
+        <div class="suppliers-page__empty">
+          <mat-icon class="suppliers-page__empty-icon">local_shipping</mat-icon>
+          <p class="suppliers-page__empty-title">Sin proveedores</p>
+          <p>{{ searchCtrl.value ? 'No hay coincidencias para la búsqueda.' : 'Aún no se han registrado proveedores.' }}</p>
+        </div>
+      }
+
+      <mat-table [dataSource]="filtered" class="suppliers-page__table">
+
+        <ng-container matColumnDef="rfc">
+          <mat-header-cell *matHeaderCellDef>RFC</mat-header-cell>
+          <mat-cell *matCellDef="let s">
+            <span class="suppliers-page__rfc">{{ s.rfc }}</span>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="companyName">
+          <mat-header-cell *matHeaderCellDef>Razón social</mat-header-cell>
+          <mat-cell *matCellDef="let s">
+            <span class="suppliers-page__truncate" [matTooltip]="s.companyName">{{ s.companyName }}</span>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="contactName">
+          <mat-header-cell *matHeaderCellDef>Contacto</mat-header-cell>
+          <mat-cell *matCellDef="let s">{{ s.contactName ?? '—' }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="phone">
+          <mat-header-cell *matHeaderCellDef>Teléfono</mat-header-cell>
+          <mat-cell *matCellDef="let s">{{ s.phone ?? '—' }}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef></mat-header-cell>
+          <mat-cell *matCellDef="let s">
+            <button mat-icon-button (click)="onRowClick(s); $event.stopPropagation()"
+                    matTooltip="Ver / editar">
+              <mat-icon>{{ canWrite() ? 'edit' : 'visibility' }}</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"
+                 (click)="onRowClick(row)"
+                 [class.suppliers-page__row--selected]="selected?.id === row.id"
+                 [class.suppliers-page__row--clickable]="true">
+        </mat-row>
+
+      </mat-table>
+    </div>
+
+    <!-- ── Panel derecho: formulario ──────────────────────────────────── -->
+    <div class="suppliers-page__detail-panel">
+      @if (showForm) {
+        <div class="suppliers-page__form-header">
+          <h3 class="suppliers-page__form-title">
+            {{ isEdit ? 'Editar proveedor' : 'Nuevo proveedor' }}
+          </h3>
+        </div>
+        <app-supplier-form
+          [supplier]="selected"
+          [isEdit]="isEdit"
+          [canWrite]="canWrite()"
+          [canDeactivate]="canDeactivate() && isEdit"
+          [loading]="loading"
+          (save)="onSave($event)"
+          (cancel)="onCancel()"
+          (deactivate)="onDeactivate()">
+        </app-supplier-form>
+      } @else {
+        <div class="suppliers-page__empty-detail">
+          <mat-icon class="suppliers-page__empty-detail-icon">local_shipping</mat-icon>
+          <p>Selecciona un proveedor para ver los detalles</p>
+          @if (canWrite()) {
+            <button mat-stroked-button color="primary" (click)="openNew()">
+              <mat-icon>add</mat-icon> Nuevo proveedor
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+  </div>
+</div>

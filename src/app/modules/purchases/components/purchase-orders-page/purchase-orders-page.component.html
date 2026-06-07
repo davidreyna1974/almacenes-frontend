@@ -1,0 +1,123 @@
+<div class="orders-page">
+  @if (loading) {
+    <mat-progress-bar mode="indeterminate" class="orders-page__progress"></mat-progress-bar>
+  }
+
+  <div class="orders-page__header">
+    <h2 class="orders-page__title">Órdenes de compra</h2>
+    @if (canWrite()) {
+      <button mat-raised-button color="primary" (click)="newOrder()">
+        <mat-icon>add</mat-icon> Nueva orden
+      </button>
+    }
+  </div>
+
+  <mat-tab-group animationDuration="150ms" (selectedTabChange)="onTabChange($event.index)"
+                 class="orders-page__tabs">
+
+    @for (tab of tabs; track tab.status) {
+      <mat-tab>
+        <ng-template mat-tab-label>
+          {{ tab.label }}
+          @if (countFor(tab.status) > 0) {
+            <span class="orders-page__tab-count">{{ countFor(tab.status) }}</span>
+          }
+        </ng-template>
+      </mat-tab>
+    }
+
+  </mat-tab-group>
+
+  <div class="orders-page__table-wrapper">
+
+    @if (!loading && orders.length === 0) {
+      <div class="orders-page__empty">
+        <mat-icon class="orders-page__empty-icon">receipt_long</mat-icon>
+        <p class="orders-page__empty-title">Sin órdenes {{ tabs[tabs.findIndex(t => t.status === activeTab)].label.toLowerCase() }}</p>
+      </div>
+    }
+
+    <mat-table [dataSource]="orders" class="orders-page__table">
+
+      <ng-container matColumnDef="orderNumber">
+        <mat-header-cell *matHeaderCellDef>N° Orden</mat-header-cell>
+        <mat-cell *matCellDef="let o">
+          <span class="orders-page__order-num">{{ o.orderNumber }}</span>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="supplierName">
+        <mat-header-cell *matHeaderCellDef>Proveedor</mat-header-cell>
+        <mat-cell *matCellDef="let o">
+          <span class="orders-page__truncate" [matTooltip]="o.supplierName">{{ o.supplierName }}</span>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="totalAmount">
+        <mat-header-cell *matHeaderCellDef class="orders-page__num-header">Total</mat-header-cell>
+        <mat-cell *matCellDef="let o" class="orders-page__num">
+          {{ o.totalAmount | currency:'MXN':'symbol-narrow':'1.2-2' }}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="createdByUsername">
+        <mat-header-cell *matHeaderCellDef>Creado por</mat-header-cell>
+        <mat-cell *matCellDef="let o">{{ o.createdByUsername }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="createdAt">
+        <mat-header-cell *matHeaderCellDef>Fecha</mat-header-cell>
+        <mat-cell *matCellDef="let o">{{ o.createdAt | date:'dd/MM/yyyy HH:mm' }}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <mat-header-cell *matHeaderCellDef>Estado</mat-header-cell>
+        <mat-cell *matCellDef="let o">
+          <span class="orders-page__status-chip {{ getStatusClass(o.status) }}">
+            {{ getStatusLabel(o.status) }}
+          </span>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <mat-header-cell *matHeaderCellDef></mat-header-cell>
+        <mat-cell *matCellDef="let o" class="orders-page__actions-cell">
+          <button mat-icon-button matTooltip="Ver detalle" (click)="viewDetail(o)">
+            <mat-icon>open_in_new</mat-icon>
+          </button>
+          @if (canWrite() && o.status === 'PENDING') {
+            <button mat-icon-button color="primary" matTooltip="Aprobar" (click)="approve(o)">
+              <mat-icon>check_circle</mat-icon>
+            </button>
+          }
+          @if (canReceiveOrd() && o.status === 'APPROVED') {
+            <button mat-icon-button color="primary" matTooltip="Recibir mercancía" (click)="receive(o)">
+              <mat-icon>done_all</mat-icon>
+            </button>
+          }
+          @if (canWrite() && (o.status === 'PENDING' || o.status === 'APPROVED')) {
+            <button mat-icon-button color="warn" matTooltip="Cancelar orden" (click)="cancel(o)">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          }
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"
+               class="orders-page__row"
+               (click)="viewDetail(row)">
+      </mat-row>
+
+    </mat-table>
+
+    @if (currentPage && currentPage.totalElements > 0) {
+      <mat-paginator [length]="currentPage.totalElements"
+                     [pageSize]="currentPage.size"
+                     [pageSizeOptions]="[10, 20, 50]"
+                     (page)="onPage($event)">
+      </mat-paginator>
+    }
+
+  </div>
+</div>
