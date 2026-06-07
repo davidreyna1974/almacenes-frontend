@@ -132,6 +132,17 @@ difíciles de detectar que solo aparecen en el browser con datos reales.**
 > al ver el dropdown de proveedores vacío. El endpoint `GET /products` sin filtro no existe —
 > tampoco estaba documentado correctamente en la propuesta del módulo, lo que causó un 403.
 
+> **Lección real (Módulo 2 — Inventory, post-merge):** `availableStock` estaba en el DTO desde
+> el primer día, pero el `MovementDialog` y el `ProductForm` usaban `currentStock` donde la regla
+> de negocio exige `availableStock`. El error no se detectó en tests porque los tests no verificaban
+> la trazabilidad regla-de-negocio → componente UI. Solo se detectó en revisión explícita del código.
+
+**5. Verificar trazabilidad regla-de-negocio → componente UI** — para cada validación del backend
+(`*ServiceImpl`), identificar el componente UI responsable y confirmar que:
+- muestra los datos relevantes para esa regla (no un campo proxy)
+- valida preventivamente antes del submit cuando es posible
+- muestra un mensaje de error útil si el backend rechaza
+
 ### Checklist de verificación pre-código
 
 ```
@@ -141,6 +152,12 @@ difíciles de detectar que solo aparecen en el browser con datos reales.**
 [ ] Para cada response: verifiqué si es PageResponse<T>, objeto simple o void (204)
 [ ] Para cada DTO: verifiqué nombres exactos de campos (no asumí ninguno)
 [ ] Documenté contratos verificados en la Sección 4 de la memoria técnica antes de codificar
+[ ] Para cada regla de negocio del backend: identifiqué el componente UI que le aplica,
+    muestra los datos correctos para esa regla, valida preventivamente, y muestra error útil
+[ ] Verifiqué qué campos son de solo lectura en cada operación (ej. stock vía movimientos,
+    campos de auditoría) y que el formulario no los exponga como editables
+[ ] Verifiqué que cada columna/dato sensible (unitCost, datos financieros) está oculto
+    para los roles que no deben verlo — no solo en el backend sino también en el frontend
 ```
 
 ---
