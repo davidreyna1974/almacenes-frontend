@@ -409,6 +409,10 @@ Usuarios adicionales se crean desde la interfaz de gestión de usuarios (solo AD
 | Frontend Módulo 2 — post | `fixture.componentRef.setInput()` es la API correcta para testing de `@Input` | La asignación directa no dispara `ngOnChanges`. Esta API es el estándar para todos los tests de componentes dumb con `@Input` en este proyecto. Ver L11. |
 | Frontend Módulo 2 — post | Tests de seguridad RBAC en clase separada (`*SecurityTest`) de tests de controlador (`*ControllerTest`) | `*ControllerTest` usa `addFilters=false`; `*SecurityTest` usa `@Import(SecurityConfig.class)`. Ambas clases son necesarias y complementarias. Ver L12. |
 | Frontend Módulo 2 — post | Excepciones tipadas de negocio desde el primer commit de cada módulo | `ResourceNotFoundException`→404, `DuplicateResourceException`→409, `BusinessRuleException`→422 ya están en `core/exception/`. Todo servicio nuevo debe usarlas desde el inicio, no `RuntimeException` genérica. Ver L13. |
+| Frontend Módulo 2 — post | `currentStock` es inmutable en PUT — cambios solo vía movimientos registrados | Backend: `@Mapping(target = "currentStock", ignore = true)` en `updateFromDTO`. Frontend: campo deshabilitado + hint con icono lock. Garantiza integridad del Kardex. Ver L14. |
+| Frontend Módulo 2 — post | Angular Material añade `*` automáticamente en campos `required` — no duplicar | `mat-form-field` detecta `Validators.required` y agrega el asterisco vía CSS. Un `<span class="required">*</span>` adicional en el label produce doble asterisco visible. Regla: nunca añadir asterisco manual en labels de AM. Ver L15. |
+| Frontend Módulo 2 — post | Campos de solo lectura contextual: `disabled` + `mat-hint` con icono + color semántico | Cuando un campo es editable en creación pero inmutable en edición, deshabilitar el control + mostrar `mat-hint` con icono lock azul (#1565C0). El texto debe nombrar exactamente la acción alternativa. `subscriptSizing="dynamic"` evita solapamiento con campos adyacentes en grids. |
+| Frontend Módulo 2 — post | Datos financieros sensibles (`unitCost`) visibles solo para roles con escritura | `unitCost` solo aparece en tabla y formulario para ADMIN/MANAGER (`canWrite()`). WAREHOUSEMAN y SALES no necesitan el costo para sus tareas. El patrón de `displayedColumns` condicional aplica a cualquier columna con restricción de rol. |
 
 ---
 
@@ -505,7 +509,7 @@ JWT_SECRET=...       # mínimo 64 caracteres hex (openssl rand -hex 32)
 | Módulo | Estado | Tests | Notas |
 |---|---|---|---|
 | `auth` (RBAC) | ✓ Completo | 45 B* + 20 A + 12 B + 17 C | 4 roles, 9 endpoints, DataInitializer |
-| `inventory` | ✓ Completo | 33 A + 19 B + 16 B* + 10 D | unitCost NOT NULL; B*=CategoryControllerSecurityTest(8)+ProductControllerSecurityTest(8) |
+| `inventory` | ✓ Completo | 33 A + 19 B + 16 B* + 10 D | unitCost NOT NULL; B*=CategoryControllerSecurityTest(8)+ProductControllerSecurityTest(8); currentStock inmutable en PUT (@Mapping ignore) |
 | `purchases` | ✓ Completo | 43 A + 25 B | Máquina de estados PENDING→APPROVED→RECEIVED |
 | `sales` | ✓ Completo | 47 A + 25 B + 3 C + 5 D | Optimistic Locking, reservas |
 | `reports` | ✓ Completo | 40 A + 14 B + 7 D | 12 endpoints, 3 audiencias |
@@ -521,12 +525,12 @@ JWT_SECRET=...       # mínimo 64 caracteres hex (openssl rand -hex 32)
 |---|---|---|---|
 | Módulo 0: Infra-base + Layout | ✓ Completo | 26 specs, 0 fallos | Angular 21, Material M2, sidebar+topbar+main-layout, tema #6B3C6B |
 | Módulo 1: Auth + RBAC | ✓ Completo | 43 specs, 0 fallos | AuthService, JWT interceptor, error interceptor, authGuard, LoginComponent, filtrado sidebar por rol |
-| Módulo 2: Inventory | ✓ Completo | 89 specs, 0 fallos (+46 nuevos: category.service ×8, product.service ×15, stock-badge ×8, category-form ×8, product-detail ×7) + 15/15 browser + 4 roles RBAC + 17+16 seguridad backend | Mergeado a develop. RBAC 4 roles verificado en browser y backend. HTTP 404/409/422 corregidos. Tests RBAC con Spring Security activo escritos. |
+| Módulo 2: Inventory | ✓ Completo | 94 specs, 0 fallos (+46 nuevos en M2 + 5 adicionales post-fix: stock-badge getter availableStock ×2, tooltip con reservedStock ×3) + 15/15 browser + 4 roles RBAC + 17+16 seguridad backend | Mergeado a develop. RBAC 4 roles verificado en browser y backend. HTTP 404/409/422 corregidos. Tests RBAC con Spring Security activo escritos. Business logic gaps cerrados: availableStock en MovementDialog, currentStock inmutable en PUT, unitCost por rol, doble asterisco AM eliminado. |
 | Módulo 3: Purchases | ⬜ Pendiente | | |
 | Módulo 4: Sales | ⬜ Pendiente | | |
 | Módulo 5: Reports | ⬜ Pendiente | | |
 
-**Suite total frontend (Módulos 0-2)**: 89 specs — 0 fallos — cobertura 98.09% statements (Módulos 0-1); Módulo 2 cubre servicios, StockBadgeComponent, CategoryFormComponent y ProductDetailComponent
+**Suite total frontend (Módulos 0-2)**: 94 specs — 0 fallos — cobertura 98.09% statements (Módulos 0-1); Módulo 2 cubre servicios, StockBadgeComponent (11 specs), CategoryFormComponent y ProductDetailComponent
 
 ---
 
@@ -733,6 +737,57 @@ throw new RuntimeException("Usuario del JWT no encontrado en BD: " + username);
 
 El `GlobalExceptionHandler` ya mapea estas excepciones a 404/409/422 respectivamente.
 No se requiere ningún cambio en el handler al agregar nuevos módulos.
+
+### L14: `currentStock` inmutable en PUT — integridad del Kardex
+
+**Problema (Frontend Módulo 2 — post-desarrollo)**:
+El formulario de edición de producto exponía `currentStock` como campo editable.
+El backend lo actualizaba directamente. La suma de todos los movimientos del Kardex
+dejaba de coincidir con el stock real, rompiendo la trazabilidad de auditoría.
+
+**Regla**: El stock físico solo puede cambiar mediante movimientos registrados (POST /movement).
+
+**Backend** — `updateFromDTO` en `ProductMapper.java`:
+```java
+@Mapping(target = "currentStock", ignore = true)  // solo se modifica via registerStockMovement
+void updateFromDTO(ProductRequestDTO dto, @MappingTarget Product product);
+```
+
+**Frontend** — `ProductFormComponent.ngOnChanges()`:
+```typescript
+if (this.isEdit) {
+  this.form.get('currentStock')!.disable();
+} else {
+  this.form.get('currentStock')!.enable();
+}
+```
+Y `submit()` usa `form.getRawValue()` para incluir el valor original del control deshabilitado
+(el backend lo ignora de todas formas, pero mantiene la estructura del DTO consistente).
+
+**Aplica a todos los módulos futuros**: cualquier campo que solo pueda modificarse
+mediante un flujo específico (no edición directa) debe protegerse en ambas capas.
+
+---
+
+### L15: Angular Material añade `*` automáticamente — no duplicar con span manual
+
+**Problema (Frontend Módulo 2 — post-desarrollo)**:
+Todos los formularios tenían `<span class="required">*</span>` en cada label de campo
+obligatorio. Angular Material ya añade el asterisco automáticamente via CSS
+(`.mat-mdc-form-field-required-marker`) cuando detecta `Validators.required`.
+El resultado: doble asterisco visible (uno rojo manual, uno gris de AM).
+
+**Regla**: Nunca añadir asterisco manual en labels de `mat-form-field`.
+```html
+<!-- ❌ incorrecto — produce doble asterisco -->
+<mat-label>Nombre <span class="required">*</span></mat-label>
+
+<!-- ✅ correcto — AM lo gestiona automáticamente -->
+<mat-label>Nombre</mat-label>
+```
+Eliminar también la clase `.required { color: var(--color-error); }` de los SCSS.
+
+---
 
 ### L6: Los secretos en el código fuente son permanentes
 
