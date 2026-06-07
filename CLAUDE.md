@@ -162,6 +162,58 @@ difíciles de detectar que solo aparecen en el browser con datos reales.**
 
 ---
 
+## ⚠️ Protocolo obligatorio post-código — Cierre de componente/módulo
+
+**ANTES de declarar cualquier componente o pantalla como terminada**, ejecutar las siguientes
+verificaciones. No basta con que el código compile y los tests unitarios pasen.
+
+> **Origen**: Módulo 2 (Inventory) — múltiples bugs de RBAC, lógica de negocio y UX
+> fueron descubiertos por el usuario en lugar de por el desarrollador porque este protocolo
+> no existía. La responsabilidad de verificar cada ítem es del desarrollador, no del usuario.
+
+### Checklist de cierre por componente
+
+```
+[ ] ng test --no-watch ejecutado → 0 fallos en la suite completa
+[ ] Prueba browser (Playwright) para cada rol con acceso a la pantalla:
+    [ ] Elementos UI aparecen/ocultan según rol (botones, columnas, acciones)
+    [ ] Flujo principal (crear / editar / ver) sin errores de consola
+    [ ] Estados vacíos y de error se muestran correctamente
+[ ] Para cada regla de negocio del backend aplicable a esta pantalla:
+    [ ] El componente muestra el dato CORRECTO que la regla valida (no un proxy)
+    [ ] Validación preventiva antes del submit (no solo snackbar de error)
+    [ ] Mensaje de error del backend visible en la UI de forma útil
+[ ] Campos de solo lectura en modo edición:
+    [ ] Deshabilitados con disable() — no solo visualmente bloqueados
+    [ ] Hint explicativo que indica cómo modificarlos (icono + color informativo)
+    [ ] subscriptSizing="dynamic" si el hint tiene altura variable
+    [ ] form.getRawValue() usado al emitir si el campo disabled debe enviarse
+[ ] Datos sensibles (unitCost, costos, márgenes):
+    [ ] Visibles SOLO para roles autorizados (canWrite() u otro guard de rol)
+    [ ] Ausentes del DOM para roles no autorizados (no solo display:none)
+[ ] No hay asteriscos dobles — AM genera el * automáticamente con Validators.required;
+    nunca agregar <span class="required">*</span> manualmente
+[ ] Hints/errores de mat-form-field no se solapan con campos adyacentes
+[ ] Revisé la lista de lecciones conocidas de la memoria técnica buscando el mismo
+    patrón en el código nuevo antes de declarar done
+```
+
+### Checklist de cierre de módulo (adicional al de componente)
+
+```
+[ ] Suite completa ng test → X specs, 0 fallos; cobertura ≥ 70% statements
+[ ] Regresión: specs de módulos anteriores siguen en 0 fallos
+[ ] Prueba browser RBAC completa: los 4 roles navegan el módulo sin errores
+[ ] Verificación de seguridad backend (curl) para todos los endpoints del módulo
+[ ] Memoria técnica del módulo §10 actualizada (bugs encontrados y correcciones)
+[ ] memoria_tecnica_global_proyecto.md actualizada (decisiones y lecciones)
+[ ] estandares_referencia_desarrollo.md actualizado si hay nuevos patrones
+[ ] CLAUDE.md actualizado con bugs encontrados en el módulo
+[ ] Commits y push realizados siguiendo las convenciones git del proyecto
+```
+
+---
+
 ## Identidad visual y paleta de colores
 
 ### Nombre del sistema
