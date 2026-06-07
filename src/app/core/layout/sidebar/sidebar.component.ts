@@ -29,9 +29,11 @@ const ALL_NAV_ITEMS: NavItem[] = [
     label: 'Inventario', icon: 'inventory_2',
     roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'],
     children: [
-      { label: 'Productos',  icon: 'shopping_bag', route: '/inventory/products',
+      { label: 'Productos',   icon: 'shopping_bag',  route: '/inventory/products',
         roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'] },
-      { label: 'Categorías', icon: 'category',     route: '/inventory/categories',
+      { label: 'Categorías',  icon: 'category',      route: '/inventory/categories',
+        roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'] },
+      { label: 'Bajo stock',  icon: 'warning_amber', route: '/inventory/low-stock',
         roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'] },
     ]
   },
