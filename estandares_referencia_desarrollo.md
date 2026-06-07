@@ -297,17 +297,89 @@ Angular solo verifica el componente cuando su referencia de `@Input()` cambia.
 
 | Tipo | Herramienta | TestBed | Qué verifica |
 |---|---|---|---|
-| **A — Unit Servicio** | Jasmine + `HttpClientTestingModule` | Mínimo | Llamadas HTTP, URLs, parámetros, transformaciones |
-| **B — Unit Componente** | Jasmine + `TestBed` | Básico | Renderizado, bindings, eventos `@Output()` |
-| **C — Integration** | Jasmine + `TestBed` completo | Completo | Interacción real componente ↔ servicio |
-| **E — E2E** | Cypress o Playwright | N/A (browser real) | Flujo completo con backend activo |
+| **A — Unit Servicio** | Vitest + `HttpClientTestingModule` | Mínimo | Llamadas HTTP, URLs, parámetros, transformaciones |
+| **B — Unit Componente** | Vitest + `TestBed` | Básico | Renderizado, bindings, eventos `@Output()`, visibilidad condicional por `@Input()` |
+| **C — Integration** | Vitest + `TestBed` completo | Completo | Interacción real componente ↔ servicio |
+| **E — E2E** | Playwright MCP o Cypress | N/A (browser real) | Flujo completo con backend activo |
 
 **Reglas de testing:**
-- Cobertura mínima: **70% statements** por módulo (Istanbul/ng test --code-coverage)
+- Cobertura mínima: **70% statements** por módulo (`ng test --code-coverage`)
 - Cada servicio HTTP: test para URL correcta + parámetros de paginación + mapeo de respuesta
-- Cada componente smart: test para llamada al servicio en `ngOnInit` + renderizado de datos
+- Cada componente dumb con `@Input`/`@Output`: test para visibilidad condicional + outputs emitidos
 - Ningún módulo se marca completo sin pasar `ng test` con 0 fallos
 - Regresiones: la suite completa se ejecuta al terminar cada módulo
+
+**Patrón para testing de `@Input()` con `ngOnChanges` (Angular 21):**
+
+La asignación directa `component.prop = value` NO dispara `ngOnChanges`. Usar siempre:
+
+```typescript
+// ✗ Incorrecto — no dispara ngOnChanges
+component.item = mockItem;
+fixture.detectChanges();
+
+// ✓ Correcto — dispara ngOnChanges con SimpleChange
+fixture.componentRef.setInput('item', mockItem);
+fixture.detectChanges();
+```
+
+Aplicar a todos los componentes dumb que reaccionen a cambios de `@Input` mediante `ngOnChanges`
+(formularios que se precargan con datos, componentes que muestran botones según permisos, etc.).
+
+**Patrón para componentes que verifican visibilidad RBAC:**
+
+```typescript
+function setup(item: MiDTO | null, canDeactivate: boolean) {
+  TestBed.configureTestingModule({
+    imports: [MiFormComponent],
+    providers: [provideAnimations()],
+  });
+  const fixture = TestBed.createComponent(MiFormComponent);
+  fixture.componentRef.setInput('item', item);
+  fixture.componentRef.setInput('canDeactivate', canDeactivate);
+  fixture.detectChanges();
+  return { fixture, component: fixture.componentInstance };
+}
+
+// Verificar visibilidad de botón destructivo
+it('botón Desactivar solo visible con canDeactivate=true e isEdit=true', () => {
+  const { fixture } = setup(mockItem, true);
+  const btn = fixture.nativeElement.querySelector('button[color="warn"]');
+  expect(btn).not.toBeNull();
+  expect(btn?.textContent?.trim()).toBe('Desactivar');
+});
+```
+
+**Patrón para traducción de enums a español (UI):**
+
+Todo componente que muestre valores enum del backend al usuario debe incluir un método
+de traducción y tener spec que lo cubra:
+
+```typescript
+// En el componente
+getStatusLabel(status: string): string {
+  const labels: Record<string, string> = {
+    AVAILABLE:    'Disponible',
+    DISCONTINUED: 'Descontinuado',
+    OUT_OF_STOCK: 'Sin stock',
+  };
+  return labels[status] ?? status;   // fallback = valor original
+}
+
+// En el spec
+it('debe retornar el valor original cuando el status no está en el mapa (fallback)', () => {
+  expect(component.getStatusLabel('VALOR_DESCONOCIDO')).toBe('VALOR_DESCONOCIDO');
+});
+```
+
+**Decisión de cobertura — cuándo escribir specs para componentes smart vs dumb:**
+
+| Tipo | ¿Specs unitarios? | Justificación |
+|---|---|---|
+| Servicios HTTP | Siempre | Verifican contratos HTTP exactos que los tests browser no inspeccionan |
+| Componentes dumb con lógica | Siempre | Visibilidad RBAC, traducciones, outputs — 0 mocks necesarios |
+| Componentes dumb puramente visuales | Opcional | Si la lógica está en el template, el browser test es suficiente |
+| Componentes smart | Cobertura por browser test | Su lógica es orquestación — los tests E2E la cubren mejor |
 
 ### 3.9 ESLint — Reglas Angular
 
@@ -690,6 +762,10 @@ Este checklist se completa en la **sección 10** de la memoria técnica de cada 
 □ ng lint: 0 errores de ESLint
 □ ng build: 0 errores en build de producción
 □ ng test: 0 fallos, cobertura ≥ 70% statements
+□ Componentes dumb con @Input/@Output: specs unitarios escritos (visibilidad, outputs, precarga)
+□ Métodos de traducción de enum (getStatusLabel, etc.): specs con fallback incluido
+□ Tests RBAC backend: *SecurityTest por controlador con @Import(SecurityConfig.class) + tokenConRol()
+□ Excepciones tipadas: servicios usan ResourceNotFoundException / DuplicateResourceException / BusinessRuleException
 □ PageResponse<T>: todos los listados usan paginación server-side
 □ takeUntilDestroyed / async pipe: sin memory leaks
 □ OnPush: aplicado en componentes dumb
@@ -707,5 +783,6 @@ Este checklist se completa en la **sección 10** de la memoria técnica de cada 
 
 ---
 
-*Referencia de estándares v1.0 — Frontend Almacenes — 2026-06-05*  
+*Referencia de estándares v1.1 — Frontend Almacenes — 2026-06-07*  
+*v1.1: Sección 3.8 ampliada con patrones de testing establecidos en Módulo 2 (setInput(), RBAC JWT simulado, decisión smart/dumb). Checklist 7 actualizado con nuevos criterios.*  
 *Actualizar si se adoptan nuevos estándares o se descubren excepciones justificadas.*
