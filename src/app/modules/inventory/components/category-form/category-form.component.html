@@ -5,7 +5,7 @@
   </h3>
 
   <mat-form-field appearance="outline" class="category-form__field">
-    <mat-label>Nombre <span class="required">*</span></mat-label>
+    <mat-label>Nombre</mat-label>
     <input matInput formControlName="name" maxlength="120" autocomplete="off" />
     @if (form.get('name')?.hasError('required') && form.get('name')?.touched) {
       <mat-error>El nombre es obligatorio.</mat-error>

@@ -8,7 +8,7 @@
 
     <!-- SKU -->
     <mat-form-field appearance="outline">
-      <mat-label>SKU <span class="required">*</span></mat-label>
+      <mat-label>SKU</mat-label>
       <input matInput formControlName="sku" maxlength="50" autocomplete="off" />
       @if (form.get('sku')?.hasError('required') && form.get('sku')?.touched) {
         <mat-error>El SKU es obligatorio.</mat-error>
@@ -17,7 +17,7 @@
 
     <!-- Nombre -->
     <mat-form-field appearance="outline">
-      <mat-label>Nombre <span class="required">*</span></mat-label>
+      <mat-label>Nombre</mat-label>
       <input matInput formControlName="name" maxlength="150" autocomplete="off" />
       @if (form.get('name')?.hasError('required') && form.get('name')?.touched) {
         <mat-error>El nombre es obligatorio.</mat-error>
@@ -26,7 +26,7 @@
 
     <!-- Precio -->
     <mat-form-field appearance="outline">
-      <mat-label>Precio <span class="required">*</span></mat-label>
+      <mat-label>Precio</mat-label>
       <span matTextPrefix>$&nbsp;</span>
       <input matInput type="number" formControlName="price" min="0.01" step="0.01" />
       @if (form.get('price')?.hasError('required') && form.get('price')?.touched) {
@@ -39,7 +39,7 @@
 
     <!-- Costo unitario -->
     <mat-form-field appearance="outline">
-      <mat-label>Costo unitario <span class="required">*</span></mat-label>
+      <mat-label>Costo unitario</mat-label>
       <span matTextPrefix>$&nbsp;</span>
       <input matInput type="number" formControlName="unitCost" min="0.01" step="0.01" />
       @if (form.get('unitCost')?.hasError('required') && form.get('unitCost')?.touched) {
@@ -48,7 +48,7 @@
     </mat-form-field>
 
     <!-- Stock actual -->
-    <mat-form-field appearance="outline">
+    <mat-form-field appearance="outline" [subscriptSizing]="isEdit ? 'dynamic' : 'fixed'">
       <mat-label>Stock {{ isEdit ? 'físico (solo lectura)' : 'inicial' }}</mat-label>
       <input matInput type="number" formControlName="currentStock" min="0" />
       @if (isEdit) {
@@ -64,7 +64,7 @@
 
     <!-- Estado -->
     <mat-form-field appearance="outline">
-      <mat-label>Estado <span class="required">*</span></mat-label>
+      <mat-label>Estado</mat-label>
       <mat-select formControlName="status">
         @for (opt of statusOptions; track opt.value) {
           <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
@@ -74,7 +74,7 @@
 
     <!-- Categoría -->
     <mat-form-field appearance="outline">
-      <mat-label>Categoría <span class="required">*</span></mat-label>
+      <mat-label>Categoría</mat-label>
       <mat-select formControlName="categoryId">
         @for (cat of categories; track cat.id) {
           <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
@@ -87,7 +87,7 @@
 
     <!-- Proveedor -->
     <mat-form-field appearance="outline" class="product-form__full-width">
-      <mat-label>Proveedor <span class="required">*</span></mat-label>
+      <mat-label>Proveedor</mat-label>
       <mat-select formControlName="supplierId">
         @for (sup of suppliers; track sup.id) {
           <mat-option [value]="sup.id">{{ sup.name }}</mat-option>
