@@ -13,6 +13,25 @@ export class ProductService {
   private readonly suppliersApi = `${environment.apiUrl}/purchases/suppliers`;
   private http = inject(HttpClient);
 
+  search(params: {
+    search?: string;
+    categoryId?: number;
+    status?: string;
+    supplierId?: number;
+    page?: number;
+    size?: number;
+  } = {}): Observable<PageResponse<ProductResponseDTO>> {
+    const httpParams: Record<string, string | number> = {
+      page: params.page ?? 0,
+      size: params.size ?? 20
+    };
+    if (params.search?.trim()) httpParams['search'] = params.search.trim();
+    if (params.categoryId != null) httpParams['categoryId'] = params.categoryId;
+    if (params.status) httpParams['status'] = params.status;
+    if (params.supplierId != null) httpParams['supplierId'] = params.supplierId;
+    return this.http.get<PageResponse<ProductResponseDTO>>(this.api, { params: httpParams });
+  }
+
   getById(id: number): Observable<ProductResponseDTO> {
     return this.http.get<ProductResponseDTO>(`${this.api}/${id}`);
   }
