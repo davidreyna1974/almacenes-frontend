@@ -35,7 +35,7 @@
 
     <!-- Tipo -->
     <mat-form-field appearance="outline" class="movement-dialog__field">
-      <mat-label>Tipo de movimiento <span class="required">*</span></mat-label>
+      <mat-label>Tipo de movimiento</mat-label>
       <mat-select formControlName="type">
         <mat-option value="IN">Entrada (IN)</mat-option>
         <mat-option value="OUT">Salida (OUT)</mat-option>
@@ -44,7 +44,7 @@
 
     <!-- Cantidad -->
     <mat-form-field appearance="outline" class="movement-dialog__field">
-      <mat-label>Cantidad <span class="required">*</span></mat-label>
+      <mat-label>Cantidad</mat-label>
       <input matInput type="number" formControlName="quantity" min="1" />
       @if (form.get('quantity')?.hasError('required') && form.get('quantity')?.touched) {
         <mat-error>La cantidad es obligatoria.</mat-error>
@@ -59,7 +59,7 @@
 
     <!-- Motivo -->
     <mat-form-field appearance="outline" class="movement-dialog__field movement-dialog__reason">
-      <mat-label>Motivo <span class="required">*</span></mat-label>
+      <mat-label>Motivo</mat-label>
       <textarea matInput formControlName="reason" rows="3" maxlength="300"></textarea>
       @if (form.get('reason')?.hasError('required') && form.get('reason')?.touched) {
         <mat-error>El motivo es obligatorio.</mat-error>
