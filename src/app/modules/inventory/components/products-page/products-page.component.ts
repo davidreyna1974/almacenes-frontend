@@ -14,8 +14,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { debounceTime, distinctUntilChanged, filter, switchMap, catchError } from 'rxjs/operators';
-import { forkJoin, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
+import { forkJoin } from 'rxjs';
 
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
@@ -38,11 +38,11 @@ const DIALOG_CONFIG = {
   panelClass:    'catalog-form-dialog',
 };
 
-// Página vacía reutilizable para resultados no encontrados (sin lanzar error)
-const EMPTY_PAGE = <PageResponse<ProductResponseDTO>>{
-  content: [], currentPage: 0, totalPages: 0,
-  totalElements: 0, size: 0, first: true, last: true,
-};
+const PRODUCT_STATUSES = [
+  { value: 'AVAILABLE',    label: 'Disponible'     },
+  { value: 'DISCONTINUED', label: 'Descontinuado'  },
+  { value: 'OUT_OF_STOCK', label: 'Sin stock'       },
+];
 
 @Component({
   selector: 'app-products-page',
@@ -77,25 +77,33 @@ export class ProductsPageComponent implements OnInit {
   private destroyRef      = inject(DestroyRef);
   private cdr             = inject(ChangeDetectorRef);
 
-  displayedColumns = ['sku', 'name', 'categoryName', 'stock', 'price', 'status', 'actions'];
+  displayedColumns = ['sku', 'name', 'categoryName', 'supplierName', 'stock', 'price', 'status', 'actions'];
 
   products: ProductResponseDTO[] = [];
   page: PageResponse<ProductResponseDTO> | null = null;
   currentPage = 0;
   pageSize    = 20;
 
-  categories: CategoryDTO[]   = [];
-  suppliers:  SupplierOption[] = [];
+  categories:  CategoryDTO[]    = [];
+  suppliers:   SupplierOption[] = [];
+  statuses     = PRODUCT_STATUSES;
 
   loading = false;
 
-  searchControl  = new FormControl('');
-  categoryFilter = new FormControl<number | null>(null);
+  searchControl    = new FormControl('');
+  categoryFilter   = new FormControl<number | null>(null);
+  statusFilter     = new FormControl<string | null>(null);
+  supplierFilter   = new FormControl<number | null>(null);
 
   // ─── Getters ────────────────────────────────────────────────────────────────
 
-  get selectedCategory(): CategoryDTO | null {
-    return this.categories.find(c => c.id === this.categoryFilter.value) ?? null;
+  get activeFilterCount(): number {
+    return [
+      this.searchControl.value?.trim(),
+      this.categoryFilter.value,
+      this.statusFilter.value,
+      this.supplierFilter.value,
+    ].filter(v => v != null && v !== '').length;
   }
 
   canWrite():            boolean { return this.authService.hasRole('ROLE_ADMIN') || this.authService.hasRole('ROLE_MANAGER'); }
@@ -126,89 +134,47 @@ export class ProductsPageComponent implements OnInit {
       }
     });
 
-    // Solo reacciona cuando el campo SKU queda vacío (usuario lo borró manualmente)
-    // La búsqueda activa se dispara únicamente con Enter (ver searchBySku)
+    // Búsqueda de texto: debounce 400ms — permite tipeo fluido antes de llamar al backend
     this.searchControl.valueChanges.pipe(
-      debounceTime(200),
+      debounceTime(400),
       distinctUntilChanged(),
       takeUntilDestroyed(this.destroyRef)
-    ).subscribe(value => {
-      if (!value?.trim()) {
-        this.currentPage = 0;
-        this.load();
-      }
-    });
-
-    // Cambio de categoría: desactiva SKU, carga por categoría
-    this.categoryFilter.valueChanges.pipe(
-      takeUntilDestroyed(this.destroyRef)
     ).subscribe(() => {
-      if (this.searchControl.value?.trim()) {
-        this.searchControl.setValue('', { emitEvent: false });
-      }
       this.currentPage = 0;
       this.load();
     });
 
-    this.load();
-  }
+    // Filtros de selección: reaccionan inmediatamente al cambio
+    this.categoryFilter.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => { this.currentPage = 0; this.load(); });
 
-  // ─── Búsqueda por SKU (solo se dispara con Enter) ───────────────────────────
+    this.statusFilter.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => { this.currentPage = 0; this.load(); });
 
-  searchBySku(): void {
-    this.categoryFilter.setValue(null, { emitEvent: false });
-    this.currentPage = 0;
+    this.supplierFilter.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => { this.currentPage = 0; this.load(); });
+
     this.load();
   }
 
   // ─── Carga de datos ─────────────────────────────────────────────────────────
 
   load(): void {
-    const sku   = this.searchControl.value?.trim() ?? '';
-    const catId = this.categoryFilter.value;
-
-    if (!sku && !catId) {
-      this.products = [];
-      this.page     = null;
-      this.loading  = false;
-      this.cdr.detectChanges();
-      return;
-    }
-
     this.loading = true;
     this.cdr.detectChanges();
 
-    let obs$;
-    if (sku) {
-      obs$ = this.productService.getBySku(sku).pipe(
-        switchMap(p => of(<PageResponse<ProductResponseDTO>>{
-          content: [p], currentPage: 0, totalPages: 1, totalElements: 1,
-          size: 1, first: true, last: true,
-        })),
-        // 404 / 400: SKU no existe → resultado vacío, sin mostrar snackbar de error
-        catchError(err => {
-          if (err.status === 404 || err.status === 400) return of(EMPTY_PAGE);
-          throw err;
-        })
-      );
-    } else {
-      obs$ = this.productService.getByCategory(catId!, this.currentPage, this.pageSize);
-    }
-
-    obs$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+    this.productService.search({
+      search:     this.searchControl.value?.trim() || undefined,
+      categoryId: this.categoryFilter.value ?? undefined,
+      status:     this.statusFilter.value ?? undefined,
+      supplierId: this.supplierFilter.value ?? undefined,
+      page:       this.currentPage,
+      size:       this.pageSize,
+    }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: (page) => {
         this.page     = page;
         this.products = page.content;
         this.loading  = false;
-
-        // Al encontrar un producto por SKU, sincronizar la categoría (sin emitir)
-        if (sku && page.content.length > 0) {
-          const foundCatId = page.content[0].categoryId;
-          if (foundCatId !== this.categoryFilter.value) {
-            this.categoryFilter.setValue(foundCatId, { emitEvent: false });
-          }
-        }
-
         this.cdr.detectChanges();
       },
       error: () => {
@@ -217,6 +183,15 @@ export class ProductsPageComponent implements OnInit {
         this.snackBar.open('Error al cargar productos.', 'Cerrar', { duration: 4000, panelClass: ['snackbar-error'] });
       }
     });
+  }
+
+  clearFilters(): void {
+    this.searchControl.setValue('',   { emitEvent: false });
+    this.categoryFilter.setValue(null, { emitEvent: false });
+    this.statusFilter.setValue(null,   { emitEvent: false });
+    this.supplierFilter.setValue(null,  { emitEvent: false });
+    this.currentPage = 0;
+    this.load();
   }
 
   // ─── Eventos de UI ──────────────────────────────────────────────────────────
@@ -266,11 +241,6 @@ export class ProductsPageComponent implements OnInit {
   }
 
   getStatusLabel(status: string): string {
-    const map: Record<string, string> = {
-      AVAILABLE:    'Disponible',
-      DISCONTINUED: 'Descontinuado',
-      OUT_OF_STOCK: 'Sin stock',
-    };
-    return map[status] ?? status;
+    return PRODUCT_STATUSES.find(s => s.value === status)?.label ?? status;
   }
 }

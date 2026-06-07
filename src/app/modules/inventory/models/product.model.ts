@@ -16,6 +16,7 @@ export interface ProductResponseDTO {
   categoryId: number;
   categoryName: string;
   supplierId: number;
+  supplierName: string;
   createdAt: string;
   createdByUsername: string;
   updatedAt: string;

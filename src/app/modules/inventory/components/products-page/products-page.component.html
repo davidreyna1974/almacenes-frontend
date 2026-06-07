@@ -1,36 +1,60 @@
 <div class="catalog-page">
 
-  <!-- Barra de acciones -->
+  <!-- Barra de filtros + acciones -->
   <div class="catalog-page__toolbar">
     <div class="catalog-page__filters">
 
-      <!-- Grupo: Categoría -->
-      <div class="filter-group filter-group--category">
-        <mat-form-field appearance="outline" class="filter-field filter-field--cat">
-          <mat-label>Categoría</mat-label>
-          <mat-select [formControl]="categoryFilter">
-            <mat-option [value]="null">Todas</mat-option>
-            @for (cat of categories; track cat.id) {
-              <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-        @if (selectedCategory?.description) {
-          <span class="category-desc" aria-live="polite">{{ selectedCategory!.description }}</span>
-        }
-      </div>
-
-      <!-- Divisor -->
-      <div class="filter-sep" aria-hidden="true"></div>
-
-      <!-- Búsqueda por SKU -->
+      <!-- Búsqueda libre: SKU o nombre -->
       <mat-form-field appearance="outline" class="filter-field filter-field--search">
-        <mat-label>Buscar por SKU</mat-label>
-        <input matInput [formControl]="searchControl" autocomplete="off"
-               (keydown.enter)="searchBySku()" />
+        <mat-label>Buscar por código o nombre</mat-label>
+        <input matInput [formControl]="searchControl" autocomplete="off" />
         <mat-icon matSuffix>search</mat-icon>
-        <mat-hint>Presiona Enter para buscar</mat-hint>
       </mat-form-field>
+
+      <!-- Filtro: Categoría -->
+      <mat-form-field appearance="outline" class="filter-field filter-field--cat">
+        <mat-label>Categoría</mat-label>
+        <mat-select [formControl]="categoryFilter">
+          <mat-option [value]="null">Todas</mat-option>
+          @for (cat of categories; track cat.id) {
+            <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Filtro: Estado -->
+      <mat-form-field appearance="outline" class="filter-field filter-field--status">
+        <mat-label>Estado</mat-label>
+        <mat-select [formControl]="statusFilter">
+          <mat-option [value]="null">Todos</mat-option>
+          @for (s of statuses; track s.value) {
+            <mat-option [value]="s.value">{{ s.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Filtro: Proveedor -->
+      <mat-form-field appearance="outline" class="filter-field filter-field--supplier">
+        <mat-label>Proveedor</mat-label>
+        <mat-select [formControl]="supplierFilter">
+          <mat-option [value]="null">Todos</mat-option>
+          @for (sup of suppliers; track sup.id) {
+            <mat-option [value]="sup.id">{{ sup.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Limpiar filtros -->
+      @if (activeFilterCount > 0) {
+        <button mat-icon-button
+                (click)="clearFilters()"
+                matTooltip="Limpiar filtros"
+                matTooltipShowDelay="300"
+                class="btn-clear-filters"
+                aria-label="Limpiar todos los filtros">
+          <mat-icon>filter_alt_off</mat-icon>
+        </button>
+      }
 
     </div>
 
@@ -50,13 +74,9 @@
   }
 
   <!-- Contenido -->
-  @if (!loading && page === null) {
+  @if (!loading && products.length === 0) {
     <div class="catalog-page__empty">
-      <app-empty-state variant="empty" />
-    </div>
-  } @else if (!loading && products.length === 0) {
-    <div class="catalog-page__empty">
-      <app-empty-state variant="no-results" />
+      <app-empty-state [variant]="activeFilterCount > 0 ? 'no-results' : 'empty'" />
     </div>
   } @else {
     <div class="catalog-page__table-wrapper">
@@ -64,7 +84,7 @@
 
         <!-- SKU -->
         <ng-container matColumnDef="sku">
-          <th mat-header-cell *matHeaderCellDef>SKU</th>
+          <th mat-header-cell *matHeaderCellDef>Código</th>
           <td mat-cell *matCellDef="let row" class="cell-mono">{{ row.sku }}</td>
         </ng-container>
 
@@ -81,6 +101,15 @@
         <ng-container matColumnDef="categoryName">
           <th mat-header-cell *matHeaderCellDef>Categoría</th>
           <td mat-cell *matCellDef="let row">{{ row.categoryName }}</td>
+        </ng-container>
+
+        <!-- Proveedor -->
+        <ng-container matColumnDef="supplierName">
+          <th mat-header-cell *matHeaderCellDef>Proveedor</th>
+          <td mat-cell *matCellDef="let row" class="cell-truncate"
+              [matTooltip]="row.supplierName" matTooltipShowDelay="300">
+            {{ row.supplierName ?? '—' }}
+          </td>
         </ng-container>
 
         <!-- Stock -->
