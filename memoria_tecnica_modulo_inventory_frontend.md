@@ -81,16 +81,23 @@ Todas protegidas con `authGuard`. Acciones de escritura controladas por
 panel detalle inline con `CategoryFormComponent`. Botón "Nuevo" abre el formulario en blanco.
 Desactivar muestra `ConfirmDialogComponent`.
 
-**ProductsPageComponent**: panel lista con filtro por categoría, búsqueda por nombre/SKU,
-badge de stock. Panel detalle con tabs: "Datos" (`ProductFormComponent`) y "Kardex"
-(tabla paginada de `StockMovementResponseDTO`). Botón "Registrar movimiento" abre
-`MovementDialogComponent`.
+**ProductsPageComponent**: panel lista con cuatro filtros combinables (búsqueda parcial
+por código o nombre con debounce 400ms, selector de categoría, selector de estado,
+selector de proveedor) + botón "limpiar filtros" cuando hay alguno activo. Carga todos
+los productos activos por defecto al entrar. Tabla con columnas: código, nombre, categoría,
+proveedor, stock (badge), precio, estado, acciones. Panel detalle con tabs: "Datos"
+(`ProductFormComponent`) y "Kardex" (tabla paginada de `StockMovementResponseDTO`).
+Botón "Registrar movimiento" abre `MovementDialogComponent`.
+
+*Actualizado 2026-06-06*: búsqueda cambiada de SKU exacto (Enter) a parcial por SKU+nombre
+(debounce). Agregados filtros de estado y proveedor. Columna proveedor visible en tabla.
+Estado inicial cambiado de pantalla vacía a carga de todos los productos activos.
 
 ---
 
 ## 4. Servicios y contratos con el backend
 
-> ⚠️ **Sección auditada el 2026-06-05** — contratos verificados contra el OpenAPI del backend
+> ⚠️ **Sección auditada el 2026-06-06** — contratos verificados contra el OpenAPI del backend
 > y comportamiento observado en browser. Errores de la propuesta original corregidos aquí.
 
 ### 4.1 Endpoints consumidos (verificados)
@@ -296,9 +303,9 @@ Las rutas no requieren guard adicional (todos los roles autenticados pueden acce
 | Archivo de spec | Tipo | Qué verificar |
 |---|---|---|
 | `category.service.spec.ts` | B (servicio HTTP) | CRUD de categorías, manejo de errores |
-| `product.service.spec.ts` | B (servicio HTTP) | CRUD productos, mapping `companyName`→`name`, 204 en movement |
+| `product.service.spec.ts` | B (servicio HTTP) | search() con parámetros opcionales, CRUD productos, mapping `companyName`→`name`, 204 en movement |
 | `categories-page.component.spec.ts` | A (componente) | Carga de lista, apertura de detalle, flujo de guardado |
-| `products-page.component.spec.ts` | A (componente) | Filtros, búsqueda por SKU, lowStock toggle, early-return sin filtro |
+| `products-page.component.spec.ts` | A (componente) | Carga por defecto, búsqueda parcial SKU+nombre con debounce, filtros por categoría/estado/proveedor, botón limpiar filtros, paginación |
 | `product-detail.component.spec.ts` | A (componente) | Carga de Kardex al cambiar `item`, paginación de movimientos |
 | `stock-badge.component.spec.ts` | A (componente dumb) | Colores según umbrales de stock |
 | `movement-dialog.component.spec.ts` | A (componente) | Formulario reactivo, emisión de resultado `true`/`false` |

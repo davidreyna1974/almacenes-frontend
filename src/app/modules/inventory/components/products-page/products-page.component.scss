@@ -48,40 +48,20 @@
 }
 
 .filter-field {
-  &--search { width: 210px; }
-  &--cat    { width: 190px; }
+  &--search   { width: 220px; }
+  &--cat      { width: 180px; }
+  &--status   { width: 160px; }
+  &--supplier { width: 180px; }
 }
 
-// Grupo categoría
-.filter-group--category {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-divider);
-  border-radius: 10px;
-  padding: 6px 14px 8px;
-}
-
-.filter-sep {
-  width: 1px;
-  height: 48px;
-  background: var(--color-divider);
-  align-self: center;
-  flex-shrink: 0;
-  margin: 0 var(--space-1);
-}
-
-.category-desc {
-  font-size: 0.8125rem;
+.btn-clear-filters {
   color: var(--color-text-secondary);
-  font-style: italic;
-  max-width: 220px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  padding: 0 4px 2px;
+  align-self: center;
+  margin-bottom: 2px;
+
+  &:hover {
+    color: var(--color-error, #C62828);
+  }
 }
 
 .catalog-table {
