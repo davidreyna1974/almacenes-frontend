@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
 import { ProductResponseDTO, ProductRequestDTO, SupplierOption } from '../../models/product.model';
 import { CategoryDTO } from '../../models/category.model';
 
@@ -26,6 +27,7 @@ export const STATUS_OPTIONS = [
     MatSelectModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    MatIconModule,
   ],
   templateUrl: './product-form.component.html',
   styleUrl: './product-form.component.scss',
