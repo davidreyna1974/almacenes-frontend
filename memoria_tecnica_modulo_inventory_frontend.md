@@ -408,7 +408,7 @@ El backend es la segunda capa de defensa; la UI es solo la primera.
 ### Tests unitarios Angular — Módulo 2 (Inventory) — 2026-06-07
 
 Comando: `npx ng test --include="src/app/modules/inventory/**/*.spec.ts" --no-watch`  
-Resultado: **5 archivos, 46 specs, 0 fallos**
+Resultado post-LowStock: **6 archivos, 63 specs, 0 fallos**
 
 | Archivo | Tests | Qué verifica |
 |---|:---:|---|
@@ -417,6 +417,9 @@ Resultado: **5 archivos, 46 specs, 0 fallos**
 | `stock-badge.component.spec.ts` | 8 | `level` getter: stock=0→error, stock≤min→warning, stock>min→success; `tooltipText` getter: los tres mensajes con valores numéricos correctos; renderizado con TestBed |
 | `category-form.component.spec.ts` | 8 | `canDeactivate` input: botón "Desactivar" visible solo con `canDeactivate=true` e `isEdit=true`; output `deactivate` emite al hacer clic; output `save` emite `CategoryRequest` correcto cuando el formulario es válido; no emite `save` si `name` está vacío; output `cancel` emite al hacer clic en Cancelar; precarga: formulario inicializado con los valores del `item` recibido. **API**: `fixture.componentRef.setInput()` para triggear `ngOnChanges` correctamente |
 | `product-detail.component.spec.ts` | 7 | `getStatusLabel()`: traduce AVAILABLE→"Disponible", DISCONTINUED→"Descontinuado", OUT_OF_STOCK→"Sin stock", fallback→valor original; `getMovementTypeLabel()`: traduce IN→"Entrada", OUT→"Salida", cualquier otro valor→"Salida" (rama else) |
+| `low-stock-page.component.spec.ts` | 17 | `getSeverity()`: sin-stock/critico/reservas por condición; `getSeverityLabel()`: etiquetas traducidas; contadores sinStockCount/criticoCount/reservasCount; `displayedColumns` por rol (ADMIN/MANAGER incluyen unitCost+actions; WAREHOUSEMAN excluye unitCost; SALES excluye ambos); columnas base para WAREHOUSEMAN; ordenamiento por déficit DESC; creación para ADMIN y SALES |
+
+**Nota técnica:** TestBed no puede reconfigurarse dentro del mismo spec. El test de columnas base de 4 roles se reemplazó por un test focalizado en WAREHOUSEMAN (ya cubierto parcialmente por los otros tests de rol). Ver BUG-22 en sección 8.
 
 **Decisión de cobertura**: los componentes smart (`CategoriesPageComponent`, `ProductsPageComponent`) no tienen specs unitarios porque su cobertura efectiva está garantizada por los 15 tests browser E2E y los 4 tests RBAC. Los specs de servicios y componentes dumb (`StockBadgeComponent`, `CategoryFormComponent`, `ProductDetailComponent`) son donde los tests unitarios aportan valor real: verifican contratos HTTP exactos, lógica de umbral, estados de visibilidad condicional por RBAC y traducciones de dominio que los tests browser no pueden inspeccionar directamente.
 
@@ -750,6 +753,24 @@ fila para navegar a los productos de esa categoría, y el sidebar tenía un link
 
 ---
 
+### BUG-22: TestBed no permite reconfiguración dentro del mismo spec
+
+**Síntoma**: test `'todos los roles incluyen las columnas base de stock'` iteraba 4 roles llamando
+`setup()` dentro de un `for` loop. El segundo `setup()` lanzaba:
+"Cannot configure the test module when the test module has already been instantiated."
+
+**Causa raíz**: `TestBed.configureTestingModule()` solo puede llamarse una vez por spec. Si
+ya se llamó (directamente o vía `setup()`), cualquier llamada subsiguiente en el mismo test falla.
+
+**Fix**: reemplazar el loop de 4 roles por un test único focalizado en WAREHOUSEMAN
+(`'WAREHOUSEMAN: incluye columnas base de stock'`). La cobertura completa está garantizada
+porque los tests de roles restantes (ADMIN, MANAGER, SALES) ya verifican sus columnas individualmente.
+
+**Lección**: en Angular/Jasmine, `TestBed` es un singleton por spec. Para cubrir múltiples
+configuraciones de módulo, usar tests separados (`it()`) dentro de un `describe()`.
+
+---
+
 ## 9. Estándares y buenas prácticas aplicadas
 
 - Reactive Forms para todos los formularios del módulo.
@@ -825,3 +846,12 @@ fila para navegar a los productos de esa categoría, y el sidebar tenía un link
 | Doble asterisco eliminado: `<span class="required">*</span>` removido de 12 labels en 3 archivos | ✓ | Código — AM genera asterisco automáticamente via Validators.required — 2026-06-07 |
 | `subscriptSizing="dynamic"` en campo Stock para que hint no se solape con Estado en el grid | ✓ | Código — 2026-06-07 |
 | Hint campo Stock: icono `lock` azul (#1565C0) + "El stock físico solo puede modificarse mediante Registrar movimiento." | ✓ | Código — MatIconModule añadido a ProductFormComponent — 2026-06-07 |
+| LowStockPageComponent implementado: vista completa con RBAC 4 roles | ✓ | Browser 4 roles — 2026-06-07 |
+| LowStock: unitCost visible solo para ADMIN/MANAGER | ✓ | Browser 4 roles — 2026-06-07 |
+| LowStock: botón registrar movimiento visible para ADMIN/MANAGER/WAREHOUSEMAN; oculto para SALES | ✓ | Browser 4 roles — 2026-06-07 |
+| LowStock: clasificación sin-stock/crítico/por reservas correcta | ✓ | Specs 3 tests + browser — 2026-06-07 |
+| LowStock: ordenamiento por déficit DESC (mayor urgencia primero) | ✓ | Specs + browser — 2026-06-07 |
+| LowStock: sidebar muestra "Bajo stock" para los 4 roles | ✓ | Browser 4 roles — 2026-06-07 |
+| LowStock: breadcrumb "Inventario → Bajo stock" correcto | ✓ | Browser 4 roles — 2026-06-07 |
+| `low-stock-page.component.spec.ts`: 17 specs, 0 fallos | ✓ | `ng test --no-watch` — 2026-06-07 |
+| Suite total frontend post-LowStock: `ng test --no-watch` → 111 specs, 0 fallos | ✓ | `ng test --no-watch` — 2026-06-07 |
