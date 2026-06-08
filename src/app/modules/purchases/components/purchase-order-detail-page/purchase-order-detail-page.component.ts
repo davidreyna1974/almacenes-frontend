@@ -124,7 +124,7 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
         },
         error: err => {
           this.snackBar.open(err.error?.message ?? 'Error al cargar la orden', 'Cerrar',
-            { duration: 4000, panelClass: 'snack-error' });
+            { duration: 4000, panelClass: 'snackbar-error' });
           this.loading = false;
           this.router.navigate(['/purchases/orders']);
         },
@@ -147,12 +147,12 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: order => {
         this.snackBar.open('Orden creada correctamente.', 'Cerrar',
-          { duration: 3000, panelClass: 'snack-success' });
+          { duration: 3000, panelClass: 'snackbar-success' });
         this.router.navigate(['/purchases/orders', order.id]);
       },
       error: err => {
         this.snackBar.open(err.error?.message ?? 'Error al crear la orden', 'Cerrar',
-          { duration: 4000, panelClass: 'snack-error' });
+          { duration: 4000, panelClass: 'snackbar-error' });
         this.loading = false;
         this.cdr.markForCheck();
       },
@@ -170,13 +170,13 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: order => {
           this.order = order;
-          this.snackBar.open('Orden actualizada.', 'Cerrar', { duration: 3000, panelClass: 'snack-success' });
+          this.snackBar.open('Orden actualizada.', 'Cerrar', { duration: 3000, panelClass: 'snackbar-success' });
           this.loading = false;
           this.cdr.markForCheck();
         },
         error: err => {
           this.snackBar.open(err.error?.message ?? 'Error al actualizar', 'Cerrar',
-            { duration: 4000, panelClass: 'snack-error' });
+            { duration: 4000, panelClass: 'snackbar-error' });
           this.loading = false;
           this.cdr.markForCheck();
         },
@@ -188,7 +188,7 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
   approve(): void {
     if (!this.order || !this.order.details.length) {
       this.snackBar.open('La orden no tiene líneas de detalle.', 'Cerrar',
-        { duration: 4000, panelClass: 'snack-error' });
+        { duration: 4000, panelClass: 'snackbar-error' });
       return;
     }
     this.dialog.open(ConfirmDialogComponent, {
@@ -223,14 +223,14 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
     op().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: order => {
         this.order = order;
-        this.snackBar.open(msg, 'Cerrar', { duration: 3000, panelClass: 'snack-success' });
+        this.snackBar.open(msg, 'Cerrar', { duration: 3000, panelClass: 'snackbar-success' });
         this.headerForm.disable();
         this.loading = false;
         this.cdr.markForCheck();
       },
       error: err => {
         this.snackBar.open(err.error?.message ?? 'Error en la operación', 'Cerrar',
-          { duration: 5000, panelClass: 'snack-error' });
+          { duration: 5000, panelClass: 'snackbar-error' });
         this.loading = false;
         this.cdr.markForCheck();
       },
@@ -288,13 +288,13 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
         this.editingDetail  = null;
         this.snackBar.open(
           wasEditing ? 'Línea actualizada.' : 'Línea agregada.',
-          'Cerrar', { duration: 3000, panelClass: 'snack-success' });
+          'Cerrar', { duration: 3000, panelClass: 'snackbar-success' });
         this.loading = false;
         this.cdr.markForCheck();
       },
       error: err => {
         this.snackBar.open(err.error?.message ?? 'Error al guardar la línea', 'Cerrar',
-          { duration: 4000, panelClass: 'snack-error' });
+          { duration: 4000, panelClass: 'snackbar-error' });
         this.loading = false;
         this.cdr.markForCheck();
       },
@@ -313,7 +313,7 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
           next: () => { this.loadOrder(this.order!.id); },
           error: err => {
             this.snackBar.open(err.error?.message ?? 'Error al eliminar línea', 'Cerrar',
-              { duration: 4000, panelClass: 'snack-error' });
+              { duration: 4000, panelClass: 'snackbar-error' });
             this.loading = false;
             this.cdr.markForCheck();
           },

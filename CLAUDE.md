@@ -70,8 +70,9 @@ git push origin develop
 
 ## Documentación obligatoria por módulo
 
-Todo módulo nuevo requiere dos archivos en la raíz antes de implementar:
+Todo módulo nuevo requiere **tres archivos** en la raíz antes de implementar:
 - `propuesta_modulo_<nombre>_frontend.txt` — planificación previa al código
+- `casos_de_prueba_modulo_<nombre>.md` — definición de casos ANTES de codificar *(ver sección Protocolo de pruebas)*
 - `memoria_tecnica_modulo_<nombre>_frontend.md` — documento vivo con 10 secciones
 
 **Secciones de la memoria técnica** (actualizar al finalizar cada fase):
@@ -92,6 +93,110 @@ Todo módulo nuevo requiere dos archivos en la raíz antes de implementar:
 - Cobertura: `ng test --coverage` → líneas/statements/branches
 - E2E: comando Cypress/Playwright, endpoints verificados, resultado X/Y — 0 fallos
 - Regresiones: suite pre-módulo X/X → post-módulo X/X
+
+---
+
+## ⚠️ Protocolo obligatorio de pruebas — Propuestas A–D (permanente, todos los módulos)
+
+> **Origen**: Módulo 3 (Purchases) — el módulo se declaró completo antes de estar
+> funcionando. Múltiples bugs de seguridad, lógica y UX solo se descubrieron porque
+> el usuario pidió pruebas explícitamente. Estas cuatro propuestas son la respuesta
+> sistémica y aplican a TODOS los módulos futuros sin excepción.
+
+### Propuesta A — Documento de casos de prueba por módulo (pre-código)
+
+`casos_de_prueba_modulo_<nombre>.md` se crea **antes de escribir una sola línea de
+implementación**, junto con la propuesta del módulo.
+
+**Formato de cada caso:**
+
+| ID | Pantalla | Categoría | Descripción | Rol(es) | Resultado esperado | Estado | Notas |
+|---|---|---|---|---|---|---|---|
+
+**Categorías obligatorias — deben existir casos para TODAS en cada pantalla:**
+
+| Categoría | Qué cubre |
+|---|---|
+| `SEC` | Acceso directo por URL con rol no autorizado → debe redirigir |
+| `RBAC` | Elementos UI que aparecen/desaparecen según rol (botones, columnas, íconos, títulos) |
+| `CRUD` | Crear, leer, editar, eliminar — flujos completos incluyendo recarga de datos |
+| `VAL` | Validaciones de formulario: campo vacío, mínimo, máximo, formato, tipo |
+| `BSRCH` | Búsquedas y autocompletes: parcial, case insensitive, accent insensitive, sin resultados |
+| `UI` | Todos los botones, íconos y acciones verificados uno a uno |
+| `FLOW` | Flujos de estado/negocio: máquina de estados, transiciones, bloqueos |
+| `RN` | Reglas de negocio del backend: qué rechaza, con qué código y mensaje |
+| `ERR` | Mensajes de error: validación, backend (4xx/5xx), red caída |
+| `EMPTY` | Estados vacíos: sin datos iniciales vs sin resultados de búsqueda |
+| `VIS` | Visual: colores, espaciado, truncado, tooltips, responsive |
+
+**Estados de la columna Estado:**
+- `✅ PASS` — verificado en browser y funciona correctamente
+- `❌ FAIL` — bug encontrado (documentar en §8 de la memoria técnica)
+- `⏳ PENDIENTE` — no ejecutado aún
+- `N/A` — no aplica para este módulo/rol
+
+**El documento es el criterio de aceptación.** Un módulo no está "done" si hay casos
+sin estado PASS.
+
+---
+
+### Propuesta B — Prueba de navegador por componente, no por módulo
+
+**Regla obligatoria:**
+> Un componente no está terminado hasta que TODOS sus casos del documento de pruebas
+> tienen estado ✅ PASS verificado en el browser con el rol correcto.
+
+**Consecuencia directa:** no avanzar al siguiente componente hasta completar las pruebas
+del actual. No acumular deuda de verificación para el final del módulo.
+
+**Por qué:** los bugs de RBAC, validaciones y UX solo se detectan en el browser con datos
+reales y el JWT del rol correcto. Los tests unitarios no los detectan.
+
+---
+
+### Propuesta C — Gate de seguridad de rutas (obligatorio en cada ruta nueva)
+
+Al agregar CUALQUIER ruta nueva al router Angular:
+
+```
+[ ] La ruta tiene canActivate: [authGuard]
+[ ] La ruta tiene data: { roles: ['ROLE_X', ...] } con los roles que SÍ tienen acceso
+[ ] Se ejecutó el caso SEC del documento con el rol MENOS privilegiado sin acceso
+    (acceso directo por URL en el browser, no solo esconder el enlace en el sidebar)
+[ ] El sidebar ocultar el ítem NO cuenta como protección — la ruta necesita su propio guard
+```
+
+> **Lección (BUG-M3-07):** SALES podía acceder a /purchases por URL directa porque la
+> ruta no tenía `data.roles`. Esconder el ítem del sidebar es cosmético, no es seguridad.
+
+---
+
+### Propuesta D — Redefinición de "done" para declarar módulo completo
+
+**No ofrecer continuar al siguiente módulo hasta que se cumplan las 4 condiciones:**
+
+```
+[ ] 1. Todos los casos del documento de pruebas tienen estado ✅ PASS
+[ ] 2. ng test --no-watch → 0 fallos; cobertura ≥ 70% statements
+[ ] 3. Las pruebas de navegador de los 4 roles están ejecutadas y documentadas
+[ ] 4. La columna "Estado" del documento de casos de prueba está completamente llena
+         (ninguna fila con ⏳ PENDIENTE)
+```
+
+**Si el usuario pide continuar al siguiente módulo y alguna condición no se cumple:**
+indicar explícitamente qué condición falta antes de avanzar.
+
+---
+
+### Checklist de apertura de módulo (antes de codificar)
+
+```
+[ ] propuesta_modulo_<nombre>_frontend.txt creada
+[ ] casos_de_prueba_modulo_<nombre>.md creada con TODOS los casos definidos
+    (categorías SEC, RBAC, CRUD, VAL, BSRCH, UI, FLOW, RN, ERR, EMPTY, VIS)
+[ ] memoria_tecnica_modulo_<nombre>_frontend.md iniciada
+[ ] Gate de seguridad verificado para todas las rutas del módulo (Propuesta C)
+```
 
 ---
 
@@ -171,44 +276,48 @@ verificaciones. No basta con que el código compile y los tests unitarios pasen.
 > fueron descubiertos por el usuario en lugar de por el desarrollador porque este protocolo
 > no existía. La responsabilidad de verificar cada ítem es del desarrollador, no del usuario.
 
-### Checklist de cierre por componente
+### Checklist de cierre por componente (Propuesta B)
 
 ```
+[ ] Todos los casos del documento casos_de_prueba_modulo_<nombre>.md para ESTA
+    pantalla/componente tienen estado ✅ PASS — ninguno ⏳ PENDIENTE
+[ ] Los casos cubren las categorías: SEC, RBAC, CRUD, VAL, BSRCH, UI, FLOW, RN, ERR, EMPTY
 [ ] ng test --no-watch ejecutado → 0 fallos en la suite completa
-[ ] Prueba browser (Playwright) para cada rol con acceso a la pantalla:
-    [ ] Elementos UI aparecen/ocultan según rol (botones, columnas, acciones)
-    [ ] Flujo principal (crear / editar / ver) sin errores de consola
-    [ ] Estados vacíos y de error se muestran correctamente
+[ ] Prueba browser para cada rol con acceso a la pantalla:
+    [ ] Todos los botones e íconos de acción verificados uno a uno (categoría UI)
+    [ ] Todos los campos de búsqueda: case insensitive, accent insensitive, sin resultados
+    [ ] Elementos UI aparecen/ocultan según rol (botones, columnas, acciones, títulos)
+    [ ] Flujo principal happy path sin errores de consola
+    [ ] Todos los mensajes de error del backend son visibles y útiles en la UI
+    [ ] Estados vacíos: sin datos iniciales y sin resultados de búsqueda
+[ ] Gate de seguridad de rutas verificado (Propuesta C):
+    [ ] canActivate: [authGuard] con data.roles configurado
+    [ ] Acceso directo por URL con rol no autorizado → redirige correctamente
 [ ] Para cada regla de negocio del backend aplicable a esta pantalla:
-    [ ] El componente muestra el dato CORRECTO que la regla valida (no un proxy)
-    [ ] Validación preventiva antes del submit (no solo snackbar de error)
-    [ ] Mensaje de error del backend visible en la UI de forma útil
+    [ ] El componente muestra el dato CORRECTO que la regla valida (no un campo proxy)
+    [ ] Validación preventiva antes del submit cuando es posible
+    [ ] Mensaje de error del backend (4xx/422) visible en la UI como snackbar rojo
 [ ] Campos de solo lectura en modo edición:
     [ ] Deshabilitados con disable() — no solo visualmente bloqueados
-    [ ] Hint explicativo que indica cómo modificarlos (icono + color informativo)
-    [ ] subscriptSizing="dynamic" si el hint tiene altura variable
     [ ] form.getRawValue() usado al emitir si el campo disabled debe enviarse
-[ ] Datos sensibles (unitCost, costos, márgenes):
-    [ ] Visibles SOLO para roles autorizados (canWrite() u otro guard de rol)
+[ ] Datos sensibles (unitCost, costos, márgenes, precios):
+    [ ] Visibles SOLO para roles autorizados
     [ ] Ausentes del DOM para roles no autorizados (no solo display:none)
-[ ] No hay asteriscos dobles — AM genera el * automáticamente con Validators.required;
-    nunca agregar <span class="required">*</span> manualmente
-[ ] Hints/errores de mat-form-field no se solapan con campos adyacentes
-[ ] Revisé la lista de lecciones conocidas de la memoria técnica buscando el mismo
-    patrón en el código nuevo antes de declarar done
+[ ] No hay asteriscos dobles — Angular Material genera * con Validators.required
+[ ] Revisé las lecciones documentadas en la memoria técnica buscando el mismo patrón
 ```
 
-### Checklist de cierre de módulo (adicional al de componente)
+### Checklist de cierre de módulo — Propuesta D (condiciones para declarar "done")
 
 ```
-[ ] Suite completa ng test → X specs, 0 fallos; cobertura ≥ 70% statements
-[ ] Regresión: specs de módulos anteriores siguen en 0 fallos
-[ ] Prueba browser RBAC completa: los 4 roles navegan el módulo sin errores
+[ ] 1. TODOS los casos del documento de pruebas tienen ✅ PASS — columna Estado llena
+[ ] 2. Suite completa ng test → X specs, 0 fallos; cobertura ≥ 70% statements
+[ ] 3. Regresión: specs de módulos anteriores siguen en 0 fallos
+[ ] 4. Prueba browser completa con los 4 roles documentada en el documento de casos
 [ ] Verificación de seguridad backend (curl) para todos los endpoints del módulo
-[ ] Memoria técnica del módulo §10 actualizada (bugs encontrados y correcciones)
+[ ] Memoria técnica del módulo §10 actualizada (bugs y correcciones con referencia a ID)
 [ ] memoria_tecnica_global_proyecto.md actualizada (decisiones y lecciones)
-[ ] estandares_referencia_desarrollo.md actualizado si hay nuevos patrones
-[ ] CLAUDE.md actualizado con bugs encontrados en el módulo
+[ ] CLAUDE.md actualizado con bugs del módulo y nuevas lecciones
 [ ] Commits y push realizados siguiendo las convenciones git del proyecto
 ```
 

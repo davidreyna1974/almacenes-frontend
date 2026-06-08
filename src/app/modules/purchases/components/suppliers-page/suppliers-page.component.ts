@@ -77,7 +77,7 @@ export class SuppliersPageComponent implements OnInit {
         },
         error: err => {
           this.snackBar.open(err.error?.message ?? 'Error al cargar proveedores', 'Cerrar',
-            { duration: 4000, panelClass: 'snack-error' });
+            { duration: 4000, panelClass: 'snackbar-error' });
           this.loading = false;
           this.cdr.markForCheck();
         },
