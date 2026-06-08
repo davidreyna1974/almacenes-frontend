@@ -113,9 +113,10 @@ export class PurchaseOrderDetailFormComponent implements OnInit, OnChanges {
     this.cdr.markForCheck();
   }
 
-  displayProduct(product: ProductResponseDTO | null): string {
-    if (!product) return '';
-    return `[${product.sku}] — ${product.name}`;
+  displayProduct(productOrStr: ProductResponseDTO | string | null): string {
+    if (!productOrStr) return '';
+    if (typeof productOrStr === 'string') return productOrStr;
+    return `[${productOrStr.sku}] — ${productOrStr.name}`;
   }
 
   isProductDisabled(product: ProductResponseDTO): boolean {
