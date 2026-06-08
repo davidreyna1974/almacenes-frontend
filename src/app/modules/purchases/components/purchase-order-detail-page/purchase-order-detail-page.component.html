@@ -74,7 +74,7 @@
           @if (!isNew && canEditHeader()) {
             <div class="order-detail__form-actions">
               <button mat-raised-button color="primary" type="button"
-                      [disabled]="headerForm.invalid || loading"
+                      [disabled]="headerForm.invalid || !headerForm.dirty || loading"
                       (click)="saveHeader()">
                 <mat-icon>save</mat-icon> Guardar cambios
               </button>
@@ -110,7 +110,7 @@
         }
 
         <!-- Tabla de detalles -->
-        @if ((isNew ? pendingDetailRows : (order?.details ?? [])).length === 0 && !showDetailForm) {
+        @if (!isNew && (order?.details ?? []).length === 0 && !showDetailForm) {
           <div class="order-detail__empty-details">
             <mat-icon>playlist_add</mat-icon>
             <p>Sin líneas de detalle — agrega al menos un producto</p>

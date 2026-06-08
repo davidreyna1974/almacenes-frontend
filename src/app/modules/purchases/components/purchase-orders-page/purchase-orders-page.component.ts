@@ -2,7 +2,7 @@ import {
   Component, OnInit, inject, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { debounceTime } from 'rxjs/operators';
@@ -42,10 +42,11 @@ type TabStatus = PurchaseOrderStatus;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PurchaseOrdersPageComponent implements OnInit {
-  private orderService = inject(PurchaseOrderService);
-  private authService  = inject(AuthService);
+  private orderService  = inject(PurchaseOrderService);
+  private authService   = inject(AuthService);
   private layoutService = inject(LayoutService);
-  private router       = inject(Router);
+  private route         = inject(ActivatedRoute);
+  private router        = inject(Router);
   private dialog       = inject(MatDialog);
   private snackBar     = inject(MatSnackBar);
   private cdr          = inject(ChangeDetectorRef);
@@ -70,6 +71,10 @@ export class PurchaseOrdersPageComponent implements OnInit {
   canWrite():      boolean { return this.authService.hasRole('ROLE_ADMIN') || this.authService.hasRole('ROLE_MANAGER'); }
   canReceiveOrd(): boolean { return this.authService.hasRole('ROLE_ADMIN') || this.authService.hasRole('ROLE_MANAGER') || this.authService.hasRole('ROLE_WAREHOUSEMAN'); }
   canSeePrices():  boolean { return this.canWrite(); }
+
+  get activeTabIndex(): number {
+    return this.tabs.findIndex(t => t.status === this.activeTab);
+  }
 
   get currentPage(): PageResponse<PurchaseOrderResponse> | null {
     return this.pages.get(this.activeTab) ?? null;
@@ -106,10 +111,15 @@ export class PurchaseOrdersPageComponent implements OnInit {
       takeUntilDestroyed(this.destroyRef),
     ).subscribe(q => this.applySearch(q ?? ''));
 
-    // Carga completa de la tab activa + conteos de las demás
-    this.loadTab('PENDING');
+    // Restaurar tab si se viene del detalle con ?tab=
+    const tabParam = this.route.snapshot.queryParamMap.get('tab') as TabStatus | null;
+    if (tabParam && this.tabs.some(t => t.status === tabParam)) {
+      this.activeTab = tabParam;
+    }
+
+    this.loadTab(this.activeTab);
     for (const tab of this.tabs) {
-      if (tab.status !== 'PENDING') this.loadCount(tab.status);
+      if (tab.status !== this.activeTab) this.loadCount(tab.status);
     }
   }
 
@@ -163,7 +173,7 @@ export class PurchaseOrdersPageComponent implements OnInit {
   }
 
   viewDetail(order: PurchaseOrderResponse): void {
-    this.router.navigate(['/purchases/orders', order.id]);
+    this.router.navigate(['/purchases/orders', order.id], { queryParams: { from: this.activeTab } });
   }
 
   newOrder(): void {

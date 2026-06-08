@@ -596,6 +596,59 @@ Test Files  17 passed (17)
 **Corrección:** Ajustes de template, pipes y `cdr.markForCheck()` en los handlers de transición.  
 **Rama:** `fix/purchases-ux-improvements`
 
+### BUG-M3-15 (frontend/UX): Desalineación de filas en tabla de proveedores
+**Síntoma:** Las celdas de "Razón social" aparecían desplazadas verticalmente respecto al resto de columnas (RFC, Contacto, Teléfono).  
+**Causa:** La clase `.cell-truncate` aplicaba `display: block` directamente sobre el `<td>`. En una tabla HTML nativa, sobreescribir `display: table-cell` con `display: block` causa comportamientos de alineación inconsistentes entre navegadores.  
+**Corrección:** Mover la clase de truncado a un `<div>` hijo dentro del `<td>`. El `<td>` conserva `display: table-cell` y el `<div>` interno aplica `display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap`.  
+**Regla:** Nunca aplicar `display: block` directamente sobre un `<td>` o `<th>`. Siempre usar un elemento wrapper interno.
+
+### BUG-M3-16 (frontend/VIS): Tabla de proveedores sin contenedor con bordes redondeados
+**Síntoma:** La tabla de proveedores no tenía el estilo visual de "card" (esquinas redondeadas, borde, fondo blanco) que sí tiene la tabla de productos.  
+**Causa:** El `.catalog-page` de proveedores no tenía `padding: var(--space-3)` ni `gap: var(--space-2)`, y el `__table-wrapper` carecía de `border-radius`, `border` y `background`. El padding exterior es necesario para que el borde redondeado sea visible.  
+**Corrección:** Alinear el SCSS de `suppliers-page` con el patrón de `products-page`:  
+```scss
+.catalog-page { padding: var(--space-3); gap: var(--space-2); }
+.__table-wrapper { border-radius: 8px; border: 1px solid var(--color-divider); background: #ffffff; }
+```  
+**Regla:** Toda página con tabla de listado debe usar el mismo patrón visual. Verificar consistencia entre pantallas del mismo módulo antes de declarar el módulo completo.
+
+### BUG-M3-17 (frontend/UX): Contadores de tabs solo visibles al hacer clic en cada tab
+**Síntoma:** Los badges numéricos de las tabs (Aprobadas N, Recibidas N, Canceladas N) mostraban 0 al cargar la página y solo aparecían al hacer clic en cada tab.  
+**Causa:** `ngOnInit` solo llamaba `loadTab('PENDING')`. `countFor(status)` devuelve `0` para cualquier status sin datos cargados. La carga de los demás tabs era lazy (solo al hacer clic en `onTabChange`).  
+**Corrección:** Al inicio, llamar `loadTab(activeTab)` para datos completos + `loadCount(status)` con `size=1` para los demás. `loadCount` guarda solo `totalElements` en un mapa `counts{}` separado, no en `pages{}`.  
+**Regla:** Los contadores de tabs deben ser visibles desde la carga inicial — no obligar al usuario a hacer clic en cada tab para descubrir cuántos registros hay.
+
+### BUG-M3-18 (frontend): loadCount con size=1 almacenado en pages{} bloqueaba carga completa
+**Síntoma:** Al hacer clic en "Recibidas" (41 órdenes) solo se listaba 1 orden.  
+**Causa:** `loadCount()` guardaba la respuesta `size=1` en el mapa `pages{}`. `onTabChange` comprobaba `!pages.has(status)` — al encontrar el registro de `loadCount`, asumía que los datos ya estaban cargados y omitía el `loadTab()` real.  
+**Corrección:** Mapa `counts: Map<TabStatus, number>` separado exclusivamente para badges. `pages{}` solo recibe datos de `loadTab()`. `countFor(status)` lee `counts` primero, `pages.totalElements` como fallback.  
+**Regla:** No reutilizar el mismo mapa de datos para operaciones con contratos distintos (count vs lista completa).
+
+### BUG-M3-19 (frontend/UX): Flecha de regreso del detalle siempre lleva a la tab "Pendientes"
+**Síntoma:** Si el usuario abría una orden desde "Recibidas" y presionaba la flecha ←, volvía a "Pendientes" en lugar de a "Recibidas".  
+**Causa:** `goBack()` navegaba siempre a `/purchases/orders` sin información de la tab de origen. El `MatTabGroup` iniciaba en índice 0 (PENDING) por defecto.  
+**Corrección:** Pasar la tab activa como query param al navegar al detalle (`?from=RECEIVED`). `goBack()` lee el param y navega a `/purchases/orders?tab=RECEIVED`. `ngOnInit` del orders page lee `?tab=` y activa el tab correcto. `[selectedIndex]` ligado al getter `activeTabIndex`.  
+**Regla:** Toda navegación lista → detalle → lista debe preservar el estado de la lista (tab activa, scroll, filtros activos si aplica) usando query params.
+
+### BUG-M3-22 (frontend/UX): Click en botones de acción de la tabla de órdenes navegaba al detalle
+**Síntoma:** Al hacer clic en "Aprobar", "Recibir mercancía" o "Cancelar orden" en la tabla de la pantalla de listado (`purchase-orders-page`), el diálogo de confirmación aparecía brevemente pero la orden no cambiaba de estado. El componente navegaba al detalle de la orden antes de que el usuario pudiera confirmar.  
+**Causa:** `mat-row` tenía el handler `(click)="viewDetail(row)"`. Los clics en los botones de acción dentro de la fila burbujeaban al `mat-row`, lo que disparaba `viewDetail()` e iniciaba la navegación. El router destruía el componente y `takeUntilDestroyed()` cancelaba la suscripción a `afterClosed()`, impidiendo que el callback de confirmación se ejecutara.  
+**Corrección:** Añadir `$event.stopPropagation()` al inicio del handler `(click)` de cada botón de acción: `(click)="$event.stopPropagation(); approve(o)"`, `(click)="$event.stopPropagation(); receive(o)"`, `(click)="$event.stopPropagation(); cancel(o)"`.  
+**Regla (L27):** En tablas con filas clickeables (`mat-row (click)="..."`), todos los botones de acción dentro de la fila DEBEN incluir `$event.stopPropagation()` para evitar que el click burbujee al handler de la fila.  
+**Verificado en browser:** Recibir → OC-2026-0068 pasó de Aprobada a Recibida ✅; Cancelar → OC-2026-0071 pasó de Pendiente a Cancelada ✅.
+
+### BUG-M3-21 (frontend/RN): Sin protección al eliminar la última línea de detalle de una orden
+**Síntoma:** Al editar una orden PENDING, era posible eliminar todas las líneas de detalle una por una hasta dejarla vacía. El backend tampoco valida este caso en `removeDetail()`. Resultado: orden en estado inválido (sin líneas), que luego el backend rechaza al intentar aprobar.  
+**Causa:** `removeDetail()` no verificaba si la línea a eliminar era la última.  
+**Corrección:** Verificar `this.order.details.length <= 1` antes de abrir el diálogo de confirmación. Si es la única línea, mostrar snackbar de error y retornar sin llamar al API.  
+**Regla:** En toda colección que tenga un mínimo requerido (≥1 línea), proteger la eliminación del último elemento en el frontend con un mensaje de error claro, sin llegar al API.
+
+### BUG-M3-20 (frontend/UX): Botón "Guardar cambios" siempre activo en el detalle de orden
+**Síntoma:** El botón "Guardar cambios" de la cabecera de una orden aparecía siempre habilitado al cargar la pantalla, incluso si el usuario no había modificado ningún campo.  
+**Causa:** La condición `[disabled]` solo verificaba `headerForm.invalid || loading`. Al cargar con `patchValue()`, el formulario queda en estado `pristine` (sin cambios), pero la condición no lo verificaba.  
+**Corrección:** Agregar `!headerForm.dirty` a la condición: `[disabled]="headerForm.invalid || !headerForm.dirty || loading"`. Agregar `this.headerForm.markAsPristine()` en el `next` de `saveHeader()` para que el botón vuelva a deshabilitarse tras guardar exitosamente.  
+**Regla:** Los botones de "Guardar" en formularios de edición deben verificar `form.dirty` además de `form.valid`. Esto evita confusión al usuario y peticiones HTTP innecesarias. Llamar `markAsPristine()` tras guardar para restablecer el estado.
+
 ### BUG-M3-13 (frontend): panelClass como string en lugar de array → clase CSS perdida
 **Síntoma:** Snackbars de error en `supplier-dialog`, `purchase-orders-page` y `suppliers-page` no mostraban fondo rojo (`snackbar-error`), aparecían con el estilo por defecto gris.  
 **Causa:** `panelClass` se pasaba como string `'snackbar-error'` en lugar de array `['snackbar-error']`. Angular Material requiere array; string se ignora silenciosamente.  
@@ -630,8 +683,9 @@ Test Files  17 passed (17)
 
 **Nuevos en este módulo:**
 - `valueChanges` en FormGroup para cálculo reactivo de subtotal
-- `MatTabGroup` con lazy loading de contenido por tab (`selectedTabChange`)
+- `MatTabGroup` con `[selectedIndex]` + `?tab=` query param para restaurar tab activa al volver del detalle
 - Deshabilitación de opciones en MatAutocomplete (productos ya en la orden)
+- Mapa separado `counts{}` para badges de tabs vs `pages{}` para datos completos
 
 ---
 

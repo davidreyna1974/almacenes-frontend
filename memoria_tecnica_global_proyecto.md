@@ -526,7 +526,7 @@ JWT_SECRET=...       # mínimo 64 caracteres hex (openssl rand -hex 32)
 | Módulo 0: Infra-base + Layout | ✓ Completo | 26 specs, 0 fallos | Angular 21, Material M2, sidebar+topbar+main-layout, tema #6B3C6B |
 | Módulo 1: Auth + RBAC | ✓ Completo | 43 specs, 0 fallos | AuthService, JWT interceptor, error interceptor, authGuard, LoginComponent, filtrado sidebar por rol |
 | Módulo 2: Inventory | ✓ Completo | 94 specs, 0 fallos (+46 nuevos en M2 + 5 adicionales post-fix: stock-badge getter availableStock ×2, tooltip con reservedStock ×3) + 15/15 browser + 4 roles RBAC + 17+16 seguridad backend | Mergeado a develop. RBAC 4 roles verificado en browser y backend. HTTP 404/409/422 corregidos. Tests RBAC con Spring Security activo escritos. Business logic gaps cerrados: availableStock en MovementDialog, currentStock inmutable en PUT, unitCost por rol, doble asterisco AM eliminado. |
-| Módulo 3: Purchases | ✓ Completo | 143 specs, 0 fallos (32 nuevos) + 155/155 casos browser PASS | Mergeado a develop. 3 roles RBAC + pruebas browser 4 roles. 155 casos verificados (SEC, RBAC, CRUD, VAL, BSRCH, UI, FLOW, RN, ERR, EMPTY, VIS). BUG-M3-13: panelClass como array. BUG-M3-14: guard child route orders/new. Propuestas A–D documentadas en CLAUDE.md como protocolo permanente. App = solo escritorio 1280px+. |
+| Módulo 3: Purchases | ✓ Completo | 143 specs, 0 fallos (32 nuevos) + 155/155 casos browser PASS + validación post-cierre | Mergeado a develop. 155 casos browser PASS. BUG-M3-13 a BUG-M3-22 corregidos en validación post-cierre: desalineación tabla, consistencia visual card, contadores de tabs lazy, mapa counts separado, navegación lista↔detalle con preservación de tab, botón Guardar inactivo hasta dirty, guardia última línea, event bubbling en botones de fila clickeable. Lecciones L21-L27 documentadas. Propuestas A–D en CLAUDE.md. App = solo escritorio 1280px+. |
 | Módulo 4: Sales | ⬜ Pendiente | | |
 | Módulo 5: Reports | ⬜ Pendiente | | |
 
@@ -852,6 +852,192 @@ guardar) y para edición (campos habilitados, con guardar), el título debe refl
 ```
 
 Aplica a cualquier formulario reutilizable donde el nivel de acceso cambie el modo de la pantalla.
+
+### L21: Truncado de texto en celdas de tabla — nunca `display:block` en `<td>`
+
+**Problema (Frontend Módulo 3 — BUG-M3-15)**:
+`.cell-truncate` aplicaba `display: block` directamente sobre el `<td>`, sobreescribiendo
+`display: table-cell`. Resultado: desalineación vertical de la columna "Razón social" en Chrome.
+
+**Regla**: para truncar texto con ellipsis en una celda de tabla, usar un elemento wrapper
+interno (`<div>` o `<span>`) — nunca aplicar `display: block` sobre el `<td>` directamente:
+
+```html
+<!-- ❌ incorrecto — display:block en el <td> rompe la alineación -->
+<td mat-cell class="cell-truncate">{{ value }}</td>
+
+<!-- ✅ correcto — wrapper interno -->
+<td mat-cell>
+  <div class="cell-truncate">{{ value }}</div>
+</td>
+```
+
+```scss
+.cell-truncate {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block; /* válido en un div/span, nunca en el td */
+}
+```
+
+### L22: Consistencia visual entre páginas del mismo módulo — verificar antes de cerrar
+
+**Problema (Frontend Módulo 3 — BUG-M3-16)**:
+La tabla de proveedores no tenía el contenedor con `border-radius`, `border` y `background`
+que sí tenía la tabla de productos. El `padding` en `.catalog-page` es necesario para que
+el borde redondeado del wrapper sea visible.
+
+**Regla**: al implementar una segunda pantalla con tabla en el mismo módulo, comparar el SCSS
+del contenedor con la primera pantalla implementada. La estructura de referencia es:
+
+```scss
+.catalog-page {
+  padding: var(--space-3);
+  gap: var(--space-2);
+  // ...
+  &__table-wrapper {
+    border-radius: 8px;
+    border: 1px solid var(--color-divider);
+    background: #ffffff;
+  }
+}
+```
+
+### L23: Contadores de tabs — cargar al inicio, no lazy; separar counts de datos completos
+
+**Problema (Frontend Módulo 3 — BUG-M3-17 y BUG-M3-18)**:
+Los badges numéricos de las tabs solo mostraban datos al hacer clic en cada tab.
+El intento de fix inicial (guardar `size=1` en el mismo mapa de páginas) bloqueaba
+la carga completa de datos al hacer clic.
+
+**Regla**: usar dos estructuras separadas:
+- `pages: Map<Status, PageResponse<T>>` — solo para datos completos (cargados al activar una tab)
+- `counts: Map<Status, number>` — solo para `totalElements`, cargado al inicio con `size=1`
+
+```typescript
+// ngOnInit: cargar datos completos del tab activo + conteos del resto
+this.loadTab(this.activeTab);
+for (const tab of this.tabs) {
+  if (tab.status !== this.activeTab) this.loadCount(tab.status);
+}
+
+private loadCount(status: Status): void {
+  this.service.getByStatus(status, 0, 1).subscribe(page => {
+    this.counts.set(status, page.totalElements);
+    this.cdr.markForCheck();
+  });
+}
+
+countFor(status: Status): number {
+  return this.counts.get(status) ?? this.pages.get(status)?.totalElements ?? 0;
+}
+```
+
+### L24: Navegación lista → detalle → lista debe preservar el estado de la lista
+
+**Problema (Frontend Módulo 3 — BUG-M3-19)**:
+Al regresar del detalle de una orden, el usuario siempre volvía a la tab "Pendientes"
+sin importar desde qué tab había abierto la orden.
+
+**Regla**: pasar la tab/estado/filtro activo como query param al navegar al detalle,
+y restaurarlo al volver. Patrón con Angular Router:
+
+```typescript
+// En la lista — pasar origen
+viewDetail(item: Item): void {
+  this.router.navigate(['/module/detail', item.id], { queryParams: { from: this.activeTab } });
+}
+
+// En el detalle — usar origen al volver
+goBack(): void {
+  const from = this.route.snapshot.queryParamMap.get('from');
+  this.router.navigate(['/module/list'], from ? { queryParams: { tab: from } } : {});
+}
+
+// En la lista — restaurar tab al cargar
+ngOnInit(): void {
+  const tabParam = this.route.snapshot.queryParamMap.get('tab') as Status | null;
+  if (tabParam && this.tabs.some(t => t.status === tabParam)) {
+    this.activeTab = tabParam;
+  }
+  // ...
+}
+```
+
+En el template: `<mat-tab-group [selectedIndex]="activeTabIndex">` con getter
+`get activeTabIndex(): number { return this.tabs.findIndex(t => t.status === this.activeTab); }`
+
+### L27: Botones de acción en filas clickeables requieren `$event.stopPropagation()`
+
+**Problema (Frontend Módulo 3 — BUG-M3-22)**:
+En `purchase-orders-page`, las filas de la tabla tienen `(click)="viewDetail(row)"`.
+Al hacer clic en un botón de acción (Aprobar, Recibir, Cancelar) dentro de la fila,
+el evento burbujeaba al `mat-row`, disparando la navegación al detalle. El router
+destruía el componente y `takeUntilDestroyed()` cancelaba el `afterClosed()` antes
+de que el callback pudiera ejecutar la transición de estado.
+
+**Regla**: Cuando `mat-row` tiene `(click)="..."`, TODOS los botones dentro de la
+fila deben incluir `$event.stopPropagation()`:
+
+```html
+<button mat-icon-button (click)="$event.stopPropagation(); approve(o)">
+```
+
+Aplica a cualquier tabla con filas clickeables que contengan botones de acción.
+
+---
+
+### L26: Proteger eliminación del último elemento de una colección requerida
+
+**Problema (Frontend Módulo 3 — BUG-M3-21)**:
+Al editar una orden PENDING era posible borrar todas las líneas de detalle hasta
+dejarla vacía. El backend tampoco valida este caso en `removeDetail()`.
+
+**Regla**: Antes de llamar al API de eliminación, verificar si el elemento es el
+último de una colección con mínimo requerido. Si es el último, mostrar snackbar de
+error y retornar sin llamar al API.
+
+```typescript
+remove(item: DetailResponse): void {
+  if ((this.entity?.items.length ?? 0) <= 1) {
+    this.snackBar.open('No se puede eliminar el único elemento. Se requiere al menos uno.',
+      'Cerrar', { duration: 4000, panelClass: ['snackbar-error'] });
+    return;
+  }
+  // abrir diálogo de confirmación
+}
+```
+
+Aplica a cualquier entidad con colección obligatoria: órdenes de compra/venta,
+facturas con líneas, etc.
+
+### L25: Botones "Guardar" en edición deben verificar `form.dirty`, no solo `form.valid`
+
+**Problema (Frontend Módulo 3 — BUG-M3-20)**:
+El botón "Guardar cambios" en el detalle de una orden estaba siempre habilitado al cargar
+la pantalla, incluso sin cambios. Causaba confusión al usuario y habilitaba peticiones HTTP
+innecesarias.
+
+**Regla**: En formularios de edición (no de creación), la condición `[disabled]` debe incluir
+`!form.dirty`. Llamar `form.markAsPristine()` tras guardar exitosamente para restablecer el estado.
+
+```typescript
+// Template
+[disabled]="form.invalid || !form.dirty || loading"
+
+// En el next del subscribe de save
+next: result => {
+  // ...actualizar estado local...
+  this.form.markAsPristine();   // botón vuelve a deshabilitarse
+  this.loading = false;
+  this.cdr.markForCheck();
+}
+```
+
+`patchValue()` al cargar un registro existente no marca el formulario como dirty —
+permanece pristine hasta que el usuario modifique un campo.
 
 ### L18: `panelClass` en MatSnackBar debe ser array — nunca string
 

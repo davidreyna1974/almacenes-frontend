@@ -131,7 +131,10 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
       });
   }
 
-  goBack(): void { this.router.navigate(['/purchases/orders']); }
+  goBack(): void {
+    const from = this.route.snapshot.queryParamMap.get('from');
+    this.router.navigate(['/purchases/orders'], from ? { queryParams: { tab: from } } : {});
+  }
 
   // ── Creación de orden ─────────────────────────────────────────────────
 
@@ -170,6 +173,7 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
         next: order => {
           this.order = order;
+          this.headerForm.markAsPristine();
           this.snackBar.open('Orden actualizada.', 'Cerrar', { duration: 3000, panelClass: 'snackbar-success' });
           this.loading = false;
           this.cdr.markForCheck();
@@ -302,6 +306,11 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
   }
 
   removeDetail(detail: PurchaseOrderDetailResponse): void {
+    if ((this.order?.details.length ?? 0) <= 1) {
+      this.snackBar.open('No se puede eliminar la única línea. Una orden debe tener al menos un producto.', 'Cerrar',
+        { duration: 4000, panelClass: ['snackbar-error'] });
+      return;
+    }
     this.dialog.open(ConfirmDialogComponent, {
       data: { title: 'Eliminar línea', message: `¿Eliminar "${detail.productName}" de la orden?`, confirmLabel: 'Eliminar', confirmColor: 'warn' },
     }).afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(ok => {
