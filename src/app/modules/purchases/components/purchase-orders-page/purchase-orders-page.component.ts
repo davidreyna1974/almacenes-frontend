@@ -58,7 +58,8 @@ export class PurchaseOrdersPageComponent implements OnInit {
     { status: 'CANCELLED', label: 'Canceladas'  },
   ];
 
-  pages: Map<TabStatus, PageResponse<PurchaseOrderResponse>> = new Map();
+  pages:  Map<TabStatus, PageResponse<PurchaseOrderResponse>> = new Map();
+  counts: Map<TabStatus, number> = new Map();
   private pendingRequests = 0;
   get loading(): boolean { return this.pendingRequests > 0; }
   activeTab: TabStatus = 'PENDING';
@@ -137,10 +138,8 @@ export class PurchaseOrdersPageComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: pageData => {
-          if (!this.pages.has(status)) {
-            this.pages.set(status, pageData);
-            this.cdr.markForCheck();
-          }
+          this.counts.set(status, pageData.totalElements);
+          this.cdr.markForCheck();
         },
       });
   }
@@ -160,7 +159,7 @@ export class PurchaseOrdersPageComponent implements OnInit {
   }
 
   countFor(status: TabStatus): number {
-    return this.pages.get(status)?.totalElements ?? 0;
+    return this.counts.get(status) ?? this.pages.get(status)?.totalElements ?? 0;
   }
 
   viewDetail(order: PurchaseOrderResponse): void {
@@ -231,6 +230,7 @@ export class PurchaseOrdersPageComponent implements OnInit {
         this.pendingRequests--;
         this.snackBar.open(successMsg, 'Cerrar', { duration: 3000, panelClass: ['snackbar-success'] });
         this.pages.clear();
+        this.counts.clear();
         this.activeTab = reloadTab;
         this.searchCtrl.setValue('', { emitEvent: false });
         this.loadTab(this.activeTab);
