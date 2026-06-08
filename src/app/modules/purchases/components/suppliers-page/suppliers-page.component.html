@@ -81,7 +81,7 @@
       @if (showForm) {
         <div class="suppliers-page__form-header">
           <h3 class="suppliers-page__form-title">
-            {{ isEdit ? 'Editar proveedor' : 'Nuevo proveedor' }}
+            {{ isEdit ? (canWrite() ? 'Editar proveedor' : 'Ver proveedor') : 'Nuevo proveedor' }}
           </h3>
         </div>
         <app-supplier-form

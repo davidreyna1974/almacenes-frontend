@@ -548,6 +548,29 @@ Test Files  17 passed (17)
 **Causa:** `existingProductIds` getter solo leía `order?.details` que es null en `isNew`.  
 **Corrección:** El getter devuelve `pendingDetails.map(d => d.productId)` cuando `isNew=true`.
 
+### BUG-M3-05 (backend): RFC duplicado → HTTP 500 en lugar de 409
+**Síntoma:** Crear proveedor con RFC existente devolvía HTTP 500 con mensaje genérico.  
+**Causa:** `SupplierServiceImpl.createSupplier()` lanzaba `RuntimeException` genérica.  
+**Corrección:** Cambiar a `DuplicateResourceException` → `GlobalExceptionHandler` lo mapea a HTTP 409.  
+**Verificación:** curl + browser snackbar muestran "Ya existe un proveedor con el RFC 'XXXXX'."
+
+### BUG-M3-06 (backend): Desactivación bloqueada → HTTP 500 en lugar de 422
+**Síntoma:** Intentar desactivar un proveedor con órdenes PENDING/APPROVED devolvía HTTP 500.  
+**Causa:** `SupplierServiceImpl.deactivateSupplier()` y `findSupplierOrThrow()` lanzaban `RuntimeException`.  
+**Corrección:** Cambiar a `BusinessRuleException` → HTTP 422, y a `ResourceNotFoundException` → HTTP 404.  
+**Verificación:** Browser muestra snackbar con mensaje de negocio claro; no aparece el toast de error genérico.
+
+### BUG-M3-07 (frontend): Guard de rol ausente en módulo /purchases
+**Síntoma:** SALES podía acceder a `/purchases/orders` y `/purchases/suppliers` por URL directa, a pesar de que el sidebar no muestra "Compras" para ese rol.  
+**Causa:** `app.routes.ts` no definía `data: { roles: [...] }` en la ruta `purchases`. El `authGuard` solo bloquea cuando hay roles requeridos explícitos.  
+**Corrección:** Añadir `data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN'] }` al path `purchases` en `app.routes.ts`.  
+**Lección:** Ocultar un ítem del sidebar NO protege la ruta — el guard de rol es indispensable en el routing.
+
+### BUG-M3-08 (frontend/UX): Título "Editar proveedor" visible para WAREHOUSEMAN
+**Síntoma:** El panel lateral de detalle de proveedor mostraba "Editar proveedor" para WAREHOUSEMAN aunque el formulario era de solo lectura (todos los campos `disabled`, sin botón "Guardar").  
+**Causa:** El template usaba `{{ isEdit ? 'Editar proveedor' : 'Nuevo proveedor' }}` sin considerar si el usuario tiene permisos de escritura.  
+**Corrección:** Cambiar a `{{ isEdit ? (canWrite() ? 'Editar proveedor' : 'Ver proveedor') : 'Nuevo proveedor' }}`.
+
 ---
 
 ## 9. Estándares y buenas prácticas aplicadas
@@ -586,8 +609,8 @@ Test Files  17 passed (17)
 | SupplierFormComponent: specs de outputs y precarga | ✅ 7 specs | `ng test --no-watch` |
 | PurchaseOrderDetailFormComponent: subtotal reactivo spec | ✅ 9 specs | `ng test --no-watch` |
 | Proveedores: CRUD completo ADMIN | ✅ | Browser — tabla carga, botón "Nuevo proveedor" visible |
-| Proveedores: solo lectura para WAREHOUSEMAN | ✅ | Browser — botón "Nuevo proveedor" visible (RBAC en componente) |
-| Proveedores: Desactivar bloqueado si tiene órdenes activas | ✅ | Backend devuelve 409 + snackbar de error |
+| Proveedores: solo lectura para WAREHOUSEMAN (título "Ver proveedor") | ✅ | Browser — sin "Nuevo proveedor", campos disabled, título correcto |
+| Proveedores: Desactivar bloqueado si tiene órdenes activas | ✅ | Backend devuelve 422 + snackbar con mensaje de negocio |
 | Lista órdenes: tabs PENDING/APPROVED/RECEIVED/CANCELLED | ✅ | Browser ADMIN y MANAGER |
 | Lista órdenes: totalAmount oculto para WAREHOUSEMAN | ✅ | Browser — columna "Total" ausente en rol WAREHOUSEMAN |
 | Crear orden: suprime crear orden para WAREHOUSEMAN | ✅ | Browser — botón "Nueva orden" ausente |
@@ -604,6 +627,10 @@ Test Files  17 passed (17)
 | Status labels en español (Pendiente, Aprobada, etc.) | ✅ | Browser 3 roles — chips con colores semánticos |
 | Confirmación antes de Recibir y Cancelar | ✅ | Código — `ConfirmDialogComponent` en ambas acciones |
 | Seguridad backend: POST suppliers → WAREHOUSEMAN 403 | ✅ | curl — HTTP 403 confirmado |
+| Guard frontend: SALES redirigido desde /purchases (URL directa) | ✅ | Browser — redirige a / (BUG-M3-07 corregido) |
+| Ciclo completo PENDING→APPROVED→RECEIVED como MANAGER | ✅ | Browser — OC-2026-0062, timeline completo |
+| Cancelar desde PENDING y desde APPROVED como MANAGER | ✅ | Browser — OC-2026-0063 y OC-2026-0064 |
+| WAREHOUSEMAN: recibe OC-2026-0065, sin precios, sin aprobar/cancelar | ✅ | Browser — recibida por test_wh, timeline correcto |
 | Seguridad backend: GET orders → SALES 403 | ✅ | curl — HTTP 403 confirmado |
 | Seguridad backend: GET orders → WAREHOUSEMAN 200 | ✅ | curl — HTTP 200 confirmado |
 | Suite total frontend post-módulo 3: 143 specs, 0 fallos | ✅ | `ng test --no-watch` — 17 archivos, 143 specs |

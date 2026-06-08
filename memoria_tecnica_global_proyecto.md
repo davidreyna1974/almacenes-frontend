@@ -798,6 +798,46 @@ commit y queda en el historial de git para siempre.
 `${VARIABLE_ENTORNO:valor_dev}` desde el primer commit. Una vez que un
 secreto entra al historial de git, debe considerarse comprometido.
 
+### L16: Ocultar un ítem del sidebar NO protege la ruta — el guard de rol es obligatorio en el routing
+
+**Problema (Frontend Módulo 3 — Purchases)**:
+SALES podía acceder a `/purchases/orders` y `/purchases/suppliers` por URL directa. El sidebar
+correctamente no mostraba "Compras" para SALES, pero el `authGuard` solo bloquea cuando
+`route.data.roles` está definido. Como `app.routes.ts` no tenía roles en la entrada `purchases`,
+cualquier usuario autenticado podía llegar al módulo.
+
+**Regla**: Todo módulo con restricción de rol DEBE tener `data: { roles: [...] }` en su entrada
+de ruta en `app.routes.ts`, independientemente de si el sidebar lo oculta o no.
+
+```typescript
+// app.routes.ts — patrón correcto para módulos con acceso restringido
+{
+  path: 'purchases',
+  canActivate: [authGuard],
+  data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN'] },
+  loadChildren: () => import('./modules/purchases/purchases.routes').then(m => m.PURCHASES_ROUTES)
+},
+```
+
+El sidebar es una guía de navegación, no un mecanismo de seguridad. El guard es la barrera real.
+
+### L17: Validar título del panel de detalle según permisos — no solo los campos
+
+**Problema (Frontend Módulo 3 — Purchases)**:
+El panel de detalle de proveedor mostraba "Editar proveedor" a WAREHOUSEMAN aunque el formulario
+era de solo lectura (todos los campos `disabled`, sin botón "Guardar"). El título confundía al
+usuario sobre si podía o no modificar el registro.
+
+**Regla**: cuando un componente de formulario se reutiliza para visualización (campos disabled, sin
+guardar) y para edición (campos habilitados, con guardar), el título debe reflejar el modo real:
+
+```html
+<!-- ✅ correcto — título dinámico según rol -->
+{{ isEdit ? (canWrite() ? 'Editar proveedor' : 'Ver proveedor') : 'Nuevo proveedor' }}
+```
+
+Aplica a cualquier formulario reutilizable donde el nivel de acceso cambie el modo de la pantalla.
+
 ---
 
 ## 10. Roadmap

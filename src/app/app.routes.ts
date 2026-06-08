@@ -17,6 +17,8 @@ export const routes: Routes = [
       },
       {
         path: 'purchases',
+        canActivate: [authGuard],
+        data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN'] },
         loadChildren: () =>
           import('./modules/purchases/purchases.routes').then(m => m.PURCHASES_ROUTES)
       },

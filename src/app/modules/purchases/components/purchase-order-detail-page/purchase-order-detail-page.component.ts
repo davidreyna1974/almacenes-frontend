@@ -136,7 +136,7 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
   // ── Creación de orden ─────────────────────────────────────────────────
 
   createOrder(): void {
-    if (this.headerForm.invalid || (this.order?.details ?? []).length === 0) return;
+    if (this.headerForm.invalid || this.pendingDetails.length === 0) return;
     const v = this.headerForm.getRawValue();
     this.loading = true;
     this.cdr.markForCheck();
@@ -258,8 +258,8 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
   removePendingDetail(row: PurchaseOrderDetailRequest & { productName?: string; productSku?: string }): void {
     const idx = this.pendingDetailRows.indexOf(row);
     if (idx !== -1) {
-      this.pendingDetailRows.splice(idx, 1);
-      this.pendingDetails.splice(idx, 1);
+      this.pendingDetailRows = this.pendingDetailRows.filter((_, i) => i !== idx);
+      this.pendingDetails    = this.pendingDetails.filter((_, i) => i !== idx);
       this.cdr.markForCheck();
     }
   }
@@ -267,8 +267,8 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
   onDetailSave(dto: PurchaseOrderDetailRequest | PurchaseOrderDetailUpdateRequest): void {
     if (this.isNew) {
       // Orden aún no creada — guardar en memoria
-      this.pendingDetails.push(dto as PurchaseOrderDetailRequest);
-      this.pendingDetailRows.push(dto as any);
+      this.pendingDetails = [...this.pendingDetails, dto as PurchaseOrderDetailRequest];
+      this.pendingDetailRows = [...this.pendingDetailRows, dto as any];
       this.showDetailForm = false;
       this.cdr.markForCheck();
       return;
@@ -280,13 +280,14 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
       ? this.orderService.updateDetail(this.order!.id, this.editingDetail.id, dto as PurchaseOrderDetailUpdateRequest)
       : this.orderService.addDetail(this.order!.id, dto as PurchaseOrderDetailRequest);
 
+    const wasEditing = !!this.editingDetail;
     op$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: order => {
         this.order = order;
         this.showDetailForm = false;
         this.editingDetail  = null;
         this.snackBar.open(
-          this.editingDetail ? 'Línea actualizada.' : 'Línea agregada.',
+          wasEditing ? 'Línea actualizada.' : 'Línea agregada.',
           'Cerrar', { duration: 3000, panelClass: 'snack-success' });
         this.loading = false;
         this.cdr.markForCheck();
