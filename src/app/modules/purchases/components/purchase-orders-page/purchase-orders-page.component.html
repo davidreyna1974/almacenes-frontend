@@ -5,6 +5,16 @@
 
   <div class="orders-page__header">
     <h2 class="orders-page__title">Órdenes de compra</h2>
+    <mat-form-field appearance="outline" class="orders-page__search" subscriptSizing="dynamic">
+      <mat-label>Buscar</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput [formControl]="searchCtrl" placeholder="N° orden, proveedor, usuario…">
+      @if (searchCtrl.value) {
+        <button matSuffix mat-icon-button aria-label="Limpiar" (click)="searchCtrl.setValue('')">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
     @if (canWrite()) {
       <button mat-raised-button color="primary" (click)="newOrder()">
         <mat-icon>add</mat-icon> Nueva orden
@@ -30,14 +40,18 @@
 
   <div class="orders-page__table-wrapper">
 
-    @if (!loading && orders.length === 0) {
+    @if (!loading && filteredOrders.length === 0) {
       <div class="orders-page__empty">
         <mat-icon class="orders-page__empty-icon">receipt_long</mat-icon>
-        <p class="orders-page__empty-title">Sin órdenes {{ tabs[tabs.findIndex(t => t.status === activeTab)].label.toLowerCase() }}</p>
+        @if (searchCtrl.value) {
+          <p class="orders-page__empty-title">Sin resultados para "{{ searchCtrl.value }}"</p>
+        } @else {
+          <p class="orders-page__empty-title">Sin órdenes {{ tabs[tabs.findIndex(t => t.status === activeTab)].label.toLowerCase() }}</p>
+        }
       </div>
     }
 
-    <mat-table [dataSource]="orders" class="orders-page__table">
+    <mat-table [dataSource]="filteredOrders" class="orders-page__table">
 
       <ng-container matColumnDef="orderNumber">
         <mat-header-cell *matHeaderCellDef>N° Orden</mat-header-cell>

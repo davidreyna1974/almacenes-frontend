@@ -5,6 +5,7 @@
       <mat-label>RFC</mat-label>
       <input matInput formControlName="rfc" maxlength="13">
       <mat-error *ngIf="form.get('rfc')?.hasError('required')">El RFC es obligatorio</mat-error>
+      <mat-error *ngIf="form.get('rfc')?.hasError('minlength')">El RFC debe tener al menos 12 caracteres</mat-error>
       <mat-error *ngIf="form.get('rfc')?.hasError('maxlength')">Máximo 13 caracteres</mat-error>
     </mat-form-field>
 

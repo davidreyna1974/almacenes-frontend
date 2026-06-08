@@ -36,7 +36,7 @@ export class SupplierFormComponent implements OnChanges {
   private fb = inject(FormBuilder);
 
   form = this.fb.group({
-    rfc:         ['', [Validators.required, Validators.maxLength(13)]],
+    rfc:         ['', [Validators.required, Validators.minLength(12), Validators.maxLength(13)]],
     companyName: ['', [Validators.required, Validators.maxLength(150)]],
     contactName: ['', Validators.maxLength(100)],
     phone:       ['', Validators.maxLength(20)],

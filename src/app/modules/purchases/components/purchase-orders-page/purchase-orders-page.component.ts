@@ -3,7 +3,9 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { debounceTime } from 'rxjs/operators';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,6 +14,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -28,9 +32,10 @@ type TabStatus = PurchaseOrderStatus;
   selector: 'app-purchase-orders-page',
   standalone: true,
   imports: [
-    CommonModule,
+    CommonModule, ReactiveFormsModule,
     MatTabsModule, MatTableModule, MatButtonModule, MatIconModule,
     MatTooltipModule, MatProgressBarModule, MatPaginatorModule, MatChipsModule,
+    MatFormFieldModule, MatInputModule,
   ],
   templateUrl: './purchase-orders-page.component.html',
   styleUrl: './purchase-orders-page.component.scss',
@@ -56,16 +61,13 @@ export class PurchaseOrdersPageComponent implements OnInit {
   pages: Map<TabStatus, PageResponse<PurchaseOrderResponse>> = new Map();
   loading = false;
   activeTab: TabStatus = 'PENDING';
+  displayedColumns: string[] = [];
+  searchCtrl = new FormControl('');
+  filteredOrders: PurchaseOrderResponse[] = [];
 
   canWrite():      boolean { return this.authService.hasRole('ROLE_ADMIN') || this.authService.hasRole('ROLE_MANAGER'); }
   canReceiveOrd(): boolean { return this.authService.hasRole('ROLE_ADMIN') || this.authService.hasRole('ROLE_MANAGER') || this.authService.hasRole('ROLE_WAREHOUSEMAN'); }
   canSeePrices():  boolean { return this.canWrite(); }
-
-  get displayedColumns(): string[] {
-    const cols = ['orderNumber', 'supplierName', 'createdByUsername', 'createdAt', 'status', 'actions'];
-    if (this.canSeePrices()) cols.splice(2, 0, 'totalAmount');
-    return cols;
-  }
 
   get currentPage(): PageResponse<PurchaseOrderResponse> | null {
     return this.pages.get(this.activeTab) ?? null;
@@ -75,8 +77,29 @@ export class PurchaseOrdersPageComponent implements OnInit {
     return this.currentPage?.content ?? [];
   }
 
+  private applySearch(term: string): void {
+    const q = term.toLowerCase().trim();
+    const src = this.currentPage?.content ?? [];
+    this.filteredOrders = q
+      ? src.filter(o =>
+          o.orderNumber.toLowerCase().includes(q) ||
+          o.supplierName.toLowerCase().includes(q) ||
+          o.createdByUsername.toLowerCase().includes(q))
+      : [...src];
+    this.cdr.markForCheck();
+  }
+
   ngOnInit(): void {
     setTimeout(() => this.layoutService.collapse(), 0);
+    const cols = ['orderNumber', 'supplierName', 'createdByUsername', 'createdAt', 'status', 'actions'];
+    if (this.canSeePrices()) cols.splice(2, 0, 'totalAmount');
+    this.displayedColumns = cols;
+
+    this.searchCtrl.valueChanges.pipe(
+      debounceTime(300),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe(q => this.applySearch(q ?? ''));
+
     this.loadTab('PENDING');
   }
 
@@ -89,7 +112,7 @@ export class PurchaseOrdersPageComponent implements OnInit {
         next: pageData => {
           this.pages.set(status, pageData);
           this.loading = false;
-          this.cdr.markForCheck();
+          this.applySearch(this.searchCtrl.value ?? '');
         },
         error: err => {
           this.snackBar.open(err.error?.message ?? 'Error al cargar órdenes', 'Cerrar',
@@ -102,10 +125,11 @@ export class PurchaseOrdersPageComponent implements OnInit {
 
   onTabChange(index: number): void {
     this.activeTab = this.tabs[index].status;
+    this.searchCtrl.setValue('', { emitEvent: false });
     if (!this.pages.has(this.activeTab)) {
       this.loadTab(this.activeTab);
     } else {
-      this.cdr.markForCheck();
+      this.applySearch('');
     }
   }
 
@@ -183,9 +207,9 @@ export class PurchaseOrdersPageComponent implements OnInit {
     op().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.snackBar.open(successMsg, 'Cerrar', { duration: 3000, panelClass: 'snack-success' });
-        // invalidate all cached tabs and reload active one
         this.pages.clear();
         this.activeTab = reloadTab;
+        this.searchCtrl.setValue('', { emitEvent: false });
         this.loadTab(this.activeTab);
       },
       error: err => {

@@ -10,8 +10,14 @@
   &__header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    gap: var(--space-2);
     flex-shrink: 0;
+  }
+
+  &__search {
+    flex: 1;
+    max-width: 340px;
+    .mat-mdc-form-field-subscript-wrapper { display: none; }
   }
 
   &__title { font-size: 20px; font-weight: 600; color: #6B3C6B; margin: 0; }

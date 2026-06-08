@@ -93,7 +93,8 @@ export class PurchaseOrderDetailFormComponent implements OnInit, OnChanges {
     }
   }
 
-  private filterProducts(term: string): void {
+  private filterProducts(term: string | unknown): void {
+    if (typeof term !== 'string') return;
     const q = term.toLowerCase();
     this.filteredProducts = this.products.filter(p =>
       p.sku.toLowerCase().includes(q) || p.name.toLowerCase().includes(q)
@@ -125,11 +126,16 @@ export class PurchaseOrderDetailFormComponent implements OnInit, OnChanges {
       this.save.emit({ quantity: v.quantity!, unitPrice: v.unitPrice! });
     } else {
       if (!this.selectedProduct) return;
+      const qty   = v.quantity!;
+      const price = v.unitPrice!;
       this.save.emit({
-        productId: this.selectedProduct.id,
-        quantity:  v.quantity!,
-        unitPrice: v.unitPrice!,
-      });
+        productId:   this.selectedProduct.id,
+        quantity:    qty,
+        unitPrice:   price,
+        productSku:  this.selectedProduct.sku,
+        productName: this.selectedProduct.name,
+        subtotal:    qty * price,
+      } as any);
     }
   }
 }

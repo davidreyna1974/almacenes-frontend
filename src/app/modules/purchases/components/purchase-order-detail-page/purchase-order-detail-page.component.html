@@ -153,18 +153,20 @@
             </mat-cell>
           </ng-container>
 
-          <!-- Acciones para órdenes existentes (edit + delete via API) -->
+          <!-- Acciones para órdenes existentes (edit + delete via API) — solo en PENDING -->
           <ng-container matColumnDef="actions">
             <mat-header-cell *matHeaderCellDef></mat-header-cell>
             <mat-cell *matCellDef="let d" class="order-detail__detail-actions">
-              <button mat-icon-button color="primary" matTooltip="Editar línea"
-                      (click)="openEditDetail(d)">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button color="warn" matTooltip="Eliminar línea"
-                      (click)="removeDetail(d)">
-                <mat-icon>delete</mat-icon>
-              </button>
+              @if (canEditDetails()) {
+                <button mat-icon-button color="primary" matTooltip="Editar línea"
+                        (click)="openEditDetail(d)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" matTooltip="Eliminar línea"
+                        (click)="removeDetail(d)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              }
             </mat-cell>
           </ng-container>
 
