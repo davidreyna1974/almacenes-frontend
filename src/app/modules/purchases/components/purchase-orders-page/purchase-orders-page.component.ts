@@ -59,7 +59,8 @@ export class PurchaseOrdersPageComponent implements OnInit {
   ];
 
   pages: Map<TabStatus, PageResponse<PurchaseOrderResponse>> = new Map();
-  loading = false;
+  private pendingRequests = 0;
+  get loading(): boolean { return this.pendingRequests > 0; }
   activeTab: TabStatus = 'PENDING';
   displayedColumns: string[] = [];
   searchCtrl = new FormControl('');
@@ -104,25 +105,42 @@ export class PurchaseOrdersPageComponent implements OnInit {
       takeUntilDestroyed(this.destroyRef),
     ).subscribe(q => this.applySearch(q ?? ''));
 
+    // Carga completa de la tab activa + conteos de las demás
     this.loadTab('PENDING');
+    for (const tab of this.tabs) {
+      if (tab.status !== 'PENDING') this.loadCount(tab.status);
+    }
   }
 
   loadTab(status: TabStatus, page = 0, size = 20): void {
-    this.loading = true;
+    this.pendingRequests++;
     this.cdr.markForCheck();
     this.orderService.getByStatus(status, page, size)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: pageData => {
           this.pages.set(status, pageData);
-          this.loading = false;
+          this.pendingRequests--;
           this.applySearch(this.searchCtrl.value ?? '');
         },
         error: err => {
           this.snackBar.open(err.error?.message ?? 'Error al cargar órdenes', 'Cerrar',
-            { duration: 4000, panelClass: 'snackbar-error' });
-          this.loading = false;
+            { duration: 4000, panelClass: ['snackbar-error'] });
+          this.pendingRequests--;
           this.cdr.markForCheck();
+        },
+      });
+  }
+
+  private loadCount(status: TabStatus): void {
+    this.orderService.getByStatus(status, 0, 1)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: pageData => {
+          if (!this.pages.has(status)) {
+            this.pages.set(status, pageData);
+            this.cdr.markForCheck();
+          }
         },
       });
   }
@@ -206,20 +224,24 @@ export class PurchaseOrdersPageComponent implements OnInit {
     successMsg: string,
     reloadTab: TabStatus,
   ): void {
-    this.loading = true;
+    this.pendingRequests++;
     this.cdr.markForCheck();
     op().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
-        this.snackBar.open(successMsg, 'Cerrar', { duration: 3000, panelClass: 'snackbar-success' });
+        this.pendingRequests--;
+        this.snackBar.open(successMsg, 'Cerrar', { duration: 3000, panelClass: ['snackbar-success'] });
         this.pages.clear();
         this.activeTab = reloadTab;
         this.searchCtrl.setValue('', { emitEvent: false });
         this.loadTab(this.activeTab);
+        for (const tab of this.tabs) {
+          if (tab.status !== this.activeTab) this.loadCount(tab.status);
+        }
       },
       error: err => {
         this.snackBar.open(err.error?.message ?? 'No se pudo completar la operación', 'Cerrar',
-          { duration: 5000, panelClass: 'snackbar-error' });
-        this.loading = false;
+          { duration: 5000, panelClass: ['snackbar-error'] });
+        this.pendingRequests--;
         this.cdr.markForCheck();
       },
     });
