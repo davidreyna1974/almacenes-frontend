@@ -68,12 +68,12 @@ export class SupplierDialogComponent {
       next: () => {
         this.snackBar.open(
           this.data.isEdit ? 'Proveedor actualizado correctamente.' : 'Proveedor creado correctamente.',
-          'Cerrar', { duration: 3000, panelClass: 'snack-success' });
+          'Cerrar', { duration: 3000, panelClass: 'snackbar-success' });
         this.dialogRef.close(true);
       },
       error: err => {
         this.snackBar.open(err.error?.message ?? 'Error al guardar proveedor', 'Cerrar',
-          { duration: 4000, panelClass: 'snack-error' });
+          { duration: 4000, panelClass: 'snackbar-error' });
         this.loading = false;
         this.cdr.markForCheck();
       },
@@ -101,12 +101,12 @@ export class SupplierDialogComponent {
           .subscribe({
             next: () => {
               this.snackBar.open('Proveedor desactivado.', 'Cerrar',
-                { duration: 3000, panelClass: 'snack-success' });
+                { duration: 3000, panelClass: 'snackbar-success' });
               this.dialogRef.close(true);
             },
             error: err => {
               this.snackBar.open(err.error?.message ?? 'No se pudo desactivar el proveedor', 'Cerrar',
-                { duration: 5000, panelClass: 'snack-error' });
+                { duration: 5000, panelClass: 'snackbar-error' });
               this.loading = false;
               this.cdr.markForCheck();
             },

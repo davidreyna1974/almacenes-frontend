@@ -120,7 +120,7 @@ export class PurchaseOrdersPageComponent implements OnInit {
         },
         error: err => {
           this.snackBar.open(err.error?.message ?? 'Error al cargar órdenes', 'Cerrar',
-            { duration: 4000, panelClass: 'snack-error' });
+            { duration: 4000, panelClass: 'snackbar-error' });
           this.loading = false;
           this.cdr.markForCheck();
         },
@@ -156,7 +156,7 @@ export class PurchaseOrdersPageComponent implements OnInit {
   approve(order: PurchaseOrderResponse): void {
     if (order.details.length === 0) {
       this.snackBar.open('No se puede aprobar una orden sin líneas de detalle.', 'Cerrar',
-        { duration: 4000, panelClass: 'snack-error' });
+        { duration: 4000, panelClass: 'snackbar-error' });
       return;
     }
     this.dialog.open(ConfirmDialogComponent, {
@@ -210,7 +210,7 @@ export class PurchaseOrdersPageComponent implements OnInit {
     this.cdr.markForCheck();
     op().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
-        this.snackBar.open(successMsg, 'Cerrar', { duration: 3000, panelClass: 'snack-success' });
+        this.snackBar.open(successMsg, 'Cerrar', { duration: 3000, panelClass: 'snackbar-success' });
         this.pages.clear();
         this.activeTab = reloadTab;
         this.searchCtrl.setValue('', { emitEvent: false });
@@ -218,7 +218,7 @@ export class PurchaseOrdersPageComponent implements OnInit {
       },
       error: err => {
         this.snackBar.open(err.error?.message ?? 'No se pudo completar la operación', 'Cerrar',
-          { duration: 5000, panelClass: 'snack-error' });
+          { duration: 5000, panelClass: 'snackbar-error' });
         this.loading = false;
         this.cdr.markForCheck();
       },
