@@ -18,9 +18,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SupplierService } from '../../services/supplier.service';
 import { AuthService } from '../../../../core/auth/auth.service';
 import { LayoutService } from '../../../../core/layout/layout.service';
-import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { SupplierDTO } from '../../models/supplier.model';
-import { SupplierFormComponent } from '../supplier-form/supplier-form.component';
+import { SupplierDialogComponent, SupplierDialogData } from '../supplier-dialog/supplier-dialog.component';
 
 @Component({
   selector: 'app-suppliers-page',
@@ -29,7 +28,6 @@ import { SupplierFormComponent } from '../supplier-form/supplier-form.component'
     CommonModule, ReactiveFormsModule,
     MatTableModule, MatButtonModule, MatIconModule, MatTooltipModule,
     MatProgressBarModule, MatInputModule, MatFormFieldModule,
-    SupplierFormComponent,
   ],
   templateUrl: './suppliers-page.component.html',
   styleUrl: './suppliers-page.component.scss',
@@ -48,18 +46,14 @@ export class SuppliersPageComponent implements OnInit {
   filtered:  SupplierDTO[] = [];
   loading = false;
 
-  selected:  SupplierDTO | null = null;
-  isEdit = false;
-  showForm = false;
-
   searchCtrl = new FormControl('');
-  displayedColumns: string[] = [];
+  readonly displayedColumns = ['rfc', 'companyName', 'contactName', 'phone'];
 
-  canWrite():      boolean { return this.authService.hasRole('ROLE_ADMIN') || this.authService.hasRole('ROLE_MANAGER'); }
-  canDeactivate(): boolean { return this.authService.hasRole('ROLE_ADMIN'); }
+  canWrite(): boolean {
+    return this.authService.hasRole('ROLE_ADMIN') || this.authService.hasRole('ROLE_MANAGER');
+  }
 
   ngOnInit(): void {
-    this.displayedColumns = ['rfc', 'companyName', 'contactName', 'phone', 'actions'];
     setTimeout(() => this.layoutService.collapse(), 0);
     this.load();
 
@@ -90,94 +84,36 @@ export class SuppliersPageComponent implements OnInit {
       });
   }
 
+  private normalize(s: string): string {
+    return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  }
+
   private applyFilter(q: string): void {
-    const term = q.toLowerCase().trim();
+    const term = this.normalize(q.trim());
     this.filtered = term
       ? this.suppliers.filter(s =>
-          s.companyName.toLowerCase().includes(term) ||
-          s.rfc.toLowerCase().includes(term))
+          this.normalize(s.companyName).includes(term) ||
+          this.normalize(s.rfc).includes(term))
       : [...this.suppliers];
     this.cdr.markForCheck();
   }
 
   onRowClick(supplier: SupplierDTO): void {
-    this.selected = supplier;
-    this.isEdit   = true;
-    this.showForm = true;
-    this.cdr.markForCheck();
+    this.openDialog(supplier, true);
   }
 
   openNew(): void {
-    this.selected = null;
-    this.isEdit   = false;
-    this.showForm = true;
-    this.cdr.markForCheck();
+    this.openDialog(null, false);
   }
 
-  onCancel(): void {
-    this.showForm = false;
-    this.selected = null;
-    this.cdr.markForCheck();
-  }
-
-  onSave(dto: SupplierDTO): void {
-    this.loading = true;
-    this.cdr.markForCheck();
-    const op$ = this.isEdit
-      ? this.supplierService.update(this.selected!.id!, dto)
-      : this.supplierService.create(dto);
-
-    op$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-      next: () => {
-        this.snackBar.open(
-          this.isEdit ? 'Proveedor actualizado correctamente.' : 'Proveedor creado correctamente.',
-          'Cerrar', { duration: 3000, panelClass: 'snack-success' });
-        this.showForm = false;
-        this.selected = null;
-        this.load();
-      },
-      error: err => {
-        this.snackBar.open(err.error?.message ?? 'Error al guardar proveedor', 'Cerrar',
-          { duration: 4000, panelClass: 'snack-error' });
-        this.loading = false;
-        this.cdr.markForCheck();
-      },
+  private openDialog(supplier: SupplierDTO | null, isEdit: boolean): void {
+    const ref = this.dialog.open(SupplierDialogComponent, {
+      data: { supplier, isEdit } satisfies SupplierDialogData,
+      width: '640px',
+      maxWidth: '95vw',
     });
-  }
-
-  onDeactivate(): void {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: {
-        title: 'Desactivar proveedor',
-        message: `¿Desactivar a "${this.selected?.companyName}"? No podrá usarse en nuevas órdenes.`,
-        confirmLabel: 'Desactivar',
-        confirmColor: 'warn',
-      },
-    });
-
-    dialogRef.afterClosed()
+    ref.afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(confirmed => {
-        if (!confirmed) return;
-        this.loading = true;
-        this.cdr.markForCheck();
-        this.supplierService.deactivate(this.selected!.id!)
-          .pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe({
-            next: () => {
-              this.snackBar.open('Proveedor desactivado.', 'Cerrar',
-                { duration: 3000, panelClass: 'snack-success' });
-              this.showForm = false;
-              this.selected = null;
-              this.load();
-            },
-            error: err => {
-              this.snackBar.open(err.error?.message ?? 'No se pudo desactivar el proveedor', 'Cerrar',
-                { duration: 5000, panelClass: 'snack-error' });
-              this.loading = false;
-              this.cdr.markForCheck();
-            },
-          });
-      });
+      .subscribe(saved => { if (saved) this.load(); });
   }
 }

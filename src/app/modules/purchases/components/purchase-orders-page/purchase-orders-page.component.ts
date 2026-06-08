@@ -77,14 +77,18 @@ export class PurchaseOrdersPageComponent implements OnInit {
     return this.currentPage?.content ?? [];
   }
 
+  private normalize(s: string): string {
+    return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  }
+
   private applySearch(term: string): void {
-    const q = term.toLowerCase().trim();
+    const q = this.normalize(term.trim());
     const src = this.currentPage?.content ?? [];
     this.filteredOrders = q
       ? src.filter(o =>
-          o.orderNumber.toLowerCase().includes(q) ||
-          o.supplierName.toLowerCase().includes(q) ||
-          o.createdByUsername.toLowerCase().includes(q))
+          this.normalize(o.orderNumber).includes(q) ||
+          this.normalize(o.supplierName).includes(q) ||
+          this.normalize(o.createdByUsername).includes(q))
       : [...src];
     this.cdr.markForCheck();
   }
