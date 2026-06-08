@@ -45,9 +45,9 @@
 
         <ng-container matColumnDef="companyName">
           <th mat-header-cell *matHeaderCellDef>Razón social</th>
-          <td mat-cell *matCellDef="let s" class="cell-truncate"
+          <td mat-cell *matCellDef="let s"
               [matTooltip]="s.companyName" matTooltipShowDelay="300">
-            {{ s.companyName }}
+            <div class="cell-truncate">{{ s.companyName }}</div>
           </td>
         </ng-container>
 
