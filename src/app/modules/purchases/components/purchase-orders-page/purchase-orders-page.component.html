@@ -96,9 +96,6 @@
       <ng-container matColumnDef="actions">
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let o" class="orders-page__actions-cell">
-          <button mat-icon-button matTooltip="Ver detalle" (click)="viewDetail(o)">
-            <mat-icon>open_in_new</mat-icon>
-          </button>
           @if (canWrite() && o.status === 'PENDING') {
             <button mat-icon-button color="primary" matTooltip="Aprobar" (click)="approve(o)">
               <mat-icon>check_circle</mat-icon>
