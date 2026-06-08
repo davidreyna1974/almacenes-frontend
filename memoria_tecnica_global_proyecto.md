@@ -526,7 +526,7 @@ JWT_SECRET=...       # mínimo 64 caracteres hex (openssl rand -hex 32)
 | Módulo 0: Infra-base + Layout | ✓ Completo | 26 specs, 0 fallos | Angular 21, Material M2, sidebar+topbar+main-layout, tema #6B3C6B |
 | Módulo 1: Auth + RBAC | ✓ Completo | 43 specs, 0 fallos | AuthService, JWT interceptor, error interceptor, authGuard, LoginComponent, filtrado sidebar por rol |
 | Módulo 2: Inventory | ✓ Completo | 94 specs, 0 fallos (+46 nuevos en M2 + 5 adicionales post-fix: stock-badge getter availableStock ×2, tooltip con reservedStock ×3) + 15/15 browser + 4 roles RBAC + 17+16 seguridad backend | Mergeado a develop. RBAC 4 roles verificado en browser y backend. HTTP 404/409/422 corregidos. Tests RBAC con Spring Security activo escritos. Business logic gaps cerrados: availableStock en MovementDialog, currentStock inmutable en PUT, unitCost por rol, doble asterisco AM eliminado. |
-| Módulo 3: Purchases | ✓ Completo | 143 specs, 0 fallos (32 nuevos) | Mergeado a develop. 3 roles RBAC verificados browser + curl. Lazy chunk Vite confirmado. Suppliers CRUD, órdenes con machine-state PENDING→APPROVED→RECEIVED/CANCELLED, formulario inline de detalles, subtotal reactivo. BUG-M3-02: reiniciar ng serve al añadir rutas lazy. |
+| Módulo 3: Purchases | ✓ Completo | 143 specs, 0 fallos (32 nuevos) + 155/155 casos browser PASS | Mergeado a develop. 3 roles RBAC + pruebas browser 4 roles. 155 casos verificados (SEC, RBAC, CRUD, VAL, BSRCH, UI, FLOW, RN, ERR, EMPTY, VIS). BUG-M3-13: panelClass como array. BUG-M3-14: guard child route orders/new. Propuestas A–D documentadas en CLAUDE.md como protocolo permanente. App = solo escritorio 1280px+. |
 | Módulo 4: Sales | ⬜ Pendiente | | |
 | Módulo 5: Reports | ⬜ Pendiente | | |
 
@@ -821,6 +821,21 @@ de ruta en `app.routes.ts`, independientemente de si el sidebar lo oculta o no.
 
 El sidebar es una guía de navegación, no un mecanismo de seguridad. El guard es la barrera real.
 
+**Extensión (BUG-M3-14 — Módulo 3)**: el guard del módulo padre **NO** se hereda automáticamente
+a las rutas child. Cada ruta child que requiera un rol específico debe declarar su propio
+`canActivate` + `data.roles`. En Purchases, `orders/new` (solo ADMIN/MANAGER) necesitaba su propio
+guard aunque el módulo padre ya restringía el acceso a ADMIN/MANAGER/WAREHOUSEMAN.
+
+```typescript
+// purchases.routes.ts — child route con restricción adicional
+{
+  path: 'orders/new',
+  component: PurchaseOrderDetailPageComponent,
+  canActivate: [authGuard],
+  data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER'] },  // más restrictivo que el padre
+},
+```
+
 ### L17: Validar título del panel de detalle según permisos — no solo los campos
 
 **Problema (Frontend Módulo 3 — Purchases)**:
@@ -837,6 +852,52 @@ guardar) y para edición (campos habilitados, con guardar), el título debe refl
 ```
 
 Aplica a cualquier formulario reutilizable donde el nivel de acceso cambie el modo de la pantalla.
+
+### L18: `panelClass` en MatSnackBar debe ser array — nunca string
+
+**Problema (Frontend Módulo 3 — BUG-M3-13)**:
+Tres componentes pasaban `panelClass: 'snackbar-error'` (string) en lugar de
+`panelClass: ['snackbar-error']` (array). Angular Material ignora silenciosamente el string —
+el CSS de fondo rojo no se aplicaba y el snackbar aparecía gris por defecto.
+
+**Regla**: `panelClass` en `MatSnackBar.open()` siempre como array:
+
+```typescript
+// ❌ incorrecto — string ignorado silenciosamente
+this.snackBar.open(msg, 'Cerrar', { panelClass: 'snackbar-error' });
+
+// ✅ correcto — array obligatorio
+this.snackBar.open(msg, 'Cerrar', { panelClass: ['snackbar-error'] });
+```
+
+Este error no genera warning en consola ni falla en tests unitarios — solo se detecta en browser
+viendo el color real del snackbar.
+
+### L19: Protocolo obligatorio de pruebas browser — Propuestas A–D (todos los módulos)
+
+**Problema (Frontend Módulo 3 — origen)**:
+El Módulo 3 fue declarado completo antes de ejecutar pruebas browser. Múltiples bugs de
+seguridad (BUG-M3-13, BUG-M3-14), lógica (BUG-M3-09 a BUG-M3-12) y UX solo se descubrieron
+cuando se realizaron pruebas explícitas en browser con los 4 roles.
+
+**Regla (documentada en CLAUDE.md como protocolo permanente)**:
+
+- **Propuesta A**: documento `casos_de_prueba_modulo_<nombre>.md` creado *antes* de codificar,
+  con categorías SEC, RBAC, CRUD, VAL, BSRCH, UI, FLOW, RN, ERR, EMPTY, VIS para cada pantalla.
+- **Propuesta B**: un componente no está terminado hasta que TODOS sus casos tienen `✅ PASS`
+  verificado en browser con el rol correcto. No acumular deuda de verificación.
+- **Propuesta C**: al agregar cualquier ruta, verificar `canActivate` + `data.roles` + acceso
+  directo por URL con rol no autorizado (no basta con ocultar el ítem del sidebar).
+- **Propuesta D**: un módulo no está "done" hasta que: (1) 100% casos PASS, (2) ng test 0 fallos
+  ≥ 70% cobertura, (3) pruebas browser 4 roles ejecutadas, (4) columna Estado sin `⏳ PENDIENTE`.
+
+### L20: La aplicación Almacenes es exclusivamente de escritorio (1280px+)
+
+**Decisión (2026-06-08)**: el sistema no será usado en dispositivos móviles ni tablets.
+
+**Regla**: en los documentos de casos de prueba, marcar como `N/A` desde el inicio todos los
+casos de viewport < 600px (categoría VIS responsive). No implementar breakpoints para móvil.
+No incluir casos de viewport 400×700 en ningún módulo futuro.
 
 ---
 

@@ -2,7 +2,7 @@
 
 **Versión:** 1.0 — implementación completa  
 **Fecha de inicio:** 2026-06-07  
-**Fecha de cierre:** 2026-06-07  
+**Fecha de cierre:** 2026-06-08 (pruebas browser completadas — 155/155 PASS)  
 **Rama:** `feature/purchases`  
 **Estado:** ✅ Completado
 
@@ -571,6 +571,44 @@ Test Files  17 passed (17)
 **Causa:** El template usaba `{{ isEdit ? 'Editar proveedor' : 'Nuevo proveedor' }}` sin considerar si el usuario tiene permisos de escritura.  
 **Corrección:** Cambiar a `{{ isEdit ? (canWrite() ? 'Editar proveedor' : 'Ver proveedor') : 'Nuevo proveedor' }}`.
 
+### BUG-M3-09 (frontend): Campo "undefined" al editar línea de detalle existente
+**Síntoma:** Al abrir el formulario de edición de una línea de detalle, el campo `productSearch` mostraba "undefined — undefined" en lugar de `[SKU] — Nombre`.  
+**Causa:** `ngOnChanges` usaba `this.detail.productSku` y `this.detail.productName` directamente, pero el template de cadena tenía un error de interpolación cuando los campos eran undefined.  
+**Corrección:** Verificar que el `ngOnChanges` use interpolación correcta: `` `[${this.detail.productSku}] — ${this.detail.productName}` ``.  
+**Rama:** `fix/purchases-detail-edit-undefined`
+
+### BUG-M3-10 (frontend): Búsqueda de productos no normalizaba acentos en autocomplete
+**Síntoma:** Buscar "camara" no encontraba "Cámara"; buscar "OPTICO" no encontraba "Óptico".  
+**Causa:** `filterProducts()` comparaba strings sin normalización NFD, y el texto de stock disponible aparecía concatenado en el mismo string de búsqueda.  
+**Corrección:** Aplicar `normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()` en `filterProducts()`. Separar la información de stock como texto independiente del valor del autocomplete.  
+**Rama:** `fix/purchases-search-accent-detail`
+
+### BUG-M3-11 (frontend/UX): Selector de proveedor no mostraba nombre de empresa al cargar orden existente
+**Síntoma:** Al navegar a una orden existente, el `mat-select` de proveedor aparecía vacío en lugar de mostrar el proveedor asignado.  
+**Causa:** `patchValue({ supplierId: order.supplierId })` se ejecutaba antes de que `loadSuppliers()` hubiera poblado la lista, por lo que Angular Material no podía resolver el valor.  
+**Corrección:** Garantizar que `suppliers` esté cargado antes de hacer `patchValue`, o reordenar las llamadas en `ngOnInit` para que la carga de proveedores preceda al `patchValue`.
+
+### BUG-M3-12 (frontend/UX): Varias mejoras UX detectadas en sesión de pruebas browser
+**Síntomas combinados detectados en prueba de roles:**  
+- Tooltip en botón de agregar detalle mostraba texto incorrecto según el estado de la orden.  
+- Icono de estado de orden en la lista no se actualizaba tras transición de estado.  
+- Columna `totalAmount` visible brevemente para WAREHOUSEMAN al cambiar de tab.  
+**Corrección:** Ajustes de template, pipes y `cdr.markForCheck()` en los handlers de transición.  
+**Rama:** `fix/purchases-ux-improvements`
+
+### BUG-M3-13 (frontend): panelClass como string en lugar de array → clase CSS perdida
+**Síntoma:** Snackbars de error en `supplier-dialog`, `purchase-orders-page` y `suppliers-page` no mostraban fondo rojo (`snackbar-error`), aparecían con el estilo por defecto gris.  
+**Causa:** `panelClass` se pasaba como string `'snackbar-error'` en lugar de array `['snackbar-error']`. Angular Material requiere array; string se ignora silenciosamente.  
+**Corrección:** Cambiar todos los `panelClass: 'snackbar-error'` a `panelClass: ['snackbar-error']` en los 3 componentes afectados.  
+**Detectado en:** Categoría ERR del documento de casos de prueba — sesión de pruebas browser.
+
+### BUG-M3-14 (frontend/SEC): Ruta `orders/new` sin guard de rol — WAREHOUSEMAN podía acceder
+**Síntoma:** WAREHOUSEMAN podía navegar a `/purchases/orders/new` por URL directa. El backend devolvía 403 al intentar crear, pero el formulario era visible.  
+**Causa:** La ruta child `orders/new` en `purchases.routes.ts` no tenía `canActivate: [authGuard]` ni `data: { roles: [...] }`. El guard del módulo padre no protege rutas child individualmente si estas no lo declaran.  
+**Corrección:** Añadir `canActivate: [authGuard]` y `data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER'] }` a la ruta `orders/new`.  
+**Lección:** Cada ruta que requiere un rol específico debe tener su propio guard declarado — el guard del padre NO se hereda a las rutas child en Angular.  
+**Detectado en:** Caso SEC-ORD-03 del documento de pruebas — verificación de acceso directo por URL.
+
 ---
 
 ## 9. Estándares y buenas prácticas aplicadas
@@ -636,3 +674,11 @@ Test Files  17 passed (17)
 | Suite total frontend post-módulo 3: 143 specs, 0 fallos | ✅ | `ng test --no-watch` — 17 archivos, 143 specs |
 | Cobertura servicios y componentes dumb ≥ 70% | ✅ | `ng test --coverage` — purchases/services: 96.42% |
 | Regresión módulos 0-2 tras módulo 3 | ✅ | `ng test --no-watch` — 143 specs, 0 fallos |
+| **Pruebas browser completas — 155/155 casos PASS** | ✅ | 3 sesiones browser, 4 roles, todas las categorías |
+| BUG-M3-09 a BUG-M3-12: bugs UX/lógica detectados en sesión 1-2 | ✅ FIXED | Ramas fix/purchases-* mergeadas en develop |
+| BUG-M3-13: panelClass corregido en 3 componentes | ✅ FIXED | `['snackbar-error']` en supplier-dialog, orders-page, suppliers-page |
+| BUG-M3-14: guard de rol en ruta `orders/new` | ✅ FIXED | `canActivate: [authGuard]` + `data.roles` en purchases.routes.ts |
+| Caso SEC-ORD-03: WAREHOUSEMAN bloqueado en `/purchases/orders/new` | ✅ | Browser — redirige a `/` con JWT de test_wh |
+| Caso FLOW-DET-08: aprobar orden sin líneas → snackbar error | ✅ | Browser — "La orden no tiene líneas de detalle." |
+| Caso ERR-12: 403 backend → snackbar interceptor | ✅ | Browser — WAREHOUSEMAN llama approve(), interceptor muestra error |
+| Propuesta D — 4 condiciones de "done" cumplidas | ✅ | Ver checklist en §10, sesión 2026-06-08 |
