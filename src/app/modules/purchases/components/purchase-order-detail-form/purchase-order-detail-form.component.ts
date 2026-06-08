@@ -93,11 +93,15 @@ export class PurchaseOrderDetailFormComponent implements OnInit, OnChanges {
     }
   }
 
+  private normalize(s: string): string {
+    return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  }
+
   private filterProducts(term: string | unknown): void {
     if (typeof term !== 'string') return;
-    const q = term.toLowerCase();
+    const q = this.normalize(term);
     this.filteredProducts = this.products.filter(p =>
-      p.sku.toLowerCase().includes(q) || p.name.toLowerCase().includes(q)
+      this.normalize(p.sku).includes(q) || this.normalize(p.name).includes(q)
     );
     this.cdr.markForCheck();
   }
