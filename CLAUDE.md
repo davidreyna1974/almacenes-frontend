@@ -664,6 +664,19 @@ En producción, la URL viene de la configuración del servidor o de un archivo
 - La fila seleccionada se resalta con fondo `#F2E4F2`.
 - Columna de acciones (editar, ver, desactivar) siempre a la derecha, íconos con tooltip.
 - Ordenamiento por defecto: `createdAt DESC` para listas de órdenes; `name ASC` para catálogos.
+- **Truncado de celdas**: nunca aplicar `display: block` sobre un `<td>`. Usar un `<div>` wrapper interno con la clase de truncado. (L21)
+- **Contenedor de tabla**: toda página de listado debe tener `padding: var(--space-3)`, `gap: var(--space-2)` en `.catalog-page` y `border-radius: 8px; border: 1px solid var(--color-divider); background: #fff` en `__table-wrapper`. Verificar consistencia entre todas las páginas del módulo. (L22)
+- **Botones de acción en filas clickeables**: cuando `mat-row` tiene `(click)="viewDetail(row)"`, TODOS los botones de acción dentro de la fila DEBEN incluir `$event.stopPropagation()` al inicio de su handler: `(click)="$event.stopPropagation(); acción(row)"`. Sin esto, el click burbujea al `mat-row`, navega al detalle y destruye el componente antes de que `afterClosed()` pueda ejecutarse. (L27 — BUG-M3-22)
+
+### Navegación lista ↔ detalle con tabs
+
+Cuando una pantalla de lista tiene tabs y navega a un detalle:
+- Al navegar al detalle: `router.navigate(['/path/id'], { queryParams: { from: this.activeTab } })`
+- En `goBack()` del detalle: leer `route.snapshot.queryParamMap.get('from')` y navegar con `{ queryParams: { tab: from } }`
+- En `ngOnInit()` de la lista: leer `?tab=` y setear `activeTab` antes de cargar datos
+- En el template: `<mat-tab-group [selectedIndex]="activeTabIndex">` con getter que busca el índice del tab activo
+- Los contadores de tabs se cargan al inicio: `loadTab(activeTab)` para el tab activo + `loadCount(status)` (size=1) para los demás
+- `counts: Map<Status, number>` separado de `pages: Map<Status, PageResponse<T>>` — nunca mezclarlos (L23, L24)
 
 ### Formularios
 
@@ -671,6 +684,7 @@ En producción, la URL viene de la configuración del servidor o de un archivo
 - Campos obligatorios marcados con asterisco rojo `*`.
 - Validación en tiempo real (al salir del campo — `blur`) y al intentar guardar.
 - El botón de guardar se deshabilita mientras el formulario sea inválido o esté cargando.
+- **Formularios de edición**: agregar `!form.dirty` a la condición — el botón solo se activa cuando el usuario ha modificado algo. Usar `form.markAsPristine()` tras guardar exitosamente. (L25 — BUG-M3-20)
 - Campos de fecha usan `MatDatepicker` con formato `dd/MM/yyyy`.
 - Campos numéricos monetarios muestran símbolo de moneda como prefix.
 - Los selectores de rol/estado/tipo usan `MatSelect` con opciones descriptivas.

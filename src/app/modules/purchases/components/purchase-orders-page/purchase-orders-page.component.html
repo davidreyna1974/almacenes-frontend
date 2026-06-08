@@ -22,7 +22,8 @@
     }
   </div>
 
-  <mat-tab-group animationDuration="150ms" (selectedTabChange)="onTabChange($event.index)"
+  <mat-tab-group animationDuration="150ms" [selectedIndex]="activeTabIndex"
+                 (selectedTabChange)="onTabChange($event.index)"
                  class="orders-page__tabs">
 
     @for (tab of tabs; track tab.status) {
@@ -97,17 +98,20 @@
         <mat-header-cell *matHeaderCellDef></mat-header-cell>
         <mat-cell *matCellDef="let o" class="orders-page__actions-cell">
           @if (canWrite() && o.status === 'PENDING') {
-            <button mat-icon-button color="primary" matTooltip="Aprobar" (click)="approve(o)">
+            <button mat-icon-button color="primary" matTooltip="Aprobar"
+                    (click)="$event.stopPropagation(); approve(o)">
               <mat-icon>check_circle</mat-icon>
             </button>
           }
           @if (canReceiveOrd() && o.status === 'APPROVED') {
-            <button mat-icon-button color="primary" matTooltip="Recibir mercancía" (click)="receive(o)">
+            <button mat-icon-button color="primary" matTooltip="Recibir mercancía"
+                    (click)="$event.stopPropagation(); receive(o)">
               <mat-icon>done_all</mat-icon>
             </button>
           }
           @if (canWrite() && (o.status === 'PENDING' || o.status === 'APPROVED')) {
-            <button mat-icon-button color="warn" matTooltip="Cancelar orden" (click)="cancel(o)">
+            <button mat-icon-button color="warn" matTooltip="Cancelar orden"
+                    (click)="$event.stopPropagation(); cancel(o)">
               <mat-icon>cancel</mat-icon>
             </button>
           }
