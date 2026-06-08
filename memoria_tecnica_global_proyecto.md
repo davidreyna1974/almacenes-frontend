@@ -437,6 +437,15 @@ lo obliga, o qué comportamiento sorprendería a un lector.
 
 Por cada módulo nuevo (backend y frontend):
 - `propuesta_modulo_<nombre>[_frontend].txt` — antes de escribir código
+- `casos_de_prueba_modulo_<nombre>.md` — **creado copiando el template** antes de escribir código:
+  ```bash
+  cp casos_de_prueba_modulo_TEMPLATE.md casos_de_prueba_modulo_<nombre>.md
+  ```
+  El template (`casos_de_prueba_modulo_TEMPLATE.md`, raíz del frontend) contiene
+  la estructura completa de casos para todas las categorías (SEC, RBAC, CRUD, VAL,
+  BSRCH, UI, FLOW, RN, ERR, EMPTY, VIS), los patrones críticos que han causado bugs
+  (L25 form dirty, L26 última línea, L27 stopPropagation) y el checklist de cierre.
+  **Nunca crear este documento desde cero. Siempre partir del template.**
 - `memoria_tecnica_modulo_<nombre>[_frontend].md` — actualizada por fase
 
 La Sección 7 de cada memoria técnica documenta:

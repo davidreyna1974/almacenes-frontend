@@ -108,6 +108,15 @@ Todo módulo nuevo requiere **tres archivos** en la raíz antes de implementar:
 `casos_de_prueba_modulo_<nombre>.md` se crea **antes de escribir una sola línea de
 implementación**, junto con la propuesta del módulo.
 
+**Uso obligatorio del template:**
+```bash
+cp casos_de_prueba_modulo_TEMPLATE.md casos_de_prueba_modulo_<nombre>.md
+```
+El archivo `casos_de_prueba_modulo_TEMPLATE.md` (raíz del proyecto) contiene la
+estructura completa con casos genéricos para todas las categorías, los patrones
+que han causado bugs reales (L25, L26, L27) y el checklist de cierre (Propuesta D).
+**No crear el documento de casos desde cero — siempre partir del template.**
+
 **Formato de cada caso:**
 
 | ID | Pantalla | Categoría | Descripción | Rol(es) | Resultado esperado | Estado | Notas |
@@ -192,8 +201,10 @@ indicar explícitamente qué condición falta antes de avanzar.
 
 ```
 [ ] propuesta_modulo_<nombre>_frontend.txt creada
-[ ] casos_de_prueba_modulo_<nombre>.md creada con TODOS los casos definidos
-    (categorías SEC, RBAC, CRUD, VAL, BSRCH, UI, FLOW, RN, ERR, EMPTY, VIS)
+[ ] casos_de_prueba_modulo_<nombre>.md creada COPIANDO el template:
+    cp casos_de_prueba_modulo_TEMPLATE.md casos_de_prueba_modulo_<nombre>.md
+    (completar todos los marcadores [...] antes de escribir código)
+    (categorías obligatorias: SEC, RBAC, CRUD, VAL, BSRCH, UI, FLOW, RN, ERR, EMPTY, VIS)
 [ ] memoria_tecnica_modulo_<nombre>_frontend.md iniciada
 [ ] Gate de seguridad verificado para todas las rutas del módulo (Propuesta C)
 ```
