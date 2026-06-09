@@ -63,6 +63,9 @@
     <mat-form-field appearance="outline">
       <mat-label>Stock mínimo</mat-label>
       <input matInput type="number" formControlName="minimumStock" min="0" />
+      @if (form.get('minimumStock')?.hasError('min')) {
+        <mat-error>El stock mínimo no puede ser negativo.</mat-error>
+      }
     </mat-form-field>
 
     <!-- Estado -->
@@ -121,7 +124,7 @@
         Cancelar
       </button>
       <button type="submit" mat-flat-button color="primary"
-              [disabled]="form.invalid || saving">
+              [disabled]="form.invalid || (isEdit && !form.dirty) || saving">
         @if (saving) {
           <mat-spinner diameter="18" />
         } @else {
