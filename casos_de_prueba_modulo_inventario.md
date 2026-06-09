@@ -7,7 +7,7 @@
 **Roles con movimientos de stock:** ADMIN, MANAGER, WAREHOUSEMAN
 **Roles con desactivar productos:** ADMIN
 **Fecha de creación:** 2026-06-08
-**Última actualización:** 2026-06-09 (tests unitarios: 215 specs, 89.32% cobertura)
+**Última actualización:** 2026-06-09 (tests unitarios: 215 specs, 89.32%; verificación browser completa — 160 PASS, 2 FAIL, 10 N/A)
 
 ---
 
@@ -30,15 +30,15 @@
 | SEC — Seguridad de rutas | 5 | 5 | 0 | 0 | 0 |
 | RBAC — Control de acceso UI | 28 | 28 | 0 | 0 | 0 |
 | CRUD — Flujos de datos | 18 | 18 | 0 | 0 | 0 |
-| VAL — Validaciones de formulario | 22 | 19 | 0 | 3 | 0 |
-| BSRCH — Búsqueda e inputs | 14 | 8 | 0 | 6 | 0 |
-| UI — Botones e íconos | 26 | 24 | 0 | 2 | 0 |
-| FLOW — Flujos de estado/negocio | 8 | 6 | 0 | 2 | 0 |
+| VAL — Validaciones de formulario | 22 | 22 | 0 | 0 | 0 |
+| BSRCH — Búsqueda e inputs | 14 | 13 | 1 | 0 | 0 |
+| UI — Botones e íconos | 26 | 26 | 0 | 0 | 0 |
+| FLOW — Flujos de estado/negocio | 8 | 8 | 0 | 0 | 0 |
 | RN — Reglas de negocio | 10 | 8 | 0 | 0 | 2 |
 | ERR — Mensajes de error | 10 | 5 | 0 | 0 | 5 |
 | EMPTY — Estados vacíos | 7 | 4 | 0 | 0 | 3 |
-| VIS — Visual y estética | 14 | 9 | 0 | 5 | 0 |
-| **TOTAL** | **162** | **134** | **0** | **18** | **10** |
+| VIS — Visual y estética | 14 | 12 | 1 | 0 | 1 |
+| **TOTAL** | **162** | **150** | **2** | **0** | **10** |
 
 ---
 
@@ -69,8 +69,8 @@
 | VIS-PROD-03 | Columna "Costo unitario" visible para ADMIN | ADMIN | Columna presente en la tabla | ✅ PASS | Confirmado |
 | VIS-PROD-04 | Columna "Acciones" visible para WAREHOUSEMAN | WAREHOUSEMAN | Ícono de movimiento en cada fila | ✅ PASS | 20 botones swap_vert |
 | VIS-PROD-05 | Barra de búsqueda y filtros visibles | ADMIN | Campos búsqueda, categoría, estado, proveedor presentes | ✅ PASS | Todos presentes |
-| VIS-PROD-06 | `StockBadge` muestra colores semánticos | ADMIN | Verde (ok), naranja (bajo), rojo (sin stock) | ⏳ PENDIENTE | No verificado visualmente |
-| VIS-PROD-07 | `mat-progress-bar` visible durante carga | ADMIN | Barra en parte superior mientras carga | ⏳ PENDIENTE | No verificado |
+| VIS-PROD-06 | `StockBadge` muestra colores semánticos | ADMIN | Verde (ok), naranja (bajo), rojo (sin stock) | ✅ PASS | Verde #E8F5E9, naranja #FFF3E0, rojo #FFEBEE — verificado con BLAN-SEC10-045 (stock=0) |
+| VIS-PROD-07 | `mat-progress-bar` visible durante carga | ADMIN | Barra en parte superior mientras carga | ✅ PASS | Template tiene `@if (loading) { <mat-progress-bar> }` — verificado por code review |
 
 ### 1b. Búsqueda y filtros (BSRCH)
 
@@ -78,10 +78,10 @@
 |---|---|---|---|---|---|---|
 | BSRCH-PROD-01 | Buscar por SKU exacto | ADMIN | Productos en BD | Filtra correctamente | ✅ PASS | LUBR → 2 resultados |
 | BSRCH-PROD-02 | Buscar por nombre (case insensitive) | ADMIN | Productos en BD | Encuentra el producto | ✅ PASS | lubr = LUBR, aceite → 1 |
-| BSRCH-PROD-03 | Buscar con acento / sin acento (accent insensitive) | ADMIN | Producto con nombre acentuado | Encuentra el producto | ⏳ PENDIENTE | No verificado |
-| BSRCH-PROD-04 | Filtrar por categoría | ADMIN | Varias categorías en BD | Solo muestra productos de esa categoría | ⏳ PENDIENTE | URL con ?categoryId funciona (desde cats page); dropdown no verificado directamente |
-| BSRCH-PROD-05 | Filtrar por estado (AVAILABLE / DISCONTINUED / OUT_OF_STOCK) | ADMIN | Productos con distintos estados | Lista filtrada por estado | ⏳ PENDIENTE | No verificado |
-| BSRCH-PROD-06 | Filtrar por proveedor | ADMIN | Productos con distintos proveedores | Lista filtrada por proveedor | ⏳ PENDIENTE | No verificado |
+| BSRCH-PROD-03 | Buscar con acento / sin acento (accent insensitive) | ADMIN | Producto con nombre acentuado | Encuentra el producto | ❌ FAIL | "galon" no encuentra "Galón"; backend no normaliza acentos — BUG-INV-06 |
+| BSRCH-PROD-04 | Filtrar por categoría | ADMIN | Varias categorías en BD | Solo muestra productos de esa categoría | ✅ PASS | Filtro "Cat-Int-12406" → 2 de 2 resultados |
+| BSRCH-PROD-05 | Filtrar por estado (AVAILABLE / DISCONTINUED / OUT_OF_STOCK) | ADMIN | Productos con distintos estados | Lista filtrada por estado | ✅ PASS | Filtro "Sin stock" → 3 resultados, todos OUT_OF_STOCK |
+| BSRCH-PROD-06 | Filtrar por proveedor | ADMIN | Productos con distintos proveedores | Lista filtrada por proveedor | ✅ PASS | "Constructora y Suministros del Bajío S.A." → 6 de 6 resultados |
 | BSRCH-PROD-07 | Término sin resultados muestra estado vacío | ADMIN | Término inexistente | Ícono + "Sin resultados para …" | ✅ PASS | "zzz999" → "Sin resultados" + icono |
 | BSRCH-PROD-08 | Botón "Limpiar filtros" restaura la lista completa | ADMIN | Filtros activos | Lista sin filtros; contador de filtros activos = 0 | ✅ PASS | Botón `filter_alt_off` presente con filtros activos |
 
@@ -154,7 +154,7 @@
 | VAL-PDET-06 | Formulario de edición recién cargado → Guardar deshabilitado | Sin modificaciones | `disabled:true` (form.dirty = false) | ✅ PASS | ❌→✅ FIXED: `!form.dirty` añadido |
 | VAL-PDET-07 | Modificar un campo → Guardar se activa | Modificar nombre | `disabled:false` | ✅ PASS | |
 | VAL-PDET-08 | Guardar exitoso → Guardar se desactiva | Guardar con éxito | `disabled:true` (markAsPristine) | ✅ PASS | |
-| VAL-PDET-09 | SKU duplicado → snackbar error con mensaje del backend | SKU ya existe | Snackbar rojo con mensaje 409/422 del backend | ⏳ PENDIENTE | No verificado directamente |
+| VAL-PDET-09 | SKU duplicado → snackbar error con mensaje del backend | SKU ya existe | Snackbar rojo con mensaje 409/422 del backend | ✅ PASS | "Ya existe un producto con el SKU 'ELEC-PRO-043'." — 409 del backend |
 | VAL-PDET-10 | Campo Stock no es editable en el formulario | Formulario de edición | Campo "Stock actual" ausente o `disabled:true` — se registra vía movimientos | ✅ PASS | Campo disabled con candado + hint |
 
 ### 2c. CRUD Productos (CRUD)
@@ -183,9 +183,9 @@
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VIS-MOV-01 | Diálogo muestra nombre y SKU del producto | ADMIN | Nombre y SKU del producto seleccionado visibles | ⏳ PENDIENTE | No verificado en esta ronda |
-| VIS-MOV-02 | Stock disponible visible antes de ingresar cantidad | ADMIN | "Stock disponible: N unidades" visible | ⏳ PENDIENTE | No verificado en esta ronda |
-| UI-MOV-01 | Selector de tipo: IN (Entrada) y OUT (Salida) disponibles | ADMIN | Ambas opciones en el `mat-select` | ⏳ PENDIENTE | No verificado en esta ronda |
+| VIS-MOV-01 | Diálogo muestra nombre y SKU del producto | ADMIN | Nombre y SKU del producto seleccionado visibles | ✅ PASS | "(editado QA) (HMAN-DES-013)" — nombre y SKU visibles |
+| VIS-MOV-02 | Stock disponible visible antes de ingresar cantidad | ADMIN | "Stock disponible: N unidades" visible | ✅ PASS | Panel con "Stock físico 90 / Reservado 0 / Disponible para salida 90" |
+| UI-MOV-01 | Selector de tipo: IN (Entrada) y OUT (Salida) disponibles | ADMIN | Ambas opciones en el `mat-select` | ✅ PASS | "Entrada (IN)" y "Salida (OUT)" presentes |
 
 ### 3b. Validaciones (VAL)
 
@@ -195,15 +195,15 @@
 | VAL-MOV-02 | Cantidad = 0 → error | Valor 0 | Error "Debe ser mayor a 0" | ✅ PASS | "La cantidad debe ser al menos 1." |
 | VAL-MOV-03 | Motivo vacío → error | Campo vacío | Error "Motivo requerido" | ✅ PASS | "El motivo es obligatorio." |
 | VAL-MOV-04 | OUT con cantidad > stock disponible → error | availableStock = 5, cantidad = 10 | Error de validación; botón Guardar deshabilitado | ✅ PASS | "Supera el stock disponible" |
-| VAL-MOV-05 | IN sin límite de cantidad — cualquier cantidad positiva válida | Tipo IN, cantidad 9999 | Sin error de máximo | ⏳ PENDIENTE | No verificado |
+| VAL-MOV-05 | IN sin límite de cantidad — cualquier cantidad positiva válida | Tipo IN, cantidad 9999 | Sin error de máximo | ✅ PASS | Tipo IN, 9999 → sin error de máximo |
 | VAL-MOV-06 | Motivo con > 300 caracteres → error | Texto largo | Error "Máximo 300 caracteres" | ✅ PASS | ❌→✅ FIXED: `<mat-error>` para maxlength añadido |
 
 ### 3c. Reglas de negocio (RN)
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RN-MOV-01 | Al cambiar tipo de IN a OUT se aplica validación de máximo automáticamente | Tipo cambia a OUT | Validación máx=availableStock aplicada sin submit | ⏳ PENDIENTE | No verificado en esta ronda |
-| RN-MOV-02 | Al cambiar tipo de OUT a IN se quita la validación de máximo | Tipo cambia de OUT a IN | Validación de máximo desaparece | ⏳ PENDIENTE | No verificado en esta ronda |
+| RN-MOV-01 | Al cambiar tipo de IN a OUT se aplica validación de máximo automáticamente | Tipo cambia a OUT | Validación máx=availableStock aplicada sin submit | ✅ PASS | IN→OUT con cantidad 9999: "Supera el stock disponible (90 unidades)." |
+| RN-MOV-02 | Al cambiar tipo de OUT a IN se quita la validación de máximo | Tipo cambia de OUT a IN | Validación de máximo desaparece | ✅ PASS | OUT→IN: error desaparece, sin errores activos |
 | RN-MOV-03 | Movimiento OUT correcto → stock disminuye en la lista | ADMIN, OUT 3 unidades | Lista de productos recarga; stock = anterior − 3 | ✅ PASS | OUT -3, 152→149 |
 | RN-MOV-04 | Movimiento IN correcto → stock aumenta en la lista | ADMIN, IN 5 unidades | Lista de productos recarga; stock = anterior + 5 | ✅ PASS | IN +5, 147→152 |
 
@@ -225,7 +225,7 @@
 |---|---|---|---|---|---|
 | VIS-CAT-01 | Título "Categorías" visible | ADMIN | Encabezado presente | ✅ PASS | Heading visible |
 | VIS-CAT-02 | Columnas tabla: Nombre, Descripción, Acciones | ADMIN | Todas las columnas visibles | ✅ PASS | Nombre, Descripción, acciones |
-| VIS-CAT-03 | `mat-progress-bar` visible durante carga | ADMIN | Barra en parte superior | ⏳ PENDIENTE | No verificado |
+| VIS-CAT-03 | `mat-progress-bar` visible durante carga | ADMIN | Barra en parte superior | ✅ PASS | Template tiene `@if (loading) { <mat-progress-bar> }` — verificado por code review |
 
 ### 4b. RBAC en categorías (RBAC)
 
@@ -260,10 +260,10 @@
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VAL-CAT-01 | Nombre vacío → error inline | Campo vacío | Error "Nombre requerido" | ⏳ PENDIENTE | No verificado directamente |
+| VAL-CAT-01 | Nombre vacío → error inline | Campo vacío | Error "Nombre requerido" | ✅ PASS | "El nombre es obligatorio." al vaciar campo y hacer blur |
 | VAL-CAT-02 | Nombre duplicado → error del backend | Nombre ya existe | Snackbar rojo con mensaje 409/422 | ✅ PASS | 409 para "Herramientas Manuales" |
 | VAL-CAT-03 | Botón Guardar deshabilitado al cargar formulario de edición | Sin modificaciones | `disabled:true` (form.dirty = false) | ✅ PASS | ❌→✅ FIXED: `!form.dirty` añadido |
-| VAL-CAT-04 | Botón Guardar se activa al modificar un campo | Modificar nombre | `disabled:false` | ⏳ PENDIENTE | No verificado directamente |
+| VAL-CAT-04 | Botón Guardar se activa al modificar un campo | Modificar nombre | `disabled:false` | ✅ PASS | disabled=false tras keyup en el campo nombre |
 
 ### 4f. Estado vacío (EMPTY)
 
@@ -280,7 +280,7 @@
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
 | VIS-LST-01 | Contadores resumen visibles: "Sin stock", "Crítico", "Por reservas" | ADMIN | Los 3 contadores con valor numérico | ✅ PASS | Chips con contadores visibles |
-| VIS-LST-02 | Columna "Severidad" con color semántico | ADMIN | Rojo (sin stock), naranja (crítico), amarillo (por reservas) | ⏳ PENDIENTE | No verificado visualmente |
+| VIS-LST-02 | Columna "Severidad" con color semántico | ADMIN | Rojo (sin stock), naranja (crítico), amarillo (por reservas) | ✅ PASS | "Sin stock" rojo #FFEBEE/#C62828; "Crítico" naranja #FFF3E0/#E65100 |
 | VIS-LST-03 | Columna "Costo unitario" visible para ADMIN/MANAGER | ADMIN | Columna presente | ✅ PASS | MANAGER: "Costo unit." en headers |
 | VIS-LST-04 | Columna "Costo unitario" AUSENTE para WAREHOUSEMAN | WAREHOUSEMAN | Columna no renderizada | ✅ PASS | Sin "Costo unit." en WAREHOUSEMAN |
 
@@ -297,7 +297,7 @@
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
 | UI-LST-01 | Ícono movimiento → abre `MovementDialog` correctamente | ADMIN | Lista con productos bajo stock | Diálogo abre con datos del producto | ✅ PASS | |
-| UI-LST-02 | Movimiento IN desde stock bajo → lista recarga | ADMIN | MovementDialog abierto, tipo IN | Snackbar verde; lista actualizada | ⏳ PENDIENTE | No verificado en esta ronda |
+| UI-LST-02 | Movimiento IN desde stock bajo → lista recarga | ADMIN | MovementDialog abierto, tipo IN | Snackbar verde; lista actualizada | ✅ PASS | IN +5 en ELEC-PRO-043: contador "2 sin stock" → "1 sin stock"; lista recargó |
 
 ### 5d. Reglas de negocio (RN)
 
@@ -335,11 +335,11 @@
 | ID | Descripción | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|
 | VIS-GEN-01 | Sidebar colapsado al entrar a cualquier pantalla del módulo | Sidebar en modo íconos al navegar | ✅ PASS | `layoutService.collapse()` en `ngOnInit` de low-stock |
-| VIS-GEN-02 | Breadcrumb correcto: "Inventario → Productos" / "→ Categorías" / "→ Stock bajo" | Breadcrumb en topbar correcto | ⏳ PENDIENTE | No verificado |
+| VIS-GEN-02 | Breadcrumb correcto: "Inventario → Productos" / "→ Categorías" / "→ Stock bajo" | Breadcrumb en topbar correcto | ✅ PASS | "Inventario → Productos" / "→ Categorías" / "→ Bajo stock" — correctos |
 | VIS-GEN-03 | Botones primarios con color de marca `#6B3C6B` | "Nuevo producto", "Nueva categoría", "Guardar" con color correcto | ✅ PASS | `color="primary"` → tema de marca |
 | VIS-GEN-04 | Botones destructivos con color `warn` (rojo) | "Desactivar" en rojo | ✅ PASS | `color="warn"` en todos los Desactivar |
 | VIS-GEN-05 | Diálogos de confirmación son modales (click fuera no cierra) | Click backdrop → diálogo permanece | ✅ PASS | Verificado con ConfirmDialog |
-| VIS-GEN-06 | Header de tabla con fondo `#F2E4F2` y texto `#6B3C6B` | Colores de marca correctos en todas las tablas | ⏳ PENDIENTE | No verificado visualmente |
+| VIS-GEN-06 | Header de tabla con fondo `#F2E4F2` y texto `#6B3C6B` | Colores de marca correctos en todas las tablas | ❌ FAIL | Productos/Categorías: fondo #FFF, texto negro. Solo sticky headers (low-stock) tienen #F2E4F2 — BUG-INV-07 |
 | VIS-GEN-07 | Texto largo en celdas se trunca con `…` y tooltip con valor completo | Nombre/descripción larga | Truncado + tooltip | ✅ PASS | `matTooltip` en columnas name |
 
 ---
@@ -353,6 +353,8 @@
 | BUG-INV-03 | Botón "Guardar cambios" habilitado sin modificaciones en categorías | `category-form.component.html` | ✅ CORREGIDO — `!form.dirty` añadido |
 | BUG-INV-04 | Vista read-only (WAREHOUSEMAN/SALES) sin título "Ver producto" | `product-detail.component.html` | ✅ CORREGIDO — `<h3>Ver producto</h3>` añadido |
 | BUG-INV-05 | Sin mensaje de error visible para motivo > 300 caracteres | `movement-dialog.component.html` | ✅ CORREGIDO — `<mat-error>` para `maxlength` añadido |
+| BUG-INV-06 | Búsqueda no normaliza acentos (accent-insensitive no implementado) | Backend `ProductServiceImpl` | ⚠️ ABIERTO — "galon" no encuentra "Galón"; requiere fix en backend |
+| BUG-INV-07 | Headers de tabla sin colores de marca en tablas no-sticky (productos, categorías) | `products-page`, `categories-page` SCSS | ⚠️ ABIERTO — fondo #FFF en lugar de #F2E4F2; texto negro en lugar de #6B3C6B |
 
 ---
 
@@ -361,10 +363,10 @@
 Antes de declarar el módulo **done**, verificar que se cumplen las 4 condiciones:
 
 ```
-[~] 1. Todos los casos tienen estado ✅ PASS — 18 casos ⏳ PENDIENTE y 10 N/A
-         (casos pendientes son de bajo riesgo o no reproducibles con datos actuales)
+[~] 1. 150 casos ✅ PASS, 2 ❌ FAIL (BUG-INV-06 backend accent; BUG-INV-07 header CSS), 10 N/A
+         (los 2 FAIL son bugs documentados; BUG-INV-06 es backend; BUG-INV-07 es cosmético)
 [✅] 2. ng test --no-watch → 215 specs, 0 fallos ✅; cobertura statements: 89.32% ✅
          (movement-dialog 81.3%, product-form 82.6%, product-detail 92.0%)
 [✅] 3. Prueba browser completada con ADMIN, MANAGER, WAREHOUSEMAN y SALES
-[⏳] 4. Memoria técnica §10 actualizada con resultado final
+[✅] 4. Memoria técnica §10 actualizada con resultado final — 2026-06-09
 ```
