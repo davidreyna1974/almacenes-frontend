@@ -771,6 +771,32 @@ configuraciones de módulo, usar tests separados (`it()`) dentro de un `describe
 
 ---
 
+### BUG-INV-06 (BSRCH-PROD-03): Búsqueda sin normalización de acentos
+
+**Síntoma**: buscar "galon" no encuentra "Galón de pintura"; buscar "ceramica" no encuentra "Cerámica".
+
+**Causa raíz**: el backend no aplica normalización Unicode (accent-insensitive) en la búsqueda por
+nombre/SKU. La consulta JPA usa `LIKE '%galon%'` que es case-insensitive pero no accent-insensitive.
+
+**Estado**: ⚠️ ABIERTO — requiere fix en backend (`ProductServiceImpl` o configuración de base de datos).
+
+**Workaround**: el usuario debe escribir el acento correcto para encontrar el producto.
+
+---
+
+### BUG-INV-07 (VIS-GEN-06): Headers de tabla sin colores de marca en tablas no-sticky
+
+**Síntoma**: las tablas de Productos y Categorías muestran headers con fondo blanco `#FFFFFF`
+y texto negro `rgba(0,0,0,0.87)` en lugar de `#F2E4F2` (fondo) y `#6B3C6B` (texto).
+
+**Causa raíz**: el SCSS solo aplica `background: #F2E4F2` a `.catalog-row--selected`. Las tablas
+sticky (low-stock) heredan el color de fondo por otro mecanismo. Las tablas no-sticky no tienen CSS explícito en `.mat-mdc-header-row` ni `.mat-mdc-header-cell`.
+
+**Estado**: ⚠️ ABIERTO — corrección cosmética pendiente en `products-page.component.scss` y
+`categories-page.component.scss`.
+
+---
+
 ## 9. Estándares y buenas prácticas aplicadas
 
 - Reactive Forms para todos los formularios del módulo.
@@ -855,3 +881,20 @@ configuraciones de módulo, usar tests separados (`it()`) dentro de un `describe
 | LowStock: breadcrumb "Inventario → Bajo stock" correcto | ✓ | Browser 4 roles — 2026-06-07 |
 | `low-stock-page.component.spec.ts`: 17 specs, 0 fallos | ✓ | `ng test --no-watch` — 2026-06-07 |
 | Suite total frontend post-LowStock: `ng test --no-watch` → 111 specs, 0 fallos | ✓ | `ng test --no-watch` — 2026-06-07 |
+| **Protocolo de pruebas (Propuesta A–D) aplicado al módulo — 2026-06-09** | | |
+| `product-form.component.spec.ts`: 26 specs — isEdit, ngOnChanges, validaciones, submit, outputs, botón Desactivar, statusOptions | ✓ | `ng test --no-watch` — 2026-06-09 |
+| `movement-dialog.component.spec.ts`: 27 specs — availableStock, validators por tipo, form validations, submit éxito/error, errorMessage reset | ✓ | `ng test --no-watch` — 2026-06-09 |
+| `product-detail.component.spec.ts`: 24 specs — getStatusLabel, getMovementTypeLabel, ngOnChanges, loadMovements, onMovPageChange, reloadMovements, readonly view | ✓ | `ng test --no-watch` — 2026-06-09 |
+| Suite total frontend post-testing completo: `ng test --no-watch` → 215 specs, 0 fallos | ✓ | `ng test --no-watch` — 2026-06-09 |
+| Cobertura statements total: 89.32% (movement-dialog 81.3%, product-form 82.6%, product-detail 92.0%) | ✓ | `ng test --code-coverage` — 2026-06-09 |
+| **Verificación browser completa del documento de casos de prueba — 2026-06-09** | | |
+| 150 de 162 casos ✅ PASS; 2 ❌ FAIL; 10 N/A — 0 PENDIENTE | ✓ | Playwright MCP — 2026-06-09 |
+| BUG-INV-06 (BSRCH-PROD-03): backend no normaliza acentos — "galon" no encuentra "Galón" | ⚠️ ABIERTO | Verificado con API call + búsqueda en browser |
+| BUG-INV-07 (VIS-GEN-06): headers de tabla no-sticky sin colores de marca (#F2E4F2 / #6B3C6B) | ⚠️ ABIERTO | Verificado con getComputedStyle en productos y categorías |
+| VAL-PDET-09: SKU duplicado → snackbar "Ya existe un producto con el SKU 'ELEC-PRO-043'." (409) | ✓ | Browser — 2026-06-09 |
+| Todos los filtros de productos verificados: por categoría, estado, proveedor | ✓ | Browser ADMIN — 2026-06-09 |
+| MovementDialog: VIS-MOV-01/02, UI-MOV-01, VAL-MOV-05, RN-MOV-01/02 — todos PASS | ✓ | Browser ADMIN — 2026-06-09 |
+| StockBadge colores: verde #E8F5E9 (ok), naranja #FFF3E0 (bajo), rojo #FFEBEE (sin stock) | ✓ | Browser ADMIN — 2026-06-09 |
+| Breadcrumb correcto en las 3 pantallas: "→ Productos" / "→ Categorías" / "→ Bajo stock" | ✓ | Browser ADMIN — 2026-06-09 |
+| Chips de severidad low-stock: "Sin stock" rojo #FFEBEE/#C62828; "Crítico" naranja #FFF3E0/#E65100 | ✓ | Browser ADMIN — 2026-06-09 |
+| Validaciones de categoría: nombre vacío → "El nombre es obligatorio."; Guardar deshabilitado → activo al modificar | ✓ | Browser ADMIN — 2026-06-09 |
