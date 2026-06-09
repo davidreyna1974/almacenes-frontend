@@ -217,6 +217,30 @@
     <!-- Columna derecha: historial de estado -->
     @if (!isNew && order) {
       <div class="order-detail__side-col">
+
+        <!-- Panel de confirmación de recepción (aparece automáticamente, sin clic) -->
+        @if (justReceived) {
+          <div class="order-detail__card order-detail__card--receipt">
+            <div class="order-detail__receipt-header">
+              <mat-icon class="order-detail__receipt-icon">inventory_2</mat-icon>
+              <div>
+                <h3 class="order-detail__receipt-title">Stock actualizado</h3>
+                <p class="order-detail__receipt-subtitle">
+                  {{ order.details.length }} producto{{ order.details.length !== 1 ? 's' : '' }} recibido{{ order.details.length !== 1 ? 's' : '' }}
+                </p>
+              </div>
+            </div>
+            <div class="order-detail__receipt-list">
+              @for (d of order.details; track d.id) {
+                <div class="order-detail__receipt-item">
+                  <span class="order-detail__receipt-name" [matTooltip]="d.productName">{{ d.productName }}</span>
+                  <span class="order-detail__receipt-qty">+{{ d.quantity }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
         <div class="order-detail__card">
           <h3 class="order-detail__card-title">Historial de estado</h3>
 

@@ -98,6 +98,77 @@
       flex-direction: column;
       gap: 2px;
     }
+
+    &--receipt {
+      background: #E8F5E9;
+      border-color: #A5D6A7;
+    }
+  }
+
+  // ── Panel de recepción ───────────────────────────────────────────────────
+
+  &__receipt-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: var(--space-2);
+  }
+
+  &__receipt-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #2E7D32;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  &__receipt-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1B5E20;
+    margin: 0;
+  }
+
+  &__receipt-subtitle {
+    font-size: 12px;
+    color: #388E3C;
+    margin: 2px 0 0 0;
+  }
+
+  &__receipt-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  &__receipt-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #C8E6C9;
+
+    &:last-child { border-bottom: none; }
+  }
+
+  &__receipt-name {
+    font-size: 13px;
+    color: #212121;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+    margin-right: 8px;
+  }
+
+  &__receipt-qty {
+    font-size: 13px;
+    font-weight: 600;
+    color: #2E7D32;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
   }
 
   &__card-title {
