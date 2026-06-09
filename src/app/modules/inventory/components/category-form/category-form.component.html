@@ -35,7 +35,7 @@
         Cancelar
       </button>
       <button type="submit" mat-flat-button color="primary"
-              [disabled]="form.invalid || saving">
+              [disabled]="form.invalid || (isEdit && !form.dirty) || saving">
         @if (saving) {
           <mat-spinner diameter="18" />
         } @else {

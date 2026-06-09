@@ -64,6 +64,9 @@
       @if (form.get('reason')?.hasError('required') && form.get('reason')?.touched) {
         <mat-error>El motivo es obligatorio.</mat-error>
       }
+      @if (form.get('reason')?.hasError('maxlength')) {
+        <mat-error>Máximo 300 caracteres.</mat-error>
+      }
     </mat-form-field>
 
   </form>
