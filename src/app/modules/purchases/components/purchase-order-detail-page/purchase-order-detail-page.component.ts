@@ -57,10 +57,11 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
   private cdr            = inject(ChangeDetectorRef);
   private destroyRef     = inject(DestroyRef);
 
-  order:     PurchaseOrderResponse | null = null;
-  suppliers: SupplierDTO[] = [];
-  loading  = false;
-  isNew    = false;
+  order:        PurchaseOrderResponse | null = null;
+  suppliers:    SupplierDTO[] = [];
+  loading     = false;
+  isNew       = false;
+  justReceived = false;
 
   // formulario de cabecera (edición / creación)
   headerForm = this.fb.group({
@@ -208,7 +209,11 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
       data: { title: 'Recibir mercancía', message: `¿Confirmar recepción? Se incrementará el stock de todos los productos de la orden.`, confirmLabel: 'Recibir' },
     }).afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(ok => {
       if (!ok) return;
-      this.runTransition(() => this.orderService.receive(this.order!.id), 'Mercancía recibida. Stock actualizado.');
+      this.runTransition(
+        () => this.orderService.receive(this.order!.id),
+        'Mercancía recibida. Stock actualizado.',
+        () => { this.justReceived = true; },
+      );
     });
   }
 
@@ -221,12 +226,13 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
     });
   }
 
-  private runTransition(op: () => import('rxjs').Observable<PurchaseOrderResponse>, msg: string): void {
+  private runTransition(op: () => import('rxjs').Observable<PurchaseOrderResponse>, msg: string, onSuccess?: () => void): void {
     this.loading = true;
     this.cdr.markForCheck();
     op().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: order => {
         this.order = order;
+        onSuccess?.();
         this.snackBar.open(msg, 'Cerrar', { duration: 3000, panelClass: 'snackbar-success' });
         this.headerForm.disable();
         this.loading = false;
