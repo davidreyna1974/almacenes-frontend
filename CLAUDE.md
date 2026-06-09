@@ -70,8 +70,9 @@ git push origin develop
 
 ## Documentación obligatoria por módulo
 
-Todo módulo nuevo requiere dos archivos en la raíz antes de implementar:
+Todo módulo nuevo requiere **tres archivos** en la raíz antes de implementar:
 - `propuesta_modulo_<nombre>_frontend.txt` — planificación previa al código
+- `casos_de_prueba_modulo_<nombre>.md` — definición de casos ANTES de codificar *(ver sección Protocolo de pruebas)*
 - `memoria_tecnica_modulo_<nombre>_frontend.md` — documento vivo con 10 secciones
 
 **Secciones de la memoria técnica** (actualizar al finalizar cada fase):
@@ -92,6 +93,121 @@ Todo módulo nuevo requiere dos archivos en la raíz antes de implementar:
 - Cobertura: `ng test --coverage` → líneas/statements/branches
 - E2E: comando Cypress/Playwright, endpoints verificados, resultado X/Y — 0 fallos
 - Regresiones: suite pre-módulo X/X → post-módulo X/X
+
+---
+
+## ⚠️ Protocolo obligatorio de pruebas — Propuestas A–D (permanente, todos los módulos)
+
+> **Origen**: Módulo 3 (Purchases) — el módulo se declaró completo antes de estar
+> funcionando. Múltiples bugs de seguridad, lógica y UX solo se descubrieron porque
+> el usuario pidió pruebas explícitamente. Estas cuatro propuestas son la respuesta
+> sistémica y aplican a TODOS los módulos futuros sin excepción.
+
+### Propuesta A — Documento de casos de prueba por módulo (pre-código)
+
+`casos_de_prueba_modulo_<nombre>.md` se crea **antes de escribir una sola línea de
+implementación**, junto con la propuesta del módulo.
+
+**Uso obligatorio del template:**
+```bash
+cp casos_de_prueba_modulo_TEMPLATE.md casos_de_prueba_modulo_<nombre>.md
+```
+El archivo `casos_de_prueba_modulo_TEMPLATE.md` (raíz del proyecto) contiene la
+estructura completa con casos genéricos para todas las categorías, los patrones
+que han causado bugs reales (L25, L26, L27) y el checklist de cierre (Propuesta D).
+**No crear el documento de casos desde cero — siempre partir del template.**
+
+**Formato de cada caso:**
+
+| ID | Pantalla | Categoría | Descripción | Rol(es) | Resultado esperado | Estado | Notas |
+|---|---|---|---|---|---|---|---|
+
+**Categorías obligatorias — deben existir casos para TODAS en cada pantalla:**
+
+| Categoría | Qué cubre |
+|---|---|
+| `SEC` | Acceso directo por URL con rol no autorizado → debe redirigir |
+| `RBAC` | Elementos UI que aparecen/desaparecen según rol (botones, columnas, íconos, títulos) |
+| `CRUD` | Crear, leer, editar, eliminar — flujos completos incluyendo recarga de datos |
+| `VAL` | Validaciones de formulario: campo vacío, mínimo, máximo, formato, tipo |
+| `BSRCH` | Búsquedas y autocompletes: parcial, case insensitive, accent insensitive, sin resultados |
+| `UI` | Todos los botones, íconos y acciones verificados uno a uno |
+| `FLOW` | Flujos de estado/negocio: máquina de estados, transiciones, bloqueos |
+| `RN` | Reglas de negocio del backend: qué rechaza, con qué código y mensaje |
+| `ERR` | Mensajes de error: validación, backend (4xx/5xx), red caída |
+| `EMPTY` | Estados vacíos: sin datos iniciales vs sin resultados de búsqueda |
+| `VIS` | Visual: colores, espaciado, truncado, tooltips, responsive |
+
+**Estados de la columna Estado:**
+- `✅ PASS` — verificado en browser y funciona correctamente
+- `❌ FAIL` — bug encontrado (documentar en §8 de la memoria técnica)
+- `⏳ PENDIENTE` — no ejecutado aún
+- `N/A` — no aplica para este módulo/rol
+
+**El documento es el criterio de aceptación.** Un módulo no está "done" si hay casos
+sin estado PASS.
+
+---
+
+### Propuesta B — Prueba de navegador por componente, no por módulo
+
+**Regla obligatoria:**
+> Un componente no está terminado hasta que TODOS sus casos del documento de pruebas
+> tienen estado ✅ PASS verificado en el browser con el rol correcto.
+
+**Consecuencia directa:** no avanzar al siguiente componente hasta completar las pruebas
+del actual. No acumular deuda de verificación para el final del módulo.
+
+**Por qué:** los bugs de RBAC, validaciones y UX solo se detectan en el browser con datos
+reales y el JWT del rol correcto. Los tests unitarios no los detectan.
+
+---
+
+### Propuesta C — Gate de seguridad de rutas (obligatorio en cada ruta nueva)
+
+Al agregar CUALQUIER ruta nueva al router Angular:
+
+```
+[ ] La ruta tiene canActivate: [authGuard]
+[ ] La ruta tiene data: { roles: ['ROLE_X', ...] } con los roles que SÍ tienen acceso
+[ ] Se ejecutó el caso SEC del documento con el rol MENOS privilegiado sin acceso
+    (acceso directo por URL en el browser, no solo esconder el enlace en el sidebar)
+[ ] El sidebar ocultar el ítem NO cuenta como protección — la ruta necesita su propio guard
+```
+
+> **Lección (BUG-M3-07):** SALES podía acceder a /purchases por URL directa porque la
+> ruta no tenía `data.roles`. Esconder el ítem del sidebar es cosmético, no es seguridad.
+
+---
+
+### Propuesta D — Redefinición de "done" para declarar módulo completo
+
+**No ofrecer continuar al siguiente módulo hasta que se cumplan las 4 condiciones:**
+
+```
+[ ] 1. Todos los casos del documento de pruebas tienen estado ✅ PASS
+[ ] 2. ng test --no-watch → 0 fallos; cobertura ≥ 70% statements
+[ ] 3. Las pruebas de navegador de los 4 roles están ejecutadas y documentadas
+[ ] 4. La columna "Estado" del documento de casos de prueba está completamente llena
+         (ninguna fila con ⏳ PENDIENTE)
+```
+
+**Si el usuario pide continuar al siguiente módulo y alguna condición no se cumple:**
+indicar explícitamente qué condición falta antes de avanzar.
+
+---
+
+### Checklist de apertura de módulo (antes de codificar)
+
+```
+[ ] propuesta_modulo_<nombre>_frontend.txt creada
+[ ] casos_de_prueba_modulo_<nombre>.md creada COPIANDO el template:
+    cp casos_de_prueba_modulo_TEMPLATE.md casos_de_prueba_modulo_<nombre>.md
+    (completar todos los marcadores [...] antes de escribir código)
+    (categorías obligatorias: SEC, RBAC, CRUD, VAL, BSRCH, UI, FLOW, RN, ERR, EMPTY, VIS)
+[ ] memoria_tecnica_modulo_<nombre>_frontend.md iniciada
+[ ] Gate de seguridad verificado para todas las rutas del módulo (Propuesta C)
+```
 
 ---
 
@@ -132,6 +248,23 @@ difíciles de detectar que solo aparecen en el browser con datos reales.**
 > al ver el dropdown de proveedores vacío. El endpoint `GET /products` sin filtro no existe —
 > tampoco estaba documentado correctamente en la propuesta del módulo, lo que causó un 403.
 
+> **Lección real (Módulo 2 — Inventory, post-merge):** `availableStock` estaba en el DTO desde
+> el primer día, pero el `MovementDialog` y el `ProductForm` usaban `currentStock` donde la regla
+> de negocio exige `availableStock`. El error no se detectó en tests porque los tests no verificaban
+> la trazabilidad regla-de-negocio → componente UI. Solo se detectó en revisión explícita del código.
+
+> **Lección real (Módulo 2 — Inventory, BUG-INV-06 — 2026-06-09):** La búsqueda de productos
+> usaba `LOWER()` en JPQL, que elimina mayúsculas pero NO diacríticos. "galon" no encontraba
+> "Galón". Fix: PostgreSQL `unaccent` extension + función `f_unaccent(text)` inmutable + query
+> nativa en el repositorio. Este estándar aplica a TODAS las búsquedas LIKE del sistema.
+> Ver §7 de `memoria_tecnica_global_proyecto.md` — "Estándar de búsqueda de texto".
+
+**5. Verificar trazabilidad regla-de-negocio → componente UI** — para cada validación del backend
+(`*ServiceImpl`), identificar el componente UI responsable y confirmar que:
+- muestra los datos relevantes para esa regla (no un campo proxy)
+- valida preventivamente antes del submit cuando es posible
+- muestra un mensaje de error útil si el backend rechaza
+
 ### Checklist de verificación pre-código
 
 ```
@@ -141,6 +274,71 @@ difíciles de detectar que solo aparecen en el browser con datos reales.**
 [ ] Para cada response: verifiqué si es PageResponse<T>, objeto simple o void (204)
 [ ] Para cada DTO: verifiqué nombres exactos de campos (no asumí ninguno)
 [ ] Documenté contratos verificados en la Sección 4 de la memoria técnica antes de codificar
+[ ] Para cada regla de negocio del backend: identifiqué el componente UI que le aplica,
+    muestra los datos correctos para esa regla, valida preventivamente, y muestra error útil
+[ ] Verifiqué qué campos son de solo lectura en cada operación (ej. stock vía movimientos,
+    campos de auditoría) y que el formulario no los exponga como editables
+[ ] Verifiqué que cada columna/dato sensible (unitCost, datos financieros) está oculto
+    para los roles que no deben verlo — no solo en el backend sino también en el frontend
+[ ] Si el módulo incluye búsqueda LIKE por texto libre: el endpoint de backend usa
+    f_unaccent() (nativeQuery=true) y el frontend usa debounceTime(350) + search vacío = omitir
+    parámetro (ver §7 memoria_tecnica_global_proyecto.md — "Estándar de búsqueda de texto")
+```
+
+---
+
+## ⚠️ Protocolo obligatorio post-código — Cierre de componente/módulo
+
+**ANTES de declarar cualquier componente o pantalla como terminada**, ejecutar las siguientes
+verificaciones. No basta con que el código compile y los tests unitarios pasen.
+
+> **Origen**: Módulo 2 (Inventory) — múltiples bugs de RBAC, lógica de negocio y UX
+> fueron descubiertos por el usuario en lugar de por el desarrollador porque este protocolo
+> no existía. La responsabilidad de verificar cada ítem es del desarrollador, no del usuario.
+
+### Checklist de cierre por componente (Propuesta B)
+
+```
+[ ] Todos los casos del documento casos_de_prueba_modulo_<nombre>.md para ESTA
+    pantalla/componente tienen estado ✅ PASS — ninguno ⏳ PENDIENTE
+[ ] Los casos cubren las categorías: SEC, RBAC, CRUD, VAL, BSRCH, UI, FLOW, RN, ERR, EMPTY
+[ ] ng test --no-watch ejecutado → 0 fallos en la suite completa
+[ ] Prueba browser para cada rol con acceso a la pantalla:
+    [ ] Todos los botones e íconos de acción verificados uno a uno (categoría UI)
+    [ ] Todos los campos de búsqueda: case insensitive, accent insensitive, sin resultados
+    [ ] Elementos UI aparecen/ocultan según rol (botones, columnas, acciones, títulos)
+    [ ] Flujo principal happy path sin errores de consola
+    [ ] Todos los mensajes de error del backend son visibles y útiles en la UI
+    [ ] Estados vacíos: sin datos iniciales y sin resultados de búsqueda
+[ ] Gate de seguridad de rutas verificado (Propuesta C):
+    [ ] canActivate: [authGuard] con data.roles configurado
+    [ ] Acceso directo por URL con rol no autorizado → redirige correctamente
+[ ] Para cada regla de negocio del backend aplicable a esta pantalla:
+    [ ] El componente muestra el dato CORRECTO que la regla valida (no un campo proxy)
+    [ ] Validación preventiva antes del submit cuando es posible
+    [ ] Mensaje de error del backend (4xx/422) visible en la UI como snackbar rojo
+[ ] Campos de solo lectura en modo edición:
+    [ ] Deshabilitados con disable() — no solo visualmente bloqueados
+    [ ] form.getRawValue() usado al emitir si el campo disabled debe enviarse
+[ ] Datos sensibles (unitCost, costos, márgenes, precios):
+    [ ] Visibles SOLO para roles autorizados
+    [ ] Ausentes del DOM para roles no autorizados (no solo display:none)
+[ ] No hay asteriscos dobles — Angular Material genera * con Validators.required
+[ ] Revisé las lecciones documentadas en la memoria técnica buscando el mismo patrón
+```
+
+### Checklist de cierre de módulo — Propuesta D (condiciones para declarar "done")
+
+```
+[ ] 1. TODOS los casos del documento de pruebas tienen ✅ PASS — columna Estado llena
+[ ] 2. Suite completa ng test → X specs, 0 fallos; cobertura ≥ 70% statements
+[ ] 3. Regresión: specs de módulos anteriores siguen en 0 fallos
+[ ] 4. Prueba browser completa con los 4 roles documentada en el documento de casos
+[ ] Verificación de seguridad backend (curl) para todos los endpoints del módulo
+[ ] Memoria técnica del módulo §10 actualizada (bugs y correcciones con referencia a ID)
+[ ] memoria_tecnica_global_proyecto.md actualizada (decisiones y lecciones)
+[ ] CLAUDE.md actualizado con bugs del módulo y nuevas lecciones
+[ ] Commits y push realizados siguiendo las convenciones git del proyecto
 ```
 
 ---
@@ -486,6 +684,19 @@ En producción, la URL viene de la configuración del servidor o de un archivo
 - La fila seleccionada se resalta con fondo `#F2E4F2`.
 - Columna de acciones (editar, ver, desactivar) siempre a la derecha, íconos con tooltip.
 - Ordenamiento por defecto: `createdAt DESC` para listas de órdenes; `name ASC` para catálogos.
+- **Truncado de celdas**: nunca aplicar `display: block` sobre un `<td>`. Usar un `<div>` wrapper interno con la clase de truncado. (L21)
+- **Contenedor de tabla**: toda página de listado debe tener `padding: var(--space-3)`, `gap: var(--space-2)` en `.catalog-page` y `border-radius: 8px; border: 1px solid var(--color-divider); background: #fff` en `__table-wrapper`. Verificar consistencia entre todas las páginas del módulo. (L22)
+- **Botones de acción en filas clickeables**: cuando `mat-row` tiene `(click)="viewDetail(row)"`, TODOS los botones de acción dentro de la fila DEBEN incluir `$event.stopPropagation()` al inicio de su handler: `(click)="$event.stopPropagation(); acción(row)"`. Sin esto, el click burbujea al `mat-row`, navega al detalle y destruye el componente antes de que `afterClosed()` pueda ejecutarse. (L27 — BUG-M3-22)
+
+### Navegación lista ↔ detalle con tabs
+
+Cuando una pantalla de lista tiene tabs y navega a un detalle:
+- Al navegar al detalle: `router.navigate(['/path/id'], { queryParams: { from: this.activeTab } })`
+- En `goBack()` del detalle: leer `route.snapshot.queryParamMap.get('from')` y navegar con `{ queryParams: { tab: from } }`
+- En `ngOnInit()` de la lista: leer `?tab=` y setear `activeTab` antes de cargar datos
+- En el template: `<mat-tab-group [selectedIndex]="activeTabIndex">` con getter que busca el índice del tab activo
+- Los contadores de tabs se cargan al inicio: `loadTab(activeTab)` para el tab activo + `loadCount(status)` (size=1) para los demás
+- `counts: Map<Status, number>` separado de `pages: Map<Status, PageResponse<T>>` — nunca mezclarlos (L23, L24)
 
 ### Formularios
 
@@ -493,6 +704,7 @@ En producción, la URL viene de la configuración del servidor o de un archivo
 - Campos obligatorios marcados con asterisco rojo `*`.
 - Validación en tiempo real (al salir del campo — `blur`) y al intentar guardar.
 - El botón de guardar se deshabilita mientras el formulario sea inválido o esté cargando.
+- **Formularios de edición**: agregar `!form.dirty` a la condición — el botón solo se activa cuando el usuario ha modificado algo. Usar `form.markAsPristine()` tras guardar exitosamente. (L25 — BUG-M3-20)
 - Campos de fecha usan `MatDatepicker` con formato `dd/MM/yyyy`.
 - Campos numéricos monetarios muestran símbolo de moneda como prefix.
 - Los selectores de rol/estado/tipo usan `MatSelect` con opciones descriptivas.

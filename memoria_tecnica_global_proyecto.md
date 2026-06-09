@@ -125,41 +125,108 @@ justifica. Un monolito bien estructurado por módulos es más mantenible a esta 
 [error.interceptor.ts] detecta 403 → redirige a /login con mensaje
 ```
 
+### Endpoint de búsqueda de productos (catálogo principal)
+
+```
+GET /api/v1/inventory/products
+    ?search=taladro        (opcional) búsqueda parcial en sku y name
+    &categoryId=1          (opcional) filtra por categoría exacta
+    &status=AVAILABLE      (opcional) filtra por estado: AVAILABLE | DISCONTINUED | OUT_OF_STOCK
+    &supplierId=2          (opcional) filtra por proveedor exacto
+    &page=0 &size=20       (opcional, defaults 0/20)
+
+← 200 OK  PageResponseDTO<ProductResponseDTO>
+
+Comportamiento:
+  - Siempre filtra active = true (soft-delete excluido implícitamente).
+  - Sin parámetros → todos los productos activos paginados.
+  - search busca en SKU y nombre simultáneamente con OR.
+  - Búsqueda insensible a MAYÚSCULAS y ACENTOS (ver §7 — estándar de búsqueda).
+  - Los demás filtros se combinan con AND entre sí y con search.
+  - Ordenado por name ASC.
+
+Campos del ProductResponseDTO (campos clave para el frontend):
+  id, sku, name, description, price, unitCost
+  currentStock, minimumStock, reservedStock, availableStock
+  status            → "AVAILABLE" | "DISCONTINUED" | "OUT_OF_STOCK"
+  active            → siempre true en este endpoint (filtrado implícito)
+  categoryId, categoryName
+  supplierId, supplierName   ← supplierName agregado 2026-06-06 (antes solo supplierId)
+  createdAt, createdByUsername, updatedAt, updatedByUsername, updatedById
+
+Implementación frontend: ProductService.search(params) en
+  src/app/modules/inventory/services/product.service.ts
+```
+
+### Endpoint de búsqueda de categorías
+
+```
+GET /api/v1/inventory/categories/active
+    ?search=herr           (opcional) búsqueda parcial en name, insensible a acentos
+    &page=0 &size=20       (opcional, defaults 0/20)
+
+← 200 OK  PageResponseDTO<CategoryDTO>
+```
+
+### Endpoint de búsqueda de proveedores
+
+```
+GET /api/v1/purchases/suppliers/active
+    ?search=ferr           (opcional) búsqueda parcial en company_name o rfc
+    &page=0 &size=20       (opcional, defaults 0/20)
+
+← 200 OK  PageResponseDTO<SupplierDTO>
+```
+
+### Endpoint de búsqueda de clientes
+
+```
+GET /api/v1/sales/clients/active
+    ?search=mart           (opcional) búsqueda parcial en name, rfc o contact_name
+    &page=0 &size=20       (opcional, defaults 0/20)
+
+← 200 OK  PageResponseDTO<ClientDTO>
+```
+
+⚠️ **Nota histórica**: antes de 2026-06-09 el endpoint de productos usaba JPQL con
+`LOWER()`, que no normaliza acentos. `GET /products/sku/{sku}` sigue siendo lookup
+exacto (1 resultado o 404).
+
 ### Formato de errores del backend
 
-Todos los errores pasan por `GlobalExceptionHandler`:
+Todos los errores pasan por `GlobalExceptionHandler` (`core/exception/`).
+Formato JSON unificado para todos los casos:
 
 ```json
-// Error de validación (400)
 {
-  "timestamp": "2026-06-04T12:00:00",
-  "status": 400,
-  "error": "Bad Request",
-  "message": "El SKU es obligatorio"
+  "timestamp": "2026-06-07T12:00:00",
+  "status": 404,
+  "error": "Not Found",
+  "message": "Producto con id 99 no encontrado."
 }
-
-// Error de negocio (500 — RuntimeException)
-{
-  "timestamp": "2026-06-04T12:00:00",
-  "status": 500,
-  "error": "Internal Server Error",
-  "message": "El SKU 'TOOL-001' ya está registrado"
-}
-
-// Credenciales incorrectas (500 — también RuntimeException en el backend)
-{
-  "timestamp": "2026-06-05T12:00:00",
-  "status": 500,
-  "error": "Internal Server Error",
-  "message": "Credenciales incorrectas."
-}
-// IMPORTANTE: el backend devuelve 500 (no 401) para credenciales incorrectas.
-// El frontend NO debe basar el manejo del error en el status code;
-// debe leer err.error?.message del body independientemente del status.
-
-// Sin autorización (403)
-// Spring Security devuelve 403 sin body JSON — el interceptor lo maneja
 ```
+
+**Tabla de códigos HTTP por tipo de error** (actualizada 2026-06-07):
+
+| Condición | Clase Java | HTTP |
+|---|---|---|
+| Entidad no encontrada (ID, SKU, nombre) | `ResourceNotFoundException` | **404** |
+| Duplicado (SKU, nombre de categoría) | `DuplicateResourceException` | **409** |
+| Regla de negocio violada (stock insuficiente, categoría con productos activos, tipo de movimiento inválido) | `BusinessRuleException` | **422** |
+| Validación de campos del DTO (`@Valid`, `@NotBlank`, `@Min`) | `MethodArgumentNotValidException` | **400** |
+| Contención de Optimistic Locking | `ObjectOptimisticLockingFailureException` | **409** |
+| Error real de infraestructura (BD, usuario JWT inexistente) | `RuntimeException` | **500** |
+| Sin autorización (JWT ausente o inválido) | Spring Security | **403** (sin body JSON) |
+
+> ⚠️ **Credenciales incorrectas en login**: el backend devuelve **500** para credenciales
+> incorrectas (no 401). El frontend lee `err.error?.message` del body independientemente
+> del status code. Esto aplica **solo al endpoint `/auth/login`** — para el resto de los
+> errores de negocio el código HTTP es semánticamente correcto desde 2026-06-07.
+
+El frontend **no debe basar ninguna lógica en el status code de errores de negocio**;
+debe siempre leer `err.error?.message` del body. El `error.interceptor.ts` solo actúa
+sobre 401 (sesión expirada → redirect) y 403 (acceso denegado → snackbar); el resto
+pasa al `catchError` del componente.
 
 ### Formato de paginación (PageResponseDTO)
 
@@ -363,6 +430,18 @@ Usuarios adicionales se crean desde la interfaz de gestión de usuarios (solo AD
 | Frontend Módulo 1 | Angular 21: callbacks HTTP pueden ejecutarse fuera de zone.js | Tras un error HTTP, los cambios de estado en el `error` callback no actualizan la vista automáticamente. Solución: `ChangeDetectorRef.detectChanges()` inmediatamente después del cambio de estado |
 | Frontend Módulo 2 | Protocolo obligatorio pre-código en `CLAUDE.md` | Tres contratos de API incorrectos en la propuesta del módulo causaron bugs detectados solo en browser. Regla: verificar OpenAPI antes de escribir cualquier servicio o modelo. Ver L8 en sección 9. |
 | Frontend Módulo 2 | `memoria_tecnica_global_proyecto.md` copiada localmente al frontend | La versión original está en el repo backend (no accesible directamente). Se mantiene una copia en `almacenes-frontend/` raíz. Sincronizar manualmente al finalizar cada módulo. |
+| Frontend Módulo 2 — post | Corrección RBAC: botón "Editar" de categorías oculto para WAREHOUSEMAN/SALES | El botón existía sin guard `@if(canWrite())`. Corregido junto con el clic en fila y el cursor pointer. El backend ya rechazaba el guardado con 403 — era un gap de UX, no de seguridad. |
+| Frontend Módulo 2 — post | HTTP 500 para errores de negocio reemplazado por 404/409/422 | `GlobalExceptionHandler` + tres clases custom en `core/exception/`. Mejora la observabilidad (logs) y la semántica REST. El frontend no requirió cambios. |
+| Frontend Módulo 2 — post | Columna "Creado por" eliminada de tabla de categorías | Decisión de UX: la información está en el DTO pero no aporta valor en la vista de lista. Consistencia con tabla de productos. |
+| Frontend Módulo 2 — post | Estado del producto mostrado en español en el panel de detalle | `getStatusLabel()` en `ProductDetailComponent` traduce AVAILABLE/DISCONTINUED/OUT_OF_STOCK. Sin esta traducción, el usuario veía el enum en inglés. Aplica a todos los módulos futuros que muestren valores enum al usuario. |
+| Frontend Módulo 2 — post | `@WithMockUser` no funciona en Spring Security 6 + STATELESS para tests de 200/204 | `SecurityContextHolderFilter` sobreescribe el contexto que `@WithMockUser` establece. Solución definitiva: JWT simulado + `@Import(SecurityConfig.class)`. Ver L10. |
+| Frontend Módulo 2 — post | `fixture.componentRef.setInput()` es la API correcta para testing de `@Input` | La asignación directa no dispara `ngOnChanges`. Esta API es el estándar para todos los tests de componentes dumb con `@Input` en este proyecto. Ver L11. |
+| Frontend Módulo 2 — post | Tests de seguridad RBAC en clase separada (`*SecurityTest`) de tests de controlador (`*ControllerTest`) | `*ControllerTest` usa `addFilters=false`; `*SecurityTest` usa `@Import(SecurityConfig.class)`. Ambas clases son necesarias y complementarias. Ver L12. |
+| Frontend Módulo 2 — post | Excepciones tipadas de negocio desde el primer commit de cada módulo | `ResourceNotFoundException`→404, `DuplicateResourceException`→409, `BusinessRuleException`→422 ya están en `core/exception/`. Todo servicio nuevo debe usarlas desde el inicio, no `RuntimeException` genérica. Ver L13. |
+| Frontend Módulo 2 — post | `currentStock` es inmutable en PUT — cambios solo vía movimientos registrados | Backend: `@Mapping(target = "currentStock", ignore = true)` en `updateFromDTO`. Frontend: campo deshabilitado + hint con icono lock. Garantiza integridad del Kardex. Ver L14. |
+| Frontend Módulo 2 — post | Angular Material añade `*` automáticamente en campos `required` — no duplicar | `mat-form-field` detecta `Validators.required` y agrega el asterisco vía CSS. Un `<span class="required">*</span>` adicional en el label produce doble asterisco visible. Regla: nunca añadir asterisco manual en labels de AM. Ver L15. |
+| Frontend Módulo 2 — post | Campos de solo lectura contextual: `disabled` + `mat-hint` con icono + color semántico | Cuando un campo es editable en creación pero inmutable en edición, deshabilitar el control + mostrar `mat-hint` con icono lock azul (#1565C0). El texto debe nombrar exactamente la acción alternativa. `subscriptSizing="dynamic"` evita solapamiento con campos adyacentes en grids. |
+| Frontend Módulo 2 — post | Datos financieros sensibles (`unitCost`) visibles solo para roles con escritura | `unitCost` solo aparece en tabla y formulario para ADMIN/MANAGER (`canWrite()`). WAREHOUSEMAN y SALES no necesitan el costo para sus tareas. El patrón de `displayedColumns` condicional aplica a cualquier columna con restricción de rol. |
 
 ---
 
@@ -387,6 +466,15 @@ lo obliga, o qué comportamiento sorprendería a un lector.
 
 Por cada módulo nuevo (backend y frontend):
 - `propuesta_modulo_<nombre>[_frontend].txt` — antes de escribir código
+- `casos_de_prueba_modulo_<nombre>.md` — **creado copiando el template** antes de escribir código:
+  ```bash
+  cp casos_de_prueba_modulo_TEMPLATE.md casos_de_prueba_modulo_<nombre>.md
+  ```
+  El template (`casos_de_prueba_modulo_TEMPLATE.md`, raíz del frontend) contiene
+  la estructura completa de casos para todas las categorías (SEC, RBAC, CRUD, VAL,
+  BSRCH, UI, FLOW, RN, ERR, EMPTY, VIS), los patrones críticos que han causado bugs
+  (L25 form dirty, L26 última línea, L27 stopPropagation) y el checklist de cierre.
+  **Nunca crear este documento desde cero. Siempre partir del template.**
 - `memoria_tecnica_modulo_<nombre>[_frontend].md` — actualizada por fase
 
 La Sección 7 de cada memoria técnica documenta:
@@ -398,10 +486,19 @@ La Sección 7 de cada memoria técnica documenta:
 
 ### Manejo de errores
 
-- Backend: `GlobalExceptionHandler` captura todas las `RuntimeException` y
-  errores de validación Jakarta → respuesta JSON estructurada
-- Frontend: `error.interceptor.ts` captura todos los errores HTTP →
-  muestra `MatSnackBar` con el mensaje del backend si disponible
+- **Backend**: `GlobalExceptionHandler` (`@RestControllerAdvice`) maneja:
+  - `ResourceNotFoundException` → **404** (entidad no encontrada)
+  - `DuplicateResourceException` → **409** (unicidad violada)
+  - `BusinessRuleException` → **422** (regla de negocio violada)
+  - `MethodArgumentNotValidException` → **400** (validación de campos)
+  - `ObjectOptimisticLockingFailureException` → **409** (concurrencia)
+  - `RuntimeException` genérica → **500** (errores reales de infraestructura)
+- **Frontend**: `error.interceptor.ts` actúa sobre:
+  - **401** → redirige a `/login` con mensaje "sesión expirada"
+  - **403** → muestra snackbar "Sin permiso"
+  - **Resto** → `throwError()` — el componente lo maneja en su `catchError`
+- **Regla**: los componentes siempre leen `err.error?.message` del body,
+  independientemente del status code.
 
 ### Seguridad
 
@@ -410,6 +507,94 @@ La Sección 7 de cada memoria técnica documenta:
 - Secretos: variables de entorno (`JWT_SECRET`, `DB_PASSWORD`) — nunca en código fuente
 - RBAC verificado en dos puntos: SecurityConfig (backend) + AuthGuard (frontend)
 - Rutas de Swagger y login son las únicas rutas públicas
+
+**Tests de seguridad RBAC — estándar backend (aplica a todos los módulos)**:
+- Por cada controlador: dos clases de test separadas:
+  - `*ControllerTest` con `@AutoConfigureMockMvc(addFilters=false)` → verifica lógica de controlador
+  - `*ControllerSecurityTest` con `@Import(SecurityConfig.class)` → verifica reglas RBAC reales
+- **Nunca** usar `@WithMockUser` en este proyecto (falla en Spring Security 6 + STATELESS).
+- JWT simulado: mockear `JwtUtils` con el helper `tokenConRol()` + header `Authorization: Bearer`.
+- Cubrir: al menos un rol que NO tiene acceso (espera 403) y un rol que SÍ tiene acceso (espera 2xx).
+- Cuando una regla específica en `SecurityConfig` prevalece sobre una general, escribir un test
+  explícito para ese caso (ej. `DELETE /products/**` → ADMIN only, aunque exista `DELETE /inventory/**`
+  → ADMIN+MANAGER como regla general).
+
+**Trazabilidad de enums en la UI (aplica a todos los módulos)**:
+- Todo campo enum del backend que se muestre al usuario final debe tener un método de traducción
+  (o `StatusLabelPipe` reutilizable) que convierta el valor técnico al texto en español.
+- Patrón: `getStatusLabel(status: string): string { return { AVAILABLE: 'Disponible', ... }[status] ?? status; }`
+- Nunca mostrar valores como `AVAILABLE`, `PENDING`, `IN`, `OUT` directamente en la UI.
+
+### Estándar de búsqueda de texto — insensible a acentos (aplica a todos los módulos)
+
+**Origen**: BUG-INV-06 (2026-06-09) — "galon" no encontraba "Galón" porque `LOWER()` en JPQL
+no elimina diacríticos.
+
+**Regla**: Todo endpoint de búsqueda LIKE sobre texto libre **debe** ser insensible a mayúsculas
+Y a acentos/diacríticos. Normalizar solo mayúsculas no es suficiente.
+
+**Implementación backend (PostgreSQL)**:
+
+```sql
+-- 1. Instalar extensión (una sola vez por base de datos, ya instalada en almacen_db)
+CREATE EXTENSION IF NOT EXISTS unaccent;
+
+-- 2. Crear función wrapper IMMUTABLE (necesaria para usarla en índices funcionales)
+CREATE OR REPLACE FUNCTION f_unaccent(text)
+  RETURNS text LANGUAGE sql IMMUTABLE PARALLEL SAFE STRICT AS
+$$ SELECT public.unaccent('public.unaccent', $1) $$;
+
+-- 3. Crear índice funcional por cada columna buscable (mejora performance)
+CREATE INDEX IF NOT EXISTS idx_<tabla>_unaccent_<col> ON <tabla> (f_unaccent(lower(<col>)));
+```
+
+```java
+// 4. Query nativa en el repositorio (JPQL no expone funciones PostgreSQL personalizadas)
+@Query(value =
+    "SELECT t.* FROM tabla t " +
+    "WHERE t.active = true " +
+    "AND (:search IS NULL OR (" +
+    "     f_unaccent(lower(t.col1)) LIKE '%' || f_unaccent(lower(CAST(:search AS text))) || '%' " +
+    "  OR f_unaccent(lower(t.col2)) LIKE '%' || f_unaccent(lower(CAST(:search AS text))) || '%'))",
+    countQuery = "SELECT COUNT(*) FROM tabla t WHERE ...",
+    nativeQuery = true)
+Page<T> searchEntidad(@Param("search") String search, Pageable pageable);
+// Los paréntesis alrededor del bloque OR son OBLIGATORIOS para evitar bug de precedencia SQL.
+```
+
+```java
+// 5. Normalización en el servicio (blank → null activa el IS NULL del repositorio)
+String normalized = (search != null && !search.isBlank()) ? search.trim() : null;
+```
+
+**Tablas con búsqueda implementada** (2026-06-09):
+| Tabla | Campos buscables | Índices funcionales |
+|---|---|---|
+| `products` | `sku`, `name` | `idx_products_unaccent_sku`, `idx_products_unaccent_name` |
+| `categories` | `name` | `idx_categories_unaccent_name` |
+| `suppliers` | `company_name`, `rfc` | `idx_suppliers_unaccent_company`, `idx_suppliers_unaccent_rfc` |
+| `clients` | `name`, `rfc`, `contact_name` | `idx_clients_unaccent_name`, `idx_clients_unaccent_rfc` |
+
+**Al agregar una nueva tabla con búsqueda por texto**:
+```
+[ ] Instalar unaccent si es una BD nueva (ya instalado en almacen_db)
+[ ] Crear f_unaccent() si no existe
+[ ] Crear índice funcional: CREATE INDEX IF NOT EXISTS idx_<tabla>_unaccent_<col> ON ...
+[ ] Usar nativeQuery=true con f_unaccent() en ambos lados del LIKE
+[ ] Envolver el bloque OR en paréntesis dentro del AND
+[ ] Normalizar blank → null en el servicio antes de llamar al repositorio
+[ ] Añadir parámetro search opcional al controller (required=false)
+```
+
+**Implementación frontend**:
+- Campo de búsqueda: `FormControl` con `debounceTime(350)` + `distinctUntilChanged()`
+- Al cambiar el valor: resetear `currentPage = 0` antes de recargar
+- Pasar `search` al servicio HTTP solo si tiene valor (trim; omitir si vacío)
+- Estado vacío: distinguir `'empty'` (sin datos) de `'no-results'` (búsqueda sin coincidencias)
+
+**Precaución**: NO usar `?search=` con string vacío `""` — enviar el parámetro ausente en su lugar.
+El backend interpreta `search=""` como búsqueda activa; `search IS NULL` solo se activa si
+el parámetro está ausente del request.
 
 ### Variables de entorno
 
@@ -433,14 +618,14 @@ JWT_SECRET=...       # mínimo 64 caracteres hex (openssl rand -hex 32)
 | Módulo | Estado | Tests | Notas |
 |---|---|---|---|
 | `auth` (RBAC) | ✓ Completo | 45 B* + 20 A + 12 B + 17 C | 4 roles, 9 endpoints, DataInitializer |
-| `inventory` | ✓ Completo | 29 A + 16 B + 4 D | unitCost NOT NULL |
+| `inventory` | ✓ Completo | 33 A + 19 B + 16 B* + 10 D | unitCost NOT NULL; B*=CategoryControllerSecurityTest(8)+ProductControllerSecurityTest(8); currentStock inmutable en PUT (@Mapping ignore) |
 | `purchases` | ✓ Completo | 43 A + 25 B | Máquina de estados PENDING→APPROVED→RECEIVED |
 | `sales` | ✓ Completo | 47 A + 25 B + 3 C + 5 D | Optimistic Locking, reservas |
 | `reports` | ✓ Completo | 40 A + 14 B + 7 D | 12 endpoints, 3 audiencias |
 | Swagger/OpenAPI | ✓ Completo | — | 62 paths documentados |
 | Paginación | ✓ Completo | — | 9 endpoints paginados |
 
-**Suite total backend**: 365 tests — 0 fallos — BUILD SUCCESS  
+**Suite total backend**: 396 tests — 0 fallos — BUILD SUCCESS  
 **Cobertura**: 84.6% líneas · 87.5% métodos · 61.6% ramas
 
 ### Frontend (`almacenes-frontend`) — En desarrollo
@@ -449,12 +634,12 @@ JWT_SECRET=...       # mínimo 64 caracteres hex (openssl rand -hex 32)
 |---|---|---|---|
 | Módulo 0: Infra-base + Layout | ✓ Completo | 26 specs, 0 fallos | Angular 21, Material M2, sidebar+topbar+main-layout, tema #6B3C6B |
 | Módulo 1: Auth + RBAC | ✓ Completo | 43 specs, 0 fallos | AuthService, JWT interceptor, error interceptor, authGuard, LoginComponent, filtrado sidebar por rol |
-| Módulo 2: Inventory | ✓ Completo (código) — ⬜ Tests pendientes | — | Código verificado en browser; specs unitarios no escritos aún |
-| Módulo 3: Purchases | ⬜ Pendiente | | |
+| Módulo 2: Inventory | ✓ Completo | 94 specs, 0 fallos (+46 nuevos en M2 + 5 adicionales post-fix: stock-badge getter availableStock ×2, tooltip con reservedStock ×3) + 15/15 browser + 4 roles RBAC + 17+16 seguridad backend | Mergeado a develop. RBAC 4 roles verificado en browser y backend. HTTP 404/409/422 corregidos. Tests RBAC con Spring Security activo escritos. Business logic gaps cerrados: availableStock en MovementDialog, currentStock inmutable en PUT, unitCost por rol, doble asterisco AM eliminado. |
+| Módulo 3: Purchases | ✓ Completo | 143 specs, 0 fallos (32 nuevos) + 155/155 casos browser PASS + validación post-cierre | Mergeado a develop. 155 casos browser PASS. BUG-M3-13 a BUG-M3-22 corregidos en validación post-cierre: desalineación tabla, consistencia visual card, contadores de tabs lazy, mapa counts separado, navegación lista↔detalle con preservación de tab, botón Guardar inactivo hasta dirty, guardia última línea, event bubbling en botones de fila clickeable. Lecciones L21-L27 documentadas. Propuestas A–D en CLAUDE.md. App = solo escritorio 1280px+. |
 | Módulo 4: Sales | ⬜ Pendiente | | |
 | Módulo 5: Reports | ⬜ Pendiente | | |
 
-**Suite total frontend (Módulos 0-1)**: 43 specs — 0 fallos — cobertura 98.09% statements, 100% funciones
+**Suite total frontend (Módulos 0-3)**: 143 specs — 0 fallos
 
 ---
 
@@ -532,7 +717,7 @@ de forma reactiva sin depender de zone.js.
 ### L8: Verificar contratos de API contra OpenAPI ANTES de escribir código frontend
 
 **Problema (Frontend Módulo 2 — Inventory)**:
-- El endpoint `GET /api/v1/inventory/products` fue listado en la propuesta como existente → no existe.
+- El endpoint `GET /api/v1/inventory/products` fue listado en la propuesta como existente → no existía al implementar el frontend. **Implementado el 2026-06-06** con búsqueda combinada por sku/name y filtros opcionales (categoryId, status, supplierId).
 - `POST /movement` fue documentado como retornando `StockMovementResponseDTO` → retorna 204 void.
 - El campo del nombre del proveedor fue asumido como `name` → el backend usa `companyName`.
 - Los tres errores se propagaron al código y solo se detectaron en el browser con datos reales.
@@ -550,6 +735,169 @@ ANTES de escribir código. Una propuesta con contratos incorrectos propaga el er
 **Impacto**: bugs de integración que pasan desapercibidos en tests (que usan mocks) y
 solo se manifiestan en el browser con datos reales, requiriendo debugging costoso.
 
+### L9: Usar excepciones tipadas para errores de negocio — nunca RuntimeException genérica
+
+**Problema (Frontend Módulo 2 — post-desarrollo)**: todos los errores de negocio del backend
+(entidad no encontrada, SKU duplicado, stock insuficiente) retornaban HTTP 500, igual que
+un crash del servidor. Esto hacía imposible distinguir errores esperados de errores reales
+en los logs de producción, y violaba la semántica REST.
+
+**Causa**: `GlobalExceptionHandler` mapeaba toda `RuntimeException` a 500. Los servicios
+no diferenciaban tipos de error.
+
+**Regla**: crear una jerarquía mínima de excepciones de negocio desde el inicio de cada
+módulo. El patrón estándar para este proyecto:
+- `ResourceNotFoundException` → HTTP 404 (no encontrado)
+- `DuplicateResourceException` → HTTP 409 (unicidad violada)
+- `BusinessRuleException` → HTTP 422 (regla de negocio violada)
+- `RuntimeException` genérica → HTTP 500 (solo para errores reales de infraestructura)
+
+Esta jerarquía ya está implementada en `core/exception/` desde el **2026-06-07**.
+Todo módulo nuevo debe usar estas clases en sus servicios desde el primer commit.
+
+### L10: Spring Security 6 + STATELESS — `@WithMockUser` no funciona para tests que esperan 200/204
+
+**Problema (Backend Módulo 2 — post-desarrollo)**:
+Al escribir `CategoryControllerSecurityTest` y `ProductControllerSecurityTest`, los tests que
+esperaban `200 OK` o `204 No Content` fallaban con 403. Los tests que esperaban 403 pasaban.
+
+**Causa**: En Spring Security 6 con `SessionCreationPolicy.STATELESS`, `SecurityContextHolderFilter`
+usa `RequestAttributeSecurityContextRepository`, que limpia el `SecurityContext` al inicio de
+cada request. `@WithMockUser` funciona colocando un usuario en el `SecurityContextHolder` antes
+de la petición, pero el filtro lo sobreescribe. Los tests que esperan 403 pasan "por coincidencia"
+porque el usuario anónimo también recibe 403.
+
+**Regla**: Para tests RBAC con filtros de Spring Security activos en este proyecto:
+1. `@WebMvcTest(MiController.class)` + **`@Import(SecurityConfig.class)`** (obligatorio — sin esto
+   se aplica la seguridad auto-configurada HTTP Basic en lugar del JWT/RBAC real).
+2. Mockear `JwtUtils` con el helper `tokenConRol(String roleWithPrefix)`.
+3. Agregar header `Authorization: Bearer <token>` a cada request.
+4. Nunca usar `@WithMockUser` ni `SecurityMockMvcRequestPostProcessors.user()` en este proyecto.
+
+```java
+// Helper estándar — copiar en cada *SecurityTest del proyecto
+private String tokenConRol(String roleWithPrefix) {
+    String tok = "token." + roleWithPrefix;
+    when(jwtUtils.extractUsername(tok)).thenReturn("usuario_test");
+    when(jwtUtils.validateToken(tok)).thenReturn(true);
+    when(jwtUtils.extractRoles(tok)).thenReturn(List.of(roleWithPrefix));
+    return tok;
+}
+```
+
+### L11: `fixture.componentRef.setInput()` es la API correcta para `@Input` en tests Angular
+
+**Problema (Frontend Módulo 2 — post-desarrollo)**:
+El test `precarga al editar` fallaba: `expect(component.form.value).toEqual({name: 'Herramientas', ...})`
+recibía `{name: '', description: ''}` aunque `component.item = mockCategory` se ejecutaba correctamente.
+
+**Causa**: La asignación directa `component.item = value` no dispara `ngOnChanges`. El hook `ngOnChanges`
+es quien resetea el formulario con los valores del item. Angular solo invoca `ngOnChanges` cuando
+el cambio pasa por el mecanismo de input binding de Angular.
+
+**Regla**: Para testear componentes con `@Input()` que tienen `ngOnChanges`:
+
+```typescript
+// ✗ No dispara ngOnChanges
+component.item = mockCategory;
+fixture.detectChanges();
+
+// ✓ Dispara ngOnChanges con SimpleChange correcto
+fixture.componentRef.setInput('item', mockCategory);
+fixture.detectChanges();
+```
+
+Aplicar `setInput()` en todos los specs de componentes dumb que usen `ngOnChanges` para reaccionar
+a cambios de `@Input`. Aplica a todos los módulos futuros.
+
+### L12: Tests de seguridad RBAC en clase separada de tests de controlador
+
+**Problema**: Un único `@WebMvcTest` no puede tener `addFilters=false` (para tests de lógica)
+y `@Import(SecurityConfig.class)` (para tests de seguridad) al mismo tiempo — son configuraciones
+contradictorias.
+
+**Regla**: Crear siempre dos clases por controlador:
+
+| Clase | Configuración | Propósito |
+|---|---|---|
+| `MiControllerTest` | `@WebMvcTest` + `@AutoConfigureMockMvc(addFilters=false)` | Lógica del controlador (códigos HTTP, serialización, validaciones) |
+| `MiControllerSecurityTest` | `@WebMvcTest` + `@Import(SecurityConfig.class)` | Reglas RBAC de `SecurityConfig` (quién puede y quién no) |
+
+Ambas clases son complementarias. Una sin la otra deja una cobertura incompleta.
+Aplicar a todos los controladores del backend en módulos futuros (Purchases, Sales, Reports).
+
+### L13: Excepciones tipadas de negocio desde el primer commit de cada módulo
+
+**Problema (Backend Módulo 2 — post-desarrollo)**:
+Todos los errores de negocio retornaban 500, igual que un crash real. Imposible distinguir
+en logs si fue un error esperado (SKU duplicado) o un error real de infraestructura.
+
+**Regla**: Las tres clases en `core/exception/` ya están implementadas. Todo servicio nuevo
+debe usarlas desde el primer commit, nunca `RuntimeException` genérica para condiciones de negocio:
+
+```java
+// Para todo módulo nuevo — usar desde el inicio
+throw new ResourceNotFoundException("Proveedor con id " + id + " no encontrado.");
+throw new DuplicateResourceException("Ya existe un proveedor con RUC: " + ruc);
+throw new BusinessRuleException("No se puede cancelar una orden ya recibida.");
+// RuntimeException genérica SOLO para errores reales de infraestructura:
+throw new RuntimeException("Usuario del JWT no encontrado en BD: " + username);
+```
+
+El `GlobalExceptionHandler` ya mapea estas excepciones a 404/409/422 respectivamente.
+No se requiere ningún cambio en el handler al agregar nuevos módulos.
+
+### L14: `currentStock` inmutable en PUT — integridad del Kardex
+
+**Problema (Frontend Módulo 2 — post-desarrollo)**:
+El formulario de edición de producto exponía `currentStock` como campo editable.
+El backend lo actualizaba directamente. La suma de todos los movimientos del Kardex
+dejaba de coincidir con el stock real, rompiendo la trazabilidad de auditoría.
+
+**Regla**: El stock físico solo puede cambiar mediante movimientos registrados (POST /movement).
+
+**Backend** — `updateFromDTO` en `ProductMapper.java`:
+```java
+@Mapping(target = "currentStock", ignore = true)  // solo se modifica via registerStockMovement
+void updateFromDTO(ProductRequestDTO dto, @MappingTarget Product product);
+```
+
+**Frontend** — `ProductFormComponent.ngOnChanges()`:
+```typescript
+if (this.isEdit) {
+  this.form.get('currentStock')!.disable();
+} else {
+  this.form.get('currentStock')!.enable();
+}
+```
+Y `submit()` usa `form.getRawValue()` para incluir el valor original del control deshabilitado
+(el backend lo ignora de todas formas, pero mantiene la estructura del DTO consistente).
+
+**Aplica a todos los módulos futuros**: cualquier campo que solo pueda modificarse
+mediante un flujo específico (no edición directa) debe protegerse en ambas capas.
+
+---
+
+### L15: Angular Material añade `*` automáticamente — no duplicar con span manual
+
+**Problema (Frontend Módulo 2 — post-desarrollo)**:
+Todos los formularios tenían `<span class="required">*</span>` en cada label de campo
+obligatorio. Angular Material ya añade el asterisco automáticamente via CSS
+(`.mat-mdc-form-field-required-marker`) cuando detecta `Validators.required`.
+El resultado: doble asterisco visible (uno rojo manual, uno gris de AM).
+
+**Regla**: Nunca añadir asterisco manual en labels de `mat-form-field`.
+```html
+<!-- ❌ incorrecto — produce doble asterisco -->
+<mat-label>Nombre <span class="required">*</span></mat-label>
+
+<!-- ✅ correcto — AM lo gestiona automáticamente -->
+<mat-label>Nombre</mat-label>
+```
+Eliminar también la clase `.required { color: var(--color-error); }` de los SCSS.
+
+---
+
 ### L6: Los secretos en el código fuente son permanentes
 
 **Problema**: la clave JWT fue hardcodeada en `JwtUtils.java` en el primer
@@ -558,6 +906,293 @@ commit y queda en el historial de git para siempre.
 **Regla**: las variables sensibles van en `application.yaml` como
 `${VARIABLE_ENTORNO:valor_dev}` desde el primer commit. Una vez que un
 secreto entra al historial de git, debe considerarse comprometido.
+
+### L16: Ocultar un ítem del sidebar NO protege la ruta — el guard de rol es obligatorio en el routing
+
+**Problema (Frontend Módulo 3 — Purchases)**:
+SALES podía acceder a `/purchases/orders` y `/purchases/suppliers` por URL directa. El sidebar
+correctamente no mostraba "Compras" para SALES, pero el `authGuard` solo bloquea cuando
+`route.data.roles` está definido. Como `app.routes.ts` no tenía roles en la entrada `purchases`,
+cualquier usuario autenticado podía llegar al módulo.
+
+**Regla**: Todo módulo con restricción de rol DEBE tener `data: { roles: [...] }` en su entrada
+de ruta en `app.routes.ts`, independientemente de si el sidebar lo oculta o no.
+
+```typescript
+// app.routes.ts — patrón correcto para módulos con acceso restringido
+{
+  path: 'purchases',
+  canActivate: [authGuard],
+  data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN'] },
+  loadChildren: () => import('./modules/purchases/purchases.routes').then(m => m.PURCHASES_ROUTES)
+},
+```
+
+El sidebar es una guía de navegación, no un mecanismo de seguridad. El guard es la barrera real.
+
+**Extensión (BUG-M3-14 — Módulo 3)**: el guard del módulo padre **NO** se hereda automáticamente
+a las rutas child. Cada ruta child que requiera un rol específico debe declarar su propio
+`canActivate` + `data.roles`. En Purchases, `orders/new` (solo ADMIN/MANAGER) necesitaba su propio
+guard aunque el módulo padre ya restringía el acceso a ADMIN/MANAGER/WAREHOUSEMAN.
+
+```typescript
+// purchases.routes.ts — child route con restricción adicional
+{
+  path: 'orders/new',
+  component: PurchaseOrderDetailPageComponent,
+  canActivate: [authGuard],
+  data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER'] },  // más restrictivo que el padre
+},
+```
+
+### L17: Validar título del panel de detalle según permisos — no solo los campos
+
+**Problema (Frontend Módulo 3 — Purchases)**:
+El panel de detalle de proveedor mostraba "Editar proveedor" a WAREHOUSEMAN aunque el formulario
+era de solo lectura (todos los campos `disabled`, sin botón "Guardar"). El título confundía al
+usuario sobre si podía o no modificar el registro.
+
+**Regla**: cuando un componente de formulario se reutiliza para visualización (campos disabled, sin
+guardar) y para edición (campos habilitados, con guardar), el título debe reflejar el modo real:
+
+```html
+<!-- ✅ correcto — título dinámico según rol -->
+{{ isEdit ? (canWrite() ? 'Editar proveedor' : 'Ver proveedor') : 'Nuevo proveedor' }}
+```
+
+Aplica a cualquier formulario reutilizable donde el nivel de acceso cambie el modo de la pantalla.
+
+### L21: Truncado de texto en celdas de tabla — nunca `display:block` en `<td>`
+
+**Problema (Frontend Módulo 3 — BUG-M3-15)**:
+`.cell-truncate` aplicaba `display: block` directamente sobre el `<td>`, sobreescribiendo
+`display: table-cell`. Resultado: desalineación vertical de la columna "Razón social" en Chrome.
+
+**Regla**: para truncar texto con ellipsis en una celda de tabla, usar un elemento wrapper
+interno (`<div>` o `<span>`) — nunca aplicar `display: block` sobre el `<td>` directamente:
+
+```html
+<!-- ❌ incorrecto — display:block en el <td> rompe la alineación -->
+<td mat-cell class="cell-truncate">{{ value }}</td>
+
+<!-- ✅ correcto — wrapper interno -->
+<td mat-cell>
+  <div class="cell-truncate">{{ value }}</div>
+</td>
+```
+
+```scss
+.cell-truncate {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block; /* válido en un div/span, nunca en el td */
+}
+```
+
+### L22: Consistencia visual entre páginas del mismo módulo — verificar antes de cerrar
+
+**Problema (Frontend Módulo 3 — BUG-M3-16)**:
+La tabla de proveedores no tenía el contenedor con `border-radius`, `border` y `background`
+que sí tenía la tabla de productos. El `padding` en `.catalog-page` es necesario para que
+el borde redondeado del wrapper sea visible.
+
+**Regla**: al implementar una segunda pantalla con tabla en el mismo módulo, comparar el SCSS
+del contenedor con la primera pantalla implementada. La estructura de referencia es:
+
+```scss
+.catalog-page {
+  padding: var(--space-3);
+  gap: var(--space-2);
+  // ...
+  &__table-wrapper {
+    border-radius: 8px;
+    border: 1px solid var(--color-divider);
+    background: #ffffff;
+  }
+}
+```
+
+### L23: Contadores de tabs — cargar al inicio, no lazy; separar counts de datos completos
+
+**Problema (Frontend Módulo 3 — BUG-M3-17 y BUG-M3-18)**:
+Los badges numéricos de las tabs solo mostraban datos al hacer clic en cada tab.
+El intento de fix inicial (guardar `size=1` en el mismo mapa de páginas) bloqueaba
+la carga completa de datos al hacer clic.
+
+**Regla**: usar dos estructuras separadas:
+- `pages: Map<Status, PageResponse<T>>` — solo para datos completos (cargados al activar una tab)
+- `counts: Map<Status, number>` — solo para `totalElements`, cargado al inicio con `size=1`
+
+```typescript
+// ngOnInit: cargar datos completos del tab activo + conteos del resto
+this.loadTab(this.activeTab);
+for (const tab of this.tabs) {
+  if (tab.status !== this.activeTab) this.loadCount(tab.status);
+}
+
+private loadCount(status: Status): void {
+  this.service.getByStatus(status, 0, 1).subscribe(page => {
+    this.counts.set(status, page.totalElements);
+    this.cdr.markForCheck();
+  });
+}
+
+countFor(status: Status): number {
+  return this.counts.get(status) ?? this.pages.get(status)?.totalElements ?? 0;
+}
+```
+
+### L24: Navegación lista → detalle → lista debe preservar el estado de la lista
+
+**Problema (Frontend Módulo 3 — BUG-M3-19)**:
+Al regresar del detalle de una orden, el usuario siempre volvía a la tab "Pendientes"
+sin importar desde qué tab había abierto la orden.
+
+**Regla**: pasar la tab/estado/filtro activo como query param al navegar al detalle,
+y restaurarlo al volver. Patrón con Angular Router:
+
+```typescript
+// En la lista — pasar origen
+viewDetail(item: Item): void {
+  this.router.navigate(['/module/detail', item.id], { queryParams: { from: this.activeTab } });
+}
+
+// En el detalle — usar origen al volver
+goBack(): void {
+  const from = this.route.snapshot.queryParamMap.get('from');
+  this.router.navigate(['/module/list'], from ? { queryParams: { tab: from } } : {});
+}
+
+// En la lista — restaurar tab al cargar
+ngOnInit(): void {
+  const tabParam = this.route.snapshot.queryParamMap.get('tab') as Status | null;
+  if (tabParam && this.tabs.some(t => t.status === tabParam)) {
+    this.activeTab = tabParam;
+  }
+  // ...
+}
+```
+
+En el template: `<mat-tab-group [selectedIndex]="activeTabIndex">` con getter
+`get activeTabIndex(): number { return this.tabs.findIndex(t => t.status === this.activeTab); }`
+
+### L27: Botones de acción en filas clickeables requieren `$event.stopPropagation()`
+
+**Problema (Frontend Módulo 3 — BUG-M3-22)**:
+En `purchase-orders-page`, las filas de la tabla tienen `(click)="viewDetail(row)"`.
+Al hacer clic en un botón de acción (Aprobar, Recibir, Cancelar) dentro de la fila,
+el evento burbujeaba al `mat-row`, disparando la navegación al detalle. El router
+destruía el componente y `takeUntilDestroyed()` cancelaba el `afterClosed()` antes
+de que el callback pudiera ejecutar la transición de estado.
+
+**Regla**: Cuando `mat-row` tiene `(click)="..."`, TODOS los botones dentro de la
+fila deben incluir `$event.stopPropagation()`:
+
+```html
+<button mat-icon-button (click)="$event.stopPropagation(); approve(o)">
+```
+
+Aplica a cualquier tabla con filas clickeables que contengan botones de acción.
+
+---
+
+### L26: Proteger eliminación del último elemento de una colección requerida
+
+**Problema (Frontend Módulo 3 — BUG-M3-21)**:
+Al editar una orden PENDING era posible borrar todas las líneas de detalle hasta
+dejarla vacía. El backend tampoco valida este caso en `removeDetail()`.
+
+**Regla**: Antes de llamar al API de eliminación, verificar si el elemento es el
+último de una colección con mínimo requerido. Si es el último, mostrar snackbar de
+error y retornar sin llamar al API.
+
+```typescript
+remove(item: DetailResponse): void {
+  if ((this.entity?.items.length ?? 0) <= 1) {
+    this.snackBar.open('No se puede eliminar el único elemento. Se requiere al menos uno.',
+      'Cerrar', { duration: 4000, panelClass: ['snackbar-error'] });
+    return;
+  }
+  // abrir diálogo de confirmación
+}
+```
+
+Aplica a cualquier entidad con colección obligatoria: órdenes de compra/venta,
+facturas con líneas, etc.
+
+### L25: Botones "Guardar" en edición deben verificar `form.dirty`, no solo `form.valid`
+
+**Problema (Frontend Módulo 3 — BUG-M3-20)**:
+El botón "Guardar cambios" en el detalle de una orden estaba siempre habilitado al cargar
+la pantalla, incluso sin cambios. Causaba confusión al usuario y habilitaba peticiones HTTP
+innecesarias.
+
+**Regla**: En formularios de edición (no de creación), la condición `[disabled]` debe incluir
+`!form.dirty`. Llamar `form.markAsPristine()` tras guardar exitosamente para restablecer el estado.
+
+```typescript
+// Template
+[disabled]="form.invalid || !form.dirty || loading"
+
+// En el next del subscribe de save
+next: result => {
+  // ...actualizar estado local...
+  this.form.markAsPristine();   // botón vuelve a deshabilitarse
+  this.loading = false;
+  this.cdr.markForCheck();
+}
+```
+
+`patchValue()` al cargar un registro existente no marca el formulario como dirty —
+permanece pristine hasta que el usuario modifique un campo.
+
+### L18: `panelClass` en MatSnackBar debe ser array — nunca string
+
+**Problema (Frontend Módulo 3 — BUG-M3-13)**:
+Tres componentes pasaban `panelClass: 'snackbar-error'` (string) en lugar de
+`panelClass: ['snackbar-error']` (array). Angular Material ignora silenciosamente el string —
+el CSS de fondo rojo no se aplicaba y el snackbar aparecía gris por defecto.
+
+**Regla**: `panelClass` en `MatSnackBar.open()` siempre como array:
+
+```typescript
+// ❌ incorrecto — string ignorado silenciosamente
+this.snackBar.open(msg, 'Cerrar', { panelClass: 'snackbar-error' });
+
+// ✅ correcto — array obligatorio
+this.snackBar.open(msg, 'Cerrar', { panelClass: ['snackbar-error'] });
+```
+
+Este error no genera warning en consola ni falla en tests unitarios — solo se detecta en browser
+viendo el color real del snackbar.
+
+### L19: Protocolo obligatorio de pruebas browser — Propuestas A–D (todos los módulos)
+
+**Problema (Frontend Módulo 3 — origen)**:
+El Módulo 3 fue declarado completo antes de ejecutar pruebas browser. Múltiples bugs de
+seguridad (BUG-M3-13, BUG-M3-14), lógica (BUG-M3-09 a BUG-M3-12) y UX solo se descubrieron
+cuando se realizaron pruebas explícitas en browser con los 4 roles.
+
+**Regla (documentada en CLAUDE.md como protocolo permanente)**:
+
+- **Propuesta A**: documento `casos_de_prueba_modulo_<nombre>.md` creado *antes* de codificar,
+  con categorías SEC, RBAC, CRUD, VAL, BSRCH, UI, FLOW, RN, ERR, EMPTY, VIS para cada pantalla.
+- **Propuesta B**: un componente no está terminado hasta que TODOS sus casos tienen `✅ PASS`
+  verificado en browser con el rol correcto. No acumular deuda de verificación.
+- **Propuesta C**: al agregar cualquier ruta, verificar `canActivate` + `data.roles` + acceso
+  directo por URL con rol no autorizado (no basta con ocultar el ítem del sidebar).
+- **Propuesta D**: un módulo no está "done" hasta que: (1) 100% casos PASS, (2) ng test 0 fallos
+  ≥ 70% cobertura, (3) pruebas browser 4 roles ejecutadas, (4) columna Estado sin `⏳ PENDIENTE`.
+
+### L20: La aplicación Almacenes es exclusivamente de escritorio (1280px+)
+
+**Decisión (2026-06-08)**: el sistema no será usado en dispositivos móviles ni tablets.
+
+**Regla**: en los documentos de casos de prueba, marcar como `N/A` desde el inicio todos los
+casos de viewport < 600px (categoría VIS responsive). No implementar breakpoints para móvil.
+No incluir casos de viewport 400×700 en ningún módulo futuro.
 
 ---
 
@@ -577,9 +1212,9 @@ secreto entra al historial de git, debe considerarse comprometido.
 |---|---|---|
 | ~~Módulo 0: Setup + Layout~~ | ✓ Completo | — |
 | ~~Módulo 1: Auth + RBAC~~ | ✓ Completo | Módulo 0 |
-| Módulo 2: Inventory | ⬜ Siguiente | Módulo 1 |
-| Módulo 3: Purchases | ⬜ Pendiente | Módulo 2 |
-| Módulo 4: Sales | ⬜ Pendiente | Módulo 3 |
+| ~~Módulo 2: Inventory~~ | ✓ Completo | Módulo 1 |
+| Módulo 3: Purchases | ✓ Completo | Módulo 2 |
+| Módulo 4: Sales | ⬜ Siguiente | Módulo 3 |
 | Módulo 5: Reports | ⬜ Pendiente | Módulo 4 |
 
 ### Módulos de negocio futuros (ambas capas)

@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, DestroyRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatTableModule } from '@angular/material/table';
@@ -8,9 +9,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { filter } from 'rxjs/operators';
+import { filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { CategoryService } from '../../services/category.service';
 import { CategoryDTO } from '../../models/category.model';
@@ -35,12 +38,15 @@ const DIALOG_CONFIG = {
   standalone: true,
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     MatTableModule,
     MatPaginatorModule,
     MatButtonModule,
     MatIconModule,
     MatTooltipModule,
     MatProgressBarModule,
+    MatFormFieldModule,
+    MatInputModule,
     EmptyStateComponent,
   ],
   templateUrl: './categories-page.component.html',
@@ -59,6 +65,8 @@ export class CategoriesPageComponent implements OnInit {
 
   displayedColumns = ['name', 'description', 'createdByUsername', 'actions'];
 
+  searchCtrl = new FormControl('');
+
   categories: CategoryDTO[] = [];
   page: PageResponse<CategoryDTO> | null = null;
   currentPage = 0;
@@ -72,12 +80,21 @@ export class CategoriesPageComponent implements OnInit {
   ngOnInit(): void {
     this.layoutService.collapse();
     this.load();
+
+    this.searchCtrl.valueChanges.pipe(
+      debounceTime(350),
+      distinctUntilChanged(),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe(() => {
+      this.currentPage = 0;
+      this.load();
+    });
   }
 
   load(): void {
     this.loading = true;
     this.cdr.markForCheck();
-    this.categoryService.getActive(this.currentPage, this.pageSize)
+    this.categoryService.getActive(this.searchCtrl.value ?? '', this.currentPage, this.pageSize)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (page) => {
@@ -92,6 +109,10 @@ export class CategoriesPageComponent implements OnInit {
           this.snackBar.open('Error al cargar categorías.', 'Cerrar', { duration: 4000, panelClass: ['snackbar-error'] });
         }
       });
+  }
+
+  clearSearch(): void {
+    this.searchCtrl.setValue('');
   }
 
   onPageChange(event: PageEvent): void {

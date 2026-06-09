@@ -10,10 +10,10 @@ export class CategoryService {
   private readonly api = `${environment.apiUrl}/inventory/categories`;
   private http = inject(HttpClient);
 
-  getActive(page = 0, size = 20): Observable<PageResponse<CategoryDTO>> {
-    return this.http.get<PageResponse<CategoryDTO>>(`${this.api}/active`, {
-      params: { page, size }
-    });
+  getActive(search = '', page = 0, size = 20): Observable<PageResponse<CategoryDTO>> {
+    const params: Record<string, string | number> = { page, size };
+    if (search?.trim()) params['search'] = search.trim();
+    return this.http.get<PageResponse<CategoryDTO>>(`${this.api}/active`, { params });
   }
 
   create(request: CategoryRequest): Observable<CategoryDTO> {

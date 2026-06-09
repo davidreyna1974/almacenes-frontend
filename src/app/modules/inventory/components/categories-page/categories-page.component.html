@@ -5,6 +5,17 @@
     <h2 class="catalog-page__title">Categorías</h2>
 
     <div class="catalog-page__actions">
+      <!-- Búsqueda -->
+      <mat-form-field appearance="outline" class="catalog-page__search">
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput [formControl]="searchCtrl" placeholder="Buscar categoría…" />
+        @if (searchCtrl.value) {
+          <button matSuffix mat-icon-button aria-label="Limpiar búsqueda" (click)="clearSearch()">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </mat-form-field>
+
       <!-- Acceso cruzado: ir a Productos -->
       <button mat-stroked-button
               (click)="viewProducts()"
@@ -30,7 +41,7 @@
   <!-- Tabla full-width -->
   @if (!loading && categories.length === 0) {
     <div class="catalog-page__empty">
-      <app-empty-state variant="empty" />
+      <app-empty-state [variant]="searchCtrl.value ? 'no-results' : 'empty'" />
     </div>
   } @else {
     <div class="catalog-page__table-wrapper">
