@@ -1,0 +1,118 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e2591] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e2592] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e2593]:
+            - img [ref=e36]: chevron_right
+            - text: Inventario → Productos
+        - generic [ref=e14]:
+          - button [ref=e2594] [cursor=pointer]:
+            - img [ref=e16]: notifications_none
+          - button [ref=e2595]:
+            - img [ref=e20]: arrow_drop_down
+            - generic [ref=e21]:
+              - text: admin
+              - generic [ref=e2596]: ADMIN
+      - generic [ref=e26]:
+        - navigation [ref=e2597]:
+          - menubar [ref=e30]:
+            - menuitem [expanded] [ref=e38] [cursor=pointer]:
+              - img [ref=e39]: inventory_2
+            - menuitem [ref=e40] [cursor=pointer]:
+              - img [ref=e41]: shopping_cart
+            - menuitem [ref=e42] [cursor=pointer]:
+              - img [ref=e43]: point_of_sale
+            - menuitem [ref=e44] [cursor=pointer]:
+              - img [ref=e45]: bar_chart
+            - menuitem [ref=e46] [cursor=pointer]:
+              - img [ref=e47]: manage_accounts
+          - button [ref=e2598] [cursor=pointer]:
+            - img [ref=e33]: chevron_right
+        - main [ref=e34]:
+          - generic [ref=e51]:
+            - generic [ref=e52]:
+              - generic [ref=e53]:
+                - generic [ref=e56]:
+                  - generic [ref=e57]: Buscar por código o nombre
+                  - textbox [ref=e2599]: TEST-ADMIN-SUITE-001
+                  - img [ref=e61]: search
+                - generic [ref=e65] [cursor=pointer]:
+                  - generic [ref=e66]: Categoría
+                  - combobox [ref=e2600]:
+                    - img [ref=e74]
+                - generic [ref=e79] [cursor=pointer]:
+                  - generic [ref=e80]: Estado
+                  - combobox [ref=e2601]:
+                    - img [ref=e88]
+                - generic [ref=e93] [cursor=pointer]:
+                  - generic [ref=e94]: Proveedor
+                  - combobox [ref=e2602]:
+                    - img [ref=e102]
+                - button [ref=e2603] [cursor=pointer]:
+                  - img [ref=e2568]: filter_alt_off
+              - button [ref=e2604]:
+                - img [ref=e107]: add
+                - generic [ref=e108]: Nuevo producto
+            - generic [ref=e1132]:
+              - table [ref=e1133]:
+                - rowgroup [ref=e1134]:
+                  - row [ref=e2605]:
+                    - columnheader [ref=e2606]: Código
+                    - columnheader [ref=e2607]: Nombre
+                    - columnheader [ref=e2608]: Categoría
+                    - columnheader [ref=e2609]: Proveedor
+                    - columnheader [ref=e2610]: Stock
+                    - columnheader [ref=e2611]: Precio
+                    - columnheader [ref=e2612]: Estado
+                    - columnheader [ref=e1143]
+                - rowgroup [ref=e1144]:
+                  - row [ref=e2613] [cursor=pointer]:
+                    - cell [ref=e2614]: TEST-ADMIN-SUITE-001
+                    - cell [ref=e2615]: Producto Test Suite ADMIN
+                    - cell [ref=e2616]: Calzado Industrial
+                    - cell [ref=e2617]: Agroquímica y Fertilizantes del Valle S.A.
+                    - cell [ref=e2618]:
+                      - status [ref=e2619]: "5"
+                    - cell [ref=e2620]: $999.99
+                    - cell [ref=e2621]:
+                      - generic [ref=e2581]: Disponible
+                    - cell [ref=e2622]:
+                      - button [ref=e2623]:
+                        - img [ref=e2584]: swap_vert
+                      - button [ref=e2624]:
+                        - img [ref=e2588]: edit
+              - group [ref=e2625]:
+                - generic [ref=e1547]:
+                  - generic [ref=e1548]:
+                    - generic [ref=e1549]: "Items per page:"
+                    - combobox [ref=e2626] [cursor=pointer]:
+                      - generic [ref=e1555]:
+                        - generic [ref=e1557]: "20"
+                        - img [ref=e1560]
+                  - generic [ref=e1563]:
+                    - status [ref=e1564]: 1 – 1 of 1
+                    - button [disabled] [ref=e2627]:
+                      - img [ref=e1566]
+                    - button [disabled] [ref=e2628]:
+                      - img [ref=e1571]
+  - dialog [ref=e2632]:
+    - generic [ref=e2637]:
+      - tablist [ref=e2640]:
+        - generic [ref=e2641]:
+          - tab "Datos" [ref=e2642] [cursor=pointer]:
+            - generic [ref=e2644]: Datos
+          - tab "Kardex" [active] [selected] [ref=e2645] [cursor=pointer]:
+            - generic [ref=e2647]: Kardex
+      - generic [ref=e2648]:
+        - tabpanel [ref=e2780]
+        - tabpanel "Kardex" [ref=e2781]:
+          - generic [ref=e2784]:
+            - img [ref=e2785]: history
+            - paragraph [ref=e2786]: Sin movimientos registrados para este producto.

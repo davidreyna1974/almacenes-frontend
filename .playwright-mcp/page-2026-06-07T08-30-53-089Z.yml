@@ -1,0 +1,39 @@
+- generic [ref=e100]:
+  - link "Ir al contenido principal" [ref=e101] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e102]:
+    - banner [ref=e104]:
+      - generic [ref=e105]:
+        - button "Alternar menú lateral" [ref=e106] [cursor=pointer]:
+          - img [ref=e107]: menu
+        - generic [ref=e110]: Almacenes
+      - generic [ref=e111]:
+        - button "Notificaciones" [ref=e112] [cursor=pointer]:
+          - img [ref=e113]: notifications_none
+        - button "Menú de usuario" [ref=e116]:
+          - img [ref=e117]: arrow_drop_down
+          - generic [ref=e118]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e120]': ADMIN
+    - generic [ref=e123]:
+      - navigation "Navegación principal" [ref=e126]:
+        - menubar [ref=e127]:
+          - menuitem "Inventario" [ref=e128] [cursor=pointer]:
+            - img [ref=e129]: inventory_2
+            - generic [ref=e130]: Inventario
+            - img [ref=e131]: expand_more
+          - menuitem "Compras" [ref=e132] [cursor=pointer]:
+            - img [ref=e133]: shopping_cart
+            - generic [ref=e134]: Compras
+          - menuitem "Ventas" [ref=e135] [cursor=pointer]:
+            - img [ref=e136]: point_of_sale
+            - generic [ref=e137]: Ventas
+          - menuitem "Reportes" [ref=e138] [cursor=pointer]:
+            - img [ref=e139]: bar_chart
+            - generic [ref=e140]: Reportes
+          - menuitem "Usuarios" [ref=e141] [cursor=pointer]:
+            - img [ref=e142]: manage_accounts
+            - generic [ref=e143]: Usuarios
+        - button "Colapsar menú" [ref=e145] [cursor=pointer]:
+          - img [ref=e146]: chevron_left
+      - main [ref=e147]

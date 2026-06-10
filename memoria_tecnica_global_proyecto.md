@@ -129,7 +129,11 @@ justifica. Un monolito bien estructurado por módulos es más mantenible a esta 
 
 ```
 GET /api/v1/inventory/products
+<<<<<<< HEAD
     ?search=taladro        (opcional) búsqueda parcial en sku y name, case-insensitive
+=======
+    ?search=taladro        (opcional) búsqueda parcial en sku y name
+>>>>>>> feature/inventory
     &categoryId=1          (opcional) filtra por categoría exacta
     &status=AVAILABLE      (opcional) filtra por estado: AVAILABLE | DISCONTINUED | OUT_OF_STOCK
     &supplierId=2          (opcional) filtra por proveedor exacto
@@ -140,11 +144,18 @@ GET /api/v1/inventory/products
 Comportamiento:
   - Siempre filtra active = true (soft-delete excluido implícitamente).
   - Sin parámetros → todos los productos activos paginados.
+<<<<<<< HEAD
   - search busca en SKU (LIKE) y nombre (LIKE) simultáneamente con OR.
   - Los demás filtros se combinan con AND entre sí y con search.
   - Ordenado por name ASC.
   - JPQL usa CAST(:search AS string) para evitar el error lower(bytea)
     de PostgreSQL cuando search es null (Hibernate 6 + PostgreSQL 15).
+=======
+  - search busca en SKU y nombre simultáneamente con OR.
+  - Búsqueda insensible a MAYÚSCULAS y ACENTOS (ver §7 — estándar de búsqueda).
+  - Los demás filtros se combinan con AND entre sí y con search.
+  - Ordenado por name ASC.
+>>>>>>> feature/inventory
 
 Campos del ProductResponseDTO (campos clave para el frontend):
   id, sku, name, description, price, unitCost
@@ -159,9 +170,45 @@ Implementación frontend: ProductService.search(params) en
   src/app/modules/inventory/services/product.service.ts
 ```
 
+<<<<<<< HEAD
 ⚠️ **Nota histórica**: antes de esta implementación (2026-06-06) no existía ningún
 endpoint GET para el catálogo de productos con búsqueda de texto. El endpoint
 `GET /products/sku/{sku}` solo hace lookup exacto (1 resultado o 404).
+=======
+### Endpoint de búsqueda de categorías
+
+```
+GET /api/v1/inventory/categories/active
+    ?search=herr           (opcional) búsqueda parcial en name, insensible a acentos
+    &page=0 &size=20       (opcional, defaults 0/20)
+
+← 200 OK  PageResponseDTO<CategoryDTO>
+```
+
+### Endpoint de búsqueda de proveedores
+
+```
+GET /api/v1/purchases/suppliers/active
+    ?search=ferr           (opcional) búsqueda parcial en company_name o rfc
+    &page=0 &size=20       (opcional, defaults 0/20)
+
+← 200 OK  PageResponseDTO<SupplierDTO>
+```
+
+### Endpoint de búsqueda de clientes
+
+```
+GET /api/v1/sales/clients/active
+    ?search=mart           (opcional) búsqueda parcial en name, rfc o contact_name
+    &page=0 &size=20       (opcional, defaults 0/20)
+
+← 200 OK  PageResponseDTO<ClientDTO>
+```
+
+⚠️ **Nota histórica**: antes de 2026-06-09 el endpoint de productos usaba JPQL con
+`LOWER()`, que no normaliza acentos. `GET /products/sku/{sku}` sigue siendo lookup
+exacto (1 resultado o 404).
+>>>>>>> feature/inventory
 
 ### Formato de errores del backend
 
@@ -496,6 +543,80 @@ La Sección 7 de cada memoria técnica documenta:
 - Patrón: `getStatusLabel(status: string): string { return { AVAILABLE: 'Disponible', ... }[status] ?? status; }`
 - Nunca mostrar valores como `AVAILABLE`, `PENDING`, `IN`, `OUT` directamente en la UI.
 
+<<<<<<< HEAD
+=======
+### Estándar de búsqueda de texto — insensible a acentos (aplica a todos los módulos)
+
+**Origen**: BUG-INV-06 (2026-06-09) — "galon" no encontraba "Galón" porque `LOWER()` en JPQL
+no elimina diacríticos.
+
+**Regla**: Todo endpoint de búsqueda LIKE sobre texto libre **debe** ser insensible a mayúsculas
+Y a acentos/diacríticos. Normalizar solo mayúsculas no es suficiente.
+
+**Implementación backend (PostgreSQL)**:
+
+```sql
+-- 1. Instalar extensión (una sola vez por base de datos, ya instalada en almacen_db)
+CREATE EXTENSION IF NOT EXISTS unaccent;
+
+-- 2. Crear función wrapper IMMUTABLE (necesaria para usarla en índices funcionales)
+CREATE OR REPLACE FUNCTION f_unaccent(text)
+  RETURNS text LANGUAGE sql IMMUTABLE PARALLEL SAFE STRICT AS
+$$ SELECT public.unaccent('public.unaccent', $1) $$;
+
+-- 3. Crear índice funcional por cada columna buscable (mejora performance)
+CREATE INDEX IF NOT EXISTS idx_<tabla>_unaccent_<col> ON <tabla> (f_unaccent(lower(<col>)));
+```
+
+```java
+// 4. Query nativa en el repositorio (JPQL no expone funciones PostgreSQL personalizadas)
+@Query(value =
+    "SELECT t.* FROM tabla t " +
+    "WHERE t.active = true " +
+    "AND (:search IS NULL OR (" +
+    "     f_unaccent(lower(t.col1)) LIKE '%' || f_unaccent(lower(CAST(:search AS text))) || '%' " +
+    "  OR f_unaccent(lower(t.col2)) LIKE '%' || f_unaccent(lower(CAST(:search AS text))) || '%'))",
+    countQuery = "SELECT COUNT(*) FROM tabla t WHERE ...",
+    nativeQuery = true)
+Page<T> searchEntidad(@Param("search") String search, Pageable pageable);
+// Los paréntesis alrededor del bloque OR son OBLIGATORIOS para evitar bug de precedencia SQL.
+```
+
+```java
+// 5. Normalización en el servicio (blank → null activa el IS NULL del repositorio)
+String normalized = (search != null && !search.isBlank()) ? search.trim() : null;
+```
+
+**Tablas con búsqueda implementada** (2026-06-09):
+| Tabla | Campos buscables | Índices funcionales |
+|---|---|---|
+| `products` | `sku`, `name` | `idx_products_unaccent_sku`, `idx_products_unaccent_name` |
+| `categories` | `name` | `idx_categories_unaccent_name` |
+| `suppliers` | `company_name`, `rfc` | `idx_suppliers_unaccent_company`, `idx_suppliers_unaccent_rfc` |
+| `clients` | `name`, `rfc`, `contact_name` | `idx_clients_unaccent_name`, `idx_clients_unaccent_rfc` |
+
+**Al agregar una nueva tabla con búsqueda por texto**:
+```
+[ ] Instalar unaccent si es una BD nueva (ya instalado en almacen_db)
+[ ] Crear f_unaccent() si no existe
+[ ] Crear índice funcional: CREATE INDEX IF NOT EXISTS idx_<tabla>_unaccent_<col> ON ...
+[ ] Usar nativeQuery=true con f_unaccent() en ambos lados del LIKE
+[ ] Envolver el bloque OR en paréntesis dentro del AND
+[ ] Normalizar blank → null en el servicio antes de llamar al repositorio
+[ ] Añadir parámetro search opcional al controller (required=false)
+```
+
+**Implementación frontend**:
+- Campo de búsqueda: `FormControl` con `debounceTime(350)` + `distinctUntilChanged()`
+- Al cambiar el valor: resetear `currentPage = 0` antes de recargar
+- Pasar `search` al servicio HTTP solo si tiene valor (trim; omitir si vacío)
+- Estado vacío: distinguir `'empty'` (sin datos) de `'no-results'` (búsqueda sin coincidencias)
+
+**Precaución**: NO usar `?search=` con string vacío `""` — enviar el parámetro ausente en su lugar.
+El backend interpreta `search=""` como búsqueda activa; `search IS NULL` solo se activa si
+el parámetro está ausente del request.
+
+>>>>>>> feature/inventory
 ### Variables de entorno
 
 ```bash

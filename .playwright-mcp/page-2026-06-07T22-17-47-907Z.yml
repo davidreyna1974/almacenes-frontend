@@ -1,0 +1,20 @@
+- main [ref=e433]:
+  - generic [ref=e434]:
+    - generic [ref=e435]: Almacenes
+    - paragraph [ref=e436]: Inicia sesión para continuar
+  - generic [ref=e437]:
+    - generic [ref=e440]:
+      - generic [ref=e441]:
+        - text: Usuario
+        - generic [ref=e442]: "*"
+      - textbox "Usuario" [ref=e444]: admin
+      - img [ref=e446]: person_outline
+    - generic [ref=e450]:
+      - generic [ref=e451]:
+        - text: Contraseña
+        - generic [ref=e452]: "*"
+      - textbox "Contraseña" [ref=e454]: Admin123!
+      - button "Mostrar contraseña" [ref=e456] [cursor=pointer]:
+        - img [ref=e457]: visibility_off
+    - button "Iniciar sesión" [ref=e461]:
+      - generic [ref=e462]: Iniciar sesión

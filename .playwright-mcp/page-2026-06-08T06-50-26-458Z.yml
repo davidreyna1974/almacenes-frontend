@@ -1,0 +1,210 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Órdenes de compra
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - button [ref=e51] [cursor=pointer]:
+              - img [ref=e52]: arrow_back
+            - generic [ref=e55]:
+              - heading "OC-2026-0066" [level=2] [ref=e56]
+              - generic [ref=e57]: Pendiente
+            - generic [ref=e58]:
+              - button "Aprobar" [ref=e59]:
+                - img [ref=e60]: check_circle
+                - generic [ref=e61]: Aprobar
+              - button "Cancelar orden" [ref=e64]:
+                - img [ref=e65]: cancel
+                - generic [ref=e66]: Cancelar orden
+          - generic [ref=e69]:
+            - generic [ref=e70]:
+              - generic [ref=e71]:
+                - heading "Información de la orden" [level=3] [ref=e72]
+                - generic [ref=e73]:
+                  - generic [ref=e76] [cursor=pointer]:
+                    - generic [ref=e77]:
+                      - text: Proveedor
+                      - generic [ref=e78]: "*"
+                    - combobox "Proveedor" [ref=e80]:
+                      - generic [ref=e81]:
+                        - generic [ref=e83]: Seguridad y Vigilancia Electrónica S.A.
+                        - img [ref=e86]
+                  - generic [ref=e91]:
+                    - generic [ref=e92]: Notas
+                    - textbox "Notas" [ref=e94]:
+                      - /placeholder: Observaciones opcionales
+                  - button "Guardar cambios" [ref=e97]:
+                    - img [ref=e98]: save
+                    - generic [ref=e99]: Guardar cambios
+              - generic [ref=e102]:
+                - generic [ref=e103]:
+                  - heading "Líneas de detalle" [level=3] [ref=e104]
+                  - button "Agregar línea" [ref=e105]:
+                    - img [ref=e106]: add
+                    - generic [ref=e107]: Agregar línea
+                - table [ref=e110]:
+                  - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e111]:
+                    - columnheader "SKU" [ref=e112]
+                    - columnheader "Producto" [ref=e113]
+                    - columnheader "Cantidad" [ref=e114]
+                    - columnheader "Precio unitario" [ref=e115]
+                    - columnheader "Subtotal" [ref=e116]
+                    - columnheader [ref=e117]
+                  - row "ELEC-TV32-046 Televisor LED 32\" HD Smart TV (Modelo 2022) 1 $4,500.00 $4,500.00" [ref=e118]:
+                    - cell "ELEC-TV32-046" [ref=e119]:
+                      - generic [ref=e120]: ELEC-TV32-046
+                    - cell "Televisor LED 32\" HD Smart TV (Modelo 2022)" [ref=e121]:
+                      - generic [ref=e122]: Televisor LED 32" HD Smart TV (Modelo 2022)
+                    - cell "1" [ref=e123]
+                    - cell "$4,500.00" [ref=e124]
+                    - cell "$4,500.00" [ref=e125]
+                    - cell [ref=e126]:
+                      - button [ref=e127] [cursor=pointer]:
+                        - img [ref=e128]: edit
+                      - button [ref=e131] [cursor=pointer]:
+                        - img [ref=e132]: delete
+                  - row "LUBR-ACE20-035 Aceite Lubricante Motor 20W-50 Galón 1 $380.00 $380.00" [ref=e135]:
+                    - cell "LUBR-ACE20-035" [ref=e136]:
+                      - generic [ref=e137]: LUBR-ACE20-035
+                    - cell "Aceite Lubricante Motor 20W-50 Galón" [ref=e138]:
+                      - generic [ref=e139]: Aceite Lubricante Motor 20W-50 Galón
+                    - cell "1" [ref=e140]
+                    - cell "$380.00" [ref=e141]
+                    - cell "$380.00" [ref=e142]
+                    - cell [ref=e143]:
+                      - button [ref=e144] [cursor=pointer]:
+                        - img [ref=e145]: edit
+                      - button [ref=e148] [cursor=pointer]:
+                        - img [ref=e149]: delete
+                  - row "HELEC-AMO-015 Amoladora Angular 4.5\" 1400W 1 $980.00 $980.00" [ref=e152]:
+                    - cell "HELEC-AMO-015" [ref=e153]:
+                      - generic [ref=e154]: HELEC-AMO-015
+                    - cell "Amoladora Angular 4.5\" 1400W" [ref=e155]:
+                      - generic [ref=e156]: Amoladora Angular 4.5" 1400W
+                    - cell "1" [ref=e157]
+                    - cell "$980.00" [ref=e158]
+                    - cell "$980.00" [ref=e159]
+                    - cell [ref=e160]:
+                      - button [ref=e161] [cursor=pointer]:
+                        - img [ref=e162]: edit
+                      - button [ref=e165] [cursor=pointer]:
+                        - img [ref=e166]: delete
+                  - row "MOFI-ESC-026 Escritorio en L 160x120 cm Wengué 1 $4,200.00 $4,200.00" [ref=e169]:
+                    - cell "MOFI-ESC-026" [ref=e170]:
+                      - generic [ref=e171]: MOFI-ESC-026
+                    - cell "Escritorio en L 160x120 cm Wengué" [ref=e172]:
+                      - generic [ref=e173]: Escritorio en L 160x120 cm Wengué
+                    - cell "1" [ref=e174]
+                    - cell "$4,200.00" [ref=e175]
+                    - cell "$4,200.00" [ref=e176]
+                    - cell [ref=e177]:
+                      - button [ref=e178] [cursor=pointer]:
+                        - img [ref=e179]: edit
+                      - button [ref=e182] [cursor=pointer]:
+                        - img [ref=e183]: delete
+                  - row "ELEC-TV55-001 Televisor LED 55\" 4K Smart TV 1 $12,999.00 $12,999.00" [ref=e186]:
+                    - cell "ELEC-TV55-001" [ref=e187]:
+                      - generic [ref=e188]: ELEC-TV55-001
+                    - cell "Televisor LED 55\" 4K Smart TV" [ref=e189]:
+                      - generic [ref=e190]: Televisor LED 55" 4K Smart TV
+                    - cell "1" [ref=e191]
+                    - cell "$12,999.00" [ref=e192]
+                    - cell "$12,999.00" [ref=e193]
+                    - cell [ref=e194]:
+                      - button [ref=e195] [cursor=pointer]:
+                        - img [ref=e196]: edit
+                      - button [ref=e199] [cursor=pointer]:
+                        - img [ref=e200]: delete
+                  - row "PINT-BAR5G-049 Barniz marino 5 galones para exteriores 1 $2,100.00 $2,100.00" [ref=e203]:
+                    - cell "PINT-BAR5G-049" [ref=e204]:
+                      - generic [ref=e205]: PINT-BAR5G-049
+                    - cell "Barniz marino 5 galones para exteriores" [ref=e206]:
+                      - generic [ref=e207]: Barniz marino 5 galones para exteriores
+                    - cell "1" [ref=e208]
+                    - cell "$2,100.00" [ref=e209]
+                    - cell "$2,100.00" [ref=e210]
+                    - cell [ref=e211]:
+                      - button [ref=e212] [cursor=pointer]:
+                        - img [ref=e213]: edit
+                      - button [ref=e216] [cursor=pointer]:
+                        - img [ref=e217]: delete
+                  - row "ELEC-SP40-002 Bocina Inalámbrica Bluetooth 40W 1 $1,299.00 $1,299.00" [ref=e220]:
+                    - cell "ELEC-SP40-002" [ref=e221]:
+                      - generic [ref=e222]: ELEC-SP40-002
+                    - cell "Bocina Inalámbrica Bluetooth 40W" [ref=e223]:
+                      - generic [ref=e224]: Bocina Inalámbrica Bluetooth 40W
+                    - cell "1" [ref=e225]
+                    - cell "$1,299.00" [ref=e226]
+                    - cell "$1,299.00" [ref=e227]
+                    - cell [ref=e228]:
+                      - button [ref=e229] [cursor=pointer]:
+                        - img [ref=e230]: edit
+                      - button [ref=e233] [cursor=pointer]:
+                        - img [ref=e234]: delete
+                  - row "PAPE-BOL-030 Bolígrafo Retráctil Azul Caja x 50 1 $195.00 $195.00" [ref=e237]:
+                    - cell "PAPE-BOL-030" [ref=e238]:
+                      - generic [ref=e239]: PAPE-BOL-030
+                    - cell "Bolígrafo Retráctil Azul Caja x 50" [ref=e240]:
+                      - generic [ref=e241]: Bolígrafo Retráctil Azul Caja x 50
+                    - cell "1" [ref=e242]
+                    - cell "$195.00" [ref=e243]
+                    - cell "$195.00" [ref=e244]
+                    - cell [ref=e245]:
+                      - button [ref=e246] [cursor=pointer]:
+                        - img [ref=e247]: edit
+                      - button [ref=e250] [cursor=pointer]:
+                        - img [ref=e251]: delete
+                - generic [ref=e254]:
+                  - generic [ref=e255]: "Total de la orden:"
+                  - generic [ref=e256]: $26,653.00
+            - generic [ref=e258]:
+              - heading "Historial de estado" [level=3] [ref=e259]
+              - generic [ref=e260]:
+                - generic [ref=e261]:
+                  - img [ref=e262]: add_circle
+                  - generic [ref=e263]:
+                    - generic [ref=e264]: Creada
+                    - generic [ref=e265]: admin
+                    - generic [ref=e266]: 07/06/2026 20:39
+                - generic [ref=e267]:
+                  - img [ref=e268]: check_circle
+                  - generic [ref=e269]:
+                    - generic [ref=e270]: Aprobada
+                    - generic [ref=e271]: Pendiente
+                - generic [ref=e272]:
+                  - img [ref=e273]: done_all
+                  - generic [ref=e274]:
+                    - generic [ref=e275]: Recibida
+                    - generic [ref=e276]: Pendiente

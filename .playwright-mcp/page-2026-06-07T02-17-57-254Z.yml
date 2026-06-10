@@ -1,0 +1,178 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e4118] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e4119] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e4120]:
+            - img [ref=e15]: chevron_right
+            - text: Inventario → Productos
+        - generic [ref=e16]:
+          - button [ref=e4121] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e4122]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - generic [ref=e4123]: ADMIN
+      - generic [ref=e28]:
+        - navigation [ref=e4124]:
+          - menubar [ref=e32]:
+            - menuitem [expanded] [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button [ref=e4125] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e2600]:
+            - generic [ref=e2601]:
+              - generic [ref=e2602]:
+                - generic [ref=e2605]:
+                  - generic [ref=e2606]: Buscar por código o nombre
+                  - textbox [ref=e4126]
+                  - img [ref=e2610]: search
+                - generic [ref=e2614] [cursor=pointer]:
+                  - generic [ref=e2615]: Categoría
+                  - combobox [ref=e4127]:
+                    - generic [ref=e2618]:
+                      - generic [ref=e2620]: Herramientas Eléctricas
+                      - img [ref=e2623]
+                - generic [ref=e2628] [cursor=pointer]:
+                  - generic [ref=e2629]: Estado
+                  - combobox [ref=e4128]:
+                    - img [ref=e2637]
+                - generic [ref=e2642] [cursor=pointer]:
+                  - generic [ref=e2643]: Proveedor
+                  - combobox [ref=e4129]:
+                    - img [ref=e2651]
+                - button [ref=e4130] [cursor=pointer]:
+                  - img [ref=e2655]: filter_alt_off
+              - button [ref=e4131]:
+                - img [ref=e2660]: add
+                - generic [ref=e2661]: Nuevo producto
+            - generic [ref=e2664]:
+              - table [ref=e2665]:
+                - rowgroup [ref=e2666]:
+                  - row [ref=e4132]:
+                    - columnheader [ref=e4133]: Código
+                    - columnheader [ref=e4134]: Nombre
+                    - columnheader [ref=e4135]: Categoría
+                    - columnheader [ref=e4136]: Proveedor
+                    - columnheader [ref=e4137]: Stock
+                    - columnheader [ref=e4138]: Precio
+                    - columnheader [ref=e4139]: Estado
+                    - columnheader [ref=e2675]
+                - rowgroup [ref=e2676]:
+                  - row [ref=e4140] [cursor=pointer]:
+                    - cell [ref=e4141]: HELEC-AMO-015
+                    - cell [ref=e4142]: Amoladora Angular 4.5" 1400W
+                    - cell [ref=e4143]: Herramientas Eléctricas
+                    - cell [ref=e4144]: Herramientas y Maquinaria del Pacífico S.A.
+                    - cell [ref=e4145]:
+                      - status [ref=e4146]: "55"
+                    - cell [ref=e4147]: $980.00
+                    - cell [ref=e4148]:
+                      - generic [ref=e4051]: Disponible
+                    - cell [ref=e4149]:
+                      - button [ref=e4150]:
+                        - img [ref=e4054]: swap_vert
+                      - button [ref=e4151]:
+                        - img [ref=e4058]: edit
+                  - row [ref=e4152] [cursor=pointer]:
+                    - cell [ref=e4153]: HELEC-SIE-048
+                    - cell [ref=e4154]: Sierra Circular 7-1/4" 1800W
+                    - cell [ref=e4155]: Herramientas Eléctricas
+                    - cell [ref=e4156]: Herramientas y Maquinaria del Pacífico S.A.
+                    - cell [ref=e4157]:
+                      - status [ref=e4158]: "3"
+                    - cell [ref=e4159]: $2,850.00
+                    - cell [ref=e4160]:
+                      - generic [ref=e4071]: Disponible
+                    - cell [ref=e4161]:
+                      - button [ref=e4162]:
+                        - img [ref=e4074]: swap_vert
+                      - button [ref=e4163]:
+                        - img [ref=e4078]: edit
+                  - row [ref=e4164] [cursor=pointer]:
+                    - cell [ref=e4165]: HELEC-TAL-014
+                    - cell [ref=e4166]: Taladro Percutor 13mm 900W
+                    - cell [ref=e4167]: Herramientas Eléctricas
+                    - cell [ref=e4168]: Herramientas y Maquinaria del Pacífico S.A.
+                    - cell [ref=e4169]:
+                      - status [ref=e4170]: "35"
+                    - cell [ref=e4171]: $1,450.00
+                    - cell [ref=e4172]:
+                      - generic [ref=e4091]: Disponible
+                    - cell [ref=e4173]:
+                      - button [ref=e4174]:
+                        - img [ref=e4094]: swap_vert
+                      - button [ref=e4175]:
+                        - img [ref=e4098]: edit
+              - group [ref=e4176]:
+                - generic [ref=e2739]:
+                  - generic [ref=e2740]:
+                    - generic [ref=e2741]: "Items per page:"
+                    - combobox [ref=e4177] [cursor=pointer]:
+                      - generic [ref=e2747]:
+                        - generic [ref=e2749]: "20"
+                        - img [ref=e2752]
+                  - generic [ref=e2755]:
+                    - status [ref=e2756]: 1 – 3 of 3
+                    - button [disabled] [ref=e4178]:
+                      - img [ref=e2758]
+                    - button [disabled] [ref=e4179]:
+                      - img [ref=e2763]
+  - dialog [ref=e4183]:
+    - generic [ref=e4188]:
+      - tablist [ref=e4191]:
+        - generic [ref=e4192]:
+          - tab "Datos" [ref=e4193] [cursor=pointer]:
+            - generic [ref=e4195]: Datos
+          - tab "Kardex" [active] [selected] [ref=e4196] [cursor=pointer]:
+            - generic [ref=e4198]: Kardex
+      - generic [ref=e4199]:
+        - tabpanel [ref=e4331]
+        - tabpanel "Kardex" [ref=e4332]:
+          - generic [ref=e4334]:
+            - table [ref=e4335]:
+              - rowgroup [ref=e4336]:
+                - row "Fecha Tipo Cantidad Motivo Usuario" [ref=e4337]:
+                  - columnheader "Fecha" [ref=e4338]
+                  - columnheader "Tipo" [ref=e4339]
+                  - columnheader "Cantidad" [ref=e4340]
+                  - columnheader "Motivo" [ref=e4341]
+                  - columnheader "Usuario" [ref=e4342]
+              - rowgroup [ref=e4343]:
+                - row "06/06/2026 20:17 Salida -5 Salida de prueba RBAC — test movimiento OUT con rol ADMIN admin" [ref=e4344]:
+                  - cell "06/06/2026 20:17" [ref=e4345]
+                  - cell "Salida" [ref=e4346]:
+                    - generic [ref=e4347]: Salida
+                  - cell "-5" [ref=e4348]
+                  - cell "Salida de prueba RBAC — test movimiento OUT con rol ADMIN" [ref=e4349]
+                  - cell "admin" [ref=e4350]
+            - group "Paginación de movimientos" [ref=e4351]:
+              - generic [ref=e4353]:
+                - generic [ref=e4354]:
+                  - generic [ref=e4355]: "Items per page:"
+                  - combobox "Items per page:" [ref=e4360] [cursor=pointer]:
+                    - generic [ref=e4361]:
+                      - generic [ref=e4363]: "10"
+                      - img [ref=e4366]
+                - generic [ref=e4369]:
+                  - status [ref=e4370]: 1 – 1 of 1
+                  - button "Previous page" [disabled] [ref=e4371]:
+                    - img [ref=e4372]
+                  - button "Next page" [disabled] [ref=e4376]:
+                    - img [ref=e4377]

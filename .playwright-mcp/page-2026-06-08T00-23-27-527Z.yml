@@ -1,0 +1,134 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e539] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e540] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e541]:
+            - img [ref=e15]: chevron_right
+            - text: Compras → Órdenes de compra
+        - generic [ref=e16]:
+          - button [ref=e542] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e543]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - generic [ref=e544]: ADMIN
+      - generic [ref=e28]:
+        - navigation [ref=e545]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button [ref=e546] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e347]:
+            - generic [ref=e348]:
+              - button [ref=e349] [cursor=pointer]:
+                - img [ref=e350]: arrow_back
+              - generic [ref=e353]:
+                - heading [level=2] [ref=e547]: OC-2026-0059
+                - generic [ref=e355]: Pendiente
+              - generic [ref=e356]:
+                - button [ref=e548]:
+                  - img [ref=e358]: check_circle
+                  - generic [ref=e359]: Aprobar
+                - button [ref=e549]:
+                  - img [ref=e363]: cancel
+                  - generic [ref=e364]: Cancelar orden
+            - generic [ref=e367]:
+              - generic [ref=e368]:
+                - generic [ref=e369]:
+                  - heading [level=3] [ref=e550]: Información de la orden
+                  - generic [ref=e371]:
+                    - generic [ref=e374] [cursor=pointer]:
+                      - generic [ref=e375]:
+                        - text: Proveedor
+                        - generic [ref=e376]: "*"
+                      - combobox [ref=e551]:
+                        - generic [ref=e379]:
+                          - generic [ref=e381]: Agroquímica y Fertilizantes del Valle S.A.
+                          - img [ref=e384]
+                    - generic [ref=e389]:
+                      - generic [ref=e390]: Notas
+                      - textbox [ref=e552]:
+                        - /placeholder: Observaciones opcionales
+                    - button [ref=e553]:
+                      - img [ref=e396]: save
+                      - generic [ref=e397]: Guardar cambios
+                - generic [ref=e400]:
+                  - generic [ref=e401]:
+                    - heading [level=3] [ref=e554]: Líneas de detalle
+                    - button [ref=e555]:
+                      - img [ref=e404]: add
+                      - generic [ref=e405]: Agregar línea
+                  - table [ref=e408]:
+                    - row [ref=e556]:
+                      - columnheader [ref=e557]: SKU
+                      - columnheader [ref=e558]: Producto
+                      - columnheader [ref=e559]: Cantidad
+                      - columnheader [ref=e560]: Precio unitario
+                      - columnheader [ref=e561]: Subtotal
+                      - columnheader [ref=e415]
+                    - row [ref=e562]:
+                      - cell [ref=e563]:
+                        - generic [ref=e508]: LUBR-ACE20-035
+                      - cell [ref=e564]:
+                        - generic [ref=e510]: Aceite Lubricante Motor 20W-50 Galón
+                      - cell [ref=e565]: "10"
+                      - cell [ref=e566]: $380.00
+                      - cell [ref=e567]: $3,800.00
+                      - cell [ref=e514]:
+                        - button [ref=e515] [cursor=pointer]:
+                          - img [ref=e516]: edit
+                        - button [ref=e519] [cursor=pointer]:
+                          - img [ref=e520]: delete
+                  - generic [ref=e433]:
+                    - generic [ref=e434]: "Total de la orden:"
+                    - generic [ref=e435]: $3,800.00
+              - generic [ref=e436]:
+                - generic [ref=e437]:
+                  - heading [level=3] [ref=e568]: Historial de estado
+                  - generic [ref=e439]:
+                    - generic [ref=e440]:
+                      - img [ref=e441]: add_circle
+                      - generic [ref=e442]:
+                        - generic [ref=e443]: Creada
+                        - generic [ref=e444]: admin
+                        - generic [ref=e445]: 07/06/2026 18:22
+                    - generic [ref=e446]:
+                      - img [ref=e447]: check_circle
+                      - generic [ref=e448]:
+                        - generic [ref=e449]: Aprobada
+                        - generic [ref=e450]: Pendiente
+                    - generic [ref=e451]:
+                      - img [ref=e452]: done_all
+                      - generic [ref=e453]:
+                        - generic [ref=e454]: Recibida
+                        - generic [ref=e455]: Pendiente
+                - generic [ref=e523]:
+                  - generic [ref=e524]: "Última modificación:"
+                  - generic [ref=e525]: 07/06/2026 18:23
+  - dialog "Cancelar orden" [ref=e572]:
+    - generic [ref=e575]:
+      - heading "Cancelar orden" [level=2] [ref=e576]
+      - paragraph [ref=e578]: ¿Cancelar la orden OC-2026-0059? Esta acción es irreversible.
+      - generic [ref=e579]:
+        - button "Cancelar" [active] [ref=e580]:
+          - generic [ref=e581]: Cancelar
+        - button "Cancelar orden" [ref=e584]:
+          - generic [ref=e585]: Cancelar orden

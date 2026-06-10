@@ -1,0 +1,232 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e3203] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e3204] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e3205]:
+            - img [ref=e15]: chevron_right
+            - text: Inventario → Productos
+        - generic [ref=e16]:
+          - button [ref=e3206] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e3207]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - generic [ref=e3208]: ADMIN
+      - generic [ref=e28]:
+        - navigation [ref=e3209]:
+          - menubar [ref=e32]:
+            - menuitem [expanded] [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button [ref=e3210] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e2600]:
+            - generic [ref=e2601]:
+              - generic [ref=e2602]:
+                - generic [ref=e2605]:
+                  - generic [ref=e2606]: Buscar por código o nombre
+                  - textbox [ref=e3211]
+                  - img [ref=e2610]: search
+                - generic [ref=e2614] [cursor=pointer]:
+                  - generic [ref=e2615]: Categoría
+                  - combobox [ref=e3212]:
+                    - generic [ref=e2618]:
+                      - generic [ref=e2620]: Herramientas Eléctricas
+                      - img [ref=e2623]
+                - generic [ref=e2628] [cursor=pointer]:
+                  - generic [ref=e2629]: Estado
+                  - combobox [ref=e3213]:
+                    - img [ref=e2637]
+                - generic [ref=e2642] [cursor=pointer]:
+                  - generic [ref=e2643]: Proveedor
+                  - combobox [ref=e3214]:
+                    - img [ref=e2651]
+                - button [ref=e3215] [cursor=pointer]:
+                  - img [ref=e2655]: filter_alt_off
+              - button [ref=e3216]:
+                - img [ref=e2660]: add
+                - generic [ref=e2661]: Nuevo producto
+            - generic [ref=e2664]:
+              - table [ref=e2665]:
+                - rowgroup [ref=e2666]:
+                  - row [ref=e3217]:
+                    - columnheader [ref=e3218]: Código
+                    - columnheader [ref=e3219]: Nombre
+                    - columnheader [ref=e3220]: Categoría
+                    - columnheader [ref=e3221]: Proveedor
+                    - columnheader [ref=e3222]: Stock
+                    - columnheader [ref=e3223]: Precio
+                    - columnheader [ref=e3224]: Estado
+                    - columnheader [ref=e2675]
+                - rowgroup [ref=e2676]:
+                  - row [ref=e3225] [cursor=pointer]:
+                    - cell [ref=e3226]: HELEC-AMO-015
+                    - cell [ref=e3227]: Amoladora Angular 4.5" 1400W
+                    - cell [ref=e3228]: Herramientas Eléctricas
+                    - cell [ref=e3229]: Herramientas y Maquinaria del Pacífico S.A.
+                    - cell [ref=e3230]:
+                      - status [ref=e3231]: "55"
+                    - cell [ref=e3232]: $980.00
+                    - cell [ref=e3233]:
+                      - generic [ref=e3116]: Disponible
+                    - cell [ref=e3234]:
+                      - button [ref=e3235]:
+                        - img [ref=e3119]: swap_vert
+                      - button [ref=e3236]:
+                        - img [ref=e3123]: edit
+                  - row [ref=e3237] [cursor=pointer]:
+                    - cell [ref=e3238]: HELEC-TEST-ADM
+                    - cell [ref=e3239]: Rotomartillo de Prueba ADMIN
+                    - cell [ref=e3240]: Herramientas Eléctricas
+                    - cell [ref=e3241]: Herramientas y Maquinaria del Pacífico S.A.
+                    - cell [ref=e3242]:
+                      - status [ref=e3243]: "15"
+                    - cell [ref=e3244]: $3,200.00
+                    - cell [ref=e3245]:
+                      - generic [ref=e3136]: Disponible
+                    - cell [ref=e3246]:
+                      - button [ref=e3247]:
+                        - img [ref=e3139]: swap_vert
+                      - button [ref=e3248]:
+                        - img [ref=e3143]: edit
+                  - row [ref=e3249] [cursor=pointer]:
+                    - cell [ref=e3250]: HELEC-SIE-048
+                    - cell [ref=e3251]: Sierra Circular 7-1/4" 1800W
+                    - cell [ref=e3252]: Herramientas Eléctricas
+                    - cell [ref=e3253]: Herramientas y Maquinaria del Pacífico S.A.
+                    - cell [ref=e3254]:
+                      - status [ref=e3255]: "3"
+                    - cell [ref=e3256]: $2,850.00
+                    - cell [ref=e3257]:
+                      - generic [ref=e3156]: Disponible
+                    - cell [ref=e3258]:
+                      - button [ref=e3259]:
+                        - img [ref=e3159]: swap_vert
+                      - button [ref=e3260]:
+                        - img [ref=e3163]: edit
+                  - row [ref=e3261] [cursor=pointer]:
+                    - cell [ref=e3262]: HELEC-TAL-014
+                    - cell [ref=e3263]: Taladro Percutor 13mm 900W
+                    - cell [ref=e3264]: Herramientas Eléctricas
+                    - cell [ref=e3265]: Herramientas y Maquinaria del Pacífico S.A.
+                    - cell [ref=e3266]:
+                      - status [ref=e3267]: "40"
+                    - cell [ref=e3268]: $1,450.00
+                    - cell [ref=e3269]:
+                      - generic [ref=e3176]: Disponible
+                    - cell [ref=e3270]:
+                      - button [ref=e3271]:
+                        - img [ref=e3179]: swap_vert
+                      - button [ref=e3272]:
+                        - img [ref=e3183]: edit
+              - group [ref=e3273]:
+                - generic [ref=e2739]:
+                  - generic [ref=e2740]:
+                    - generic [ref=e2741]: "Items per page:"
+                    - combobox [ref=e3274] [cursor=pointer]:
+                      - generic [ref=e2747]:
+                        - generic [ref=e2749]: "20"
+                        - img [ref=e2752]
+                  - generic [ref=e2755]:
+                    - status [ref=e2756]: 1 – 4 of 4
+                    - button [disabled] [ref=e3275]:
+                      - img [ref=e2758]
+                    - button [disabled] [ref=e3276]:
+                      - img [ref=e2763]
+  - dialog [ref=e3280]:
+    - generic [ref=e3285]:
+      - tablist [ref=e3288]:
+        - generic [ref=e3289]:
+          - tab "Datos" [active] [selected] [ref=e3290] [cursor=pointer]:
+            - generic [ref=e3292]: Datos
+          - tab "Kardex" [ref=e3293] [cursor=pointer]:
+            - generic [ref=e3295]: Kardex
+      - generic [ref=e3296]:
+        - tabpanel "Datos" [ref=e3297]:
+          - generic [ref=e3300]:
+            - heading "Editar producto" [level=3] [ref=e3301]
+            - generic [ref=e3302]:
+              - generic [ref=e3305]:
+                - generic [ref=e3306]:
+                  - generic [ref=e3307]: SKU *
+                  - generic [ref=e3308]: "*"
+                - textbox "SKU *" [ref=e3310]: HELEC-TEST-ADM
+              - generic [ref=e3314]:
+                - generic [ref=e3315]:
+                  - generic [ref=e3316]: Nombre *
+                  - generic [ref=e3317]: "*"
+                - textbox "Nombre *" [ref=e3319]: Rotomartillo de Prueba ADMIN
+              - generic [ref=e3323]:
+                - generic [ref=e3324]:
+                  - generic [ref=e3325]: Precio *
+                  - generic [ref=e3326]: "*"
+                - generic [ref=e3327]: $
+                - spinbutton "Precio *" [ref=e3329]: "3200"
+              - generic [ref=e3333]:
+                - generic [ref=e3334]:
+                  - generic [ref=e3335]: Costo unitario *
+                  - generic [ref=e3336]: "*"
+                - generic [ref=e3337]: $
+                - spinbutton "Costo unitario *" [ref=e3339]: "2100"
+              - generic [ref=e3343]:
+                - generic [ref=e3344]:
+                  - text: Stock actual
+                  - generic [ref=e3345]: "*"
+                - spinbutton "Stock actual" [ref=e3347]: "15"
+              - generic [ref=e3351]:
+                - generic [ref=e3352]:
+                  - text: Stock mínimo
+                  - generic [ref=e3353]: "*"
+                - spinbutton "Stock mínimo" [ref=e3355]: "5"
+              - generic [ref=e3359] [cursor=pointer]:
+                - generic [ref=e3360]:
+                  - generic [ref=e3361]: Estado *
+                  - generic [ref=e3362]: "*"
+                - combobox "Estado *" [ref=e3364]:
+                  - generic [ref=e3365]:
+                    - generic [ref=e3367]: Disponible
+                    - img [ref=e3370]
+              - generic [ref=e3375] [cursor=pointer]:
+                - generic [ref=e3376]:
+                  - generic [ref=e3377]: Categoría *
+                  - generic [ref=e3378]: "*"
+                - combobox "Categoría *" [ref=e3380]:
+                  - generic [ref=e3381]:
+                    - generic [ref=e3383]: Herramientas Eléctricas
+                    - img [ref=e3386]
+              - generic [ref=e3391] [cursor=pointer]:
+                - generic [ref=e3392]:
+                  - generic [ref=e3393]: Proveedor *
+                  - generic [ref=e3394]: "*"
+                - combobox "Proveedor *" [ref=e3396]:
+                  - generic [ref=e3397]:
+                    - generic [ref=e3399]: Herramientas y Maquinaria del Pacífico S.A.
+                    - img [ref=e3402]
+              - generic [ref=e3407]:
+                - generic [ref=e3408]: Descripción
+                - textbox "Descripción" [ref=e3410]
+            - generic [ref=e3412]:
+              - button "Desactivar" [ref=e3413]:
+                - generic [ref=e3414]: Desactivar
+              - generic [ref=e3417]:
+                - button "Cancelar" [ref=e3418]:
+                  - generic [ref=e3419]: Cancelar
+                - button "Guardar cambios" [ref=e3422]:
+                  - generic [ref=e3423]: Guardar cambios
+        - tabpanel [ref=e3426]

@@ -2,7 +2,15 @@
 
   <!-- Barra de acciones -->
   <div class="catalog-page__toolbar">
-    <h2 class="catalog-page__title">Categorías</h2>
+
+    <div class="catalog-page__filters">
+      <!-- Búsqueda -->
+      <mat-form-field appearance="outline" class="filter-field filter-field--search">
+        <mat-label>Buscar categoría</mat-label>
+        <input matInput [formControl]="searchCtrl" autocomplete="off" />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
 
     <div class="catalog-page__actions">
       @if (canWrite()) {
@@ -22,7 +30,7 @@
   <!-- Tabla full-width -->
   @if (!loading && categories.length === 0) {
     <div class="catalog-page__empty">
-      <app-empty-state variant="empty" />
+      <app-empty-state [variant]="searchCtrl.value ? 'no-results' : 'empty'" />
     </div>
   } @else {
     <div class="catalog-page__table-wrapper">

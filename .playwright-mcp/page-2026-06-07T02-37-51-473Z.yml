@@ -1,0 +1,305 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e445] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e446] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e447]:
+            - img [ref=e15]: chevron_right
+            - text: Inventario → Categorías
+        - generic [ref=e16]:
+          - button [ref=e448] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e449]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: manager01
+              - generic [ref=e450]: MANAGER
+      - generic [ref=e28]:
+        - navigation [ref=e451]:
+          - menubar [ref=e32]:
+            - menuitem [expanded] [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+          - button [ref=e452] [cursor=pointer]:
+            - img [ref=e43]: chevron_right
+        - main [ref=e44]:
+          - generic [ref=e47]:
+            - generic [ref=e48]:
+              - heading [level=2] [ref=e453]: Categorías
+              - generic [ref=e50]:
+                - button [ref=e454]:
+                  - img [ref=e52]: shopping_bag
+                  - generic [ref=e53]: Productos
+                - button [ref=e455]:
+                  - img [ref=e57]: add
+                  - generic [ref=e58]: Nueva categoría
+            - generic [ref=e61]:
+              - table [ref=e62]:
+                - rowgroup [ref=e63]:
+                  - row [ref=e456]:
+                    - columnheader [ref=e457]: Nombre
+                    - columnheader [ref=e458]: Descripción
+                    - columnheader [ref=e459]: Creado por
+                    - columnheader [ref=e68]
+                - rowgroup [ref=e69]:
+                  - row [ref=e460] [cursor=pointer]:
+                    - cell [ref=e461]: Alimentos y Bebidas (Seco)
+                    - cell [ref=e462]: Granos, cereales, conservas, condimentos, harinas y productos de larga duración.
+                    - cell [ref=e463]: admin
+                    - cell [ref=e464]:
+                      - button [ref=e465]:
+                        - img [ref=e76]: shopping_bag
+                      - button [ref=e466]:
+                        - img [ref=e80]: edit
+                      - button [ref=e467]:
+                        - img [ref=e84]: delete_outline
+                  - row [ref=e468] [cursor=pointer]:
+                    - cell [ref=e469]: Artículos de Limpieza
+                    - cell [ref=e470]: Detergentes, desinfectantes, escobas, trapeadores, cubetas y jabones.
+                    - cell [ref=e471]: admin
+                    - cell [ref=e472]:
+                      - button [ref=e473]:
+                        - img [ref=e93]: shopping_bag
+                      - button [ref=e474]:
+                        - img [ref=e97]: edit
+                      - button [ref=e475]:
+                        - img [ref=e101]: delete_outline
+                  - row [ref=e476] [cursor=pointer]:
+                    - cell [ref=e477]: Calzado Industrial
+                    - cell [ref=e478]: Botas de casquillo, botas dieléctricas, zapatos antideslizantes y plantillas.
+                    - cell [ref=e479]: admin
+                    - cell [ref=e480]:
+                      - button [ref=e481]:
+                        - img [ref=e110]: shopping_bag
+                      - button [ref=e482]:
+                        - img [ref=e114]: edit
+                      - button [ref=e483]:
+                        - img [ref=e118]: delete_outline
+                  - row [ref=e484] [cursor=pointer]:
+                    - cell [ref=e485]: Categoría de Prueba MANAGER
+                    - cell [ref=e486]: Categoría creada durante pruebas RBAC con rol MANAGER.
+                    - cell [ref=e487]: manager01
+                    - cell [ref=e488]:
+                      - button [ref=e489]:
+                        - img [ref=e127]: shopping_bag
+                      - button [ref=e490]:
+                        - img [ref=e131]: edit
+                      - button [ref=e491]:
+                        - img [ref=e135]: delete_outline
+                  - row [ref=e492] [cursor=pointer]:
+                    - cell [ref=e493]: Climatización y Ventilación
+                    - cell [ref=e494]: Aires acondicionados, ventiladores industriales, extractores y calefactores.
+                    - cell [ref=e495]: admin
+                    - cell [ref=e496]:
+                      - button [ref=e497]:
+                        - img [ref=e144]: shopping_bag
+                      - button [ref=e498]:
+                        - img [ref=e148]: edit
+                      - button [ref=e499]:
+                        - img [ref=e152]: delete_outline
+                  - row [ref=e500] [cursor=pointer]:
+                    - cell [ref=e501]: Computación y Periféricos
+                    - cell [ref=e502]: Laptops, desktops, teclados, ratones, monitores y accesorios de cómputo.
+                    - cell [ref=e503]: admin
+                    - cell [ref=e504]:
+                      - button [ref=e505]:
+                        - img [ref=e161]: shopping_bag
+                      - button [ref=e506]:
+                        - img [ref=e165]: edit
+                      - button [ref=e507]:
+                        - img [ref=e169]: delete_outline
+                  - row [ref=e508] [cursor=pointer]:
+                    - cell [ref=e509]: Electricidad e Iluminación
+                    - cell [ref=e510]: Cables, interruptores, contactos, lámparas LED, reflectores y tableros.
+                    - cell [ref=e511]: admin
+                    - cell [ref=e512]:
+                      - button [ref=e513]:
+                        - img [ref=e178]: shopping_bag
+                      - button [ref=e514]:
+                        - img [ref=e182]: edit
+                      - button [ref=e515]:
+                        - img [ref=e186]: delete_outline
+                  - row [ref=e516] [cursor=pointer]:
+                    - cell [ref=e517]: Electrodomésticos de Línea Blanca
+                    - cell [ref=e518]: Refrigeradores, lavadoras, secadoras, lavavajillas y hornos de cocina.
+                    - cell [ref=e519]: admin
+                    - cell [ref=e520]:
+                      - button [ref=e521]:
+                        - img [ref=e195]: shopping_bag
+                      - button [ref=e522]:
+                        - img [ref=e199]: edit
+                      - button [ref=e523]:
+                        - img [ref=e203]: delete_outline
+                  - row [ref=e524] [cursor=pointer]:
+                    - cell [ref=e525]: Electrodomésticos de Línea Café
+                    - cell [ref=e526]: Cafeteras, licuadoras, tostadoras, microondas y pequeños electrodomésticos.
+                    - cell [ref=e527]: admin
+                    - cell [ref=e528]:
+                      - button [ref=e529]:
+                        - img [ref=e212]: shopping_bag
+                      - button [ref=e530]:
+                        - img [ref=e216]: edit
+                      - button [ref=e531]:
+                        - img [ref=e220]: delete_outline
+                  - row [ref=e532] [cursor=pointer]:
+                    - cell [ref=e533]: Electrónica de Consumo
+                    - cell [ref=e534]: Televisores, reproductores, audífonos y dispositivos de entretenimiento.
+                    - cell [ref=e535]: admin
+                    - cell [ref=e536]:
+                      - button [ref=e537]:
+                        - img [ref=e229]: shopping_bag
+                      - button [ref=e538]:
+                        - img [ref=e233]: edit
+                      - button [ref=e539]:
+                        - img [ref=e237]: delete_outline
+                  - row [ref=e540] [cursor=pointer]:
+                    - cell [ref=e541]: Embalaje e Insumos Logísticos
+                    - cell [ref=e542]: Cajas de cartón, cintas, esquineros, estiramiento y materiales de empaque.
+                    - cell [ref=e543]: admin
+                    - cell [ref=e544]:
+                      - button [ref=e545]:
+                        - img [ref=e246]: shopping_bag
+                      - button [ref=e546]:
+                        - img [ref=e250]: edit
+                      - button [ref=e547]:
+                        - img [ref=e254]: delete_outline
+                  - row [ref=e548] [cursor=pointer]:
+                    - cell [ref=e549]: Equipos de Almacenamiento
+                    - cell [ref=e550]: Racks industriales, pallets, estantería metálica, contenedores y cajones.
+                    - cell [ref=e551]: admin
+                    - cell [ref=e552]:
+                      - button [ref=e553]:
+                        - img [ref=e263]: shopping_bag
+                      - button [ref=e554]:
+                        - img [ref=e267]: edit
+                      - button [ref=e555]:
+                        - img [ref=e271]: delete_outline
+                  - row [ref=e556] [cursor=pointer]:
+                    - cell [ref=e557]: Equipos de Protección Personal
+                    - cell [ref=e558]: Cascos, guantes, lentes, tapones auditivos, chalecos y calzado de seguridad.
+                    - cell [ref=e559]: admin
+                    - cell [ref=e560]:
+                      - button [ref=e561]:
+                        - img [ref=e280]: shopping_bag
+                      - button [ref=e562]:
+                        - img [ref=e284]: edit
+                      - button [ref=e563]:
+                        - img [ref=e288]: delete_outline
+                  - row [ref=e564] [cursor=pointer]:
+                    - cell [ref=e565]: Equipos de Transporte Interno
+                    - cell [ref=e566]: Montacargas manuales, carretillas, patines hidráulicos y dollies.
+                    - cell [ref=e567]: admin
+                    - cell [ref=e568]:
+                      - button [ref=e569]:
+                        - img [ref=e297]: shopping_bag
+                      - button [ref=e570]:
+                        - img [ref=e301]: edit
+                      - button [ref=e571]:
+                        - img [ref=e305]: delete_outline
+                  - row [ref=e572] [cursor=pointer]:
+                    - cell [ref=e573]: Herramientas Eléctricas
+                    - cell [ref=e574]: Taladros, amoladoras, sierras eléctricas, pistolas de calor y rotomartillos.
+                    - cell [ref=e575]: admin
+                    - cell [ref=e576]:
+                      - button [ref=e577]:
+                        - img [ref=e314]: shopping_bag
+                      - button [ref=e578]:
+                        - img [ref=e318]: edit
+                      - button [ref=e579]:
+                        - img [ref=e322]: delete_outline
+                  - row [ref=e580] [cursor=pointer]:
+                    - cell [ref=e581]: Herramientas Manuales
+                    - cell [ref=e582]: Llaves, desarmadores, pinzas, martillos, sierras y herramientas de mano.
+                    - cell [ref=e583]: admin
+                    - cell [ref=e584]:
+                      - button [ref=e585]:
+                        - img [ref=e331]: shopping_bag
+                      - button [ref=e586]:
+                        - img [ref=e335]: edit
+                      - button [ref=e587]:
+                        - img [ref=e339]: delete_outline
+                  - row [ref=e588] [cursor=pointer]:
+                    - cell [ref=e589]: Jardinería y Exteriores
+                    - cell [ref=e590]: Macetas, tierra, fertilizantes, herramientas de jardín, mangueras y aspersores.
+                    - cell [ref=e591]: admin
+                    - cell [ref=e592]:
+                      - button [ref=e593]:
+                        - img [ref=e348]: shopping_bag
+                      - button [ref=e594]:
+                        - img [ref=e352]: edit
+                      - button [ref=e595]:
+                        - img [ref=e356]: delete_outline
+                  - row [ref=e596] [cursor=pointer]:
+                    - cell [ref=e597]: Lubricantes y Químicos
+                    - cell [ref=e598]: Aceites lubricantes, grasas, solventes, limpiametales y penetrantes.
+                    - cell [ref=e599]: admin
+                    - cell [ref=e600]:
+                      - button [ref=e601]:
+                        - img [ref=e365]: shopping_bag
+                      - button [ref=e602]:
+                        - img [ref=e369]: edit
+                      - button [ref=e603]:
+                        - img [ref=e373]: delete_outline
+                  - row [ref=e604] [cursor=pointer]:
+                    - cell [ref=e605]: Material de Construcción
+                    - cell [ref=e606]: Cemento, varillas, blocks, arena, grava y materiales estructurales.
+                    - cell [ref=e607]: admin
+                    - cell [ref=e608]:
+                      - button [ref=e609]:
+                        - img [ref=e382]: shopping_bag
+                      - button [ref=e610]:
+                        - img [ref=e386]: edit
+                      - button [ref=e611]:
+                        - img [ref=e390]: delete_outline
+                  - row [ref=e612] [cursor=pointer]:
+                    - cell [ref=e613]: Medición y Calibración
+                    - cell [ref=e614]: Vernieres, micrómetros, niveles, cintas métricas, medidores láser y manómetros.
+                    - cell [ref=e615]: admin
+                    - cell [ref=e616]:
+                      - button [ref=e617]:
+                        - img [ref=e399]: shopping_bag
+                      - button [ref=e618]:
+                        - img [ref=e403]: edit
+                      - button [ref=e619]:
+                        - img [ref=e407]: delete_outline
+              - group [ref=e620]:
+                - generic [ref=e412]:
+                  - generic [ref=e413]:
+                    - generic [ref=e414]: "Items per page:"
+                    - combobox [ref=e621] [cursor=pointer]:
+                      - generic [ref=e420]:
+                        - generic [ref=e422]: "20"
+                        - img [ref=e425]
+                  - generic [ref=e428]:
+                    - status [ref=e429]: 1 – 20 of 31
+                    - button [disabled] [ref=e622]:
+                      - img [ref=e431]
+                    - button [ref=e623] [cursor=pointer]:
+                      - img [ref=e436]
+  - dialog [ref=e627]:
+    - generic [ref=e632]:
+      - heading "Editar categoría" [level=3] [ref=e633]
+      - generic [ref=e636]:
+        - generic [ref=e637]:
+          - generic [ref=e638]: Nombre *
+          - generic [ref=e639]: "*"
+        - textbox "Nombre *" [ref=e641]: Categoría de Prueba MANAGER
+      - generic [ref=e645]:
+        - generic [ref=e646]: Descripción
+        - textbox "Descripción" [active] [ref=e648]: Categoría creada durante pruebas RBAC con rol MANAGER.
+      - generic [ref=e650]:
+        - button "Cancelar" [ref=e651]:
+          - generic [ref=e652]: Cancelar
+        - button "Guardar cambios" [ref=e655]:
+          - generic [ref=e656]: Guardar cambios

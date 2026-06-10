@@ -1,0 +1,124 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e321] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e322] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Bajo stock" [ref=e323]':
+          - img [ref=e15]: chevron_right
+          - text: Inventario → Bajo stock
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e324] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e325]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e326]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e327]:
+        - menubar [ref=e32]:
+          - menuitem [expanded] [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e328] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e329]:
+            - generic [ref=e330]:
+              - img [ref=e331]: remove_shopping_cart
+              - text: 1 sin stock
+            - generic [ref=e332]:
+              - img [ref=e333]: warning_amber
+              - text: 3 críticos
+          - table [ref=e56]:
+            - rowgroup [ref=e57]:
+              - row "Nivel SKU Nombre Categoría Proveedor Físico Reservado Disponible Mínimo Déficit Costo unit." [ref=e334]:
+                - columnheader "Nivel" [ref=e335]
+                - columnheader "SKU" [ref=e336]
+                - columnheader "Nombre" [ref=e337]
+                - columnheader "Categoría" [ref=e338]
+                - columnheader "Proveedor" [ref=e339]
+                - columnheader "Físico" [ref=e340]
+                - columnheader "Reservado" [ref=e341]
+                - columnheader "Disponible" [ref=e342]
+                - columnheader "Mínimo" [ref=e343]
+                - columnheader "Déficit" [ref=e344]
+                - columnheader "Costo unit." [ref=e345]
+                - columnheader [ref=e70]
+            - rowgroup [ref=e71]:
+              - row "Crítico HELEC-SIE-048 Sierra Circular 7-1/4\" 1800W Herramientas Eléctricas Herramientas y Maquinaria del Pacífico S.A. 3 0 3 8 +5 $1,750.00" [ref=e346]:
+                - cell "Crítico" [ref=e347]:
+                  - generic [ref=e348]: Crítico
+                - cell "HELEC-SIE-048" [ref=e349]
+                - cell "Sierra Circular 7-1/4\" 1800W" [ref=e350]
+                - cell "Herramientas Eléctricas" [ref=e351]
+                - cell "Herramientas y Maquinaria del Pacífico S.A." [ref=e352]
+                - cell "3" [ref=e353]
+                - cell "0" [ref=e354]
+                - cell "3" [ref=e355]
+                - cell "8" [ref=e356]
+                - cell "+5" [ref=e357]
+                - cell "$1,750.00" [ref=e358]
+                - cell [ref=e359]:
+                  - button [ref=e360] [cursor=pointer]:
+                    - img [ref=e361]: add_circle
+              - row "Crítico PINT-BAR5G-049 Barniz marino 5 galones para exteriores Pinturas y Recubrimientos Constructora y Suministros del Bajío S.A. 6 0 6 10 +4 $1,300.00" [ref=e364]:
+                - cell "Crítico" [ref=e365]:
+                  - generic [ref=e366]: Crítico
+                - cell "PINT-BAR5G-049" [ref=e367]
+                - cell "Barniz marino 5 galones para exteriores" [ref=e368]
+                - cell "Pinturas y Recubrimientos" [ref=e369]
+                - cell "Constructora y Suministros del Bajío S.A." [ref=e370]
+                - cell "6" [ref=e371]
+                - cell "0" [ref=e372]
+                - cell "6" [ref=e373]
+                - cell "10" [ref=e374]
+                - cell "+4" [ref=e375]
+                - cell "$1,300.00" [ref=e376]
+                - cell [ref=e377]:
+                  - button [ref=e378] [cursor=pointer]:
+                    - img [ref=e379]: add_circle
+              - row "Crítico SEGV-NVR16-050 NVR 16 Canales 4K PoE 16 Puertos Seguridad y Vigilancia Seguridad y Vigilancia Electrónica S.A. 1 0 1 4 +3 $5,500.00" [ref=e382]:
+                - cell "Crítico" [ref=e383]:
+                  - generic [ref=e384]: Crítico
+                - cell "SEGV-NVR16-050" [ref=e385]
+                - cell "NVR 16 Canales 4K PoE 16 Puertos" [ref=e386]
+                - cell "Seguridad y Vigilancia" [ref=e387]
+                - cell "Seguridad y Vigilancia Electrónica S.A." [ref=e388]
+                - cell "1" [ref=e389]
+                - cell "0" [ref=e390]
+                - cell "1" [ref=e391]
+                - cell "4" [ref=e392]
+                - cell "+3" [ref=e393]
+                - cell "$5,500.00" [ref=e394]
+                - cell [ref=e395]:
+                  - button [ref=e396] [cursor=pointer]:
+                    - img [ref=e397]: add_circle
+              - row "Sin stock BLAN-SEC10-045 Secadora de Ropa 10kg Carga Frontal Electrodomésticos de Línea Blanca Electro Industrial del Centro S.A. de C.V. 0 0 0 2 +2 $7,800.00" [ref=e400]:
+                - cell "Sin stock" [ref=e401]:
+                  - generic [ref=e402]: Sin stock
+                - cell "BLAN-SEC10-045" [ref=e403]
+                - cell "Secadora de Ropa 10kg Carga Frontal" [ref=e404]
+                - cell "Electrodomésticos de Línea Blanca" [ref=e405]
+                - cell "Electro Industrial del Centro S.A. de C.V." [ref=e406]
+                - cell "0" [ref=e407]
+                - cell "0" [ref=e408]
+                - cell "0" [ref=e409]
+                - cell "2" [ref=e410]
+                - cell "+2" [ref=e411]
+                - cell "$7,800.00" [ref=e412]
+                - cell [ref=e413]:
+                  - button [ref=e414] [cursor=pointer]:
+                    - img [ref=e415]: add_circle

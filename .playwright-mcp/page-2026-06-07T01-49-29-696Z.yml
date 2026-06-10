@@ -1,0 +1,387 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - 'generic "Ubicación actual: Inventario → Productos" [ref=e14]':
+            - img [ref=e15]: chevron_right
+            - text: Inventario → Productos
+        - generic [ref=e16]:
+          - button "Notificaciones" [ref=e17] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button "Menú de usuario" [ref=e21]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+      - generic [ref=e28]:
+        - navigation "Navegación principal" [ref=e31]:
+          - menubar [ref=e32]:
+            - menuitem [expanded] [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button "Expandir menú" [ref=e44] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - generic [ref=e51]:
+                - generic [ref=e54]:
+                  - generic [ref=e55]: Buscar por código o nombre
+                  - textbox "Buscar por código o nombre" [ref=e57]
+                  - img [ref=e59]: search
+                - generic [ref=e63] [cursor=pointer]:
+                  - generic [ref=e64]: Categoría
+                  - combobox "Categoría" [ref=e66]:
+                    - img [ref=e72]
+                - generic [ref=e77] [cursor=pointer]:
+                  - generic [ref=e78]: Estado
+                  - combobox "Estado" [ref=e80]:
+                    - img [ref=e86]
+                - generic [ref=e91] [cursor=pointer]:
+                  - generic [ref=e92]: Proveedor
+                  - combobox "Proveedor" [ref=e94]:
+                    - img [ref=e100]
+              - button "Nuevo producto" [ref=e104]:
+                - img [ref=e105]: add
+                - generic [ref=e106]: Nuevo producto
+            - generic [ref=e109]:
+              - table [ref=e110]:
+                - rowgroup [ref=e111]:
+                  - row "Código Nombre Categoría Proveedor Stock Precio Estado" [ref=e112]:
+                    - columnheader "Código" [ref=e113]
+                    - columnheader "Nombre" [ref=e114]
+                    - columnheader "Categoría" [ref=e115]
+                    - columnheader "Proveedor" [ref=e116]
+                    - columnheader "Stock" [ref=e117]
+                    - columnheader "Precio" [ref=e118]
+                    - columnheader "Estado" [ref=e119]
+                    - columnheader [ref=e120]
+                - rowgroup [ref=e121]:
+                  - 'row "HMAN-JLL-012 Juego de Llaves Combinadas 14 piezas Herramientas Manuales Ferretera Industrial del Norte S.A. de C.V. Stock OK — actual: 60, mínimo: 15 $650.00 Disponible Registrar movimiento para Juego de Llaves Combinadas 14 piezas Ver o editar Juego de Llaves Combinadas 14 piezas" [ref=e2045] [cursor=pointer]':
+                    - cell "HMAN-JLL-012" [ref=e2046]
+                    - cell "Juego de Llaves Combinadas 14 piezas" [ref=e2047]
+                    - cell "Herramientas Manuales" [ref=e2048]
+                    - cell "Ferretera Industrial del Norte S.A. de C.V." [ref=e2049]
+                    - 'cell "Stock OK — actual: 60, mínimo: 15" [ref=e2050]':
+                      - 'status "Stock OK — actual: 60, mínimo: 15" [ref=e2052]': "60"
+                    - cell "$650.00" [ref=e2053]
+                    - cell "Disponible" [ref=e2054]:
+                      - generic [ref=e2055]: Disponible
+                    - cell "Registrar movimiento para Juego de Llaves Combinadas 14 piezas Ver o editar Juego de Llaves Combinadas 14 piezas" [ref=e2056]:
+                      - button "Registrar movimiento para Juego de Llaves Combinadas 14 piezas" [ref=e2057]:
+                        - img [ref=e2058]: swap_vert
+                      - button "Ver o editar Juego de Llaves Combinadas 14 piezas" [ref=e2061]:
+                        - img [ref=e2062]: edit
+                  - 'row "COMP-LT15-003 Laptop 15.6\" Core i7 16GB RAM Computación y Periféricos TechSupply México S.A. de C.V. Stock OK — actual: 30, mínimo: 5 $22,500.00 Disponible Registrar movimiento para Laptop 15.6\" Core i7 16GB RAM Ver o editar Laptop 15.6\" Core i7 16GB RAM" [ref=e2065] [cursor=pointer]':
+                    - cell "COMP-LT15-003" [ref=e2066]
+                    - cell "Laptop 15.6\" Core i7 16GB RAM" [ref=e2067]
+                    - cell "Computación y Periféricos" [ref=e2068]
+                    - cell "TechSupply México S.A. de C.V." [ref=e2069]
+                    - 'cell "Stock OK — actual: 30, mínimo: 5" [ref=e2070]':
+                      - 'status "Stock OK — actual: 30, mínimo: 5" [ref=e2072]': "30"
+                    - cell "$22,500.00" [ref=e2073]
+                    - cell "Disponible" [ref=e2074]:
+                      - generic [ref=e2075]: Disponible
+                    - cell "Registrar movimiento para Laptop 15.6\" Core i7 16GB RAM Ver o editar Laptop 15.6\" Core i7 16GB RAM" [ref=e2076]:
+                      - button "Registrar movimiento para Laptop 15.6\" Core i7 16GB RAM" [ref=e2077]:
+                        - img [ref=e2078]: swap_vert
+                      - button "Ver o editar Laptop 15.6\" Core i7 16GB RAM" [ref=e2081]:
+                        - img [ref=e2082]: edit
+                  - 'row "BLAN-LAV17-009 Lavadora Automática 17kg Inverter Electrodomésticos de Línea Blanca Electro Industrial del Centro S.A. de C.V. Stock OK — actual: 8, mínimo: 3 $14,999.00 Disponible Registrar movimiento para Lavadora Automática 17kg Inverter Ver o editar Lavadora Automática 17kg Inverter" [ref=e2085] [cursor=pointer]':
+                    - cell "BLAN-LAV17-009" [ref=e2086]
+                    - cell "Lavadora Automática 17kg Inverter" [ref=e2087]
+                    - cell "Electrodomésticos de Línea Blanca" [ref=e2088]
+                    - cell "Electro Industrial del Centro S.A. de C.V." [ref=e2089]
+                    - 'cell "Stock OK — actual: 8, mínimo: 3" [ref=e2090]':
+                      - 'status "Stock OK — actual: 8, mínimo: 3" [ref=e2092]': "8"
+                    - cell "$14,999.00" [ref=e2093]
+                    - cell "Disponible" [ref=e2094]:
+                      - generic [ref=e2095]: Disponible
+                    - cell "Registrar movimiento para Lavadora Automática 17kg Inverter Ver o editar Lavadora Automática 17kg Inverter" [ref=e2096]:
+                      - button "Registrar movimiento para Lavadora Automática 17kg Inverter" [ref=e2097]:
+                        - img [ref=e2098]: swap_vert
+                      - button "Ver o editar Lavadora Automática 17kg Inverter" [ref=e2101]:
+                        - img [ref=e2102]: edit
+                  - 'row "CAFE-LIC-011 Licuadora Industrial 2L 1500W Electrodomésticos de Línea Café Electro Industrial del Centro S.A. de C.V. Stock OK — actual: 50, mínimo: 10 $1,850.00 Disponible Registrar movimiento para Licuadora Industrial 2L 1500W Ver o editar Licuadora Industrial 2L 1500W" [ref=e2105] [cursor=pointer]':
+                    - cell "CAFE-LIC-011" [ref=e2106]
+                    - cell "Licuadora Industrial 2L 1500W" [ref=e2107]
+                    - cell "Electrodomésticos de Línea Café" [ref=e2108]
+                    - cell "Electro Industrial del Centro S.A. de C.V." [ref=e2109]
+                    - 'cell "Stock OK — actual: 50, mínimo: 10" [ref=e2110]':
+                      - 'status "Stock OK — actual: 50, mínimo: 10" [ref=e2112]': "50"
+                    - cell "$1,850.00" [ref=e2113]
+                    - cell "Disponible" [ref=e2114]:
+                      - generic [ref=e2115]: Disponible
+                    - cell "Registrar movimiento para Licuadora Industrial 2L 1500W Ver o editar Licuadora Industrial 2L 1500W" [ref=e2116]:
+                      - button "Registrar movimiento para Licuadora Industrial 2L 1500W" [ref=e2117]:
+                        - img [ref=e2118]: swap_vert
+                      - button "Ver o editar Licuadora Industrial 2L 1500W" [ref=e2121]:
+                        - img [ref=e2122]: edit
+                  - 'row "CLIM-AC12-039 Minisplit Inverter 12000 BTU WiFi Climatización y Ventilación Climatización e Instalaciones Térmicas S.A. Stock OK — actual: 15, mínimo: 4 $14,500.00 Disponible Registrar movimiento para Minisplit Inverter 12000 BTU WiFi Ver o editar Minisplit Inverter 12000 BTU WiFi" [ref=e2125] [cursor=pointer]':
+                    - cell "CLIM-AC12-039" [ref=e2126]
+                    - cell "Minisplit Inverter 12000 BTU WiFi" [ref=e2127]
+                    - cell "Climatización y Ventilación" [ref=e2128]
+                    - cell "Climatización e Instalaciones Térmicas S.A." [ref=e2129]
+                    - 'cell "Stock OK — actual: 15, mínimo: 4" [ref=e2130]':
+                      - 'status "Stock OK — actual: 15, mínimo: 4" [ref=e2132]': "15"
+                    - cell "$14,500.00" [ref=e2133]
+                    - cell "Disponible" [ref=e2134]:
+                      - generic [ref=e2135]: Disponible
+                    - cell "Registrar movimiento para Minisplit Inverter 12000 BTU WiFi Ver o editar Minisplit Inverter 12000 BTU WiFi" [ref=e2136]:
+                      - button "Registrar movimiento para Minisplit Inverter 12000 BTU WiFi" [ref=e2137]:
+                        - img [ref=e2138]: swap_vert
+                      - button "Ver o editar Minisplit Inverter 12000 BTU WiFi" [ref=e2141]:
+                        - img [ref=e2142]: edit
+                  - 'row "COMP-MON-005 Monitor 27\" QHD 165Hz IPS Computación y Periféricos TechSupply México S.A. de C.V. Stock OK — actual: 18, mínimo: 5 $7,500.00 Disponible Registrar movimiento para Monitor 27\" QHD 165Hz IPS Ver o editar Monitor 27\" QHD 165Hz IPS" [ref=e2145] [cursor=pointer]':
+                    - cell "COMP-MON-005" [ref=e2146]
+                    - cell "Monitor 27\" QHD 165Hz IPS" [ref=e2147]
+                    - cell "Computación y Periféricos" [ref=e2148]
+                    - cell "TechSupply México S.A. de C.V." [ref=e2149]
+                    - 'cell "Stock OK — actual: 18, mínimo: 5" [ref=e2150]':
+                      - 'status "Stock OK — actual: 18, mínimo: 5" [ref=e2152]': "18"
+                    - cell "$7,500.00" [ref=e2153]
+                    - cell "Disponible" [ref=e2154]:
+                      - generic [ref=e2155]: Disponible
+                    - cell "Registrar movimiento para Monitor 27\" QHD 165Hz IPS Ver o editar Monitor 27\" QHD 165Hz IPS" [ref=e2156]:
+                      - button "Registrar movimiento para Monitor 27\" QHD 165Hz IPS" [ref=e2157]:
+                        - img [ref=e2158]: swap_vert
+                      - button "Ver o editar Monitor 27\" QHD 165Hz IPS" [ref=e2161]:
+                        - img [ref=e2162]: edit
+                  - 'row "SEGV-NVR16-050 NVR 16 Canales 4K PoE 16 Puertos Seguridad y Vigilancia Seguridad y Vigilancia Electrónica S.A. Bajo stock — actual: 1, mínimo: 4 $8,500.00 Disponible Registrar movimiento para NVR 16 Canales 4K PoE 16 Puertos Ver o editar NVR 16 Canales 4K PoE 16 Puertos" [ref=e2165] [cursor=pointer]':
+                    - cell "SEGV-NVR16-050" [ref=e2166]
+                    - cell "NVR 16 Canales 4K PoE 16 Puertos" [ref=e2167]
+                    - cell "Seguridad y Vigilancia" [ref=e2168]
+                    - cell "Seguridad y Vigilancia Electrónica S.A." [ref=e2169]
+                    - 'cell "Bajo stock — actual: 1, mínimo: 4" [ref=e2170]':
+                      - 'status "Bajo stock — actual: 1, mínimo: 4" [ref=e2172]': "1"
+                    - cell "$8,500.00" [ref=e2173]
+                    - cell "Disponible" [ref=e2174]:
+                      - generic [ref=e2175]: Disponible
+                    - cell "Registrar movimiento para NVR 16 Canales 4K PoE 16 Puertos Ver o editar NVR 16 Canales 4K PoE 16 Puertos" [ref=e2176]:
+                      - button "Registrar movimiento para NVR 16 Canales 4K PoE 16 Puertos" [ref=e2177]:
+                        - img [ref=e2178]: swap_vert
+                      - button "Ver o editar NVR 16 Canales 4K PoE 16 Puertos" [ref=e2181]:
+                        - img [ref=e2182]: edit
+                  - 'row "ALMAC-PAL-038 Pallet de Plástico 1200x1000 mm Equipos de Almacenamiento Distribuidora Logística del Centro S.A. Stock OK — actual: 30, mínimo: 8 $850.00 Disponible Registrar movimiento para Pallet de Plástico 1200x1000 mm Ver o editar Pallet de Plástico 1200x1000 mm" [ref=e2185] [cursor=pointer]':
+                    - cell "ALMAC-PAL-038" [ref=e2186]
+                    - cell "Pallet de Plástico 1200x1000 mm" [ref=e2187]
+                    - cell "Equipos de Almacenamiento" [ref=e2188]
+                    - cell "Distribuidora Logística del Centro S.A." [ref=e2189]
+                    - 'cell "Stock OK — actual: 30, mínimo: 8" [ref=e2190]':
+                      - 'status "Stock OK — actual: 30, mínimo: 8" [ref=e2192]': "30"
+                    - cell "$850.00" [ref=e2193]
+                    - cell "Disponible" [ref=e2194]:
+                      - generic [ref=e2195]: Disponible
+                    - cell "Registrar movimiento para Pallet de Plástico 1200x1000 mm Ver o editar Pallet de Plástico 1200x1000 mm" [ref=e2196]:
+                      - button "Registrar movimiento para Pallet de Plástico 1200x1000 mm" [ref=e2197]:
+                        - img [ref=e2198]: swap_vert
+                      - button "Ver o editar Pallet de Plástico 1200x1000 mm" [ref=e2201]:
+                        - img [ref=e2202]: edit
+                  - 'row "ELUM-LED18-021 Panel LED Empotrable 18W Redondo Electricidad e Iluminación Electro Industrial del Centro S.A. de C.V. Stock OK — actual: 150, mínimo: 30 $285.00 Disponible Registrar movimiento para Panel LED Empotrable 18W Redondo Ver o editar Panel LED Empotrable 18W Redondo" [ref=e2205] [cursor=pointer]':
+                    - cell "ELUM-LED18-021" [ref=e2206]
+                    - cell "Panel LED Empotrable 18W Redondo" [ref=e2207]
+                    - cell "Electricidad e Iluminación" [ref=e2208]
+                    - cell "Electro Industrial del Centro S.A. de C.V." [ref=e2209]
+                    - 'cell "Stock OK — actual: 150, mínimo: 30" [ref=e2210]':
+                      - 'status "Stock OK — actual: 150, mínimo: 30" [ref=e2212]': "150"
+                    - cell "$285.00" [ref=e2213]
+                    - cell "Disponible" [ref=e2214]:
+                      - generic [ref=e2215]: Disponible
+                    - cell "Registrar movimiento para Panel LED Empotrable 18W Redondo Ver o editar Panel LED Empotrable 18W Redondo" [ref=e2216]:
+                      - button "Registrar movimiento para Panel LED Empotrable 18W Redondo" [ref=e2217]:
+                        - img [ref=e2218]: swap_vert
+                      - button "Ver o editar Panel LED Empotrable 18W Redondo" [ref=e2221]:
+                        - img [ref=e2222]: edit
+                  - 'row "LIMP-PAP-028 Papel Higiénico Industrial 2 capas x 48 Artículos de Limpieza Limpieza Profesional e Higiene S.A. de C.V. Stock OK — actual: 120, mínimo: 24 $480.00 Disponible Registrar movimiento para Papel Higiénico Industrial 2 capas x 48 Ver o editar Papel Higiénico Industrial 2 capas x 48" [ref=e2225] [cursor=pointer]':
+                    - cell "LIMP-PAP-028" [ref=e2226]
+                    - cell "Papel Higiénico Industrial 2 capas x 48" [ref=e2227]
+                    - cell "Artículos de Limpieza" [ref=e2228]
+                    - cell "Limpieza Profesional e Higiene S.A. de C.V." [ref=e2229]
+                    - 'cell "Stock OK — actual: 120, mínimo: 24" [ref=e2230]':
+                      - 'status "Stock OK — actual: 120, mínimo: 24" [ref=e2232]': "120"
+                    - cell "$480.00" [ref=e2233]
+                    - cell "Disponible" [ref=e2234]:
+                      - generic [ref=e2235]: Disponible
+                    - cell "Registrar movimiento para Papel Higiénico Industrial 2 capas x 48 Ver o editar Papel Higiénico Industrial 2 capas x 48" [ref=e2236]:
+                      - button "Registrar movimiento para Papel Higiénico Industrial 2 capas x 48" [ref=e2237]:
+                        - img [ref=e2238]: swap_vert
+                      - button "Ver o editar Papel Higiénico Industrial 2 capas x 48" [ref=e2241]:
+                        - img [ref=e2242]: edit
+                  - 'row "PINT-VIN19-018 Pintura Vinílica Interior Blanco 19L Pinturas y Recubrimientos Constructora y Suministros del Bajío S.A. Stock OK — actual: 80, mínimo: 20 $890.00 Disponible Registrar movimiento para Pintura Vinílica Interior Blanco 19L Ver o editar Pintura Vinílica Interior Blanco 19L" [ref=e2245] [cursor=pointer]':
+                    - cell "PINT-VIN19-018" [ref=e2246]
+                    - cell "Pintura Vinílica Interior Blanco 19L" [ref=e2247]
+                    - cell "Pinturas y Recubrimientos" [ref=e2248]
+                    - cell "Constructora y Suministros del Bajío S.A." [ref=e2249]
+                    - 'cell "Stock OK — actual: 80, mínimo: 20" [ref=e2250]':
+                      - 'status "Stock OK — actual: 80, mínimo: 20" [ref=e2252]': "80"
+                    - cell "$890.00" [ref=e2253]
+                    - cell "Disponible" [ref=e2254]:
+                      - generic [ref=e2255]: Disponible
+                    - cell "Registrar movimiento para Pintura Vinílica Interior Blanco 19L Ver o editar Pintura Vinílica Interior Blanco 19L" [ref=e2256]:
+                      - button "Registrar movimiento para Pintura Vinílica Interior Blanco 19L" [ref=e2257]:
+                        - img [ref=e2258]: swap_vert
+                      - button "Ver o editar Pintura Vinílica Interior Blanco 19L" [ref=e2261]:
+                        - img [ref=e2262]: edit
+                  - 'row "ELEC-PRO-043 Proyector Laser 4K 3500 Lúmenes Electrónica de Consumo Distribuidora México Digital S.A. de C.V. Sin stock (mínimo: 2) $45,000.00 Sin stock Registrar movimiento para Proyector Laser 4K 3500 Lúmenes Ver o editar Proyector Laser 4K 3500 Lúmenes" [ref=e2265] [cursor=pointer]':
+                    - cell "ELEC-PRO-043" [ref=e2266]
+                    - cell "Proyector Laser 4K 3500 Lúmenes" [ref=e2267]
+                    - cell "Electrónica de Consumo" [ref=e2268]
+                    - cell "Distribuidora México Digital S.A. de C.V." [ref=e2269]
+                    - 'cell "Sin stock (mínimo: 2)" [ref=e2270]':
+                      - 'status "Sin stock (mínimo: 2)" [ref=e2272]': "0"
+                    - cell "$45,000.00" [ref=e2273]
+                    - cell "Sin stock" [ref=e2274]:
+                      - generic [ref=e2275]: Sin stock
+                    - cell "Registrar movimiento para Proyector Laser 4K 3500 Lúmenes Ver o editar Proyector Laser 4K 3500 Lúmenes" [ref=e2276]:
+                      - button "Registrar movimiento para Proyector Laser 4K 3500 Lúmenes" [ref=e2277]:
+                        - img [ref=e2278]: swap_vert
+                      - button "Ver o editar Proyector Laser 4K 3500 Lúmenes" [ref=e2281]:
+                        - img [ref=e2282]: edit
+                  - 'row "ALMAC-RACK5-037 Rack Metálico Selectivo 5 Niveles 1000kg Equipos de Almacenamiento Distribuidora Logística del Centro S.A. Stock OK — actual: 8, mínimo: 2 $8,500.00 Disponible Registrar movimiento para Rack Metálico Selectivo 5 Niveles 1000kg Ver o editar Rack Metálico Selectivo 5 Niveles 1000kg" [ref=e2285] [cursor=pointer]':
+                    - cell "ALMAC-RACK5-037" [ref=e2286]
+                    - cell "Rack Metálico Selectivo 5 Niveles 1000kg" [ref=e2287]
+                    - cell "Equipos de Almacenamiento" [ref=e2288]
+                    - cell "Distribuidora Logística del Centro S.A." [ref=e2289]
+                    - 'cell "Stock OK — actual: 8, mínimo: 2" [ref=e2290]':
+                      - 'status "Stock OK — actual: 8, mínimo: 2" [ref=e2292]': "8"
+                    - cell "$8,500.00" [ref=e2293]
+                    - cell "Disponible" [ref=e2294]:
+                      - generic [ref=e2295]: Disponible
+                    - cell "Registrar movimiento para Rack Metálico Selectivo 5 Niveles 1000kg Ver o editar Rack Metálico Selectivo 5 Niveles 1000kg" [ref=e2296]:
+                      - button "Registrar movimiento para Rack Metálico Selectivo 5 Niveles 1000kg" [ref=e2297]:
+                        - img [ref=e2298]: swap_vert
+                      - button "Ver o editar Rack Metálico Selectivo 5 Niveles 1000kg" [ref=e2301]:
+                        - img [ref=e2302]: edit
+                  - 'row "BLAN-REF19-008 Refrigerador Side by Side 19 pies Electrodomésticos de Línea Blanca Electro Industrial del Centro S.A. de C.V. Stock OK — actual: 12, mínimo: 3 $18,500.00 Disponible Registrar movimiento para Refrigerador Side by Side 19 pies Ver o editar Refrigerador Side by Side 19 pies" [ref=e2305] [cursor=pointer]':
+                    - cell "BLAN-REF19-008" [ref=e2306]
+                    - cell "Refrigerador Side by Side 19 pies" [ref=e2307]
+                    - cell "Electrodomésticos de Línea Blanca" [ref=e2308]
+                    - cell "Electro Industrial del Centro S.A. de C.V." [ref=e2309]
+                    - 'cell "Stock OK — actual: 12, mínimo: 3" [ref=e2310]':
+                      - 'status "Stock OK — actual: 12, mínimo: 3" [ref=e2312]': "12"
+                    - cell "$18,500.00" [ref=e2313]
+                    - cell "Disponible" [ref=e2314]:
+                      - generic [ref=e2315]: Disponible
+                    - cell "Registrar movimiento para Refrigerador Side by Side 19 pies Ver o editar Refrigerador Side by Side 19 pies" [ref=e2316]:
+                      - button "Registrar movimiento para Refrigerador Side by Side 19 pies" [ref=e2317]:
+                        - img [ref=e2318]: swap_vert
+                      - button "Ver o editar Refrigerador Side by Side 19 pies" [ref=e2321]:
+                        - img [ref=e2322]: edit
+                  - 'row "PAPE-RES-029 Resma Papel Blanco A4 75g 500 Hojas Papelería y Oficina Papelería y Artículos de Oficina Nacional S.A. Stock OK — actual: 400, mínimo: 80 $120.00 Disponible Registrar movimiento para Resma Papel Blanco A4 75g 500 Hojas Ver o editar Resma Papel Blanco A4 75g 500 Hojas" [ref=e2325] [cursor=pointer]':
+                    - cell "PAPE-RES-029" [ref=e2326]
+                    - cell "Resma Papel Blanco A4 75g 500 Hojas" [ref=e2327]
+                    - cell "Papelería y Oficina" [ref=e2328]
+                    - cell "Papelería y Artículos de Oficina Nacional S.A." [ref=e2329]
+                    - 'cell "Stock OK — actual: 400, mínimo: 80" [ref=e2330]':
+                      - 'status "Stock OK — actual: 400, mínimo: 80" [ref=e2332]': "400"
+                    - cell "$120.00" [ref=e2333]
+                    - cell "Disponible" [ref=e2334]:
+                      - generic [ref=e2335]: Disponible
+                    - cell "Registrar movimiento para Resma Papel Blanco A4 75g 500 Hojas Ver o editar Resma Papel Blanco A4 75g 500 Hojas" [ref=e2336]:
+                      - button "Registrar movimiento para Resma Papel Blanco A4 75g 500 Hojas" [ref=e2337]:
+                        - img [ref=e2338]: swap_vert
+                      - button "Ver o editar Resma Papel Blanco A4 75g 500 Hojas" [ref=e2341]:
+                        - img [ref=e2342]: edit
+                  - 'row "EMBA-FILM-032 Rollo Stretch Film 50cm x 300m Embalaje e Insumos Logísticos Empaques y Embalajes del Sureste S.A. Stock OK — actual: 80, mínimo: 20 $145.00 Disponible Registrar movimiento para Rollo Stretch Film 50cm x 300m Ver o editar Rollo Stretch Film 50cm x 300m" [ref=e2345] [cursor=pointer]':
+                    - cell "EMBA-FILM-032" [ref=e2346]
+                    - cell "Rollo Stretch Film 50cm x 300m" [ref=e2347]
+                    - cell "Embalaje e Insumos Logísticos" [ref=e2348]
+                    - cell "Empaques y Embalajes del Sureste S.A." [ref=e2349]
+                    - 'cell "Stock OK — actual: 80, mínimo: 20" [ref=e2350]':
+                      - 'status "Stock OK — actual: 80, mínimo: 20" [ref=e2352]': "80"
+                    - cell "$145.00" [ref=e2353]
+                    - cell "Disponible" [ref=e2354]:
+                      - generic [ref=e2355]: Disponible
+                    - cell "Registrar movimiento para Rollo Stretch Film 50cm x 300m Ver o editar Rollo Stretch Film 50cm x 300m" [ref=e2356]:
+                      - button "Registrar movimiento para Rollo Stretch Film 50cm x 300m" [ref=e2357]:
+                        - img [ref=e2358]: swap_vert
+                      - button "Ver o editar Rollo Stretch Film 50cm x 300m" [ref=e2361]:
+                        - img [ref=e2362]: edit
+                  - 'row "TELE-RUT-007 Router WiFi 6 AX3000 Dual Band Telefonía y Comunicaciones Distribuidora México Digital S.A. de C.V. Stock OK — actual: 40, mínimo: 10 $2,499.00 Disponible Registrar movimiento para Router WiFi 6 AX3000 Dual Band Ver o editar Router WiFi 6 AX3000 Dual Band" [ref=e2365] [cursor=pointer]':
+                    - cell "TELE-RUT-007" [ref=e2366]
+                    - cell "Router WiFi 6 AX3000 Dual Band" [ref=e2367]
+                    - cell "Telefonía y Comunicaciones" [ref=e2368]
+                    - cell "Distribuidora México Digital S.A. de C.V." [ref=e2369]
+                    - 'cell "Stock OK — actual: 40, mínimo: 10" [ref=e2370]':
+                      - 'status "Stock OK — actual: 40, mínimo: 10" [ref=e2372]': "40"
+                    - cell "$2,499.00" [ref=e2373]
+                    - cell "Disponible" [ref=e2374]:
+                      - generic [ref=e2375]: Disponible
+                    - cell "Registrar movimiento para Router WiFi 6 AX3000 Dual Band Ver o editar Router WiFi 6 AX3000 Dual Band" [ref=e2376]:
+                      - button "Registrar movimiento para Router WiFi 6 AX3000 Dual Band" [ref=e2377]:
+                        - img [ref=e2378]: swap_vert
+                      - button "Ver o editar Router WiFi 6 AX3000 Dual Band" [ref=e2381]:
+                        - img [ref=e2382]: edit
+                  - 'row "BLAN-SEC10-045 Secadora de Ropa 10kg Carga Frontal Electrodomésticos de Línea Blanca Electro Industrial del Centro S.A. de C.V. Sin stock (mínimo: 2) $11,500.00 Sin stock Registrar movimiento para Secadora de Ropa 10kg Carga Frontal Ver o editar Secadora de Ropa 10kg Carga Frontal" [ref=e2385] [cursor=pointer]':
+                    - cell "BLAN-SEC10-045" [ref=e2386]
+                    - cell "Secadora de Ropa 10kg Carga Frontal" [ref=e2387]
+                    - cell "Electrodomésticos de Línea Blanca" [ref=e2388]
+                    - cell "Electro Industrial del Centro S.A. de C.V." [ref=e2389]
+                    - 'cell "Sin stock (mínimo: 2)" [ref=e2390]':
+                      - 'status "Sin stock (mínimo: 2)" [ref=e2392]': "0"
+                    - cell "$11,500.00" [ref=e2393]
+                    - cell "Sin stock" [ref=e2394]:
+                      - generic [ref=e2395]: Sin stock
+                    - cell "Registrar movimiento para Secadora de Ropa 10kg Carga Frontal Ver o editar Secadora de Ropa 10kg Carga Frontal" [ref=e2396]:
+                      - button "Registrar movimiento para Secadora de Ropa 10kg Carga Frontal" [ref=e2397]:
+                        - img [ref=e2398]: swap_vert
+                      - button "Ver o editar Secadora de Ropa 10kg Carga Frontal" [ref=e2401]:
+                        - img [ref=e2402]: edit
+                  - 'row "HELEC-SIE-048 Sierra Circular 7-1/4\" 1800W Herramientas Eléctricas Herramientas y Maquinaria del Pacífico S.A. Bajo stock — actual: 3, mínimo: 8 $2,850.00 Disponible Registrar movimiento para Sierra Circular 7-1/4\" 1800W Ver o editar Sierra Circular 7-1/4\" 1800W" [ref=e2405] [cursor=pointer]':
+                    - cell "HELEC-SIE-048" [ref=e2406]
+                    - cell "Sierra Circular 7-1/4\" 1800W" [ref=e2407]
+                    - cell "Herramientas Eléctricas" [ref=e2408]
+                    - cell "Herramientas y Maquinaria del Pacífico S.A." [ref=e2409]
+                    - 'cell "Bajo stock — actual: 3, mínimo: 8" [ref=e2410]':
+                      - 'status "Bajo stock — actual: 3, mínimo: 8" [ref=e2412]': "3"
+                    - cell "$2,850.00" [ref=e2413]
+                    - cell "Disponible" [ref=e2414]:
+                      - generic [ref=e2415]: Disponible
+                    - cell "Registrar movimiento para Sierra Circular 7-1/4\" 1800W Ver o editar Sierra Circular 7-1/4\" 1800W" [ref=e2416]:
+                      - button "Registrar movimiento para Sierra Circular 7-1/4\" 1800W" [ref=e2417]:
+                        - img [ref=e2418]: swap_vert
+                      - button "Ver o editar Sierra Circular 7-1/4\" 1800W" [ref=e2421]:
+                        - img [ref=e2422]: edit
+                  - 'row "MOFI-SIL-025 Silla Ejecutiva Ergonómica Malla Muebles de Oficina Muebles y Equipos Corporativos S.A. de C.V. Stock OK — actual: 25, mínimo: 5 $3,850.00 Disponible Registrar movimiento para Silla Ejecutiva Ergonómica Malla Ver o editar Silla Ejecutiva Ergonómica Malla" [ref=e2425] [cursor=pointer]':
+                    - cell "MOFI-SIL-025" [ref=e2426]
+                    - cell "Silla Ejecutiva Ergonómica Malla" [ref=e2427]
+                    - cell "Muebles de Oficina" [ref=e2428]
+                    - cell "Muebles y Equipos Corporativos S.A. de C.V." [ref=e2429]
+                    - 'cell "Stock OK — actual: 25, mínimo: 5" [ref=e2430]':
+                      - 'status "Stock OK — actual: 25, mínimo: 5" [ref=e2432]': "25"
+                    - cell "$3,850.00" [ref=e2433]
+                    - cell "Disponible" [ref=e2434]:
+                      - generic [ref=e2435]: Disponible
+                    - cell "Registrar movimiento para Silla Ejecutiva Ergonómica Malla Ver o editar Silla Ejecutiva Ergonómica Malla" [ref=e2436]:
+                      - button "Registrar movimiento para Silla Ejecutiva Ergonómica Malla" [ref=e2437]:
+                        - img [ref=e2438]: swap_vert
+                      - button "Ver o editar Silla Ejecutiva Ergonómica Malla" [ref=e2441]:
+                        - img [ref=e2442]: edit
+              - group "Paginación de productos" [ref=e522]:
+                - generic [ref=e524]:
+                  - generic [ref=e525]:
+                    - generic [ref=e526]: "Items per page:"
+                    - combobox "Items per page:" [ref=e531] [cursor=pointer]:
+                      - generic [ref=e532]:
+                        - generic [ref=e534]: "20"
+                        - img [ref=e537]
+                  - generic [ref=e540]:
+                    - status [ref=e541]: 21 – 40 of 50
+                    - button "Previous page" [ref=e542] [cursor=pointer]:
+                      - img [ref=e543]
+                    - button "Next page" [active] [ref=e547] [cursor=pointer]:
+                      - img [ref=e548]
+  - generic [ref=e2448]: Next page

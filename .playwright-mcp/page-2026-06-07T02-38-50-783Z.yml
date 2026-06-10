@@ -1,0 +1,100 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Productos" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Inventario → Productos
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: manager01
+            - 'generic "Rol: MANAGER" [ref=e25]': MANAGER
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [expanded] [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+        - button "Expandir menú" [ref=e42] [cursor=pointer]:
+          - img [ref=e43]: chevron_right
+      - main [ref=e44]:
+        - generic [ref=e47]:
+          - generic [ref=e48]:
+            - generic [ref=e49]:
+              - generic [ref=e52]:
+                - generic [ref=e53]: Buscar por código o nombre
+                - textbox "Buscar por código o nombre" [active] [ref=e55]: HELEC-TEST-MGR
+                - img [ref=e57]: search
+              - generic [ref=e61] [cursor=pointer]:
+                - generic [ref=e62]: Categoría
+                - combobox "Categoría" [ref=e64]:
+                  - img [ref=e70]
+              - generic [ref=e75] [cursor=pointer]:
+                - generic [ref=e76]: Estado
+                - combobox "Estado" [ref=e78]:
+                  - img [ref=e84]
+              - generic [ref=e89] [cursor=pointer]:
+                - generic [ref=e90]: Proveedor
+                - combobox "Proveedor" [ref=e92]:
+                  - img [ref=e98]
+              - button "Limpiar todos los filtros" [ref=e555] [cursor=pointer]:
+                - img [ref=e556]: filter_alt_off
+            - button "Nuevo producto" [ref=e102]:
+              - img [ref=e103]: add
+              - generic [ref=e104]: Nuevo producto
+          - generic [ref=e107]:
+            - table [ref=e108]:
+              - rowgroup [ref=e109]:
+                - row "Código Nombre Categoría Proveedor Stock Precio Estado" [ref=e110]:
+                  - columnheader "Código" [ref=e111]
+                  - columnheader "Nombre" [ref=e112]
+                  - columnheader "Categoría" [ref=e113]
+                  - columnheader "Proveedor" [ref=e114]
+                  - columnheader "Stock" [ref=e115]
+                  - columnheader "Precio" [ref=e116]
+                  - columnheader "Estado" [ref=e117]
+                  - columnheader [ref=e118]
+              - rowgroup [ref=e119]:
+                - 'row "HELEC-TEST-MGR Producto de Prueba MANAGER Herramientas Eléctricas Herramientas y Maquinaria del Pacífico S.A. Stock OK — actual: 20, mínimo: 4 $1,500.00 Disponible Registrar movimiento para Producto de Prueba MANAGER Ver o editar Producto de Prueba MANAGER" [ref=e559] [cursor=pointer]':
+                  - cell "HELEC-TEST-MGR" [ref=e560]
+                  - cell "Producto de Prueba MANAGER" [ref=e561]
+                  - cell "Herramientas Eléctricas" [ref=e562]
+                  - cell "Herramientas y Maquinaria del Pacífico S.A." [ref=e563]
+                  - 'cell "Stock OK — actual: 20, mínimo: 4" [ref=e564]':
+                    - 'status "Stock OK — actual: 20, mínimo: 4" [ref=e566]': "20"
+                  - cell "$1,500.00" [ref=e567]
+                  - cell "Disponible" [ref=e568]:
+                    - generic [ref=e569]: Disponible
+                  - cell "Registrar movimiento para Producto de Prueba MANAGER Ver o editar Producto de Prueba MANAGER" [ref=e570]:
+                    - button "Registrar movimiento para Producto de Prueba MANAGER" [ref=e571]:
+                      - img [ref=e572]: swap_vert
+                    - button "Ver o editar Producto de Prueba MANAGER" [ref=e575]:
+                      - img [ref=e576]: edit
+            - group "Paginación de productos" [ref=e520]:
+              - generic [ref=e522]:
+                - generic [ref=e523]:
+                  - generic [ref=e524]: "Items per page:"
+                  - combobox "Items per page:" [ref=e529] [cursor=pointer]:
+                    - generic [ref=e530]:
+                      - generic [ref=e532]: "20"
+                      - img [ref=e535]
+                - generic [ref=e538]:
+                  - status [ref=e539]: 1 – 1 of 1
+                  - button "Previous page" [disabled] [ref=e540]:
+                    - img [ref=e541]
+                  - button "Next page" [disabled] [ref=e545]:
+                    - img [ref=e546]

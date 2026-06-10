@@ -1,0 +1,281 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - 'generic "Ubicación actual: Inventario → Productos" [ref=e14]':
+            - img [ref=e15]: chevron_right
+            - text: Inventario → Productos
+        - generic [ref=e16]:
+          - button "Notificaciones" [ref=e17] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button "Menú de usuario" [ref=e21]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: test_sales
+              - 'generic "Rol: SALES" [ref=e25]': SALES
+      - generic [ref=e28]:
+        - navigation "Navegación principal" [ref=e31]:
+          - menubar [ref=e32]:
+            - menuitem [expanded] [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: point_of_sale
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: bar_chart
+          - button "Expandir menú" [ref=e40] [cursor=pointer]:
+            - img [ref=e41]: chevron_right
+        - main [ref=e42]:
+          - generic [ref=e45]:
+            - generic [ref=e47]:
+              - generic [ref=e50]:
+                - generic [ref=e51]: Buscar por código o nombre
+                - textbox "Buscar por código o nombre" [ref=e53]
+                - img [ref=e55]: search
+              - generic [ref=e59] [cursor=pointer]:
+                - generic [ref=e60]: Categoría
+                - combobox "Categoría" [ref=e62]:
+                  - img [ref=e68]
+              - generic [ref=e73] [cursor=pointer]:
+                - generic [ref=e74]: Estado
+                - combobox "Estado" [ref=e76]:
+                  - img [ref=e82]
+              - generic [ref=e87] [cursor=pointer]:
+                - generic [ref=e88]: Proveedor
+                - combobox "Proveedor" [ref=e90]:
+                  - img [ref=e96]
+            - generic [ref=e99]:
+              - table [ref=e100]:
+                - rowgroup [ref=e101]:
+                  - row "Código Nombre Categoría Proveedor Stock Precio Estado" [ref=e102]:
+                    - columnheader "Código" [ref=e103]
+                    - columnheader "Nombre" [ref=e104]
+                    - columnheader "Categoría" [ref=e105]
+                    - columnheader "Proveedor" [ref=e106]
+                    - columnheader "Stock" [ref=e107]
+                    - columnheader "Precio" [ref=e108]
+                    - columnheader "Estado" [ref=e109]
+                - rowgroup [ref=e110]:
+                  - 'row "HMAN-DES-013 (editado QA) Herramientas Manuales Ferretera Industrial del Norte S.A. de C.V. Stock OK · Físico: 90 · Mínimo: 20 $320.00 Disponible" [ref=e111] [cursor=pointer]':
+                    - cell "HMAN-DES-013" [ref=e112]
+                    - cell "(editado QA)" [ref=e113]
+                    - cell "Herramientas Manuales" [ref=e114]
+                    - cell "Ferretera Industrial del Norte S.A. de C.V." [ref=e115]
+                    - 'cell "Stock OK · Físico: 90 · Mínimo: 20" [ref=e116]':
+                      - 'status "Stock OK · Físico: 90 · Mínimo: 20" [ref=e118]': "90"
+                    - cell "$320.00" [ref=e119]
+                    - cell "Disponible" [ref=e120]:
+                      - generic [ref=e121]: Disponible
+                  - 'row "LUBR-ACE20-035 Aceite Lubricante Motor 20W-50 Galón Lubricantes y Químicos Químicos y Lubricantes Industriales S.A. Stock OK · Físico: 149 · Mínimo: 30 $380.00 Disponible" [ref=e122] [cursor=pointer]':
+                    - cell "LUBR-ACE20-035" [ref=e123]
+                    - cell "Aceite Lubricante Motor 20W-50 Galón" [ref=e124]
+                    - cell "Lubricantes y Químicos" [ref=e125]
+                    - cell "Químicos y Lubricantes Industriales S.A." [ref=e126]
+                    - 'cell "Stock OK · Físico: 149 · Mínimo: 30" [ref=e127]':
+                      - 'status "Stock OK · Físico: 149 · Mínimo: 30" [ref=e129]': "149"
+                    - cell "$380.00" [ref=e130]
+                    - cell "Disponible" [ref=e131]:
+                      - generic [ref=e132]: Disponible
+                  - 'row "HELEC-AMO-015 Amoladora Angular 4.5\" 1400W Herramientas Eléctricas Herramientas y Maquinaria del Pacífico S.A. Stock OK · Físico: 68 · Reservado: 6 · Disponible: 62 · Mínimo: 12 $980.00 Disponible" [ref=e133] [cursor=pointer]':
+                    - cell "HELEC-AMO-015" [ref=e134]
+                    - cell "Amoladora Angular 4.5\" 1400W" [ref=e135]
+                    - cell "Herramientas Eléctricas" [ref=e136]
+                    - cell "Herramientas y Maquinaria del Pacífico S.A." [ref=e137]
+                    - 'cell "Stock OK · Físico: 68 · Reservado: 6 · Disponible: 62 · Mínimo: 12" [ref=e138]':
+                      - 'status "Stock OK · Físico: 68 · Reservado: 6 · Disponible: 62 · Mínimo: 12" [ref=e140]': "68"
+                    - cell "$980.00" [ref=e141]
+                    - cell "Disponible" [ref=e142]:
+                      - generic [ref=e143]: Disponible
+                  - 'row "PINT-BAR5G-049 Barniz marino 5 galones para exteriores Pinturas y Recubrimientos Constructora y Suministros del Bajío S.A. Bajo stock · Físico: 6 · Mínimo: 10 $2,100.00 Disponible" [ref=e144] [cursor=pointer]':
+                    - cell "PINT-BAR5G-049" [ref=e145]
+                    - cell "Barniz marino 5 galones para exteriores" [ref=e146]
+                    - cell "Pinturas y Recubrimientos" [ref=e147]
+                    - cell "Constructora y Suministros del Bajío S.A." [ref=e148]
+                    - 'cell "Bajo stock · Físico: 6 · Mínimo: 10" [ref=e149]':
+                      - 'status "Bajo stock · Físico: 6 · Mínimo: 10" [ref=e151]': "6"
+                    - cell "$2,100.00" [ref=e152]
+                    - cell "Disponible" [ref=e153]:
+                      - generic [ref=e154]: Disponible
+                  - 'row "ELEC-SP40-002 Bocina Inalámbrica Bluetooth 40W Electrónica de Consumo Distribuidora México Digital S.A. de C.V. Stock OK · Físico: 82 · Reservado: 3 · Disponible: 79 · Mínimo: 15 $1,299.00 Disponible" [ref=e155] [cursor=pointer]':
+                    - cell "ELEC-SP40-002" [ref=e156]
+                    - cell "Bocina Inalámbrica Bluetooth 40W" [ref=e157]
+                    - cell "Electrónica de Consumo" [ref=e158]
+                    - cell "Distribuidora México Digital S.A. de C.V." [ref=e159]
+                    - 'cell "Stock OK · Físico: 82 · Reservado: 3 · Disponible: 79 · Mínimo: 15" [ref=e160]':
+                      - 'status "Stock OK · Físico: 82 · Reservado: 3 · Disponible: 79 · Mínimo: 15" [ref=e162]': "82"
+                    - cell "$1,299.00" [ref=e163]
+                    - cell "Disponible" [ref=e164]:
+                      - generic [ref=e165]: Disponible
+                  - 'row "PAPE-BOL-030 Bolígrafo Retráctil Azul Caja x 50 Papelería y Oficina Papelería y Artículos de Oficina Nacional S.A. Stock OK · Físico: 80 · Mínimo: 20 $195.00 Disponible" [ref=e166] [cursor=pointer]':
+                    - cell "PAPE-BOL-030" [ref=e167]
+                    - cell "Bolígrafo Retráctil Azul Caja x 50" [ref=e168]
+                    - cell "Papelería y Oficina" [ref=e169]
+                    - cell "Papelería y Artículos de Oficina Nacional S.A." [ref=e170]
+                    - 'cell "Stock OK · Físico: 80 · Mínimo: 20" [ref=e171]':
+                      - 'status "Stock OK · Físico: 80 · Mínimo: 20" [ref=e173]': "80"
+                    - cell "$195.00" [ref=e174]
+                    - cell "Disponible" [ref=e175]:
+                      - generic [ref=e176]: Disponible
+                  - 'row "ELUM-CAB12-022 Cable Duplex THW 12 AWG Rollo 100m Electricidad e Iluminación Electro Industrial del Centro S.A. de C.V. Stock OK · Físico: 70 · Reservado: 5 · Disponible: 65 · Mínimo: 15 $1,250.00 Disponible" [ref=e177] [cursor=pointer]':
+                    - cell "ELUM-CAB12-022" [ref=e178]
+                    - cell "Cable Duplex THW 12 AWG Rollo 100m" [ref=e179]
+                    - cell "Electricidad e Iluminación" [ref=e180]
+                    - cell "Electro Industrial del Centro S.A. de C.V." [ref=e181]
+                    - 'cell "Stock OK · Físico: 70 · Reservado: 5 · Disponible: 65 · Mínimo: 15" [ref=e182]':
+                      - 'status "Stock OK · Físico: 70 · Reservado: 5 · Disponible: 65 · Mínimo: 15" [ref=e184]': "70"
+                    - cell "$1,250.00" [ref=e185]
+                    - cell "Disponible" [ref=e186]:
+                      - generic [ref=e187]: Disponible
+                  - 'row "CAFE-CAF-010 Cafetera Espresso Automática 19 bar Electrodomésticos de Línea Café Electro Industrial del Centro S.A. de C.V. Stock OK · Físico: 35 · Reservado: 5 · Disponible: 30 · Mínimo: 8 $3,200.00 Disponible" [ref=e188] [cursor=pointer]':
+                    - cell "CAFE-CAF-010" [ref=e189]
+                    - cell "Cafetera Espresso Automática 19 bar" [ref=e190]
+                    - cell "Electrodomésticos de Línea Café" [ref=e191]
+                    - cell "Electro Industrial del Centro S.A. de C.V." [ref=e192]
+                    - 'cell "Stock OK · Físico: 35 · Reservado: 5 · Disponible: 30 · Mínimo: 8" [ref=e193]':
+                      - 'status "Stock OK · Físico: 35 · Reservado: 5 · Disponible: 30 · Mínimo: 8" [ref=e195]': "35"
+                    - cell "$3,200.00" [ref=e196]
+                    - cell "Disponible" [ref=e197]:
+                      - generic [ref=e198]: Disponible
+                  - 'row "EMBA-CAJA-031 Caja de Cartón Corrugado 60x40x40 cm Embalaje e Insumos Logísticos Empaques y Embalajes del Sureste S.A. Stock OK · Físico: 1000 · Mínimo: 200 $28.50 Disponible" [ref=e199] [cursor=pointer]':
+                    - cell "EMBA-CAJA-031" [ref=e200]
+                    - cell "Caja de Cartón Corrugado 60x40x40 cm" [ref=e201]
+                    - cell "Embalaje e Insumos Logísticos" [ref=e202]
+                    - cell "Empaques y Embalajes del Sureste S.A." [ref=e203]
+                    - 'cell "Stock OK · Físico: 1000 · Mínimo: 200" [ref=e204]':
+                      - 'status "Stock OK · Físico: 1000 · Mínimo: 200" [ref=e206]': "1000"
+                    - cell "$28.50" [ref=e207]
+                    - cell "Disponible" [ref=e208]:
+                      - generic [ref=e209]: Disponible
+                  - 'row "SEGV-CAM4K-023 Cámara Domo IP 4K PoE Exterior Seguridad y Vigilancia Seguridad y Vigilancia Electrónica S.A. Stock OK · Físico: 35 · Reservado: 5 · Disponible: 30 · Mínimo: 8 $2,850.00 Disponible" [ref=e210] [cursor=pointer]':
+                    - cell "SEGV-CAM4K-023" [ref=e211]
+                    - cell "Cámara Domo IP 4K PoE Exterior" [ref=e212]
+                    - cell "Seguridad y Vigilancia" [ref=e213]
+                    - cell "Seguridad y Vigilancia Electrónica S.A." [ref=e214]
+                    - 'cell "Stock OK · Físico: 35 · Reservado: 5 · Disponible: 30 · Mínimo: 8" [ref=e215]':
+                      - 'status "Stock OK · Físico: 35 · Reservado: 5 · Disponible: 30 · Mínimo: 8" [ref=e217]': "35"
+                    - cell "$2,850.00" [ref=e218]
+                    - cell "Disponible" [ref=e219]:
+                      - generic [ref=e220]: Disponible
+                  - 'row "SOLD-MAS-041 Careta para Soldar Fotosensible Soldadura y Corte Soldadura y Equipos Industriales S.A. Stock OK · Físico: 40 · Reservado: 3 · Disponible: 37 · Mínimo: 10 $950.00 Disponible" [ref=e221] [cursor=pointer]':
+                    - cell "SOLD-MAS-041" [ref=e222]
+                    - cell "Careta para Soldar Fotosensible" [ref=e223]
+                    - cell "Soldadura y Corte" [ref=e224]
+                    - cell "Soldadura y Equipos Industriales S.A." [ref=e225]
+                    - 'cell "Stock OK · Físico: 40 · Reservado: 3 · Disponible: 37 · Mínimo: 10" [ref=e226]':
+                      - 'status "Stock OK · Físico: 40 · Reservado: 3 · Disponible: 37 · Mínimo: 10" [ref=e228]': "40"
+                    - cell "$950.00" [ref=e229]
+                    - cell "Disponible" [ref=e230]:
+                      - generic [ref=e231]: Disponible
+                  - 'row "EPP-CAS-033 Casco de Seguridad Industrial HDPE Blanco Equipos de Protección Personal Ropa de Protección y EPP S.A. de C.V. Stock OK · Físico: 100 · Mínimo: 25 $185.00 Disponible" [ref=e232] [cursor=pointer]':
+                    - cell "EPP-CAS-033" [ref=e233]
+                    - cell "Casco de Seguridad Industrial HDPE Blanco" [ref=e234]
+                    - cell "Equipos de Protección Personal" [ref=e235]
+                    - cell "Ropa de Protección y EPP S.A. de C.V." [ref=e236]
+                    - 'cell "Stock OK · Físico: 100 · Mínimo: 25" [ref=e237]':
+                      - 'status "Stock OK · Físico: 100 · Mínimo: 25" [ref=e239]': "100"
+                    - cell "$185.00" [ref=e240]
+                    - cell "Disponible" [ref=e241]:
+                      - generic [ref=e242]: Disponible
+                  - 'row "CONS-CEM50-016 Cemento Portland Tipo I Saco 50kg Material de Construcción Constructora y Suministros del Bajío S.A. Stock OK · Físico: 500 · Mínimo: 100 $185.00 Disponible" [ref=e243] [cursor=pointer]':
+                    - cell "CONS-CEM50-016" [ref=e244]
+                    - cell "Cemento Portland Tipo I Saco 50kg" [ref=e245]
+                    - cell "Material de Construcción" [ref=e246]
+                    - cell "Constructora y Suministros del Bajío S.A." [ref=e247]
+                    - 'cell "Stock OK · Físico: 500 · Mínimo: 100" [ref=e248]':
+                      - 'status "Stock OK · Físico: 500 · Mínimo: 100" [ref=e250]': "500"
+                    - cell "$185.00" [ref=e251]
+                    - cell "Disponible" [ref=e252]:
+                      - generic [ref=e253]: Disponible
+                  - 'row "LIMP-DES5L-027 Desinfectante Multiusos Cítrico 5L Limpieza Profesional Limpieza Profesional e Higiene S.A. de C.V. Stock OK · Físico: 200 · Mínimo: 40 $185.00 Disponible" [ref=e254] [cursor=pointer]':
+                    - cell "LIMP-DES5L-027" [ref=e255]
+                    - cell "Desinfectante Multiusos Cítrico 5L" [ref=e256]
+                    - cell "Limpieza Profesional" [ref=e257]
+                    - cell "Limpieza Profesional e Higiene S.A. de C.V." [ref=e258]
+                    - 'cell "Stock OK · Físico: 200 · Mínimo: 40" [ref=e259]':
+                      - 'status "Stock OK · Físico: 200 · Mínimo: 40" [ref=e261]': "200"
+                    - cell "$185.00" [ref=e262]
+                    - cell "Disponible" [ref=e263]:
+                      - generic [ref=e264]: Disponible
+                  - 'row "SEGV-DVR8-024 DVR 8 Canales 4K Ultra HD H.265+ Seguridad y Vigilancia Seguridad y Vigilancia Electrónica S.A. Stock OK · Físico: 15 · Reservado: 2 · Disponible: 13 · Mínimo: 4 $4,500.00 Disponible" [ref=e265] [cursor=pointer]':
+                    - cell "SEGV-DVR8-024" [ref=e266]
+                    - cell "DVR 8 Canales 4K Ultra HD H.265+" [ref=e267]
+                    - cell "Seguridad y Vigilancia" [ref=e268]
+                    - cell "Seguridad y Vigilancia Electrónica S.A." [ref=e269]
+                    - 'cell "Stock OK · Físico: 15 · Reservado: 2 · Disponible: 13 · Mínimo: 4" [ref=e270]':
+                      - 'status "Stock OK · Físico: 15 · Reservado: 2 · Disponible: 13 · Mínimo: 4" [ref=e272]': "15"
+                    - cell "$4,500.00" [ref=e273]
+                    - cell "Disponible" [ref=e274]:
+                      - generic [ref=e275]: Disponible
+                  - 'row "SOLD-ELE-040 Electrodos Acero Suave 6011 Caja 5kg Soldadura y Corte Soldadura y Equipos Industriales S.A. Stock OK · Físico: 60 · Mínimo: 15 $380.00 Disponible" [ref=e276] [cursor=pointer]':
+                    - cell "SOLD-ELE-040" [ref=e277]
+                    - cell "Electrodos Acero Suave 6011 Caja 5kg" [ref=e278]
+                    - cell "Soldadura y Corte" [ref=e279]
+                    - cell "Soldadura y Equipos Industriales S.A." [ref=e280]
+                    - 'cell "Stock OK · Físico: 60 · Mínimo: 15" [ref=e281]':
+                      - 'status "Stock OK · Físico: 60 · Mínimo: 15" [ref=e283]': "60"
+                    - cell "$380.00" [ref=e284]
+                    - cell "Disponible" [ref=e285]:
+                      - generic [ref=e286]: Disponible
+                  - 'row "MOFI-ESC-026 Escritorio en L 160x120 cm Wengué Muebles de Oficina Muebles y Equipos Corporativos S.A. de C.V. Stock OK · Físico: 13 · Reservado: 1 · Disponible: 12 · Mínimo: 3 $4,200.00 Disponible" [ref=e287] [cursor=pointer]':
+                    - cell "MOFI-ESC-026" [ref=e288]
+                    - cell "Escritorio en L 160x120 cm Wengué" [ref=e289]
+                    - cell "Muebles de Oficina" [ref=e290]
+                    - cell "Muebles y Equipos Corporativos S.A. de C.V." [ref=e291]
+                    - 'cell "Stock OK · Físico: 13 · Reservado: 1 · Disponible: 12 · Mínimo: 3" [ref=e292]':
+                      - 'status "Stock OK · Físico: 13 · Reservado: 1 · Disponible: 12 · Mínimo: 3" [ref=e294]': "13"
+                    - cell "$4,200.00" [ref=e295]
+                    - cell "Disponible" [ref=e296]:
+                      - generic [ref=e297]: Disponible
+                  - 'row "PINT-ESM1G-019 Esmalte Sintético Rojo Inglés 1 Galón Pinturas y Recubrimientos Constructora y Suministros del Bajío S.A. Stock OK · Físico: 40 · Mínimo: 10 $380.00 Disponible" [ref=e298] [cursor=pointer]':
+                    - cell "PINT-ESM1G-019" [ref=e299]
+                    - cell "Esmalte Sintético Rojo Inglés 1 Galón" [ref=e300]
+                    - cell "Pinturas y Recubrimientos" [ref=e301]
+                    - cell "Constructora y Suministros del Bajío S.A." [ref=e302]
+                    - 'cell "Stock OK · Físico: 40 · Mínimo: 10" [ref=e303]':
+                      - 'status "Stock OK · Físico: 40 · Mínimo: 10" [ref=e305]': "40"
+                    - cell "$380.00" [ref=e306]
+                    - cell "Disponible" [ref=e307]:
+                      - generic [ref=e308]: Disponible
+                  - 'row "EPP-GUAC-034 Guantes de Carnaza para Soldador Par Equipos de Protección Personal Ropa de Protección y EPP S.A. de C.V. Stock OK · Físico: 150 · Reservado: 5 · Disponible: 145 · Mínimo: 30 $145.00 Disponible" [ref=e309] [cursor=pointer]':
+                    - cell "EPP-GUAC-034" [ref=e310]
+                    - cell "Guantes de Carnaza para Soldador Par" [ref=e311]
+                    - cell "Equipos de Protección Personal" [ref=e312]
+                    - cell "Ropa de Protección y EPP S.A. de C.V." [ref=e313]
+                    - 'cell "Stock OK · Físico: 150 · Reservado: 5 · Disponible: 145 · Mínimo: 30" [ref=e314]':
+                      - 'status "Stock OK · Físico: 150 · Reservado: 5 · Disponible: 145 · Mínimo: 30" [ref=e316]': "150"
+                    - cell "$145.00" [ref=e317]
+                    - cell "Disponible" [ref=e318]:
+                      - generic [ref=e319]: Disponible
+                  - 'row "COMP-USB2-047 Hub USB 2.0 de 7 Puertos (Descontinuado) Computación y Periféricos TechSupply México S.A. de C.V. Stock OK · Físico: 3 · Mínimo: 0 $185.00 Descontinuado" [ref=e320] [cursor=pointer]':
+                    - cell "COMP-USB2-047" [ref=e321]
+                    - cell "Hub USB 2.0 de 7 Puertos (Descontinuado)" [ref=e322]
+                    - cell "Computación y Periféricos" [ref=e323]
+                    - cell "TechSupply México S.A. de C.V." [ref=e324]
+                    - 'cell "Stock OK · Físico: 3 · Mínimo: 0" [ref=e325]':
+                      - 'status "Stock OK · Físico: 3 · Mínimo: 0" [ref=e327]': "3"
+                    - cell "$185.00" [ref=e328]
+                    - cell "Descontinuado" [ref=e329]:
+                      - generic [ref=e330]: Descontinuado
+              - group "Paginación de productos" [ref=e331]:
+                - generic [ref=e333]:
+                  - generic [ref=e334]:
+                    - generic [ref=e335]: "Items per page:"
+                    - combobox "Items per page:" [ref=e340] [cursor=pointer]:
+                      - generic [ref=e341]:
+                        - generic [ref=e343]: "20"
+                        - img [ref=e346]
+                  - generic [ref=e349]:
+                    - status [ref=e350]: 1 – 20 of 108
+                    - button "Previous page" [disabled] [ref=e351]:
+                      - img [ref=e352]
+                    - button "Next page" [ref=e356] [cursor=pointer]:
+                      - img [ref=e357]
+  - generic [ref=e367]:
+    - generic [ref=e368]: No tienes permiso para realizar esta acción.
+    - button [ref=e370]:
+      - generic [ref=e371]: Cerrar

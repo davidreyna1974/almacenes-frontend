@@ -1,0 +1,122 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e289]':
+            - img [ref=e15]: chevron_right
+            - text: Compras → Órdenes de compra
+        - generic [ref=e16]:
+          - button "Notificaciones" [ref=e17] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button "Menú de usuario" [ref=e21]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: test_mgr
+              - 'generic "Rol: MANAGER" [ref=e25]': MANAGER
+      - generic [ref=e28]:
+        - navigation "Navegación principal" [ref=e31]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+          - button "Expandir menú" [ref=e42] [cursor=pointer]:
+            - img [ref=e43]: chevron_right
+        - main [ref=e44]:
+          - generic [ref=e291]:
+            - generic [ref=e292]:
+              - button [ref=e293] [cursor=pointer]:
+                - img [ref=e294]: arrow_back
+              - generic [ref=e297]:
+                - heading "OC-2026-0064" [level=2] [ref=e298]
+                - generic [ref=e299]: Pendiente
+              - generic [ref=e300]:
+                - button "Aprobar" [ref=e301]:
+                  - img [ref=e302]: check_circle
+                  - generic [ref=e303]: Aprobar
+                - button "Cancelar orden" [ref=e306]:
+                  - img [ref=e307]: cancel
+                  - generic [ref=e308]: Cancelar orden
+            - generic [ref=e311]:
+              - generic [ref=e312]:
+                - generic [ref=e313]:
+                  - heading "Información de la orden" [level=3] [ref=e314]
+                  - generic [ref=e315]:
+                    - generic [ref=e318] [cursor=pointer]:
+                      - generic [ref=e319]:
+                        - text: Proveedor
+                        - generic [ref=e320]: "*"
+                      - combobox "Proveedor" [ref=e322]:
+                        - generic [ref=e323]:
+                          - generic [ref=e325]: Climatización e Instalaciones Térmicas S.A.
+                          - img [ref=e328]
+                    - generic [ref=e333]:
+                      - generic [ref=e334]: Notas
+                      - textbox "Notas" [ref=e336]:
+                        - /placeholder: Observaciones opcionales
+                    - button "Guardar cambios" [ref=e339]:
+                      - img [ref=e340]: save
+                      - generic [ref=e341]: Guardar cambios
+                - generic [ref=e344]:
+                  - generic [ref=e345]:
+                    - heading "Líneas de detalle" [level=3] [ref=e346]
+                    - button "Agregar línea" [ref=e347]:
+                      - img [ref=e348]: add
+                      - generic [ref=e349]: Agregar línea
+                  - table [ref=e352]:
+                    - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e353]:
+                      - columnheader "SKU" [ref=e354]
+                      - columnheader "Producto" [ref=e355]
+                      - columnheader "Cantidad" [ref=e356]
+                      - columnheader "Precio unitario" [ref=e357]
+                      - columnheader "Subtotal" [ref=e358]
+                      - columnheader [ref=e359]
+                    - row "PLOM-TUB2-020 Tubo CPVC 1/2\" x 3m Temperatura 3 $85.00 $255.00" [ref=e360]:
+                      - cell "PLOM-TUB2-020" [ref=e361]:
+                        - generic [ref=e362]: PLOM-TUB2-020
+                      - cell "Tubo CPVC 1/2\" x 3m Temperatura" [ref=e363]:
+                        - generic [ref=e364]: Tubo CPVC 1/2" x 3m Temperatura
+                      - cell "3" [ref=e365]
+                      - cell "$85.00" [ref=e366]
+                      - cell "$255.00" [ref=e367]
+                      - cell [ref=e368]:
+                        - button [ref=e369] [cursor=pointer]:
+                          - img [ref=e370]: edit
+                        - button [ref=e373] [cursor=pointer]:
+                          - img [ref=e374]: delete
+                  - generic [ref=e377]:
+                    - generic [ref=e378]: "Total de la orden:"
+                    - generic [ref=e379]: $255.00
+              - generic [ref=e381]:
+                - heading "Historial de estado" [level=3] [ref=e382]
+                - generic [ref=e383]:
+                  - generic [ref=e384]:
+                    - img [ref=e385]: add_circle
+                    - generic [ref=e386]:
+                      - generic [ref=e387]: Creada
+                      - generic [ref=e388]: test_mgr
+                      - generic [ref=e389]: 07/06/2026 19:03
+                  - generic [ref=e390]:
+                    - img [ref=e391]: check_circle
+                    - generic [ref=e392]:
+                      - generic [ref=e393]: Aprobada
+                      - generic [ref=e394]: Pendiente
+                  - generic [ref=e395]:
+                    - img [ref=e396]: done_all
+                    - generic [ref=e397]:
+                      - generic [ref=e398]: Recibida
+                      - generic [ref=e399]: Pendiente
+  - generic [ref=e406]:
+    - generic [ref=e407]: Orden creada correctamente.
+    - button "Cerrar" [ref=e409]:
+      - generic [ref=e410]: Cerrar

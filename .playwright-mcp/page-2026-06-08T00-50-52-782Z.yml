@@ -1,0 +1,62 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Proveedores" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Proveedores
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - progressbar [ref=e50]
+          - generic [ref=e57]:
+            - generic [ref=e58]:
+              - generic [ref=e59]:
+                - generic [ref=e62]:
+                  - generic [ref=e63]: Buscar proveedor
+                  - img [ref=e65]: search
+                  - textbox "Buscar proveedor" [ref=e67]:
+                    - /placeholder: RFC o razón social
+                - button "Nuevo proveedor" [ref=e68]:
+                  - img [ref=e69]: add
+                  - generic [ref=e70]: Nuevo proveedor
+              - table [ref=e73]:
+                - row "RFC Razón social Contacto Teléfono" [ref=e74]:
+                  - columnheader "RFC" [ref=e75]
+                  - columnheader "Razón social" [ref=e76]
+                  - columnheader "Contacto" [ref=e77]
+                  - columnheader "Teléfono" [ref=e78]
+                  - columnheader [ref=e79]
+            - generic [ref=e81]:
+              - img [ref=e82]: local_shipping
+              - paragraph [ref=e83]: Selecciona un proveedor para ver los detalles
+              - button "Nuevo proveedor" [ref=e84]:
+                - img [ref=e85]: add
+                - generic [ref=e86]: Nuevo proveedor

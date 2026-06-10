@@ -1,0 +1,154 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ir al contenido principal" [ref=e3428] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button "Alternar menú lateral" [ref=e3429] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - 'generic "Ubicación actual: Inventario → Productos" [ref=e3430]':
+            - img [ref=e15]: chevron_right
+            - text: Inventario → Productos
+        - generic [ref=e16]:
+          - button "Notificaciones" [ref=e3431] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button "Menú de usuario" [ref=e3432]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - 'generic "Rol: ADMIN" [ref=e3433]': ADMIN
+      - generic [ref=e28]:
+        - navigation "Navegación principal" [ref=e3434]:
+          - menubar [ref=e32]:
+            - menuitem [expanded] [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button "Expandir menú" [ref=e3435] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e2600]:
+            - generic [ref=e2601]:
+              - generic [ref=e2602]:
+                - generic [ref=e2605]:
+                  - generic [ref=e2606]: Buscar por código o nombre
+                  - textbox "Buscar por código o nombre" [ref=e3436]
+                  - img [ref=e2610]: search
+                - generic [ref=e2614] [cursor=pointer]:
+                  - generic [ref=e2615]: Categoría
+                  - combobox "Categoría" [ref=e3437]:
+                    - generic [ref=e2618]:
+                      - generic [ref=e2620]: Herramientas Eléctricas
+                      - img [ref=e2623]
+                - generic [ref=e2628] [cursor=pointer]:
+                  - generic [ref=e2629]: Estado
+                  - combobox "Estado" [ref=e3438]:
+                    - img [ref=e2637]
+                - generic [ref=e2642] [cursor=pointer]:
+                  - generic [ref=e2643]: Proveedor
+                  - combobox "Proveedor" [ref=e3439]:
+                    - img [ref=e2651]
+                - button "Limpiar todos los filtros" [ref=e3440] [cursor=pointer]:
+                  - img [ref=e2655]: filter_alt_off
+              - button "Nuevo producto" [ref=e3441]:
+                - img [ref=e2660]: add
+                - generic [ref=e2661]: Nuevo producto
+            - generic [ref=e2664]:
+              - table [ref=e2665]:
+                - rowgroup [ref=e2666]:
+                  - row "Código Nombre Categoría Proveedor Stock Precio Estado" [ref=e3442]:
+                    - columnheader "Código" [ref=e3443]
+                    - columnheader "Nombre" [ref=e3444]
+                    - columnheader "Categoría" [ref=e3445]
+                    - columnheader "Proveedor" [ref=e3446]
+                    - columnheader "Stock" [ref=e3447]
+                    - columnheader "Precio" [ref=e3448]
+                    - columnheader "Estado" [ref=e3449]
+                    - columnheader [ref=e2675]
+                - rowgroup [ref=e2676]:
+                  - 'row "HELEC-AMO-015 Amoladora Angular 4.5\" 1400W Herramientas Eléctricas Herramientas y Maquinaria del Pacífico S.A. Stock OK — actual: 55, mínimo: 12 $980.00 Disponible Registrar movimiento para Amoladora Angular 4.5\" 1400W Ver o editar Amoladora Angular 4.5\" 1400W" [ref=e3450] [cursor=pointer]':
+                    - cell "HELEC-AMO-015" [ref=e3451]
+                    - cell "Amoladora Angular 4.5\" 1400W" [ref=e3452]
+                    - cell "Herramientas Eléctricas" [ref=e3453]
+                    - cell "Herramientas y Maquinaria del Pacífico S.A." [ref=e3454]
+                    - 'cell "Stock OK — actual: 55, mínimo: 12" [ref=e3455]':
+                      - 'status "Stock OK — actual: 55, mínimo: 12" [ref=e3457]': "55"
+                    - cell "$980.00" [ref=e3458]
+                    - cell "Disponible" [ref=e3459]:
+                      - generic [ref=e3460]: Disponible
+                    - cell "Registrar movimiento para Amoladora Angular 4.5\" 1400W Ver o editar Amoladora Angular 4.5\" 1400W" [ref=e3461]:
+                      - button "Registrar movimiento para Amoladora Angular 4.5\" 1400W" [ref=e3462]:
+                        - img [ref=e3463]: swap_vert
+                      - button "Ver o editar Amoladora Angular 4.5\" 1400W" [ref=e3466]:
+                        - img [ref=e3467]: edit
+                  - 'row "HELEC-TEST-ADM Rotomartillo de Prueba ADMIN Herramientas Eléctricas Herramientas y Maquinaria del Pacífico S.A. Stock OK — actual: 15, mínimo: 5 $3,200.00 Disponible Registrar movimiento para Rotomartillo de Prueba ADMIN Ver o editar Rotomartillo de Prueba ADMIN" [ref=e3470] [cursor=pointer]':
+                    - cell "HELEC-TEST-ADM" [ref=e3471]
+                    - cell "Rotomartillo de Prueba ADMIN" [ref=e3472]
+                    - cell "Herramientas Eléctricas" [ref=e3473]
+                    - cell "Herramientas y Maquinaria del Pacífico S.A." [ref=e3474]
+                    - 'cell "Stock OK — actual: 15, mínimo: 5" [ref=e3475]':
+                      - 'status "Stock OK — actual: 15, mínimo: 5" [ref=e3477]': "15"
+                    - cell "$3,200.00" [ref=e3478]
+                    - cell "Disponible" [ref=e3479]:
+                      - generic [ref=e3480]: Disponible
+                    - cell "Registrar movimiento para Rotomartillo de Prueba ADMIN Ver o editar Rotomartillo de Prueba ADMIN" [ref=e3481]:
+                      - button "Registrar movimiento para Rotomartillo de Prueba ADMIN" [ref=e3482]:
+                        - img [ref=e3483]: swap_vert
+                      - button "Ver o editar Rotomartillo de Prueba ADMIN" [ref=e3486]:
+                        - img [ref=e3487]: edit
+                  - 'row "HELEC-SIE-048 Sierra Circular 7-1/4\" 1800W Herramientas Eléctricas Herramientas y Maquinaria del Pacífico S.A. Bajo stock — actual: 3, mínimo: 8 $2,850.00 Disponible Registrar movimiento para Sierra Circular 7-1/4\" 1800W Ver o editar Sierra Circular 7-1/4\" 1800W" [ref=e3490] [cursor=pointer]':
+                    - cell "HELEC-SIE-048" [ref=e3491]
+                    - cell "Sierra Circular 7-1/4\" 1800W" [ref=e3492]
+                    - cell "Herramientas Eléctricas" [ref=e3493]
+                    - cell "Herramientas y Maquinaria del Pacífico S.A." [ref=e3494]
+                    - 'cell "Bajo stock — actual: 3, mínimo: 8" [ref=e3495]':
+                      - 'status "Bajo stock — actual: 3, mínimo: 8" [ref=e3497]': "3"
+                    - cell "$2,850.00" [ref=e3498]
+                    - cell "Disponible" [ref=e3499]:
+                      - generic [ref=e3500]: Disponible
+                    - cell "Registrar movimiento para Sierra Circular 7-1/4\" 1800W Ver o editar Sierra Circular 7-1/4\" 1800W" [ref=e3501]:
+                      - button "Registrar movimiento para Sierra Circular 7-1/4\" 1800W" [ref=e3502]:
+                        - img [ref=e3503]: swap_vert
+                      - button "Ver o editar Sierra Circular 7-1/4\" 1800W" [ref=e3506]:
+                        - img [ref=e3507]: edit
+                  - 'row "HELEC-TAL-014 Taladro Percutor 13mm 900W Herramientas Eléctricas Herramientas y Maquinaria del Pacífico S.A. Stock OK — actual: 40, mínimo: 10 $1,450.00 Disponible Registrar movimiento para Taladro Percutor 13mm 900W Ver o editar Taladro Percutor 13mm 900W" [ref=e3510] [cursor=pointer]':
+                    - cell "HELEC-TAL-014" [ref=e3511]
+                    - cell "Taladro Percutor 13mm 900W" [ref=e3512]
+                    - cell "Herramientas Eléctricas" [ref=e3513]
+                    - cell "Herramientas y Maquinaria del Pacífico S.A." [ref=e3514]
+                    - 'cell "Stock OK — actual: 40, mínimo: 10" [ref=e3515]':
+                      - 'status "Stock OK — actual: 40, mínimo: 10" [ref=e3517]': "40"
+                    - cell "$1,450.00" [ref=e3518]
+                    - cell "Disponible" [ref=e3519]:
+                      - generic [ref=e3520]: Disponible
+                    - cell "Registrar movimiento para Taladro Percutor 13mm 900W Ver o editar Taladro Percutor 13mm 900W" [ref=e3521]:
+                      - button "Registrar movimiento para Taladro Percutor 13mm 900W" [ref=e3522]:
+                        - img [ref=e3523]: swap_vert
+                      - button "Ver o editar Taladro Percutor 13mm 900W" [ref=e3526]:
+                        - img [ref=e3527]: edit
+              - group "Paginación de productos" [ref=e3530]:
+                - generic [ref=e2739]:
+                  - generic [ref=e2740]:
+                    - generic [ref=e2741]: "Items per page:"
+                    - combobox "Items per page:" [ref=e3531] [cursor=pointer]:
+                      - generic [ref=e2747]:
+                        - generic [ref=e2749]: "20"
+                        - img [ref=e2752]
+                  - generic [ref=e2755]:
+                    - status [ref=e2756]: 1 – 4 of 4
+                    - button "Previous page" [disabled] [ref=e3532]:
+                      - img [ref=e2758]
+                    - button "Next page" [disabled] [ref=e3533]:
+                      - img [ref=e2763]
+  - generic [ref=e3540]:
+    - generic [ref=e3541]: Producto actualizado correctamente.
+    - button "Cerrar" [ref=e3543]:
+      - generic [ref=e3544]: Cerrar

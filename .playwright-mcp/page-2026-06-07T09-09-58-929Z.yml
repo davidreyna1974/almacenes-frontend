@@ -1,0 +1,178 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Categorías" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Inventario → Categorías
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: testwh11497
+            - 'generic "Rol: WAREHOUSEMAN" [ref=e25]': WAREHOUSEMAN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [expanded] [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+        - button "Expandir menú" [ref=e42] [cursor=pointer]:
+          - img [ref=e43]: chevron_right
+      - main [ref=e44]:
+        - generic [ref=e47]:
+          - heading "Categorías" [level=2] [ref=e49]
+          - generic [ref=e50]:
+            - table [ref=e51]:
+              - rowgroup [ref=e52]:
+                - row "Nombre Descripción" [ref=e53]:
+                  - columnheader "Nombre" [ref=e54]
+                  - columnheader "Descripción" [ref=e55]
+                  - columnheader [ref=e56]
+              - rowgroup [ref=e57]:
+                - row "(editado) Detergentes, desinfectantes, escobas, trapeadores, cubetas y jabones. Ver productos de (editado)" [ref=e58]:
+                  - cell "(editado)" [ref=e59]
+                  - cell "Detergentes, desinfectantes, escobas, trapeadores, cubetas y jabones." [ref=e60]
+                  - cell "Ver productos de (editado)" [ref=e61]:
+                    - button "Ver productos de (editado)" [ref=e62] [cursor=pointer]:
+                      - img [ref=e63]: shopping_bag
+                - row "Calzado Industrial Botas de casquillo, botas dieléctricas, zapatos antideslizantes y plantillas. Ver productos de Calzado Industrial" [ref=e66]:
+                  - cell "Calzado Industrial" [ref=e67]
+                  - cell "Botas de casquillo, botas dieléctricas, zapatos antideslizantes y plantillas." [ref=e68]
+                  - cell "Ver productos de Calzado Industrial" [ref=e69]:
+                    - button "Ver productos de Calzado Industrial" [ref=e70] [cursor=pointer]:
+                      - img [ref=e71]: shopping_bag
+                - row "Cat-Int-23178 test Ver productos de Cat-Int-23178" [ref=e74]:
+                  - cell "Cat-Int-23178" [ref=e75]
+                  - cell "test" [ref=e76]
+                  - cell "Ver productos de Cat-Int-23178" [ref=e77]:
+                    - button "Ver productos de Cat-Int-23178" [ref=e78] [cursor=pointer]:
+                      - img [ref=e79]: shopping_bag
+                - row "Cat-Int-35904 test Ver productos de Cat-Int-35904" [ref=e82]:
+                  - cell "Cat-Int-35904" [ref=e83]
+                  - cell "test" [ref=e84]
+                  - cell "Ver productos de Cat-Int-35904" [ref=e85]:
+                    - button "Ver productos de Cat-Int-35904" [ref=e86] [cursor=pointer]:
+                      - img [ref=e87]: shopping_bag
+                - row "Cat-Int-40143 test Ver productos de Cat-Int-40143" [ref=e90]:
+                  - cell "Cat-Int-40143" [ref=e91]
+                  - cell "test" [ref=e92]
+                  - cell "Ver productos de Cat-Int-40143" [ref=e93]:
+                    - button "Ver productos de Cat-Int-40143" [ref=e94] [cursor=pointer]:
+                      - img [ref=e95]: shopping_bag
+                - row "Cat-Int-57543 test Ver productos de Cat-Int-57543" [ref=e98]:
+                  - cell "Cat-Int-57543" [ref=e99]
+                  - cell "test" [ref=e100]
+                  - cell "Ver productos de Cat-Int-57543" [ref=e101]:
+                    - button "Ver productos de Cat-Int-57543" [ref=e102] [cursor=pointer]:
+                      - img [ref=e103]: shopping_bag
+                - row "Cat-Int-94230 test Ver productos de Cat-Int-94230" [ref=e106]:
+                  - cell "Cat-Int-94230" [ref=e107]
+                  - cell "test" [ref=e108]
+                  - cell "Ver productos de Cat-Int-94230" [ref=e109]:
+                    - button "Ver productos de Cat-Int-94230" [ref=e110] [cursor=pointer]:
+                      - img [ref=e111]: shopping_bag
+                - row "Cat-Mgr-R24138 Categoría de MANAGER Ver productos de Cat-Mgr-R24138" [ref=e114]:
+                  - cell "Cat-Mgr-R24138" [ref=e115]
+                  - cell "Categoría de MANAGER" [ref=e116]
+                  - cell "Ver productos de Cat-Mgr-R24138" [ref=e117]:
+                    - button "Ver productos de Cat-Mgr-R24138" [ref=e118] [cursor=pointer]:
+                      - img [ref=e119]: shopping_bag
+                - row "Cat-Mgr-R36816 Categoría de MANAGER Ver productos de Cat-Mgr-R36816" [ref=e122]:
+                  - cell "Cat-Mgr-R36816" [ref=e123]
+                  - cell "Categoría de MANAGER" [ref=e124]
+                  - cell "Ver productos de Cat-Mgr-R36816" [ref=e125]:
+                    - button "Ver productos de Cat-Mgr-R36816" [ref=e126] [cursor=pointer]:
+                      - img [ref=e127]: shopping_bag
+                - row "Cat-Mgr-R41075 Categoría de MANAGER Ver productos de Cat-Mgr-R41075" [ref=e130]:
+                  - cell "Cat-Mgr-R41075" [ref=e131]
+                  - cell "Categoría de MANAGER" [ref=e132]
+                  - cell "Ver productos de Cat-Mgr-R41075" [ref=e133]:
+                    - button "Ver productos de Cat-Mgr-R41075" [ref=e134] [cursor=pointer]:
+                      - img [ref=e135]: shopping_bag
+                - row "Cat-Mgr-R58523 Categoría de MANAGER Ver productos de Cat-Mgr-R58523" [ref=e138]:
+                  - cell "Cat-Mgr-R58523" [ref=e139]
+                  - cell "Categoría de MANAGER" [ref=e140]
+                  - cell "Ver productos de Cat-Mgr-R58523" [ref=e141]:
+                    - button "Ver productos de Cat-Mgr-R58523" [ref=e142] [cursor=pointer]:
+                      - img [ref=e143]: shopping_bag
+                - row "Cat-Mgr-R95214 Categoría de MANAGER Ver productos de Cat-Mgr-R95214" [ref=e146]:
+                  - cell "Cat-Mgr-R95214" [ref=e147]
+                  - cell "Categoría de MANAGER" [ref=e148]
+                  - cell "Ver productos de Cat-Mgr-R95214" [ref=e149]:
+                    - button "Ver productos de Cat-Mgr-R95214" [ref=e150] [cursor=pointer]:
+                      - img [ref=e151]: shopping_bag
+                - row "Categoría Test F06 Ver productos de Categoría Test F06" [ref=e154]:
+                  - cell "Categoría Test F06" [ref=e155]
+                  - cell [ref=e156]
+                  - cell "Ver productos de Categoría Test F06" [ref=e157]:
+                    - button "Ver productos de Categoría Test F06" [ref=e158] [cursor=pointer]:
+                      - img [ref=e159]: shopping_bag
+                - row "Climatización y Ventilación Aires acondicionados, ventiladores industriales, extractores y calefactores. Ver productos de Climatización y Ventilación" [ref=e162]:
+                  - cell "Climatización y Ventilación" [ref=e163]
+                  - cell "Aires acondicionados, ventiladores industriales, extractores y calefactores." [ref=e164]
+                  - cell "Ver productos de Climatización y Ventilación" [ref=e165]:
+                    - button "Ver productos de Climatización y Ventilación" [ref=e166] [cursor=pointer]:
+                      - img [ref=e167]: shopping_bag
+                - row "Computación y Periféricos Laptops, desktops, teclados, ratones, monitores y accesorios de cómputo. Ver productos de Computación y Periféricos" [ref=e170]:
+                  - cell "Computación y Periféricos" [ref=e171]
+                  - cell "Laptops, desktops, teclados, ratones, monitores y accesorios de cómputo." [ref=e172]
+                  - cell "Ver productos de Computación y Periféricos" [ref=e173]:
+                    - button "Ver productos de Computación y Periféricos" [ref=e174] [cursor=pointer]:
+                      - img [ref=e175]: shopping_bag
+                - row "Electricidad e Iluminación Cables, interruptores, contactos, lámparas LED, reflectores y tableros. Ver productos de Electricidad e Iluminación" [ref=e178]:
+                  - cell "Electricidad e Iluminación" [ref=e179]
+                  - cell "Cables, interruptores, contactos, lámparas LED, reflectores y tableros." [ref=e180]
+                  - cell "Ver productos de Electricidad e Iluminación" [ref=e181]:
+                    - button "Ver productos de Electricidad e Iluminación" [ref=e182] [cursor=pointer]:
+                      - img [ref=e183]: shopping_bag
+                - row "Electrodomésticos de Línea Blanca Refrigeradores, lavadoras, secadoras, lavavajillas y hornos de cocina. Ver productos de Electrodomésticos de Línea Blanca" [ref=e186]:
+                  - cell "Electrodomésticos de Línea Blanca" [ref=e187]
+                  - cell "Refrigeradores, lavadoras, secadoras, lavavajillas y hornos de cocina." [ref=e188]
+                  - cell "Ver productos de Electrodomésticos de Línea Blanca" [ref=e189]:
+                    - button "Ver productos de Electrodomésticos de Línea Blanca" [ref=e190] [cursor=pointer]:
+                      - img [ref=e191]: shopping_bag
+                - row "Electrodomésticos de Línea Café Cafeteras, licuadoras, tostadoras, microondas y pequeños electrodomésticos. Ver productos de Electrodomésticos de Línea Café" [ref=e194]:
+                  - cell "Electrodomésticos de Línea Café" [ref=e195]
+                  - cell "Cafeteras, licuadoras, tostadoras, microondas y pequeños electrodomésticos." [ref=e196]
+                  - cell "Ver productos de Electrodomésticos de Línea Café" [ref=e197]:
+                    - button "Ver productos de Electrodomésticos de Línea Café" [ref=e198] [cursor=pointer]:
+                      - img [ref=e199]: shopping_bag
+                - row "Electrónica duplicado Ver productos de Electrónica" [ref=e202]:
+                  - cell "Electrónica" [ref=e203]
+                  - cell "duplicado" [ref=e204]
+                  - cell "Ver productos de Electrónica" [ref=e205]:
+                    - button "Ver productos de Electrónica" [ref=e206] [cursor=pointer]:
+                      - img [ref=e207]: shopping_bag
+                - row "Electrónica de Consumo Televisores, reproductores, audífonos y dispositivos de entretenimiento. Ver productos de Electrónica de Consumo" [ref=e210]:
+                  - cell "Electrónica de Consumo" [ref=e211]
+                  - cell "Televisores, reproductores, audífonos y dispositivos de entretenimiento." [ref=e212]
+                  - cell "Ver productos de Electrónica de Consumo" [ref=e213]:
+                    - button "Ver productos de Electrónica de Consumo" [ref=e214] [cursor=pointer]:
+                      - img [ref=e215]: shopping_bag
+            - group "Paginación de categorías" [ref=e218]:
+              - generic [ref=e220]:
+                - generic [ref=e221]:
+                  - generic [ref=e222]: "Items per page:"
+                  - combobox "Items per page:" [ref=e227] [cursor=pointer]:
+                    - generic [ref=e228]:
+                      - generic [ref=e230]: "20"
+                      - img [ref=e233]
+                - generic [ref=e236]:
+                  - status [ref=e237]: 1 – 20 of 41
+                  - button "Previous page" [disabled] [ref=e238]:
+                    - img [ref=e239]
+                  - button "Next page" [ref=e243] [cursor=pointer]:
+                    - img [ref=e244]

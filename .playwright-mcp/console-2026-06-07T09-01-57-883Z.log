@@ -1,0 +1,49 @@
+[     114ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-KDRVKD3Y.js?v=9c0196f8:11231
+[  199574ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-KDRVKD3Y.js?v=9c0196f8:11231
+[  465913ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-KDRVKD3Y.js?v=9c0196f8:11231
+[  474510ms] [ERROR] ERROR Error: Could not find column with id "createdByUsername".
+    at getTableUnknownColumnError (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1125:10)
+    at http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1814:15
+    at Array.from (<anonymous>)
+    at _MatTable._getCellTemplates (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1811:18)
+    at _MatTable._renderCellTemplateForItem (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1782:35)
+    at _MatTable._renderRow (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1778:10)
+    at http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1717:50
+    at Array.forEach (<anonymous>)
+    at _MatTable._forceRenderHeaderRows (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1717:25)
+    at _MatTable._render (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1570:12) @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-QTYF2Q3W.js?v=9c0196f8:3169
+[  474588ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-KDRVKD3Y.js?v=9c0196f8:11231
+[  474617ms] [ERROR] ERROR Error: Could not find column with id "createdByUsername".
+    at getTableUnknownColumnError (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1125:10)
+    at http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1814:15
+    at Array.from (<anonymous>)
+    at _MatTable._getCellTemplates (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1811:18)
+    at _MatTable._renderCellTemplateForItem (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1782:35)
+    at _MatTable._renderRow (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1778:10)
+    at http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1717:50
+    at Array.forEach (<anonymous>)
+    at _MatTable._forceRenderHeaderRows (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1717:25)
+    at _MatTable._render (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1570:12) @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-QTYF2Q3W.js?v=9c0196f8:3169
+[  474633ms] [ERROR] ERROR Error: Could not find column with id "createdByUsername".
+    at getTableUnknownColumnError (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1125:10)
+    at http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1814:15
+    at Array.from (<anonymous>)
+    at _MatTable._getCellTemplates (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1811:18)
+    at _MatTable._renderCellTemplateForItem (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1782:35)
+    at _MatTable._renderRow (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1778:10)
+    at http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1717:50
+    at Array.forEach (<anonymous>)
+    at _MatTable._forceRenderHeaderRows (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1717:25)
+    at _MatTable._render (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1570:12) @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-QTYF2Q3W.js?v=9c0196f8:3169
+[  474633ms] [ERROR] ERROR Error: Could not find column with id "createdByUsername".
+    at getTableUnknownColumnError (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1125:10)
+    at http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1814:15
+    at Array.from (<anonymous>)
+    at _MatTable._getCellTemplates (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1811:18)
+    at _MatTable._renderCellTemplateForItem (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1782:35)
+    at _MatTable._renderRow (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1778:10)
+    at http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1717:50
+    at Array.forEach (<anonymous>)
+    at _MatTable._forceRenderHeaderRows (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1717:25)
+    at _MatTable._render (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/@angular_material_table.js?v=1adedb75:1570:12) @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-QTYF2Q3W.js?v=9c0196f8:3169
+[  478627ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-KDRVKD3Y.js?v=9c0196f8:11231

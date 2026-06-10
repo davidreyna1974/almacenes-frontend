@@ -1,0 +1,114 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Nueva orden" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Nueva orden
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - button [ref=e51] [cursor=pointer]:
+              - img [ref=e52]: arrow_back
+            - heading "Nueva orden de compra" [level=2] [ref=e56]
+          - generic [ref=e58]:
+            - generic [ref=e59]:
+              - heading "Información de la orden" [level=3] [ref=e60]
+              - generic [ref=e61]:
+                - generic [ref=e64] [cursor=pointer]:
+                  - generic [ref=e65]:
+                    - text: Proveedor
+                    - generic [ref=e66]: "*"
+                  - combobox "Proveedor" [ref=e68]:
+                    - img [ref=e74]
+                - generic [ref=e79]:
+                  - generic [ref=e80]: Notas
+                  - textbox "Notas" [ref=e82]:
+                    - /placeholder: Observaciones opcionales
+            - generic [ref=e84]:
+              - generic [ref=e85]:
+                - heading "Líneas de detalle" [level=3] [ref=e86]
+                - button "Agregar línea" [disabled]:
+                  - img: add
+                  - generic: Agregar línea
+              - generic [ref=e111]:
+                - generic [ref=e112]:
+                  - generic [ref=e114]:
+                    - generic [ref=e115]: Producto
+                    - combobox "Producto" [expanded] [active] [ref=e117]: galon
+                  - listbox "Producto" [ref=e145]:
+                    - 'option "[LUBR-ACE20-035] Aceite Lubricante Motor 20W-50 Galón disponible: 135" [ref=e146] [cursor=pointer]':
+                      - generic [ref=e147]:
+                        - text: "[LUBR-ACE20-035] Aceite Lubricante Motor 20W-50 Galón"
+                        - generic [ref=e148]: "disponible: 135"
+                    - 'option "[PINT-BAR5G-049] Barniz marino 5 galones para exteriores disponible: 2" [ref=e149] [cursor=pointer]':
+                      - generic [ref=e150]:
+                        - text: "[PINT-BAR5G-049] Barniz marino 5 galones para exteriores"
+                        - generic [ref=e151]: "disponible: 2"
+                    - 'option "[PINT-ESM1G-019] Esmalte Sintético Rojo Inglés 1 Galón disponible: 40" [ref=e152] [cursor=pointer]':
+                      - generic [ref=e153]:
+                        - text: "[PINT-ESM1G-019] Esmalte Sintético Rojo Inglés 1 Galón"
+                        - generic [ref=e154]: "disponible: 40"
+                - generic [ref=e119]:
+                  - generic [ref=e122]:
+                    - generic [ref=e123]:
+                      - text: Cantidad
+                      - generic [ref=e124]: "*"
+                    - spinbutton "Cantidad" [ref=e126]: "1"
+                  - generic [ref=e130]:
+                    - generic [ref=e131]:
+                      - text: Precio unitario
+                      - generic [ref=e132]: "*"
+                    - generic: $
+                    - spinbutton "Precio unitario" [ref=e134]
+                - generic [ref=e136]:
+                  - generic [ref=e137]: "Subtotal:"
+                  - generic [ref=e138]: $0.00
+                - generic [ref=e139]:
+                  - button "Cancelar" [ref=e140]:
+                    - generic [ref=e141]: Cancelar
+                  - button "Agregar línea" [disabled]:
+                    - img: add
+                    - generic: Agregar línea
+              - table [ref=e95]:
+                - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e96]:
+                  - columnheader "SKU" [ref=e97]
+                  - columnheader "Producto" [ref=e98]
+                  - columnheader "Cantidad" [ref=e99]
+                  - columnheader "Precio unitario" [ref=e100]
+                  - columnheader "Subtotal" [ref=e101]
+                  - columnheader [ref=e102]
+            - generic [ref=e103]:
+              - button "Crear orden" [disabled]:
+                - img: save
+                - generic: Crear orden
+              - button "Cancelar" [ref=e104]:
+                - generic [ref=e105]: Cancelar

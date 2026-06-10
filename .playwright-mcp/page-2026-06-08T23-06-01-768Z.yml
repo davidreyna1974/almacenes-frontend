@@ -1,0 +1,536 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e200] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e201] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Nueva orden" [ref=e490]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Nueva orden
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e203] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e204]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e205]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e206]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e207] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e492]:
+          - generic [ref=e493]:
+            - button [ref=e494] [cursor=pointer]:
+              - img [ref=e495]: arrow_back
+            - heading "Nueva orden de compra" [level=2] [ref=e499]
+          - generic [ref=e501]:
+            - generic [ref=e502]:
+              - heading "Información de la orden" [level=3] [ref=e503]
+              - generic [ref=e504]:
+                - generic [ref=e507] [cursor=pointer]:
+                  - generic [ref=e508]:
+                    - text: Proveedor
+                    - generic [ref=e509]: "*"
+                  - combobox "Proveedor" [ref=e511]:
+                    - generic [ref=e512]:
+                      - generic [ref=e665]: Agroquímica y Fertilizantes del Valle S.A.
+                      - img [ref=e517]
+                - generic [ref=e522]:
+                  - generic [ref=e523]: Notas
+                  - textbox "Notas" [ref=e525]:
+                    - /placeholder: Observaciones opcionales
+            - generic [ref=e527]:
+              - generic [ref=e528]:
+                - heading "Líneas de detalle" [level=3] [ref=e529]
+                - button "Agregar línea" [disabled]:
+                  - img: add
+                  - generic: Agregar línea
+              - generic [ref=e668]:
+                - generic [ref=e669]:
+                  - generic [ref=e671]:
+                    - generic [ref=e672]: Producto
+                    - combobox "Producto" [expanded] [active] [ref=e674]
+                  - listbox "Producto" [ref=e702]:
+                    - 'option "[LUBR-ACE20-035] Aceite Lubricante Motor 20W-50 Galón disponible: 136" [ref=e703] [cursor=pointer]':
+                      - generic [ref=e704]:
+                        - text: "[LUBR-ACE20-035] Aceite Lubricante Motor 20W-50 Galón"
+                        - generic [ref=e705]: "disponible: 136"
+                    - 'option "[HELEC-AMO-015] Amoladora Angular 4.5\" 1400W disponible: 57" [ref=e706] [cursor=pointer]':
+                      - generic [ref=e707]:
+                        - text: "[HELEC-AMO-015] Amoladora Angular 4.5\" 1400W"
+                        - generic [ref=e708]: "disponible: 57"
+                    - 'option "[PINT-BAR5G-049] Barniz marino 5 galones para exteriores disponible: 3" [ref=e709] [cursor=pointer]':
+                      - generic [ref=e710]:
+                        - text: "[PINT-BAR5G-049] Barniz marino 5 galones para exteriores"
+                        - generic [ref=e711]: "disponible: 3"
+                    - 'option "[ELEC-SP40-002] Bocina Inalámbrica Bluetooth 40W disponible: 78" [ref=e712] [cursor=pointer]':
+                      - generic [ref=e713]:
+                        - text: "[ELEC-SP40-002] Bocina Inalámbrica Bluetooth 40W"
+                        - generic [ref=e714]: "disponible: 78"
+                    - 'option "[PAPE-BOL-030] Bolígrafo Retráctil Azul Caja x 50 disponible: 80" [ref=e715] [cursor=pointer]':
+                      - generic [ref=e716]:
+                        - text: "[PAPE-BOL-030] Bolígrafo Retráctil Azul Caja x 50"
+                        - generic [ref=e717]: "disponible: 80"
+                    - 'option "[ELUM-CAB12-022] Cable Duplex THW 12 AWG Rollo 100m disponible: 65" [ref=e718] [cursor=pointer]':
+                      - generic [ref=e719]:
+                        - text: "[ELUM-CAB12-022] Cable Duplex THW 12 AWG Rollo 100m"
+                        - generic [ref=e720]: "disponible: 65"
+                    - 'option "[CAFE-CAF-010] Cafetera Espresso Automática 19 bar disponible: 30" [ref=e721] [cursor=pointer]':
+                      - generic [ref=e722]:
+                        - text: "[CAFE-CAF-010] Cafetera Espresso Automática 19 bar"
+                        - generic [ref=e723]: "disponible: 30"
+                    - 'option "[EMBA-CAJA-031] Caja de Cartón Corrugado 60x40x40 cm disponible: 1000" [ref=e724] [cursor=pointer]':
+                      - generic [ref=e725]:
+                        - text: "[EMBA-CAJA-031] Caja de Cartón Corrugado 60x40x40 cm"
+                        - generic [ref=e726]: "disponible: 1000"
+                    - 'option "[SEGV-CAM4K-023] Cámara Domo IP 4K PoE Exterior disponible: 30" [ref=e727] [cursor=pointer]':
+                      - generic [ref=e728]:
+                        - text: "[SEGV-CAM4K-023] Cámara Domo IP 4K PoE Exterior"
+                        - generic [ref=e729]: "disponible: 30"
+                    - 'option "[SOLD-MAS-041] Careta para Soldar Fotosensible disponible: 37" [ref=e730] [cursor=pointer]':
+                      - generic [ref=e731]:
+                        - text: "[SOLD-MAS-041] Careta para Soldar Fotosensible"
+                        - generic [ref=e732]: "disponible: 37"
+                    - 'option "[EPP-CAS-033] Casco de Seguridad Industrial HDPE Blanco disponible: 100" [ref=e733] [cursor=pointer]':
+                      - generic [ref=e734]:
+                        - text: "[EPP-CAS-033] Casco de Seguridad Industrial HDPE Blanco"
+                        - generic [ref=e735]: "disponible: 100"
+                    - 'option "[CONS-CEM50-016] Cemento Portland Tipo I Saco 50kg disponible: 500" [ref=e736] [cursor=pointer]':
+                      - generic [ref=e737]:
+                        - text: "[CONS-CEM50-016] Cemento Portland Tipo I Saco 50kg"
+                        - generic [ref=e738]: "disponible: 500"
+                    - 'option "[HMAN-DES-013] Desarmador de Impacto Manual 6 en 1 disponible: 90" [ref=e739] [cursor=pointer]':
+                      - generic [ref=e740]:
+                        - text: "[HMAN-DES-013] Desarmador de Impacto Manual 6 en 1"
+                        - generic [ref=e741]: "disponible: 90"
+                    - 'option "[LIMP-DES5L-027] Desinfectante Multiusos Cítrico 5L disponible: 200" [ref=e742] [cursor=pointer]':
+                      - generic [ref=e743]:
+                        - text: "[LIMP-DES5L-027] Desinfectante Multiusos Cítrico 5L"
+                        - generic [ref=e744]: "disponible: 200"
+                    - 'option "[SEGV-DVR8-024] DVR 8 Canales 4K Ultra HD H.265+ disponible: 13" [ref=e745] [cursor=pointer]':
+                      - generic [ref=e746]:
+                        - text: "[SEGV-DVR8-024] DVR 8 Canales 4K Ultra HD H.265+"
+                        - generic [ref=e747]: "disponible: 13"
+                    - 'option "[SOLD-ELE-040] Electrodos Acero Suave 6011 Caja 5kg disponible: 60" [ref=e748] [cursor=pointer]':
+                      - generic [ref=e749]:
+                        - text: "[SOLD-ELE-040] Electrodos Acero Suave 6011 Caja 5kg"
+                        - generic [ref=e750]: "disponible: 60"
+                    - 'option "[MOFI-ESC-026] Escritorio en L 160x120 cm Wengué disponible: 12" [ref=e751] [cursor=pointer]':
+                      - generic [ref=e752]:
+                        - text: "[MOFI-ESC-026] Escritorio en L 160x120 cm Wengué"
+                        - generic [ref=e753]: "disponible: 12"
+                    - 'option "[PINT-ESM1G-019] Esmalte Sintético Rojo Inglés 1 Galón disponible: 40" [ref=e754] [cursor=pointer]':
+                      - generic [ref=e755]:
+                        - text: "[PINT-ESM1G-019] Esmalte Sintético Rojo Inglés 1 Galón"
+                        - generic [ref=e756]: "disponible: 40"
+                    - 'option "[EPP-GUAC-034] Guantes de Carnaza para Soldador Par disponible: 145" [ref=e757] [cursor=pointer]':
+                      - generic [ref=e758]:
+                        - text: "[EPP-GUAC-034] Guantes de Carnaza para Soldador Par"
+                        - generic [ref=e759]: "disponible: 145"
+                    - 'option "[COMP-USB2-047] Hub USB 2.0 de 7 Puertos (Descontinuado) disponible: 3" [ref=e760] [cursor=pointer]':
+                      - generic [ref=e761]:
+                        - text: "[COMP-USB2-047] Hub USB 2.0 de 7 Puertos (Descontinuado)"
+                        - generic [ref=e762]: "disponible: 3"
+                    - 'option "[HMAN-JLL-012] Juego de Llaves Combinadas 14 piezas disponible: 60" [ref=e763] [cursor=pointer]':
+                      - generic [ref=e764]:
+                        - text: "[HMAN-JLL-012] Juego de Llaves Combinadas 14 piezas"
+                        - generic [ref=e765]: "disponible: 60"
+                    - 'option "[COMP-LT15-003] Laptop 15.6\" Core i7 16GB RAM disponible: 27" [ref=e766] [cursor=pointer]':
+                      - generic [ref=e767]:
+                        - text: "[COMP-LT15-003] Laptop 15.6\" Core i7 16GB RAM"
+                        - generic [ref=e768]: "disponible: 27"
+                    - 'option "[BLAN-LAV17-009] Lavadora Automática 17kg Inverter disponible: 7" [ref=e769] [cursor=pointer]':
+                      - generic [ref=e770]:
+                        - text: "[BLAN-LAV17-009] Lavadora Automática 17kg Inverter"
+                        - generic [ref=e771]: "disponible: 7"
+                    - 'option "[CAFE-LIC-011] Licuadora Industrial 2L 1500W disponible: 47" [ref=e772] [cursor=pointer]':
+                      - generic [ref=e773]:
+                        - text: "[CAFE-LIC-011] Licuadora Industrial 2L 1500W"
+                        - generic [ref=e774]: "disponible: 47"
+                    - 'option "[CLIM-AC12-039] Minisplit Inverter 12000 BTU WiFi disponible: 13" [ref=e775] [cursor=pointer]':
+                      - generic [ref=e776]:
+                        - text: "[CLIM-AC12-039] Minisplit Inverter 12000 BTU WiFi"
+                        - generic [ref=e777]: "disponible: 13"
+                    - 'option "[COMP-MON-005] Monitor 27\" QHD 165Hz IPS disponible: 16" [ref=e778] [cursor=pointer]':
+                      - generic [ref=e779]:
+                        - text: "[COMP-MON-005] Monitor 27\" QHD 165Hz IPS"
+                        - generic [ref=e780]: "disponible: 16"
+                    - 'option "[SEGV-NVR16-050] NVR 16 Canales 4K PoE 16 Puertos disponible: 1" [ref=e781] [cursor=pointer]':
+                      - generic [ref=e782]:
+                        - text: "[SEGV-NVR16-050] NVR 16 Canales 4K PoE 16 Puertos"
+                        - generic [ref=e783]: "disponible: 1"
+                    - 'option "[ALMAC-PAL-038] Pallet de Plástico 1200x1000 mm disponible: 30" [ref=e784] [cursor=pointer]':
+                      - generic [ref=e785]:
+                        - text: "[ALMAC-PAL-038] Pallet de Plástico 1200x1000 mm"
+                        - generic [ref=e786]: "disponible: 30"
+                    - 'option "[ELUM-LED18-021] Panel LED Empotrable 18W Redondo disponible: 140" [ref=e787] [cursor=pointer]':
+                      - generic [ref=e788]:
+                        - text: "[ELUM-LED18-021] Panel LED Empotrable 18W Redondo"
+                        - generic [ref=e789]: "disponible: 140"
+                    - 'option "[LIMP-PAP-028] Papel Higiénico Industrial 2 capas x 48 disponible: 120" [ref=e790] [cursor=pointer]':
+                      - generic [ref=e791]:
+                        - text: "[LIMP-PAP-028] Papel Higiénico Industrial 2 capas x 48"
+                        - generic [ref=e792]: "disponible: 120"
+                    - 'option "[PINT-VIN19-018] Pintura Vinílica Interior Blanco 19L disponible: 80" [ref=e793] [cursor=pointer]':
+                      - generic [ref=e794]:
+                        - text: "[PINT-VIN19-018] Pintura Vinílica Interior Blanco 19L"
+                        - generic [ref=e795]: "disponible: 80"
+                    - 'option "[SKU-CANCEL-13082] Prod SKU-CANCEL-13082 disponible: 20" [ref=e796] [cursor=pointer]':
+                      - generic [ref=e797]:
+                        - text: "[SKU-CANCEL-13082] Prod SKU-CANCEL-13082"
+                        - generic [ref=e798]: "disponible: 20"
+                    - 'option "[SKU-CANCEL-17078] Prod SKU-CANCEL-17078 disponible: 20" [ref=e799] [cursor=pointer]':
+                      - generic [ref=e800]:
+                        - text: "[SKU-CANCEL-17078] Prod SKU-CANCEL-17078"
+                        - generic [ref=e801]: "disponible: 20"
+                    - 'option "[SKU-CANCEL-20102] Prod SKU-CANCEL-20102 disponible: 20" [ref=e802] [cursor=pointer]':
+                      - generic [ref=e803]:
+                        - text: "[SKU-CANCEL-20102] Prod SKU-CANCEL-20102"
+                        - generic [ref=e804]: "disponible: 20"
+                    - 'option "[SKU-CANCEL-23904] Prod SKU-CANCEL-23904 disponible: 20" [ref=e805] [cursor=pointer]':
+                      - generic [ref=e806]:
+                        - text: "[SKU-CANCEL-23904] Prod SKU-CANCEL-23904"
+                        - generic [ref=e807]: "disponible: 20"
+                    - 'option "[SKU-CANCEL-26303] Prod SKU-CANCEL-26303 disponible: 20" [ref=e808] [cursor=pointer]':
+                      - generic [ref=e809]:
+                        - text: "[SKU-CANCEL-26303] Prod SKU-CANCEL-26303"
+                        - generic [ref=e810]: "disponible: 20"
+                    - 'option "[SKU-CANCEL-3570] Prod SKU-CANCEL-3570 disponible: 20" [ref=e811] [cursor=pointer]':
+                      - generic [ref=e812]:
+                        - text: "[SKU-CANCEL-3570] Prod SKU-CANCEL-3570"
+                        - generic [ref=e813]: "disponible: 20"
+                    - 'option "[SKU-CANCEL-35811] Prod SKU-CANCEL-35811 disponible: 20" [ref=e814] [cursor=pointer]':
+                      - generic [ref=e815]:
+                        - text: "[SKU-CANCEL-35811] Prod SKU-CANCEL-35811"
+                        - generic [ref=e816]: "disponible: 20"
+                    - 'option "[SKU-CANCEL-36594] Prod SKU-CANCEL-36594 disponible: 20" [ref=e817] [cursor=pointer]':
+                      - generic [ref=e818]:
+                        - text: "[SKU-CANCEL-36594] Prod SKU-CANCEL-36594"
+                        - generic [ref=e819]: "disponible: 20"
+                    - 'option "[SKU-CANCEL-38926] Prod SKU-CANCEL-38926 disponible: 20" [ref=e820] [cursor=pointer]':
+                      - generic [ref=e821]:
+                        - text: "[SKU-CANCEL-38926] Prod SKU-CANCEL-38926"
+                        - generic [ref=e822]: "disponible: 20"
+                    - 'option "[SKU-CANCEL-40846] Prod SKU-CANCEL-40846 disponible: 20" [ref=e823] [cursor=pointer]':
+                      - generic [ref=e824]:
+                        - text: "[SKU-CANCEL-40846] Prod SKU-CANCEL-40846"
+                        - generic [ref=e825]: "disponible: 20"
+                    - 'option "[SKU-CANCEL-44727] Prod SKU-CANCEL-44727 disponible: 20" [ref=e826] [cursor=pointer]':
+                      - generic [ref=e827]:
+                        - text: "[SKU-CANCEL-44727] Prod SKU-CANCEL-44727"
+                        - generic [ref=e828]: "disponible: 20"
+                    - 'option "[SKU-CANCEL-58281] Prod SKU-CANCEL-58281 disponible: 20" [ref=e829] [cursor=pointer]':
+                      - generic [ref=e830]:
+                        - text: "[SKU-CANCEL-58281] Prod SKU-CANCEL-58281"
+                        - generic [ref=e831]: "disponible: 20"
+                    - 'option "[SKU-CANCEL-6766] Prod SKU-CANCEL-6766 disponible: 20" [ref=e832] [cursor=pointer]':
+                      - generic [ref=e833]:
+                        - text: "[SKU-CANCEL-6766] Prod SKU-CANCEL-6766"
+                        - generic [ref=e834]: "disponible: 20"
+                    - 'option "[SKU-CANCEL-70711] Prod SKU-CANCEL-70711 disponible: 20" [ref=e835] [cursor=pointer]':
+                      - generic [ref=e836]:
+                        - text: "[SKU-CANCEL-70711] Prod SKU-CANCEL-70711"
+                        - generic [ref=e837]: "disponible: 20"
+                    - 'option "[SKU-CANCEL-7828] Prod SKU-CANCEL-7828 disponible: 20" [ref=e838] [cursor=pointer]':
+                      - generic [ref=e839]:
+                        - text: "[SKU-CANCEL-7828] Prod SKU-CANCEL-7828"
+                        - generic [ref=e840]: "disponible: 20"
+                    - 'option "[SKU-CANCEL-87042] Prod SKU-CANCEL-87042 disponible: 20" [ref=e841] [cursor=pointer]':
+                      - generic [ref=e842]:
+                        - text: "[SKU-CANCEL-87042] Prod SKU-CANCEL-87042"
+                        - generic [ref=e843]: "disponible: 20"
+                    - 'option "[SKU-CANCEL-94968] Prod SKU-CANCEL-94968 disponible: 20" [ref=e844] [cursor=pointer]':
+                      - generic [ref=e845]:
+                        - text: "[SKU-CANCEL-94968] Prod SKU-CANCEL-94968"
+                        - generic [ref=e846]: "disponible: 20"
+                    - 'option "[SKU-CANCEL-97515] Prod SKU-CANCEL-97515 disponible: 20" [ref=e847] [cursor=pointer]':
+                      - generic [ref=e848]:
+                        - text: "[SKU-CANCEL-97515] Prod SKU-CANCEL-97515"
+                        - generic [ref=e849]: "disponible: 20"
+                    - 'option "[SKU-CANCEL-99829] Prod SKU-CANCEL-99829 disponible: 20" [ref=e850] [cursor=pointer]':
+                      - generic [ref=e851]:
+                        - text: "[SKU-CANCEL-99829] Prod SKU-CANCEL-99829"
+                        - generic [ref=e852]: "disponible: 20"
+                    - 'option "[HELEC-TEST-MGR] Producto de Prueba MANAGER disponible: 20" [ref=e853] [cursor=pointer]':
+                      - generic [ref=e854]:
+                        - text: "[HELEC-TEST-MGR] Producto de Prueba MANAGER"
+                        - generic [ref=e855]: "disponible: 20"
+                    - 'option "[SKU-SO-12823] Producto Integración 12823 disponible: 13" [ref=e856] [cursor=pointer]':
+                      - generic [ref=e857]:
+                        - text: "[SKU-SO-12823] Producto Integración 12823"
+                        - generic [ref=e858]: "disponible: 13"
+                    - 'option "[SKU-SO-16820] Producto Integración 16820 disponible: 13" [ref=e859] [cursor=pointer]':
+                      - generic [ref=e860]:
+                        - text: "[SKU-SO-16820] Producto Integración 16820"
+                        - generic [ref=e861]: "disponible: 13"
+                    - 'option "[SKU-SO-19853] Producto Integración 19853 disponible: 13" [ref=e862] [cursor=pointer]':
+                      - generic [ref=e863]:
+                        - text: "[SKU-SO-19853] Producto Integración 19853"
+                        - generic [ref=e864]: "disponible: 13"
+                    - 'option "[SKU-SO-23630] Producto Integración 23630 disponible: 13" [ref=e865] [cursor=pointer]':
+                      - generic [ref=e866]:
+                        - text: "[SKU-SO-23630] Producto Integración 23630"
+                        - generic [ref=e867]: "disponible: 13"
+                    - 'option "[SKU-SO-26030] Producto Integración 26030 disponible: 20" [ref=e868] [cursor=pointer]':
+                      - generic [ref=e869]:
+                        - text: "[SKU-SO-26030] Producto Integración 26030"
+                        - generic [ref=e870]: "disponible: 20"
+                    - 'option "[SKU-SO-3317] Producto Integración 3317 disponible: 13" [ref=e871] [cursor=pointer]':
+                      - generic [ref=e872]:
+                        - text: "[SKU-SO-3317] Producto Integración 3317"
+                        - generic [ref=e873]: "disponible: 13"
+                    - 'option "[SKU-SO-35557] Producto Integración 35557 disponible: 13" [ref=e874] [cursor=pointer]':
+                      - generic [ref=e875]:
+                        - text: "[SKU-SO-35557] Producto Integración 35557"
+                        - generic [ref=e876]: "disponible: 13"
+                    - 'option "[SKU-SO-36331] Producto Integración 36331 disponible: 13" [ref=e877] [cursor=pointer]':
+                      - generic [ref=e878]:
+                        - text: "[SKU-SO-36331] Producto Integración 36331"
+                        - generic [ref=e879]: "disponible: 13"
+                    - 'option "[SKU-SO-38661] Producto Integración 38661 disponible: 13" [ref=e880] [cursor=pointer]':
+                      - generic [ref=e881]:
+                        - text: "[SKU-SO-38661] Producto Integración 38661"
+                        - generic [ref=e882]: "disponible: 13"
+                    - 'option "[SKU-SO-40579] Producto Integración 40579 disponible: 13" [ref=e883] [cursor=pointer]':
+                      - generic [ref=e884]:
+                        - text: "[SKU-SO-40579] Producto Integración 40579"
+                        - generic [ref=e885]: "disponible: 13"
+                    - 'option "[SKU-SO-44450] Producto Integración 44450 disponible: 20" [ref=e886] [cursor=pointer]':
+                      - generic [ref=e887]:
+                        - text: "[SKU-SO-44450] Producto Integración 44450"
+                        - generic [ref=e888]: "disponible: 20"
+                    - 'option "[SKU-SO-57997] Producto Integración 57997 disponible: 13" [ref=e889] [cursor=pointer]':
+                      - generic [ref=e890]:
+                        - text: "[SKU-SO-57997] Producto Integración 57997"
+                        - generic [ref=e891]: "disponible: 13"
+                    - 'option "[SKU-SO-6504] Producto Integración 6504 disponible: 20" [ref=e892] [cursor=pointer]':
+                      - generic [ref=e893]:
+                        - text: "[SKU-SO-6504] Producto Integración 6504"
+                        - generic [ref=e894]: "disponible: 20"
+                    - 'option "[SKU-SO-70461] Producto Integración 70461 disponible: 13" [ref=e895] [cursor=pointer]':
+                      - generic [ref=e896]:
+                        - text: "[SKU-SO-70461] Producto Integración 70461"
+                        - generic [ref=e897]: "disponible: 13"
+                    - 'option "[SKU-SO-7575] Producto Integración 7575 disponible: 13" [ref=e898] [cursor=pointer]':
+                      - generic [ref=e899]:
+                        - text: "[SKU-SO-7575] Producto Integración 7575"
+                        - generic [ref=e900]: "disponible: 13"
+                    - 'option "[SKU-SO-86781] Producto Integración 86781 disponible: 13" [ref=e901] [cursor=pointer]':
+                      - generic [ref=e902]:
+                        - text: "[SKU-SO-86781] Producto Integración 86781"
+                        - generic [ref=e903]: "disponible: 13"
+                    - 'option "[SKU-SO-94691] Producto Integración 94691 disponible: 13" [ref=e904] [cursor=pointer]':
+                      - generic [ref=e905]:
+                        - text: "[SKU-SO-94691] Producto Integración 94691"
+                        - generic [ref=e906]: "disponible: 13"
+                    - 'option "[SKU-SO-97257] Producto Integración 97257 disponible: 13" [ref=e907] [cursor=pointer]':
+                      - generic [ref=e908]:
+                        - text: "[SKU-SO-97257] Producto Integración 97257"
+                        - generic [ref=e909]: "disponible: 13"
+                    - 'option "[SKU-SO-99568] Producto Integración 99568 disponible: 13" [ref=e910] [cursor=pointer]':
+                      - generic [ref=e911]:
+                        - text: "[SKU-SO-99568] Producto Integración 99568"
+                        - generic [ref=e912]: "disponible: 13"
+                    - 'option "[MGR-R13318] Producto MANAGER R13318 disponible: 10" [ref=e913] [cursor=pointer]':
+                      - generic [ref=e914]:
+                        - text: "[MGR-R13318] Producto MANAGER R13318"
+                        - generic [ref=e915]: "disponible: 10"
+                    - 'option "[MGR-R17308] Producto MANAGER R17308 disponible: 10" [ref=e916] [cursor=pointer]':
+                      - generic [ref=e917]:
+                        - text: "[MGR-R17308] Producto MANAGER R17308"
+                        - generic [ref=e918]: "disponible: 10"
+                    - 'option "[MGR-R20326] Producto MANAGER R20326 disponible: 10" [ref=e919] [cursor=pointer]':
+                      - generic [ref=e920]:
+                        - text: "[MGR-R20326] Producto MANAGER R20326"
+                        - generic [ref=e921]: "disponible: 10"
+                    - 'option "[MGR-R24138] Producto MANAGER R24138 disponible: 10" [ref=e922] [cursor=pointer]':
+                      - generic [ref=e923]:
+                        - text: "[MGR-R24138] Producto MANAGER R24138"
+                        - generic [ref=e924]: "disponible: 10"
+                    - 'option "[MGR-R26542] Producto MANAGER R26542 disponible: 10" [ref=e925] [cursor=pointer]':
+                      - generic [ref=e926]:
+                        - text: "[MGR-R26542] Producto MANAGER R26542"
+                        - generic [ref=e927]: "disponible: 10"
+                    - 'option "[MGR-R36029] Producto MANAGER R36029 disponible: 10" [ref=e928] [cursor=pointer]':
+                      - generic [ref=e929]:
+                        - text: "[MGR-R36029] Producto MANAGER R36029"
+                        - generic [ref=e930]: "disponible: 10"
+                    - 'option "[MGR-R36816] Producto MANAGER R36816 disponible: 10" [ref=e931] [cursor=pointer]':
+                      - generic [ref=e932]:
+                        - text: "[MGR-R36816] Producto MANAGER R36816"
+                        - generic [ref=e933]: "disponible: 10"
+                    - 'option "[MGR-R3784] Producto MANAGER R3784 disponible: 10" [ref=e934] [cursor=pointer]':
+                      - generic [ref=e935]:
+                        - text: "[MGR-R3784] Producto MANAGER R3784"
+                        - generic [ref=e936]: "disponible: 10"
+                    - 'option "[MGR-R39152] Producto MANAGER R39152 disponible: 10" [ref=e937] [cursor=pointer]':
+                      - generic [ref=e938]:
+                        - text: "[MGR-R39152] Producto MANAGER R39152"
+                        - generic [ref=e939]: "disponible: 10"
+                    - 'option "[MGR-R41075] Producto MANAGER R41075 disponible: 10" [ref=e940] [cursor=pointer]':
+                      - generic [ref=e941]:
+                        - text: "[MGR-R41075] Producto MANAGER R41075"
+                        - generic [ref=e942]: "disponible: 10"
+                    - 'option "[MGR-R44964] Producto MANAGER R44964 disponible: 10" [ref=e943] [cursor=pointer]':
+                      - generic [ref=e944]:
+                        - text: "[MGR-R44964] Producto MANAGER R44964"
+                        - generic [ref=e945]: "disponible: 10"
+                    - 'option "[MGR-R58523] Producto MANAGER R58523 disponible: 10" [ref=e946] [cursor=pointer]':
+                      - generic [ref=e947]:
+                        - text: "[MGR-R58523] Producto MANAGER R58523"
+                        - generic [ref=e948]: "disponible: 10"
+                    - 'option "[MGR-R59] Producto MANAGER R59 disponible: 10" [ref=e949] [cursor=pointer]':
+                      - generic [ref=e950]:
+                        - text: "[MGR-R59] Producto MANAGER R59"
+                        - generic [ref=e951]: "disponible: 10"
+                    - 'option "[MGR-R6985] Producto MANAGER R6985 disponible: 10" [ref=e952] [cursor=pointer]':
+                      - generic [ref=e953]:
+                        - text: "[MGR-R6985] Producto MANAGER R6985"
+                        - generic [ref=e954]: "disponible: 10"
+                    - 'option "[MGR-R70934] Producto MANAGER R70934 disponible: 10" [ref=e955] [cursor=pointer]':
+                      - generic [ref=e956]:
+                        - text: "[MGR-R70934] Producto MANAGER R70934"
+                        - generic [ref=e957]: "disponible: 10"
+                    - 'option "[MGR-R8056] Producto MANAGER R8056 disponible: 10" [ref=e958] [cursor=pointer]':
+                      - generic [ref=e959]:
+                        - text: "[MGR-R8056] Producto MANAGER R8056"
+                        - generic [ref=e960]: "disponible: 10"
+                    - 'option "[MGR-R87261] Producto MANAGER R87261 disponible: 10" [ref=e961] [cursor=pointer]':
+                      - generic [ref=e962]:
+                        - text: "[MGR-R87261] Producto MANAGER R87261"
+                        - generic [ref=e963]: "disponible: 10"
+                    - 'option "[MGR-R95214] Producto MANAGER R95214 disponible: 10" [ref=e964] [cursor=pointer]':
+                      - generic [ref=e965]:
+                        - text: "[MGR-R95214] Producto MANAGER R95214"
+                        - generic [ref=e966]: "disponible: 10"
+                    - 'option "[MGR-R97733] Producto MANAGER R97733 disponible: 10" [ref=e967] [cursor=pointer]':
+                      - generic [ref=e968]:
+                        - text: "[MGR-R97733] Producto MANAGER R97733"
+                        - generic [ref=e969]: "disponible: 10"
+                    - 'option "[ELEC-PRO-043] Proyector Laser 4K 3500 Lúmenes disponible: 0" [ref=e970] [cursor=pointer]':
+                      - generic [ref=e971]:
+                        - text: "[ELEC-PRO-043] Proyector Laser 4K 3500 Lúmenes"
+                        - generic [ref=e972]: "disponible: 0"
+                    - 'option "[ALMAC-RACK5-037] Rack Metálico Selectivo 5 Niveles 1000kg disponible: 8" [ref=e973] [cursor=pointer]':
+                      - generic [ref=e974]:
+                        - text: "[ALMAC-RACK5-037] Rack Metálico Selectivo 5 Niveles 1000kg"
+                        - generic [ref=e975]: "disponible: 8"
+                    - 'option "[BLAN-REF19-008] Refrigerador Side by Side 19 pies disponible: 10" [ref=e976] [cursor=pointer]':
+                      - generic [ref=e977]:
+                        - text: "[BLAN-REF19-008] Refrigerador Side by Side 19 pies"
+                        - generic [ref=e978]: "disponible: 10"
+                    - 'option "[PAPE-RES-029] Resma Papel Blanco A4 75g 500 Hojas disponible: 380" [ref=e979] [cursor=pointer]':
+                      - generic [ref=e980]:
+                        - text: "[PAPE-RES-029] Resma Papel Blanco A4 75g 500 Hojas"
+                        - generic [ref=e981]: "disponible: 380"
+                    - 'option "[EMBA-FILM-032] Rollo Stretch Film 50cm x 300m disponible: 80" [ref=e982] [cursor=pointer]':
+                      - generic [ref=e983]:
+                        - text: "[EMBA-FILM-032] Rollo Stretch Film 50cm x 300m"
+                        - generic [ref=e984]: "disponible: 80"
+                    - 'option "[TELE-RUT-007] Router WiFi 6 AX3000 Dual Band disponible: 36" [ref=e985] [cursor=pointer]':
+                      - generic [ref=e986]:
+                        - text: "[TELE-RUT-007] Router WiFi 6 AX3000 Dual Band"
+                        - generic [ref=e987]: "disponible: 36"
+                    - 'option "[BLAN-SEC10-045] Secadora de Ropa 10kg Carga Frontal disponible: 0" [ref=e988] [cursor=pointer]':
+                      - generic [ref=e989]:
+                        - text: "[BLAN-SEC10-045] Secadora de Ropa 10kg Carga Frontal"
+                        - generic [ref=e990]: "disponible: 0"
+                    - 'option "[HELEC-SIE-048] Sierra Circular 7-1/4\" 1800W disponible: 3" [ref=e991] [cursor=pointer]':
+                      - generic [ref=e992]:
+                        - text: "[HELEC-SIE-048] Sierra Circular 7-1/4\" 1800W"
+                        - generic [ref=e993]: "disponible: 3"
+                    - 'option "[MOFI-SIL-025] Silla Ejecutiva Ergonómica Malla disponible: 22" [ref=e994] [cursor=pointer]':
+                      - generic [ref=e995]:
+                        - text: "[MOFI-SIL-025] Silla Ejecutiva Ergonómica Malla"
+                        - generic [ref=e996]: "disponible: 22"
+                    - 'option "[TELE-SM6P-006] Smartphone 6.7\" 256GB 5G disponible: 20" [ref=e997] [cursor=pointer]':
+                      - generic [ref=e998]:
+                        - text: "[TELE-SM6P-006] Smartphone 6.7\" 256GB 5G"
+                        - generic [ref=e999]: "disponible: 20"
+                    - 'option "[LUBR-SOL-036] Solvente Dieléctrico Limpiametales 500mL disponible: 200" [ref=e1000] [cursor=pointer]':
+                      - generic [ref=e1001]:
+                        - text: "[LUBR-SOL-036] Solvente Dieléctrico Limpiametales 500mL"
+                        - generic [ref=e1002]: "disponible: 200"
+                    - 'option "[COMP-SSD1T-044] SSD NVMe 1TB PCIe 4.0 7000MB/s disponible: 0" [ref=e1003] [cursor=pointer]':
+                      - generic [ref=e1004]:
+                        - text: "[COMP-SSD1T-044] SSD NVMe 1TB PCIe 4.0 7000MB/s"
+                        - generic [ref=e1005]: "disponible: 0"
+                    - 'option "[HELEC-TAL-014] Taladro Percutor 13mm 900W disponible: 31" [ref=e1006] [cursor=pointer]':
+                      - generic [ref=e1007]:
+                        - text: "[HELEC-TAL-014] Taladro Percutor 13mm 900W"
+                        - generic [ref=e1008]: "disponible: 31"
+                    - 'option "[COMP-KBW-004] Teclado Mecánico Inalámbrico TKL disponible: 110" [ref=e1009] [cursor=pointer]':
+                      - generic [ref=e1010]:
+                        - text: "[COMP-KBW-004] Teclado Mecánico Inalámbrico TKL"
+                        - generic [ref=e1011]: "disponible: 110"
+                    - 'option "[ELEC-TV32-046] Televisor LED 32\" HD Smart TV (Modelo 2022) disponible: 8" [ref=e1012] [cursor=pointer]':
+                      - generic [ref=e1013]:
+                        - text: "[ELEC-TV32-046] Televisor LED 32\" HD Smart TV (Modelo 2022)"
+                        - generic [ref=e1014]: "disponible: 8"
+                    - 'option "[ELEC-TV55-001] Televisor LED 55\" 4K Smart TV disponible: 43" [ref=e1015] [cursor=pointer]':
+                      - generic [ref=e1016]:
+                        - text: "[ELEC-TV55-001] Televisor LED 55\" 4K Smart TV"
+                        - generic [ref=e1017]: "disponible: 43"
+                    - 'option "[PLOM-TUB2-020] Tubo CPVC 1/2\" x 3m Temperatura disponible: 300" [ref=e1018] [cursor=pointer]':
+                      - generic [ref=e1019]:
+                        - text: "[PLOM-TUB2-020] Tubo CPVC 1/2\" x 3m Temperatura"
+                        - generic [ref=e1020]: "disponible: 300"
+                    - 'option "[CONS-VAR12-017] Varilla Corrugada 3/8\" x 12m disponible: 1000" [ref=e1021] [cursor=pointer]':
+                      - generic [ref=e1022]:
+                        - text: "[CONS-VAR12-017] Varilla Corrugada 3/8\" x 12m"
+                        - generic [ref=e1023]: "disponible: 1000"
+                    - 'option "[MEDI-VERN-042] Vernier Digital 200mm Resolución 0.01mm disponible: 28" [ref=e1024] [cursor=pointer]':
+                      - generic [ref=e1025]:
+                        - text: "[MEDI-VERN-042] Vernier Digital 200mm Resolución 0.01mm"
+                        - generic [ref=e1026]: "disponible: 28"
+                - generic [ref=e676]:
+                  - generic [ref=e679]:
+                    - generic [ref=e680]:
+                      - text: Cantidad
+                      - generic [ref=e681]: "*"
+                    - spinbutton "Cantidad" [ref=e683]: "1"
+                  - generic [ref=e687]:
+                    - generic [ref=e688]:
+                      - text: Precio unitario
+                      - generic [ref=e689]: "*"
+                    - generic: $
+                    - spinbutton "Precio unitario" [ref=e691]
+                - generic [ref=e693]:
+                  - generic [ref=e694]: "Subtotal:"
+                  - generic [ref=e695]: $0.00
+                - generic [ref=e696]:
+                  - button "Cancelar" [ref=e697]:
+                    - generic [ref=e698]: Cancelar
+                  - button "Agregar línea" [disabled]:
+                    - img: add
+                    - generic: Agregar línea
+              - table [ref=e535]:
+                - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e536]:
+                  - columnheader "SKU" [ref=e537]
+                  - columnheader "Producto" [ref=e538]
+                  - columnheader "Cantidad" [ref=e539]
+                  - columnheader "Precio unitario" [ref=e540]
+                  - columnheader "Subtotal" [ref=e541]
+                  - columnheader [ref=e542]
+            - generic [ref=e543]:
+              - button "Crear orden" [disabled]:
+                - img: save
+                - generic: Crear orden
+              - button "Cancelar" [ref=e544]:
+                - generic [ref=e545]: Cancelar

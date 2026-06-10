@@ -1,0 +1,58 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - 'generic "Ubicación actual: Inventario → Categorías" [ref=e14]':
+            - img [ref=e15]: chevron_right
+            - text: Inventario → Categorías
+        - generic [ref=e16]:
+          - button "Notificaciones" [ref=e17] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button "Menú de usuario" [ref=e21]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: manager01
+              - 'generic "Rol: MANAGER" [ref=e25]': MANAGER
+      - generic [ref=e28]:
+        - navigation "Navegación principal" [ref=e31]:
+          - menubar [ref=e32]:
+            - menuitem [expanded] [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+          - button "Expandir menú" [ref=e42] [cursor=pointer]:
+            - img [ref=e43]: chevron_right
+        - main [ref=e44]:
+          - generic [ref=e47]:
+            - generic [ref=e48]:
+              - heading "Categorías" [level=2] [ref=e49]
+              - generic [ref=e50]:
+                - button "Productos" [ref=e51]:
+                  - img [ref=e52]: shopping_bag
+                  - generic [ref=e53]: Productos
+                - button "Nueva categoría" [ref=e56]:
+                  - img [ref=e57]: add
+                  - generic [ref=e58]: Nueva categoría
+            - 'status "Sin datos: Aún no hay registros. Crea el primero con el botón +" [ref=e63]':
+              - img [ref=e64]: inventory_2
+              - heading "Sin datos" [level=3] [ref=e65]
+              - paragraph [ref=e66]: Aún no hay registros. Crea el primero con el botón +
+  - generic:
+    - generic [ref=e73]:
+      - generic [ref=e74]: No tienes permiso para realizar esta acción.
+      - button [ref=e76]:
+        - generic [ref=e77]: Cerrar
+    - generic [ref=e85]:
+      - generic [ref=e86]: Error al cargar categorías.
+      - button [ref=e88]:
+        - generic [ref=e89]: Cerrar

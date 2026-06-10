@@ -1,0 +1,116 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Órdenes de compra
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e347]:
+          - generic [ref=e348]:
+            - button [ref=e349] [cursor=pointer]:
+              - img [ref=e350]: arrow_back
+            - generic [ref=e353]:
+              - heading "OC-2026-0065" [level=2] [ref=e354]
+              - generic [ref=e355]: Recibida
+          - generic [ref=e356]:
+            - generic [ref=e357]:
+              - generic [ref=e358]:
+                - heading "Información de la orden" [level=3] [ref=e359]
+                - generic [ref=e360]:
+                  - generic [ref=e361]:
+                    - generic:
+                      - generic:
+                        - generic [ref=e362]:
+                          - text: Proveedor
+                          - generic [ref=e363]: "*"
+                        - generic:
+                          - combobox "Proveedor" [disabled]:
+                            - generic:
+                              - generic:
+                                - generic: Agroquímica y Fertilizantes del Valle S.A.
+                              - generic:
+                                - generic:
+                                  - img
+                  - generic [ref=e365]:
+                    - generic:
+                      - generic:
+                        - generic [ref=e366]: Notas
+                        - textbox "Notas" [disabled] [ref=e367]:
+                          - /placeholder: Observaciones opcionales
+                          - text: Orden test WAREHOUSEMAN
+              - generic [ref=e369]:
+                - heading "Líneas de detalle" [level=3] [ref=e371]
+                - table [ref=e372]:
+                  - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e373]:
+                    - columnheader "SKU" [ref=e374]
+                    - columnheader "Producto" [ref=e375]
+                    - columnheader "Cantidad" [ref=e376]
+                    - columnheader "Precio unitario" [ref=e377]
+                    - columnheader "Subtotal" [ref=e378]
+                    - columnheader [ref=e379]
+                  - row "ELEC-TV55-001 Televisor LED 55\" 4K Smart TV 2 $99.99 $199.98" [ref=e380]:
+                    - cell "ELEC-TV55-001" [ref=e381]:
+                      - generic [ref=e382]: ELEC-TV55-001
+                    - cell "Televisor LED 55\" 4K Smart TV" [ref=e383]:
+                      - generic [ref=e384]: Televisor LED 55" 4K Smart TV
+                    - cell "2" [ref=e385]
+                    - cell "$99.99" [ref=e386]
+                    - cell "$199.98" [ref=e387]
+                    - cell [ref=e388]
+                - generic [ref=e389]:
+                  - generic [ref=e390]: "Total de la orden:"
+                  - generic [ref=e391]: $199.98
+            - generic [ref=e392]:
+              - generic [ref=e393]:
+                - heading "Historial de estado" [level=3] [ref=e394]
+                - generic [ref=e395]:
+                  - generic [ref=e396]:
+                    - img [ref=e397]: add_circle
+                    - generic [ref=e398]:
+                      - generic [ref=e399]: Creada
+                      - generic [ref=e400]: admin
+                      - generic [ref=e401]: 07/06/2026 19:08
+                  - generic [ref=e402]:
+                    - img [ref=e403]: check_circle
+                    - generic [ref=e404]:
+                      - generic [ref=e405]: Aprobada
+                      - generic [ref=e406]: admin
+                      - generic [ref=e407]: 07/06/2026 19:08
+                  - generic [ref=e408]:
+                    - img [ref=e409]: done_all
+                    - generic [ref=e410]:
+                      - generic [ref=e411]: Recibida
+                      - generic [ref=e412]: test_wh
+                      - generic [ref=e413]: 07/06/2026 19:09
+              - generic [ref=e414]:
+                - generic [ref=e415]: "Última modificación:"
+                - generic [ref=e416]: 07/06/2026 19:09

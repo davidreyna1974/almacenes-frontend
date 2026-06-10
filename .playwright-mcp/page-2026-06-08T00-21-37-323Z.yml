@@ -1,0 +1,80 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Nueva orden" [ref=e96]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Nueva orden
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e98]:
+          - generic [ref=e99]:
+            - button [ref=e100] [cursor=pointer]:
+              - img [ref=e101]: arrow_back
+            - heading "Nueva orden de compra" [level=2] [ref=e105]
+          - generic [ref=e107]:
+            - generic [ref=e108]:
+              - heading "Información de la orden" [level=3] [ref=e109]
+              - generic [ref=e110]:
+                - generic [ref=e113] [cursor=pointer]:
+                  - generic [ref=e114]:
+                    - text: Proveedor
+                    - generic [ref=e115]: "*"
+                  - combobox "Proveedor" [active] [ref=e117]:
+                    - generic [ref=e118]:
+                      - generic [ref=e278]: Agroquímica y Fertilizantes del Valle S.A.
+                      - img [ref=e123]
+                - generic [ref=e128]:
+                  - generic [ref=e129]: Notas
+                  - textbox "Notas" [ref=e131]:
+                    - /placeholder: Observaciones opcionales
+            - generic [ref=e133]:
+              - generic [ref=e134]:
+                - heading "Líneas de detalle" [level=3] [ref=e135]
+                - button "Agregar línea" [ref=e136]:
+                  - img [ref=e137]: add
+                  - generic [ref=e138]: Agregar línea
+              - generic [ref=e141]:
+                - img [ref=e142]: playlist_add
+                - paragraph [ref=e143]: Sin líneas de detalle — agrega al menos un producto
+              - table [ref=e144]:
+                - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e145]:
+                  - columnheader "SKU" [ref=e146]
+                  - columnheader "Producto" [ref=e147]
+                  - columnheader "Cantidad" [ref=e148]
+                  - columnheader "Precio unitario" [ref=e149]
+                  - columnheader "Subtotal" [ref=e150]
+                  - columnheader [ref=e151]
+            - generic [ref=e152]:
+              - button "Crear orden" [disabled]:
+                - img: save
+                - generic: Crear orden
+              - button "Cancelar" [ref=e153]:
+                - generic [ref=e154]: Cancelar

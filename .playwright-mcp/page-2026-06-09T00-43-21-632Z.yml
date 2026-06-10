@@ -1,0 +1,102 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e8090] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e8091] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Productos" [ref=e8092]':
+          - img [ref=e15]: chevron_right
+          - text: Inventario → Productos
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e8093] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e8094]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e8095]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e8096]:
+        - menubar [ref=e32]:
+          - menuitem [expanded] [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e8097] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - generic [ref=e51]:
+              - generic [ref=e54]:
+                - generic [ref=e55]: Buscar por código o nombre
+                - textbox "Buscar por código o nombre" [active] [ref=e8098]: TEST-QA-001
+                - img [ref=e59]: search
+              - generic [ref=e63] [cursor=pointer]:
+                - generic [ref=e64]: Categoría
+                - combobox "Categoría" [ref=e8099]:
+                  - img [ref=e72]
+              - generic [ref=e77] [cursor=pointer]:
+                - generic [ref=e78]: Estado
+                - combobox "Estado" [ref=e8100]:
+                  - img [ref=e86]
+              - generic [ref=e91] [cursor=pointer]:
+                - generic [ref=e92]: Proveedor
+                - combobox "Proveedor" [ref=e8101]:
+                  - img [ref=e100]
+              - button "Limpiar todos los filtros" [ref=e8473] [cursor=pointer]:
+                - img [ref=e8474]: filter_alt_off
+            - button "Nuevo producto" [ref=e8102]:
+              - img [ref=e105]: add
+              - generic [ref=e106]: Nuevo producto
+          - generic [ref=e7380]:
+            - table [ref=e7381]:
+              - rowgroup [ref=e7382]:
+                - row "Código Nombre Categoría Proveedor Stock Precio Costo unit. Estado" [ref=e8103]:
+                  - columnheader "Código" [ref=e8104]
+                  - columnheader "Nombre" [ref=e8105]
+                  - columnheader "Categoría" [ref=e8106]
+                  - columnheader "Proveedor" [ref=e8107]
+                  - columnheader "Stock" [ref=e8108]
+                  - columnheader "Precio" [ref=e8109]
+                  - columnheader "Costo unit." [ref=e8110]
+                  - columnheader "Estado" [ref=e8111]
+                  - columnheader [ref=e7392]
+              - rowgroup [ref=e7393]:
+                - 'row "TEST-QA-001 Producto Prueba QA Lubricantes y Químicos Agroquímica y Fertilizantes del Valle S.A. Sin stock · Mínimo: 5 $150.00 $90.00 Disponible Registrar movimiento para Producto Prueba QA" [ref=e8477] [cursor=pointer]':
+                  - cell "TEST-QA-001" [ref=e8478]
+                  - cell "Producto Prueba QA" [ref=e8479]
+                  - cell "Lubricantes y Químicos" [ref=e8480]
+                  - cell "Agroquímica y Fertilizantes del Valle S.A." [ref=e8481]
+                  - 'cell "Sin stock · Mínimo: 5" [ref=e8482]':
+                    - 'status "Sin stock · Mínimo: 5" [ref=e8484]': "0"
+                  - cell "$150.00" [ref=e8485]
+                  - cell "$90.00" [ref=e8486]
+                  - cell "Disponible" [ref=e8487]:
+                    - generic [ref=e8488]: Disponible
+                  - cell "Registrar movimiento para Producto Prueba QA" [ref=e8489]:
+                    - button "Registrar movimiento para Producto Prueba QA" [ref=e8490]:
+                      - img [ref=e8491]: swap_vert
+            - group "Paginación de productos" [ref=e8452]:
+              - generic [ref=e7736]:
+                - generic [ref=e7737]:
+                  - generic [ref=e7738]: "Items per page:"
+                  - combobox "Items per page:" [ref=e8453] [cursor=pointer]:
+                    - generic [ref=e7744]:
+                      - generic [ref=e7746]: "20"
+                      - img [ref=e7749]
+                - generic [ref=e7752]:
+                  - status [ref=e7753]: 1 – 1 of 1
+                  - button "Previous page" [disabled] [ref=e8454]:
+                    - img [ref=e7755]
+                  - button "Next page" [disabled] [ref=e8455]:
+                    - img [ref=e7760]

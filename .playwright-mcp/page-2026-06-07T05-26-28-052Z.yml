@@ -1,0 +1,150 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Productos" [ref=e35]':
+          - img [ref=e36]: chevron_right
+          - text: Inventario → Productos
+      - generic [ref=e14]:
+        - button "Notificaciones" [ref=e15] [cursor=pointer]:
+          - img [ref=e16]: notifications_none
+        - button "Menú de usuario" [ref=e19]:
+          - img [ref=e20]: arrow_drop_down
+          - generic [ref=e21]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e37]': ADMIN
+    - generic [ref=e26]:
+      - navigation "Navegación principal" [ref=e29]:
+        - menubar [ref=e30]:
+          - menuitem [expanded] [ref=e38] [cursor=pointer]:
+            - img [ref=e39]: inventory_2
+          - menuitem [ref=e40] [cursor=pointer]:
+            - img [ref=e41]: shopping_cart
+          - menuitem [ref=e42] [cursor=pointer]:
+            - img [ref=e43]: point_of_sale
+          - menuitem [ref=e44] [cursor=pointer]:
+            - img [ref=e45]: bar_chart
+          - menuitem [ref=e46] [cursor=pointer]:
+            - img [ref=e47]: manage_accounts
+        - button "Expandir menú" [ref=e48] [cursor=pointer]:
+          - img [ref=e33]: chevron_right
+      - main [ref=e34]:
+        - generic [ref=e51]:
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - generic [ref=e56]:
+                - generic [ref=e57]: Buscar por código o nombre
+                - textbox "Buscar por código o nombre" [ref=e59]
+                - img [ref=e61]: search
+              - generic [ref=e63]:
+                - generic [ref=e65] [cursor=pointer]:
+                  - generic [ref=e66]: Categoría
+                  - combobox "Categoría" [expanded] [active] [ref=e68]:
+                    - generic [ref=e69]:
+                      - generic [ref=e644]: Calzado Industrial
+                      - img [ref=e74]
+                - listbox "Categoría" [ref=e656]:
+                  - option "Todas" [ref=e562] [cursor=pointer]:
+                    - generic [ref=e563]: Todas
+                  - option "(editado)" [ref=e564] [cursor=pointer]:
+                    - generic [ref=e565]: (editado)
+                  - option "Calzado Industrial" [selected] [ref=e566] [cursor=pointer]:
+                    - generic [ref=e567]: Calzado Industrial
+                  - option "Cat-Int-23178" [ref=e568] [cursor=pointer]:
+                    - generic [ref=e569]: Cat-Int-23178
+                  - option "Cat-Int-35904" [ref=e570] [cursor=pointer]:
+                    - generic [ref=e571]: Cat-Int-35904
+                  - option "Cat-Int-40143" [ref=e572] [cursor=pointer]:
+                    - generic [ref=e573]: Cat-Int-40143
+                  - option "Cat-Int-57543" [ref=e574] [cursor=pointer]:
+                    - generic [ref=e575]: Cat-Int-57543
+                  - option "Cat-Int-94230" [ref=e576] [cursor=pointer]:
+                    - generic [ref=e577]: Cat-Int-94230
+                  - option "Cat-Mgr-R24138" [ref=e578] [cursor=pointer]:
+                    - generic [ref=e579]: Cat-Mgr-R24138
+                  - option "Cat-Mgr-R36816" [ref=e580] [cursor=pointer]:
+                    - generic [ref=e581]: Cat-Mgr-R36816
+                  - option "Cat-Mgr-R41075" [ref=e582] [cursor=pointer]:
+                    - generic [ref=e583]: Cat-Mgr-R41075
+                  - option "Cat-Mgr-R58523" [ref=e584] [cursor=pointer]:
+                    - generic [ref=e585]: Cat-Mgr-R58523
+                  - option "Cat-Mgr-R95214" [ref=e586] [cursor=pointer]:
+                    - generic [ref=e587]: Cat-Mgr-R95214
+                  - option "Climatización y Ventilación" [ref=e588] [cursor=pointer]:
+                    - generic [ref=e589]: Climatización y Ventilación
+                  - option "Computación y Periféricos" [ref=e590] [cursor=pointer]:
+                    - generic [ref=e591]: Computación y Periféricos
+                  - option "Electricidad e Iluminación" [ref=e592] [cursor=pointer]:
+                    - generic [ref=e593]: Electricidad e Iluminación
+                  - option "Electrodomésticos de Línea Blanca" [ref=e594] [cursor=pointer]:
+                    - generic [ref=e595]: Electrodomésticos de Línea Blanca
+                  - option "Electrodomésticos de Línea Café" [ref=e596] [cursor=pointer]:
+                    - generic [ref=e597]: Electrodomésticos de Línea Café
+                  - option "Electrónica" [ref=e598] [cursor=pointer]:
+                    - generic [ref=e599]: Electrónica
+                  - option "Electrónica de Consumo" [ref=e600] [cursor=pointer]:
+                    - generic [ref=e601]: Electrónica de Consumo
+                  - option "Embalaje e Insumos Logísticos" [ref=e602] [cursor=pointer]:
+                    - generic [ref=e603]: Embalaje e Insumos Logísticos
+                  - option "Equipos de Almacenamiento" [ref=e604] [cursor=pointer]:
+                    - generic [ref=e605]: Equipos de Almacenamiento
+                  - option "Equipos de Protección Personal" [ref=e606] [cursor=pointer]:
+                    - generic [ref=e607]: Equipos de Protección Personal
+                  - option "Equipos de Transporte Interno" [ref=e608] [cursor=pointer]:
+                    - generic [ref=e609]: Equipos de Transporte Interno
+                  - option "Herramientas Eléctricas" [ref=e610] [cursor=pointer]:
+                    - generic [ref=e611]: Herramientas Eléctricas
+                  - option "Herramientas Manuales" [ref=e612] [cursor=pointer]:
+                    - generic [ref=e613]: Herramientas Manuales
+                  - option "Jardinería y Exteriores" [ref=e614] [cursor=pointer]:
+                    - generic [ref=e615]: Jardinería y Exteriores
+                  - option "Lubricantes y Químicos" [ref=e616] [cursor=pointer]:
+                    - generic [ref=e617]: Lubricantes y Químicos
+                  - option "Material de Construcción" [ref=e618] [cursor=pointer]:
+                    - generic [ref=e619]: Material de Construcción
+                  - option "Medición y Calibración" [ref=e620] [cursor=pointer]:
+                    - generic [ref=e621]: Medición y Calibración
+                  - option "Muebles de Oficina" [ref=e622] [cursor=pointer]:
+                    - generic [ref=e623]: Muebles de Oficina
+                  - option "Muebles para el Hogar" [ref=e624] [cursor=pointer]:
+                    - generic [ref=e625]: Muebles para el Hogar
+                  - option "Neumática e Hidráulica" [ref=e626] [cursor=pointer]:
+                    - generic [ref=e627]: Neumática e Hidráulica
+                  - option "Papelería y Oficina" [ref=e628] [cursor=pointer]:
+                    - generic [ref=e629]: Papelería y Oficina
+                  - option "Pinturas y Recubrimientos" [ref=e630] [cursor=pointer]:
+                    - generic [ref=e631]: Pinturas y Recubrimientos
+                  - option "Plomería y Sanitarios" [ref=e632] [cursor=pointer]:
+                    - generic [ref=e633]: Plomería y Sanitarios
+                  - option "Productos Farmacéuticos" [ref=e634] [cursor=pointer]:
+                    - generic [ref=e635]: Productos Farmacéuticos
+                  - option "Ropa de Trabajo y Uniformes" [ref=e636] [cursor=pointer]:
+                    - generic [ref=e637]: Ropa de Trabajo y Uniformes
+                  - option "Seguridad y Vigilancia" [ref=e638] [cursor=pointer]:
+                    - generic [ref=e639]: Seguridad y Vigilancia
+                  - option "Soldadura y Corte" [ref=e640] [cursor=pointer]:
+                    - generic [ref=e641]: Soldadura y Corte
+                  - option "Telefonía y Comunicaciones" [ref=e642] [cursor=pointer]:
+                    - generic [ref=e643]: Telefonía y Comunicaciones
+              - generic [ref=e79] [cursor=pointer]:
+                - generic [ref=e80]: Estado
+                - combobox "Estado" [ref=e82]:
+                  - img [ref=e88]
+              - generic [ref=e93] [cursor=pointer]:
+                - generic [ref=e94]: Proveedor
+                - combobox "Proveedor" [ref=e96]:
+                  - img [ref=e102]
+              - button "Limpiar todos los filtros" [ref=e645] [cursor=pointer]:
+                - img [ref=e646]: filter_alt_off
+            - button "Nuevo producto" [ref=e106]:
+              - img [ref=e107]: add
+              - generic [ref=e108]: Nuevo producto
+          - 'status "Sin resultados: Ningún registro coincide con los filtros aplicados." [ref=e651]':
+            - img [ref=e652]: search_off
+            - heading "Sin resultados" [level=3] [ref=e653]
+            - paragraph [ref=e654]: Ningún registro coincide con los filtros aplicados.

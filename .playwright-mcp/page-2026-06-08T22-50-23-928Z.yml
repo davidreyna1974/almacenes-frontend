@@ -1,0 +1,133 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Órdenes de compra
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - button [ref=e51] [cursor=pointer]:
+              - img [ref=e52]: arrow_back
+            - generic [ref=e55]:
+              - heading "OC-2026-0070" [level=2] [ref=e56]
+              - generic [ref=e57]: Pendiente
+            - generic [ref=e58]:
+              - button "Aprobar" [ref=e59]:
+                - img [ref=e60]: check_circle
+                - generic [ref=e61]: Aprobar
+              - button "Cancelar orden" [ref=e64]:
+                - img [ref=e65]: cancel
+                - generic [ref=e66]: Cancelar orden
+          - generic [ref=e69]:
+            - generic [ref=e70]:
+              - generic [ref=e71]:
+                - heading "Información de la orden" [level=3] [ref=e72]
+                - generic [ref=e73]:
+                  - generic [ref=e76] [cursor=pointer]:
+                    - generic [ref=e77]:
+                      - text: Proveedor
+                      - generic [ref=e78]: "*"
+                    - combobox "Proveedor" [ref=e80]:
+                      - generic [ref=e81]:
+                        - generic [ref=e83]: Ferretera Industrial del Norte S.A. de C.V.
+                        - img [ref=e86]
+                  - generic [ref=e91]:
+                    - generic [ref=e92]: Notas
+                    - textbox "Notas" [ref=e94]:
+                      - /placeholder: Observaciones opcionales
+                  - generic [ref=e96]:
+                    - button "Guardar cambios" [disabled]:
+                      - img: save
+                      - generic: Guardar cambios
+              - generic [ref=e97]:
+                - generic [ref=e98]:
+                  - heading "Líneas de detalle" [level=3] [ref=e99]
+                  - button "Agregar línea" [disabled]:
+                    - img: add
+                    - generic: Agregar línea
+                - generic [ref=e142]:
+                  - generic [ref=e145]:
+                    - generic [ref=e146]: Producto
+                    - combobox "Producto" [active] [ref=e148]: "[CONS-CEM50-016] — Cemento Portland Tipo I Saco 50kg"
+                  - generic [ref=e150]:
+                    - generic [ref=e153]:
+                      - generic [ref=e154]:
+                        - text: Cantidad
+                        - generic [ref=e155]: "*"
+                      - spinbutton "Cantidad" [ref=e157]: "1"
+                    - generic [ref=e161]:
+                      - generic [ref=e162]:
+                        - text: Precio unitario
+                        - generic [ref=e163]: "*"
+                      - generic: $
+                      - spinbutton "Precio unitario" [ref=e165]: "185"
+                  - generic [ref=e167]:
+                    - generic [ref=e168]: "Subtotal:"
+                    - generic [ref=e169]: $185.00
+                  - generic [ref=e170]:
+                    - button "Cancelar" [ref=e171]:
+                      - generic [ref=e172]: Cancelar
+                    - button "Agregar línea" [ref=e180]:
+                      - img [ref=e181]: add
+                      - generic [ref=e182]: Agregar línea
+                - table [ref=e108]:
+                  - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e109]:
+                    - columnheader "SKU" [ref=e110]
+                    - columnheader "Producto" [ref=e111]
+                    - columnheader "Cantidad" [ref=e112]
+                    - columnheader "Precio unitario" [ref=e113]
+                    - columnheader "Subtotal" [ref=e114]
+                    - columnheader [ref=e115]
+            - generic [ref=e116]:
+              - generic [ref=e117]:
+                - heading "Historial de estado" [level=3] [ref=e118]
+                - generic [ref=e119]:
+                  - generic [ref=e120]:
+                    - img [ref=e121]: add_circle
+                    - generic [ref=e122]:
+                      - generic [ref=e123]: Creada
+                      - generic [ref=e124]: admin
+                      - generic [ref=e125]: 08/06/2026 16:44
+                  - generic [ref=e126]:
+                    - img [ref=e127]: check_circle
+                    - generic [ref=e128]:
+                      - generic [ref=e129]: Aprobada
+                      - generic [ref=e130]: Pendiente
+                  - generic [ref=e131]:
+                    - img [ref=e132]: done_all
+                    - generic [ref=e133]:
+                      - generic [ref=e134]: Recibida
+                      - generic [ref=e135]: Pendiente
+              - generic [ref=e136]:
+                - generic [ref=e137]: "Última modificación:"
+                - generic [ref=e138]: 08/06/2026 16:44

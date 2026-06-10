@@ -1,0 +1,5 @@
+[      72ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-KDRVKD3Y.js?v=9c0196f8:11231
+[     128ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8080/api/v1/purchases/suppliers/active:0
+[     132ms] [ERROR] ERROR HttpErrorResponse @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-QTYF2Q3W.js?v=9c0196f8:3169
+[   22567ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:4200/api/v1/auth/login:0
+[   28396ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ http://localhost:8080/api/v1/auth/login:0

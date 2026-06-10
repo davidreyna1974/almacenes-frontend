@@ -1,0 +1,23 @@
+- main [ref=e5]:
+  - generic [ref=e6]:
+    - generic [ref=e7]: Almacenes
+    - paragraph [ref=e8]: Inicia sesión para continuar
+  - alert [ref=e9]:
+    - img [ref=e10]: warning
+    - generic [ref=e11]: Tu sesión no es válida. Inicia sesión nuevamente.
+  - generic [ref=e12]:
+    - generic [ref=e15]:
+      - generic [ref=e16]:
+        - text: Usuario
+        - generic [ref=e17]: "*"
+      - textbox "Usuario" [ref=e19]
+      - img [ref=e21]: person_outline
+    - generic [ref=e25]:
+      - generic [ref=e26]:
+        - text: Contraseña
+        - generic [ref=e27]: "*"
+      - textbox "Contraseña" [ref=e29]
+      - button "Mostrar contraseña" [ref=e31] [cursor=pointer]:
+        - img [ref=e32]: visibility_off
+    - button "Iniciar sesión" [ref=e36]:
+      - generic [ref=e37]: Iniciar sesión

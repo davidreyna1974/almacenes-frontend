@@ -1,0 +1,101 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Órdenes de compra
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - heading "Órdenes de compra" [level=2] [ref=e51]
+            - generic [ref=e54]:
+              - generic [ref=e55]: Buscar
+              - img [ref=e57]: search
+              - textbox "Buscar" [ref=e59]:
+                - /placeholder: N° orden, proveedor, usuario…
+            - button "Nueva orden" [ref=e60]:
+              - img [ref=e61]: add
+              - generic [ref=e62]: Nueva orden
+          - generic [ref=e65]:
+            - tablist [ref=e68]:
+              - generic [ref=e69]:
+                - tab "Pendientes" [ref=e70] [cursor=pointer]:
+                  - generic [ref=e72]: Pendientes
+                - tab "Aprobadas 1" [active] [selected] [ref=e96] [cursor=pointer]:
+                  - generic [ref=e75]:
+                    - text: Aprobadas
+                    - generic [ref=e97]: "1"
+                - tab "Recibidas" [ref=e76] [cursor=pointer]:
+                  - generic [ref=e78]: Recibidas
+                - tab "Canceladas" [ref=e79] [cursor=pointer]:
+                  - generic [ref=e81]: Canceladas
+            - generic:
+              - tabpanel "Aprobadas 1"
+          - generic [ref=e82]:
+            - table [ref=e86]:
+              - row "N° Orden Proveedor Total Creado por Fecha Estado" [ref=e87]:
+                - columnheader "N° Orden" [ref=e88]
+                - columnheader "Proveedor" [ref=e89]
+                - columnheader "Total" [ref=e90]
+                - columnheader "Creado por" [ref=e91]
+                - columnheader "Fecha" [ref=e92]
+                - columnheader "Estado" [ref=e93]
+                - columnheader [ref=e94]
+              - row "OC-2026-0066 Seguridad y Vigilancia Electrónica S.A. $35,458.00 admin 07/06/2026 20:39 Aprobada" [ref=e98] [cursor=pointer]:
+                - cell "OC-2026-0066" [ref=e99]:
+                  - generic [ref=e100]: OC-2026-0066
+                - cell "Seguridad y Vigilancia Electrónica S.A." [ref=e101]:
+                  - generic [ref=e102]: Seguridad y Vigilancia Electrónica S.A.
+                - cell "$35,458.00" [ref=e103]
+                - cell "admin" [ref=e104]
+                - cell "07/06/2026 20:39" [ref=e105]
+                - cell "Aprobada" [ref=e106]:
+                  - generic [ref=e107]: Aprobada
+                - cell [ref=e108]:
+                  - button [ref=e109]:
+                    - img [ref=e110]: done_all
+                  - button [ref=e113]:
+                    - img [ref=e114]: cancel
+            - group [ref=e117]:
+              - generic [ref=e119]:
+                - generic [ref=e120]:
+                  - generic [ref=e121]: "Items per page:"
+                  - combobox "Items per page:" [ref=e126] [cursor=pointer]:
+                    - generic [ref=e127]:
+                      - generic [ref=e129]: "20"
+                      - img [ref=e132]
+                - generic [ref=e135]:
+                  - status [ref=e136]: 1 – 1 of 1
+                  - button "Previous page" [disabled] [ref=e137]:
+                    - img [ref=e138]
+                  - button "Next page" [disabled] [ref=e142]:
+                    - img [ref=e143]

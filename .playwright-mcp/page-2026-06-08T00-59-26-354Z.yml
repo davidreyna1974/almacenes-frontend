@@ -1,0 +1,130 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e564] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e565] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e566]:
+            - img [ref=e15]: chevron_right
+            - text: Compras → Órdenes de compra
+        - generic [ref=e16]:
+          - button [ref=e567] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e568]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: test_mgr
+              - generic [ref=e569]: MANAGER
+      - generic [ref=e28]:
+        - navigation [ref=e570]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+          - button [ref=e571] [cursor=pointer]:
+            - img [ref=e43]: chevron_right
+        - main [ref=e44]:
+          - generic [ref=e340]:
+            - generic [ref=e341]:
+              - button [ref=e342] [cursor=pointer]:
+                - img [ref=e343]: arrow_back
+              - generic [ref=e346]:
+                - heading [level=2] [ref=e572]: OC-2026-0062
+                - generic [ref=e348]: Aprobada
+              - generic [ref=e349]:
+                - button [ref=e573]:
+                  - img [ref=e522]: done_all
+                  - generic [ref=e523]: Recibir mercancía
+                - button [ref=e574]:
+                  - img [ref=e356]: cancel
+                  - generic [ref=e357]: Cancelar orden
+            - generic [ref=e360]:
+              - generic [ref=e361]:
+                - generic [ref=e362]:
+                  - heading [level=3] [ref=e575]: Información de la orden
+                  - generic [ref=e364]:
+                    - generic [ref=e365]:
+                      - generic:
+                        - generic:
+                          - generic [ref=e368]:
+                            - text: Proveedor
+                            - generic [ref=e369]: "*"
+                          - generic:
+                            - combobox [disabled]:
+                              - generic:
+                                - generic:
+                                  - generic: Distribuidora México Digital S.A. de C.V.
+                                - generic:
+                                  - generic:
+                                    - img
+                    - generic [ref=e380]:
+                      - generic:
+                        - generic:
+                          - generic [ref=e383]: Notas
+                          - textbox [disabled] [ref=e576]:
+                            - /placeholder: Observaciones opcionales
+                - generic [ref=e393]:
+                  - heading [level=3] [ref=e577]: Líneas de detalle
+                  - table [ref=e401]:
+                    - row [ref=e578]:
+                      - columnheader [ref=e579]: SKU
+                      - columnheader [ref=e580]: Producto
+                      - columnheader [ref=e581]: Cantidad
+                      - columnheader [ref=e582]: Precio unitario
+                      - columnheader [ref=e583]: Subtotal
+                      - columnheader [ref=e408]
+                    - row [ref=e584]:
+                      - cell [ref=e585]:
+                        - generic [ref=e538]: ELUM-CAB12-022
+                      - cell [ref=e586]:
+                        - generic [ref=e540]: Cable Duplex THW 12 AWG Rollo 100m
+                      - cell [ref=e587]: "10"
+                      - cell [ref=e588]: $450.00
+                      - cell [ref=e589]: $4,500.00
+                      - cell [ref=e544]
+                  - generic [ref=e426]:
+                    - generic [ref=e427]: "Total de la orden:"
+                    - generic [ref=e428]: $4,500.00
+              - generic [ref=e429]:
+                - generic [ref=e430]:
+                  - heading [level=3] [ref=e590]: Historial de estado
+                  - generic [ref=e432]:
+                    - generic [ref=e433]:
+                      - img [ref=e434]: add_circle
+                      - generic [ref=e435]:
+                        - generic [ref=e436]: Creada
+                        - generic [ref=e437]: test_mgr
+                        - generic [ref=e438]: 07/06/2026 18:58
+                    - generic [ref=e439]:
+                      - img [ref=e440]: check_circle
+                      - generic [ref=e441]:
+                        - generic [ref=e442]: Aprobada
+                        - generic [ref=e546]: test_mgr
+                        - generic [ref=e547]: 07/06/2026 18:59
+                    - generic [ref=e444]:
+                      - img [ref=e445]: done_all
+                      - generic [ref=e446]:
+                        - generic [ref=e447]: Recibida
+                        - generic [ref=e448]: Pendiente
+                - generic [ref=e548]:
+                  - generic [ref=e549]: "Última modificación:"
+                  - generic [ref=e550]: 07/06/2026 18:59
+  - dialog "Recibir mercancía" [ref=e594]:
+    - generic [ref=e597]:
+      - heading "Recibir mercancía" [level=2] [ref=e598]
+      - paragraph [ref=e600]: ¿Confirmar recepción? Se incrementará el stock de todos los productos de la orden.
+      - generic [ref=e601]:
+        - button "Cancelar" [active] [ref=e602]:
+          - generic [ref=e603]: Cancelar
+        - button "Recibir" [ref=e606]:
+          - generic [ref=e607]: Recibir

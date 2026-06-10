@@ -1,0 +1,136 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e528] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e529] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e530]:
+            - img [ref=e15]: chevron_right
+            - text: Compras → Órdenes de compra
+        - generic [ref=e16]:
+          - button [ref=e531] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e532]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - generic [ref=e533]: ADMIN
+      - generic [ref=e28]:
+        - navigation [ref=e534]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button [ref=e535] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e296]:
+            - generic [ref=e297]:
+              - button [ref=e298] [cursor=pointer]:
+                - img [ref=e299]: arrow_back
+              - generic [ref=e302]:
+                - heading [level=2] [ref=e536]: OC-2026-0058
+                - generic [ref=e304]: Aprobada
+              - generic [ref=e305]:
+                - button [ref=e537]:
+                  - img [ref=e478]: done_all
+                  - generic [ref=e479]: Recibir mercancía
+                - button [ref=e538]:
+                  - img [ref=e312]: cancel
+                  - generic [ref=e313]: Cancelar orden
+            - generic [ref=e316]:
+              - generic [ref=e317]:
+                - generic [ref=e318]:
+                  - heading [level=3] [ref=e539]: Información de la orden
+                  - generic [ref=e320]:
+                    - generic [ref=e321]:
+                      - generic:
+                        - generic:
+                          - generic [ref=e324]:
+                            - text: Proveedor
+                            - generic [ref=e325]: "*"
+                          - generic:
+                            - combobox [disabled]:
+                              - generic:
+                                - generic:
+                                  - generic: Químicos y Lubricantes Industriales S.A.
+                                - generic:
+                                  - generic:
+                                    - img
+                    - generic [ref=e336]:
+                      - generic:
+                        - generic:
+                          - generic [ref=e339]: Notas
+                          - textbox [disabled] [ref=e540]:
+                            - /placeholder: Observaciones opcionales
+                - generic [ref=e349]:
+                  - heading [level=3] [ref=e541]: Líneas de detalle
+                  - table [ref=e357]:
+                    - row [ref=e542]:
+                      - columnheader [ref=e543]: SKU
+                      - columnheader [ref=e544]: Producto
+                      - columnheader [ref=e545]: Cantidad
+                      - columnheader [ref=e546]: Precio unitario
+                      - columnheader [ref=e547]: Subtotal
+                      - columnheader [ref=e364]
+                    - row [ref=e548]:
+                      - cell [ref=e549]:
+                        - generic [ref=e494]: LUBR-ACE20-035
+                      - cell [ref=e550]:
+                        - generic [ref=e496]: Aceite Lubricante Motor 20W-50 Galón
+                      - cell [ref=e551]: "15"
+                      - cell [ref=e552]: $230.00
+                      - cell [ref=e553]: $3,450.00
+                      - cell [ref=e500]:
+                        - button [ref=e501] [cursor=pointer]:
+                          - img [ref=e502]: edit
+                        - button [ref=e505] [cursor=pointer]:
+                          - img [ref=e506]: delete
+                  - generic [ref=e382]:
+                    - generic [ref=e383]: "Total de la orden:"
+                    - generic [ref=e384]: $3,450.00
+              - generic [ref=e385]:
+                - generic [ref=e386]:
+                  - heading [level=3] [ref=e554]: Historial de estado
+                  - generic [ref=e388]:
+                    - generic [ref=e389]:
+                      - img [ref=e390]: add_circle
+                      - generic [ref=e391]:
+                        - generic [ref=e392]: Creada
+                        - generic [ref=e393]: admin
+                        - generic [ref=e394]: 07/06/2026 18:08
+                    - generic [ref=e395]:
+                      - img [ref=e396]: check_circle
+                      - generic [ref=e397]:
+                        - generic [ref=e398]: Aprobada
+                        - generic [ref=e510]: admin
+                        - generic [ref=e511]: 07/06/2026 18:09
+                    - generic [ref=e400]:
+                      - img [ref=e401]: done_all
+                      - generic [ref=e402]:
+                        - generic [ref=e403]: Recibida
+                        - generic [ref=e404]: Pendiente
+                - generic [ref=e512]:
+                  - generic [ref=e513]: "Última modificación:"
+                  - generic [ref=e514]: 07/06/2026 18:09
+  - dialog "Recibir mercancía" [ref=e558]:
+    - generic [ref=e561]:
+      - heading "Recibir mercancía" [level=2] [ref=e562]
+      - paragraph [ref=e564]: ¿Confirmar recepción? Se incrementará el stock de todos los productos de la orden.
+      - generic [ref=e565]:
+        - button "Cancelar" [active] [ref=e566]:
+          - generic [ref=e567]: Cancelar
+        - button "Recibir" [ref=e570]:
+          - generic [ref=e571]: Recibir

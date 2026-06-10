@@ -1,0 +1,134 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e2222] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e2223] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Productos" [ref=e2598]':
+          - img [ref=e15]: chevron_right
+          - text: Inventario → Productos
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e2225] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e2226]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e2227]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e2228]:
+        - menubar [ref=e32]:
+          - menuitem [expanded] [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e2229] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e2600]:
+          - generic [ref=e2601]:
+            - generic [ref=e2602]:
+              - generic [ref=e2605]:
+                - generic [ref=e2606]: Buscar por código o nombre
+                - textbox "Buscar por código o nombre" [ref=e2608]
+                - img [ref=e2610]: search
+              - generic [ref=e2614] [cursor=pointer]:
+                - generic [ref=e2615]: Categoría
+                - combobox "Categoría" [ref=e2617]:
+                  - generic [ref=e2618]:
+                    - generic [ref=e2620]: Herramientas Eléctricas
+                    - img [ref=e2623]
+              - generic [ref=e2628] [cursor=pointer]:
+                - generic [ref=e2629]: Estado
+                - combobox "Estado" [ref=e2631]:
+                  - img [ref=e2637]
+              - generic [ref=e2642] [cursor=pointer]:
+                - generic [ref=e2643]: Proveedor
+                - combobox "Proveedor" [ref=e2645]:
+                  - img [ref=e2651]
+              - button "Limpiar todos los filtros" [ref=e2654] [cursor=pointer]:
+                - img [ref=e2655]: filter_alt_off
+            - button "Nuevo producto" [ref=e2659]:
+              - img [ref=e2660]: add
+              - generic [ref=e2661]: Nuevo producto
+          - generic [ref=e2664]:
+            - table [ref=e2665]:
+              - rowgroup [ref=e2666]:
+                - row "Código Nombre Categoría Proveedor Stock Precio Estado" [ref=e2667]:
+                  - columnheader "Código" [ref=e2668]
+                  - columnheader "Nombre" [ref=e2669]
+                  - columnheader "Categoría" [ref=e2670]
+                  - columnheader "Proveedor" [ref=e2671]
+                  - columnheader "Stock" [ref=e2672]
+                  - columnheader "Precio" [ref=e2673]
+                  - columnheader "Estado" [ref=e2674]
+                  - columnheader [ref=e2675]
+              - rowgroup [ref=e2676]:
+                - 'row "HELEC-AMO-015 Amoladora Angular 4.5\" 1400W Herramientas Eléctricas Herramientas y Maquinaria del Pacífico S.A. Stock OK — actual: 55, mínimo: 12 $980.00 Disponible Registrar movimiento para Amoladora Angular 4.5\" 1400W Ver o editar Amoladora Angular 4.5\" 1400W" [ref=e2677] [cursor=pointer]':
+                  - cell "HELEC-AMO-015" [ref=e2678]
+                  - cell "Amoladora Angular 4.5\" 1400W" [ref=e2679]
+                  - cell "Herramientas Eléctricas" [ref=e2680]
+                  - cell "Herramientas y Maquinaria del Pacífico S.A." [ref=e2681]
+                  - 'cell "Stock OK — actual: 55, mínimo: 12" [ref=e2682]':
+                    - 'status "Stock OK — actual: 55, mínimo: 12" [ref=e2684]': "55"
+                  - cell "$980.00" [ref=e2685]
+                  - cell "Disponible" [ref=e2686]:
+                    - generic [ref=e2687]: Disponible
+                  - cell "Registrar movimiento para Amoladora Angular 4.5\" 1400W Ver o editar Amoladora Angular 4.5\" 1400W" [ref=e2688]:
+                    - button "Registrar movimiento para Amoladora Angular 4.5\" 1400W" [ref=e2689]:
+                      - img [ref=e2690]: swap_vert
+                    - button "Ver o editar Amoladora Angular 4.5\" 1400W" [ref=e2693]:
+                      - img [ref=e2694]: edit
+                - 'row "HELEC-SIE-048 Sierra Circular 7-1/4\" 1800W Herramientas Eléctricas Herramientas y Maquinaria del Pacífico S.A. Bajo stock — actual: 3, mínimo: 8 $2,850.00 Disponible Registrar movimiento para Sierra Circular 7-1/4\" 1800W Ver o editar Sierra Circular 7-1/4\" 1800W" [ref=e2697] [cursor=pointer]':
+                  - cell "HELEC-SIE-048" [ref=e2698]
+                  - cell "Sierra Circular 7-1/4\" 1800W" [ref=e2699]
+                  - cell "Herramientas Eléctricas" [ref=e2700]
+                  - cell "Herramientas y Maquinaria del Pacífico S.A." [ref=e2701]
+                  - 'cell "Bajo stock — actual: 3, mínimo: 8" [ref=e2702]':
+                    - 'status "Bajo stock — actual: 3, mínimo: 8" [ref=e2704]': "3"
+                  - cell "$2,850.00" [ref=e2705]
+                  - cell "Disponible" [ref=e2706]:
+                    - generic [ref=e2707]: Disponible
+                  - cell "Registrar movimiento para Sierra Circular 7-1/4\" 1800W Ver o editar Sierra Circular 7-1/4\" 1800W" [ref=e2708]:
+                    - button "Registrar movimiento para Sierra Circular 7-1/4\" 1800W" [ref=e2709]:
+                      - img [ref=e2710]: swap_vert
+                    - button "Ver o editar Sierra Circular 7-1/4\" 1800W" [ref=e2713]:
+                      - img [ref=e2714]: edit
+                - 'row "HELEC-TAL-014 Taladro Percutor 13mm 900W Herramientas Eléctricas Herramientas y Maquinaria del Pacífico S.A. Stock OK — actual: 40, mínimo: 10 $1,450.00 Disponible Registrar movimiento para Taladro Percutor 13mm 900W Ver o editar Taladro Percutor 13mm 900W" [ref=e2717] [cursor=pointer]':
+                  - cell "HELEC-TAL-014" [ref=e2718]
+                  - cell "Taladro Percutor 13mm 900W" [ref=e2719]
+                  - cell "Herramientas Eléctricas" [ref=e2720]
+                  - cell "Herramientas y Maquinaria del Pacífico S.A." [ref=e2721]
+                  - 'cell "Stock OK — actual: 40, mínimo: 10" [ref=e2722]':
+                    - 'status "Stock OK — actual: 40, mínimo: 10" [ref=e2724]': "40"
+                  - cell "$1,450.00" [ref=e2725]
+                  - cell "Disponible" [ref=e2726]:
+                    - generic [ref=e2727]: Disponible
+                  - cell "Registrar movimiento para Taladro Percutor 13mm 900W Ver o editar Taladro Percutor 13mm 900W" [ref=e2728]:
+                    - button "Registrar movimiento para Taladro Percutor 13mm 900W" [ref=e2729]:
+                      - img [ref=e2730]: swap_vert
+                    - button "Ver o editar Taladro Percutor 13mm 900W" [ref=e2733]:
+                      - img [ref=e2734]: edit
+            - group "Paginación de productos" [ref=e2737]:
+              - generic [ref=e2739]:
+                - generic [ref=e2740]:
+                  - generic [ref=e2741]: "Items per page:"
+                  - combobox "Items per page:" [ref=e2746] [cursor=pointer]:
+                    - generic [ref=e2747]:
+                      - generic [ref=e2749]: "20"
+                      - img [ref=e2752]
+                - generic [ref=e2755]:
+                  - status [ref=e2756]: 1 – 3 of 3
+                  - button "Previous page" [disabled] [ref=e2757]:
+                    - img [ref=e2758]
+                  - button "Next page" [disabled] [ref=e2762]:
+                    - img [ref=e2763]

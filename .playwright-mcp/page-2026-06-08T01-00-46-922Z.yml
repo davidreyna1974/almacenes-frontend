@@ -1,0 +1,106 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e611] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e612] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Nueva orden" [ref=e701]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Nueva orden
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e614] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e615]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: test_mgr
+            - 'generic "Rol: MANAGER" [ref=e616]': MANAGER
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e617]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+        - button "Expandir menú" [ref=e618] [cursor=pointer]:
+          - img [ref=e43]: chevron_right
+      - main [ref=e44]:
+        - generic [ref=e703]:
+          - generic [ref=e704]:
+            - button [ref=e705] [cursor=pointer]:
+              - img [ref=e706]: arrow_back
+            - heading "Nueva orden de compra" [level=2] [ref=e710]
+          - generic [ref=e712]:
+            - generic [ref=e713]:
+              - heading "Información de la orden" [level=3] [ref=e714]
+              - generic [ref=e715]:
+                - generic [ref=e718] [cursor=pointer]:
+                  - generic [ref=e719]:
+                    - text: Proveedor
+                    - generic [ref=e720]: "*"
+                  - combobox "Proveedor" [ref=e722]:
+                    - generic [ref=e723]:
+                      - generic [ref=e881]: Agroquímica y Fertilizantes del Valle S.A.
+                      - img [ref=e728]
+                - generic [ref=e733]:
+                  - generic [ref=e734]: Notas
+                  - textbox "Notas" [ref=e736]:
+                    - /placeholder: Observaciones opcionales
+            - generic [ref=e738]:
+              - generic [ref=e739]:
+                - heading "Líneas de detalle" [level=3] [ref=e740]
+                - button "Agregar línea" [disabled]:
+                  - img: add
+                  - generic: Agregar línea
+              - generic [ref=e884]:
+                - generic [ref=e885]:
+                  - generic [ref=e887]:
+                    - generic [ref=e888]: Producto
+                    - combobox "Producto" [expanded] [active] [ref=e890]: cemento
+                  - listbox "Producto" [ref=e918]:
+                    - 'option "[CONS-CEM50-016] Cemento Portland Tipo I Saco 50kg disponible: 500" [ref=e919] [cursor=pointer]':
+                      - generic [ref=e920]:
+                        - text: "[CONS-CEM50-016] Cemento Portland Tipo I Saco 50kg"
+                        - generic [ref=e921]: "disponible: 500"
+                - generic [ref=e892]:
+                  - generic [ref=e895]:
+                    - generic [ref=e896]:
+                      - text: Cantidad
+                      - generic [ref=e897]: "*"
+                    - spinbutton "Cantidad" [ref=e899]: "1"
+                  - generic [ref=e903]:
+                    - generic [ref=e904]:
+                      - text: Precio unitario
+                      - generic [ref=e905]: "*"
+                    - generic: $
+                    - spinbutton "Precio unitario" [ref=e907]
+                - generic [ref=e909]:
+                  - generic [ref=e910]: "Subtotal:"
+                  - generic [ref=e911]: $0.00
+                - generic [ref=e912]:
+                  - button "Cancelar" [ref=e913]:
+                    - generic [ref=e914]: Cancelar
+                  - button "Agregar línea" [disabled]:
+                    - img: add
+                    - generic: Agregar línea
+              - table [ref=e749]:
+                - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e750]:
+                  - columnheader "SKU" [ref=e751]
+                  - columnheader "Producto" [ref=e752]
+                  - columnheader "Cantidad" [ref=e753]
+                  - columnheader "Precio unitario" [ref=e754]
+                  - columnheader "Subtotal" [ref=e755]
+                  - columnheader [ref=e756]
+            - generic [ref=e757]:
+              - button "Crear orden" [disabled]:
+                - img: save
+                - generic: Crear orden
+              - button "Cancelar" [ref=e758]:
+                - generic [ref=e759]: Cancelar

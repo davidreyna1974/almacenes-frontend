@@ -1,0 +1,385 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Productos" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Inventario → Productos
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [expanded] [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - generic [ref=e51]:
+              - generic [ref=e54]:
+                - generic [ref=e55]: Buscar por código o nombre
+                - textbox "Buscar por código o nombre" [ref=e57]
+                - img [ref=e59]: search
+              - generic [ref=e63] [cursor=pointer]:
+                - generic [ref=e64]: Categoría
+                - combobox "Categoría" [ref=e66]:
+                  - img [ref=e72]
+              - generic [ref=e77] [cursor=pointer]:
+                - generic [ref=e78]: Estado
+                - combobox "Estado" [ref=e80]:
+                  - img [ref=e86]
+              - generic [ref=e91] [cursor=pointer]:
+                - generic [ref=e92]: Proveedor
+                - combobox "Proveedor" [ref=e94]:
+                  - img [ref=e100]
+            - button "Nuevo producto" [ref=e104]:
+              - img [ref=e105]: add
+              - generic [ref=e106]: Nuevo producto
+          - generic [ref=e109]:
+            - table [ref=e110]:
+              - rowgroup [ref=e111]:
+                - row "Código Nombre Categoría Proveedor Stock Precio Estado" [ref=e112]:
+                  - columnheader "Código" [ref=e113]
+                  - columnheader "Nombre" [ref=e114]
+                  - columnheader "Categoría" [ref=e115]
+                  - columnheader "Proveedor" [ref=e116]
+                  - columnheader "Stock" [ref=e117]
+                  - columnheader "Precio" [ref=e118]
+                  - columnheader "Estado" [ref=e119]
+                  - columnheader [ref=e120]
+              - rowgroup [ref=e121]:
+                - 'row "LUBR-ACE20-035 Aceite Lubricante Motor 20W-50 Galón Lubricantes y Químicos Químicos y Lubricantes Industriales S.A. Stock OK — actual: 120, mínimo: 30 $380.00 Disponible Registrar movimiento para Aceite Lubricante Motor 20W-50 Galón Ver o editar Aceite Lubricante Motor 20W-50 Galón" [ref=e1074] [cursor=pointer]':
+                  - cell "LUBR-ACE20-035" [ref=e1075]
+                  - cell "Aceite Lubricante Motor 20W-50 Galón" [ref=e1076]
+                  - cell "Lubricantes y Químicos" [ref=e1077]
+                  - cell "Químicos y Lubricantes Industriales S.A." [ref=e1078]
+                  - 'cell "Stock OK — actual: 120, mínimo: 30" [ref=e1079]':
+                    - 'status "Stock OK — actual: 120, mínimo: 30" [ref=e1081]': "120"
+                  - cell "$380.00" [ref=e1082]
+                  - cell "Disponible" [ref=e1083]:
+                    - generic [ref=e1084]: Disponible
+                  - cell "Registrar movimiento para Aceite Lubricante Motor 20W-50 Galón Ver o editar Aceite Lubricante Motor 20W-50 Galón" [ref=e1085]:
+                    - button "Registrar movimiento para Aceite Lubricante Motor 20W-50 Galón" [ref=e1086]:
+                      - img [ref=e1087]: swap_vert
+                    - button "Ver o editar Aceite Lubricante Motor 20W-50 Galón" [ref=e1090]:
+                      - img [ref=e1091]: edit
+                - 'row "HELEC-AMO-015 Amoladora Angular 4.5\" 1400W Herramientas Eléctricas Herramientas y Maquinaria del Pacífico S.A. Stock OK — actual: 55, mínimo: 12 $980.00 Disponible Registrar movimiento para Amoladora Angular 4.5\" 1400W Ver o editar Amoladora Angular 4.5\" 1400W" [ref=e1094] [cursor=pointer]':
+                  - cell "HELEC-AMO-015" [ref=e1095]
+                  - cell "Amoladora Angular 4.5\" 1400W" [ref=e1096]
+                  - cell "Herramientas Eléctricas" [ref=e1097]
+                  - cell "Herramientas y Maquinaria del Pacífico S.A." [ref=e1098]
+                  - 'cell "Stock OK — actual: 55, mínimo: 12" [ref=e1099]':
+                    - 'status "Stock OK — actual: 55, mínimo: 12" [ref=e1101]': "55"
+                  - cell "$980.00" [ref=e1102]
+                  - cell "Disponible" [ref=e1103]:
+                    - generic [ref=e1104]: Disponible
+                  - cell "Registrar movimiento para Amoladora Angular 4.5\" 1400W Ver o editar Amoladora Angular 4.5\" 1400W" [ref=e1105]:
+                    - button "Registrar movimiento para Amoladora Angular 4.5\" 1400W" [ref=e1106]:
+                      - img [ref=e1107]: swap_vert
+                    - button "Ver o editar Amoladora Angular 4.5\" 1400W" [ref=e1110]:
+                      - img [ref=e1111]: edit
+                - 'row "PINT-BAR5G-049 Barniz marino 5 galones para exteriores Pinturas y Recubrimientos Constructora y Suministros del Bajío S.A. Bajo stock — actual: 2, mínimo: 10 $2,100.00 Disponible Registrar movimiento para Barniz marino 5 galones para exteriores Ver o editar Barniz marino 5 galones para exteriores" [ref=e1114] [cursor=pointer]':
+                  - cell "PINT-BAR5G-049" [ref=e1115]
+                  - cell "Barniz marino 5 galones para exteriores" [ref=e1116]
+                  - cell "Pinturas y Recubrimientos" [ref=e1117]
+                  - cell "Constructora y Suministros del Bajío S.A." [ref=e1118]
+                  - 'cell "Bajo stock — actual: 2, mínimo: 10" [ref=e1119]':
+                    - 'status "Bajo stock — actual: 2, mínimo: 10" [ref=e1121]': "2"
+                  - cell "$2,100.00" [ref=e1122]
+                  - cell "Disponible" [ref=e1123]:
+                    - generic [ref=e1124]: Disponible
+                  - cell "Registrar movimiento para Barniz marino 5 galones para exteriores Ver o editar Barniz marino 5 galones para exteriores" [ref=e1125]:
+                    - button "Registrar movimiento para Barniz marino 5 galones para exteriores" [ref=e1126]:
+                      - img [ref=e1127]: swap_vert
+                    - button "Ver o editar Barniz marino 5 galones para exteriores" [ref=e1130]:
+                      - img [ref=e1131]: edit
+                - 'row "ELEC-SP40-002 Bocina Inalámbrica Bluetooth 40W Electrónica de Consumo Distribuidora México Digital S.A. de C.V. Stock OK — actual: 80, mínimo: 15 $1,299.00 Disponible Registrar movimiento para Bocina Inalámbrica Bluetooth 40W Ver o editar Bocina Inalámbrica Bluetooth 40W" [ref=e1134] [cursor=pointer]':
+                  - cell "ELEC-SP40-002" [ref=e1135]
+                  - cell "Bocina Inalámbrica Bluetooth 40W" [ref=e1136]
+                  - cell "Electrónica de Consumo" [ref=e1137]
+                  - cell "Distribuidora México Digital S.A. de C.V." [ref=e1138]
+                  - 'cell "Stock OK — actual: 80, mínimo: 15" [ref=e1139]':
+                    - 'status "Stock OK — actual: 80, mínimo: 15" [ref=e1141]': "80"
+                  - cell "$1,299.00" [ref=e1142]
+                  - cell "Disponible" [ref=e1143]:
+                    - generic [ref=e1144]: Disponible
+                  - cell "Registrar movimiento para Bocina Inalámbrica Bluetooth 40W Ver o editar Bocina Inalámbrica Bluetooth 40W" [ref=e1145]:
+                    - button "Registrar movimiento para Bocina Inalámbrica Bluetooth 40W" [ref=e1146]:
+                      - img [ref=e1147]: swap_vert
+                    - button "Ver o editar Bocina Inalámbrica Bluetooth 40W" [ref=e1150]:
+                      - img [ref=e1151]: edit
+                - 'row "PAPE-BOL-030 Bolígrafo Retráctil Azul Caja x 50 Papelería y Oficina Papelería y Artículos de Oficina Nacional S.A. Stock OK — actual: 80, mínimo: 20 $195.00 Disponible Registrar movimiento para Bolígrafo Retráctil Azul Caja x 50 Ver o editar Bolígrafo Retráctil Azul Caja x 50" [ref=e1154] [cursor=pointer]':
+                  - cell "PAPE-BOL-030" [ref=e1155]
+                  - cell "Bolígrafo Retráctil Azul Caja x 50" [ref=e1156]
+                  - cell "Papelería y Oficina" [ref=e1157]
+                  - cell "Papelería y Artículos de Oficina Nacional S.A." [ref=e1158]
+                  - 'cell "Stock OK — actual: 80, mínimo: 20" [ref=e1159]':
+                    - 'status "Stock OK — actual: 80, mínimo: 20" [ref=e1161]': "80"
+                  - cell "$195.00" [ref=e1162]
+                  - cell "Disponible" [ref=e1163]:
+                    - generic [ref=e1164]: Disponible
+                  - cell "Registrar movimiento para Bolígrafo Retráctil Azul Caja x 50 Ver o editar Bolígrafo Retráctil Azul Caja x 50" [ref=e1165]:
+                    - button "Registrar movimiento para Bolígrafo Retráctil Azul Caja x 50" [ref=e1166]:
+                      - img [ref=e1167]: swap_vert
+                    - button "Ver o editar Bolígrafo Retráctil Azul Caja x 50" [ref=e1170]:
+                      - img [ref=e1171]: edit
+                - 'row "ELUM-CAB12-022 Cable Duplex THW 12 AWG Rollo 100m Electricidad e Iluminación Electro Industrial del Centro S.A. de C.V. Stock OK — actual: 60, mínimo: 15 $1,250.00 Disponible Registrar movimiento para Cable Duplex THW 12 AWG Rollo 100m Ver o editar Cable Duplex THW 12 AWG Rollo 100m" [ref=e1174] [cursor=pointer]':
+                  - cell "ELUM-CAB12-022" [ref=e1175]
+                  - cell "Cable Duplex THW 12 AWG Rollo 100m" [ref=e1176]
+                  - cell "Electricidad e Iluminación" [ref=e1177]
+                  - cell "Electro Industrial del Centro S.A. de C.V." [ref=e1178]
+                  - 'cell "Stock OK — actual: 60, mínimo: 15" [ref=e1179]':
+                    - 'status "Stock OK — actual: 60, mínimo: 15" [ref=e1181]': "60"
+                  - cell "$1,250.00" [ref=e1182]
+                  - cell "Disponible" [ref=e1183]:
+                    - generic [ref=e1184]: Disponible
+                  - cell "Registrar movimiento para Cable Duplex THW 12 AWG Rollo 100m Ver o editar Cable Duplex THW 12 AWG Rollo 100m" [ref=e1185]:
+                    - button "Registrar movimiento para Cable Duplex THW 12 AWG Rollo 100m" [ref=e1186]:
+                      - img [ref=e1187]: swap_vert
+                    - button "Ver o editar Cable Duplex THW 12 AWG Rollo 100m" [ref=e1190]:
+                      - img [ref=e1191]: edit
+                - 'row "CAFE-CAF-010 Cafetera Espresso Automática 19 bar Electrodomésticos de Línea Café Electro Industrial del Centro S.A. de C.V. Stock OK — actual: 35, mínimo: 8 $3,200.00 Disponible Registrar movimiento para Cafetera Espresso Automática 19 bar Ver o editar Cafetera Espresso Automática 19 bar" [ref=e1194] [cursor=pointer]':
+                  - cell "CAFE-CAF-010" [ref=e1195]
+                  - cell "Cafetera Espresso Automática 19 bar" [ref=e1196]
+                  - cell "Electrodomésticos de Línea Café" [ref=e1197]
+                  - cell "Electro Industrial del Centro S.A. de C.V." [ref=e1198]
+                  - 'cell "Stock OK — actual: 35, mínimo: 8" [ref=e1199]':
+                    - 'status "Stock OK — actual: 35, mínimo: 8" [ref=e1201]': "35"
+                  - cell "$3,200.00" [ref=e1202]
+                  - cell "Disponible" [ref=e1203]:
+                    - generic [ref=e1204]: Disponible
+                  - cell "Registrar movimiento para Cafetera Espresso Automática 19 bar Ver o editar Cafetera Espresso Automática 19 bar" [ref=e1205]:
+                    - button "Registrar movimiento para Cafetera Espresso Automática 19 bar" [ref=e1206]:
+                      - img [ref=e1207]: swap_vert
+                    - button "Ver o editar Cafetera Espresso Automática 19 bar" [ref=e1210]:
+                      - img [ref=e1211]: edit
+                - 'row "EMBA-CAJA-031 Caja de Cartón Corrugado 60x40x40 cm Embalaje e Insumos Logísticos Empaques y Embalajes del Sureste S.A. Stock OK — actual: 1000, mínimo: 200 $28.50 Disponible Registrar movimiento para Caja de Cartón Corrugado 60x40x40 cm Ver o editar Caja de Cartón Corrugado 60x40x40 cm" [ref=e1214] [cursor=pointer]':
+                  - cell "EMBA-CAJA-031" [ref=e1215]
+                  - cell "Caja de Cartón Corrugado 60x40x40 cm" [ref=e1216]
+                  - cell "Embalaje e Insumos Logísticos" [ref=e1217]
+                  - cell "Empaques y Embalajes del Sureste S.A." [ref=e1218]
+                  - 'cell "Stock OK — actual: 1000, mínimo: 200" [ref=e1219]':
+                    - 'status "Stock OK — actual: 1000, mínimo: 200" [ref=e1221]': "1000"
+                  - cell "$28.50" [ref=e1222]
+                  - cell "Disponible" [ref=e1223]:
+                    - generic [ref=e1224]: Disponible
+                  - cell "Registrar movimiento para Caja de Cartón Corrugado 60x40x40 cm Ver o editar Caja de Cartón Corrugado 60x40x40 cm" [ref=e1225]:
+                    - button "Registrar movimiento para Caja de Cartón Corrugado 60x40x40 cm" [ref=e1226]:
+                      - img [ref=e1227]: swap_vert
+                    - button "Ver o editar Caja de Cartón Corrugado 60x40x40 cm" [ref=e1230]:
+                      - img [ref=e1231]: edit
+                - 'row "SEGV-CAM4K-023 Cámara Domo IP 4K PoE Exterior Seguridad y Vigilancia Seguridad y Vigilancia Electrónica S.A. Stock OK — actual: 35, mínimo: 8 $2,850.00 Disponible Registrar movimiento para Cámara Domo IP 4K PoE Exterior Ver o editar Cámara Domo IP 4K PoE Exterior" [ref=e1234] [cursor=pointer]':
+                  - cell "SEGV-CAM4K-023" [ref=e1235]
+                  - cell "Cámara Domo IP 4K PoE Exterior" [ref=e1236]
+                  - cell "Seguridad y Vigilancia" [ref=e1237]
+                  - cell "Seguridad y Vigilancia Electrónica S.A." [ref=e1238]
+                  - 'cell "Stock OK — actual: 35, mínimo: 8" [ref=e1239]':
+                    - 'status "Stock OK — actual: 35, mínimo: 8" [ref=e1241]': "35"
+                  - cell "$2,850.00" [ref=e1242]
+                  - cell "Disponible" [ref=e1243]:
+                    - generic [ref=e1244]: Disponible
+                  - cell "Registrar movimiento para Cámara Domo IP 4K PoE Exterior Ver o editar Cámara Domo IP 4K PoE Exterior" [ref=e1245]:
+                    - button "Registrar movimiento para Cámara Domo IP 4K PoE Exterior" [ref=e1246]:
+                      - img [ref=e1247]: swap_vert
+                    - button "Ver o editar Cámara Domo IP 4K PoE Exterior" [ref=e1250]:
+                      - img [ref=e1251]: edit
+                - 'row "SOLD-MAS-041 Careta para Soldar Fotosensible Soldadura y Corte Soldadura y Equipos Industriales S.A. Stock OK — actual: 40, mínimo: 10 $950.00 Disponible Registrar movimiento para Careta para Soldar Fotosensible Ver o editar Careta para Soldar Fotosensible" [ref=e1254] [cursor=pointer]':
+                  - cell "SOLD-MAS-041" [ref=e1255]
+                  - cell "Careta para Soldar Fotosensible" [ref=e1256]
+                  - cell "Soldadura y Corte" [ref=e1257]
+                  - cell "Soldadura y Equipos Industriales S.A." [ref=e1258]
+                  - 'cell "Stock OK — actual: 40, mínimo: 10" [ref=e1259]':
+                    - 'status "Stock OK — actual: 40, mínimo: 10" [ref=e1261]': "40"
+                  - cell "$950.00" [ref=e1262]
+                  - cell "Disponible" [ref=e1263]:
+                    - generic [ref=e1264]: Disponible
+                  - cell "Registrar movimiento para Careta para Soldar Fotosensible Ver o editar Careta para Soldar Fotosensible" [ref=e1265]:
+                    - button "Registrar movimiento para Careta para Soldar Fotosensible" [ref=e1266]:
+                      - img [ref=e1267]: swap_vert
+                    - button "Ver o editar Careta para Soldar Fotosensible" [ref=e1270]:
+                      - img [ref=e1271]: edit
+                - 'row "EPP-CAS-033 Casco de Seguridad Industrial HDPE Blanco Equipos de Protección Personal Ropa de Protección y EPP S.A. de C.V. Stock OK — actual: 100, mínimo: 25 $185.00 Disponible Registrar movimiento para Casco de Seguridad Industrial HDPE Blanco Ver o editar Casco de Seguridad Industrial HDPE Blanco" [ref=e1274] [cursor=pointer]':
+                  - cell "EPP-CAS-033" [ref=e1275]
+                  - cell "Casco de Seguridad Industrial HDPE Blanco" [ref=e1276]
+                  - cell "Equipos de Protección Personal" [ref=e1277]
+                  - cell "Ropa de Protección y EPP S.A. de C.V." [ref=e1278]
+                  - 'cell "Stock OK — actual: 100, mínimo: 25" [ref=e1279]':
+                    - 'status "Stock OK — actual: 100, mínimo: 25" [ref=e1281]': "100"
+                  - cell "$185.00" [ref=e1282]
+                  - cell "Disponible" [ref=e1283]:
+                    - generic [ref=e1284]: Disponible
+                  - cell "Registrar movimiento para Casco de Seguridad Industrial HDPE Blanco Ver o editar Casco de Seguridad Industrial HDPE Blanco" [ref=e1285]:
+                    - button "Registrar movimiento para Casco de Seguridad Industrial HDPE Blanco" [ref=e1286]:
+                      - img [ref=e1287]: swap_vert
+                    - button "Ver o editar Casco de Seguridad Industrial HDPE Blanco" [ref=e1290]:
+                      - img [ref=e1291]: edit
+                - 'row "CONS-CEM50-016 Cemento Portland Tipo I Saco 50kg Material de Construcción Constructora y Suministros del Bajío S.A. Stock OK — actual: 500, mínimo: 100 $185.00 Disponible Registrar movimiento para Cemento Portland Tipo I Saco 50kg Ver o editar Cemento Portland Tipo I Saco 50kg" [ref=e1294] [cursor=pointer]':
+                  - cell "CONS-CEM50-016" [ref=e1295]
+                  - cell "Cemento Portland Tipo I Saco 50kg" [ref=e1296]
+                  - cell "Material de Construcción" [ref=e1297]
+                  - cell "Constructora y Suministros del Bajío S.A." [ref=e1298]
+                  - 'cell "Stock OK — actual: 500, mínimo: 100" [ref=e1299]':
+                    - 'status "Stock OK — actual: 500, mínimo: 100" [ref=e1301]': "500"
+                  - cell "$185.00" [ref=e1302]
+                  - cell "Disponible" [ref=e1303]:
+                    - generic [ref=e1304]: Disponible
+                  - cell "Registrar movimiento para Cemento Portland Tipo I Saco 50kg Ver o editar Cemento Portland Tipo I Saco 50kg" [ref=e1305]:
+                    - button "Registrar movimiento para Cemento Portland Tipo I Saco 50kg" [ref=e1306]:
+                      - img [ref=e1307]: swap_vert
+                    - button "Ver o editar Cemento Portland Tipo I Saco 50kg" [ref=e1310]:
+                      - img [ref=e1311]: edit
+                - 'row "HMAN-DES-013 Desarmador de Impacto Manual 6 en 1 Herramientas Manuales Ferretera Industrial del Norte S.A. de C.V. Stock OK — actual: 90, mínimo: 20 $320.00 Disponible Registrar movimiento para Desarmador de Impacto Manual 6 en 1 Ver o editar Desarmador de Impacto Manual 6 en 1" [ref=e1314] [cursor=pointer]':
+                  - cell "HMAN-DES-013" [ref=e1315]
+                  - cell "Desarmador de Impacto Manual 6 en 1" [ref=e1316]
+                  - cell "Herramientas Manuales" [ref=e1317]
+                  - cell "Ferretera Industrial del Norte S.A. de C.V." [ref=e1318]
+                  - 'cell "Stock OK — actual: 90, mínimo: 20" [ref=e1319]':
+                    - 'status "Stock OK — actual: 90, mínimo: 20" [ref=e1321]': "90"
+                  - cell "$320.00" [ref=e1322]
+                  - cell "Disponible" [ref=e1323]:
+                    - generic [ref=e1324]: Disponible
+                  - cell "Registrar movimiento para Desarmador de Impacto Manual 6 en 1 Ver o editar Desarmador de Impacto Manual 6 en 1" [ref=e1325]:
+                    - button "Registrar movimiento para Desarmador de Impacto Manual 6 en 1" [ref=e1326]:
+                      - img [ref=e1327]: swap_vert
+                    - button "Ver o editar Desarmador de Impacto Manual 6 en 1" [ref=e1330]:
+                      - img [ref=e1331]: edit
+                - 'row "LIMP-DES5L-027 Desinfectante Multiusos Cítrico 5L Artículos de Limpieza Limpieza Profesional e Higiene S.A. de C.V. Stock OK — actual: 200, mínimo: 40 $185.00 Disponible Registrar movimiento para Desinfectante Multiusos Cítrico 5L Ver o editar Desinfectante Multiusos Cítrico 5L" [ref=e1334] [cursor=pointer]':
+                  - cell "LIMP-DES5L-027" [ref=e1335]
+                  - cell "Desinfectante Multiusos Cítrico 5L" [ref=e1336]
+                  - cell "Artículos de Limpieza" [ref=e1337]
+                  - cell "Limpieza Profesional e Higiene S.A. de C.V." [ref=e1338]
+                  - 'cell "Stock OK — actual: 200, mínimo: 40" [ref=e1339]':
+                    - 'status "Stock OK — actual: 200, mínimo: 40" [ref=e1341]': "200"
+                  - cell "$185.00" [ref=e1342]
+                  - cell "Disponible" [ref=e1343]:
+                    - generic [ref=e1344]: Disponible
+                  - cell "Registrar movimiento para Desinfectante Multiusos Cítrico 5L Ver o editar Desinfectante Multiusos Cítrico 5L" [ref=e1345]:
+                    - button "Registrar movimiento para Desinfectante Multiusos Cítrico 5L" [ref=e1346]:
+                      - img [ref=e1347]: swap_vert
+                    - button "Ver o editar Desinfectante Multiusos Cítrico 5L" [ref=e1350]:
+                      - img [ref=e1351]: edit
+                - 'row "SEGV-DVR8-024 DVR 8 Canales 4K Ultra HD H.265+ Seguridad y Vigilancia Seguridad y Vigilancia Electrónica S.A. Stock OK — actual: 15, mínimo: 4 $4,500.00 Disponible Registrar movimiento para DVR 8 Canales 4K Ultra HD H.265+ Ver o editar DVR 8 Canales 4K Ultra HD H.265+" [ref=e1354] [cursor=pointer]':
+                  - cell "SEGV-DVR8-024" [ref=e1355]
+                  - cell "DVR 8 Canales 4K Ultra HD H.265+" [ref=e1356]
+                  - cell "Seguridad y Vigilancia" [ref=e1357]
+                  - cell "Seguridad y Vigilancia Electrónica S.A." [ref=e1358]
+                  - 'cell "Stock OK — actual: 15, mínimo: 4" [ref=e1359]':
+                    - 'status "Stock OK — actual: 15, mínimo: 4" [ref=e1361]': "15"
+                  - cell "$4,500.00" [ref=e1362]
+                  - cell "Disponible" [ref=e1363]:
+                    - generic [ref=e1364]: Disponible
+                  - cell "Registrar movimiento para DVR 8 Canales 4K Ultra HD H.265+ Ver o editar DVR 8 Canales 4K Ultra HD H.265+" [ref=e1365]:
+                    - button "Registrar movimiento para DVR 8 Canales 4K Ultra HD H.265+" [ref=e1366]:
+                      - img [ref=e1367]: swap_vert
+                    - button "Ver o editar DVR 8 Canales 4K Ultra HD H.265+" [ref=e1370]:
+                      - img [ref=e1371]: edit
+                - 'row "SOLD-ELE-040 Electrodos Acero Suave 6011 Caja 5kg Soldadura y Corte Soldadura y Equipos Industriales S.A. Stock OK — actual: 60, mínimo: 15 $380.00 Disponible Registrar movimiento para Electrodos Acero Suave 6011 Caja 5kg Ver o editar Electrodos Acero Suave 6011 Caja 5kg" [ref=e1374] [cursor=pointer]':
+                  - cell "SOLD-ELE-040" [ref=e1375]
+                  - cell "Electrodos Acero Suave 6011 Caja 5kg" [ref=e1376]
+                  - cell "Soldadura y Corte" [ref=e1377]
+                  - cell "Soldadura y Equipos Industriales S.A." [ref=e1378]
+                  - 'cell "Stock OK — actual: 60, mínimo: 15" [ref=e1379]':
+                    - 'status "Stock OK — actual: 60, mínimo: 15" [ref=e1381]': "60"
+                  - cell "$380.00" [ref=e1382]
+                  - cell "Disponible" [ref=e1383]:
+                    - generic [ref=e1384]: Disponible
+                  - cell "Registrar movimiento para Electrodos Acero Suave 6011 Caja 5kg Ver o editar Electrodos Acero Suave 6011 Caja 5kg" [ref=e1385]:
+                    - button "Registrar movimiento para Electrodos Acero Suave 6011 Caja 5kg" [ref=e1386]:
+                      - img [ref=e1387]: swap_vert
+                    - button "Ver o editar Electrodos Acero Suave 6011 Caja 5kg" [ref=e1390]:
+                      - img [ref=e1391]: edit
+                - 'row "MOFI-ESC-026 Escritorio en L 160x120 cm Wengué Muebles de Oficina Muebles y Equipos Corporativos S.A. de C.V. Stock OK — actual: 12, mínimo: 3 $4,200.00 Disponible Registrar movimiento para Escritorio en L 160x120 cm Wengué Ver o editar Escritorio en L 160x120 cm Wengué" [ref=e1394] [cursor=pointer]':
+                  - cell "MOFI-ESC-026" [ref=e1395]
+                  - cell "Escritorio en L 160x120 cm Wengué" [ref=e1396]
+                  - cell "Muebles de Oficina" [ref=e1397]
+                  - cell "Muebles y Equipos Corporativos S.A. de C.V." [ref=e1398]
+                  - 'cell "Stock OK — actual: 12, mínimo: 3" [ref=e1399]':
+                    - 'status "Stock OK — actual: 12, mínimo: 3" [ref=e1401]': "12"
+                  - cell "$4,200.00" [ref=e1402]
+                  - cell "Disponible" [ref=e1403]:
+                    - generic [ref=e1404]: Disponible
+                  - cell "Registrar movimiento para Escritorio en L 160x120 cm Wengué Ver o editar Escritorio en L 160x120 cm Wengué" [ref=e1405]:
+                    - button "Registrar movimiento para Escritorio en L 160x120 cm Wengué" [ref=e1406]:
+                      - img [ref=e1407]: swap_vert
+                    - button "Ver o editar Escritorio en L 160x120 cm Wengué" [ref=e1410]:
+                      - img [ref=e1411]: edit
+                - 'row "PINT-ESM1G-019 Esmalte Sintético Rojo Inglés 1 Galón Pinturas y Recubrimientos Constructora y Suministros del Bajío S.A. Stock OK — actual: 40, mínimo: 10 $380.00 Disponible Registrar movimiento para Esmalte Sintético Rojo Inglés 1 Galón Ver o editar Esmalte Sintético Rojo Inglés 1 Galón" [ref=e1414] [cursor=pointer]':
+                  - cell "PINT-ESM1G-019" [ref=e1415]
+                  - cell "Esmalte Sintético Rojo Inglés 1 Galón" [ref=e1416]
+                  - cell "Pinturas y Recubrimientos" [ref=e1417]
+                  - cell "Constructora y Suministros del Bajío S.A." [ref=e1418]
+                  - 'cell "Stock OK — actual: 40, mínimo: 10" [ref=e1419]':
+                    - 'status "Stock OK — actual: 40, mínimo: 10" [ref=e1421]': "40"
+                  - cell "$380.00" [ref=e1422]
+                  - cell "Disponible" [ref=e1423]:
+                    - generic [ref=e1424]: Disponible
+                  - cell "Registrar movimiento para Esmalte Sintético Rojo Inglés 1 Galón Ver o editar Esmalte Sintético Rojo Inglés 1 Galón" [ref=e1425]:
+                    - button "Registrar movimiento para Esmalte Sintético Rojo Inglés 1 Galón" [ref=e1426]:
+                      - img [ref=e1427]: swap_vert
+                    - button "Ver o editar Esmalte Sintético Rojo Inglés 1 Galón" [ref=e1430]:
+                      - img [ref=e1431]: edit
+                - 'row "EPP-GUAC-034 Guantes de Carnaza para Soldador Par Equipos de Protección Personal Ropa de Protección y EPP S.A. de C.V. Stock OK — actual: 150, mínimo: 30 $145.00 Disponible Registrar movimiento para Guantes de Carnaza para Soldador Par Ver o editar Guantes de Carnaza para Soldador Par" [ref=e1434] [cursor=pointer]':
+                  - cell "EPP-GUAC-034" [ref=e1435]
+                  - cell "Guantes de Carnaza para Soldador Par" [ref=e1436]
+                  - cell "Equipos de Protección Personal" [ref=e1437]
+                  - cell "Ropa de Protección y EPP S.A. de C.V." [ref=e1438]
+                  - 'cell "Stock OK — actual: 150, mínimo: 30" [ref=e1439]':
+                    - 'status "Stock OK — actual: 150, mínimo: 30" [ref=e1441]': "150"
+                  - cell "$145.00" [ref=e1442]
+                  - cell "Disponible" [ref=e1443]:
+                    - generic [ref=e1444]: Disponible
+                  - cell "Registrar movimiento para Guantes de Carnaza para Soldador Par Ver o editar Guantes de Carnaza para Soldador Par" [ref=e1445]:
+                    - button "Registrar movimiento para Guantes de Carnaza para Soldador Par" [ref=e1446]:
+                      - img [ref=e1447]: swap_vert
+                    - button "Ver o editar Guantes de Carnaza para Soldador Par" [ref=e1450]:
+                      - img [ref=e1451]: edit
+                - 'row "COMP-USB2-047 Hub USB 2.0 de 7 Puertos (Descontinuado) Computación y Periféricos TechSupply México S.A. de C.V. Stock OK — actual: 3, mínimo: 0 $185.00 Descontinuado Registrar movimiento para Hub USB 2.0 de 7 Puertos (Descontinuado) Ver o editar Hub USB 2.0 de 7 Puertos (Descontinuado)" [ref=e1454] [cursor=pointer]':
+                  - cell "COMP-USB2-047" [ref=e1455]
+                  - cell "Hub USB 2.0 de 7 Puertos (Descontinuado)" [ref=e1456]
+                  - cell "Computación y Periféricos" [ref=e1457]
+                  - cell "TechSupply México S.A. de C.V." [ref=e1458]
+                  - 'cell "Stock OK — actual: 3, mínimo: 0" [ref=e1459]':
+                    - 'status "Stock OK — actual: 3, mínimo: 0" [ref=e1461]': "3"
+                  - cell "$185.00" [ref=e1462]
+                  - cell "Descontinuado" [ref=e1463]:
+                    - generic [ref=e1464]: Descontinuado
+                  - cell "Registrar movimiento para Hub USB 2.0 de 7 Puertos (Descontinuado) Ver o editar Hub USB 2.0 de 7 Puertos (Descontinuado)" [ref=e1465]:
+                    - button "Registrar movimiento para Hub USB 2.0 de 7 Puertos (Descontinuado)" [ref=e1466]:
+                      - img [ref=e1467]: swap_vert
+                    - button "Ver o editar Hub USB 2.0 de 7 Puertos (Descontinuado)" [ref=e1470]:
+                      - img [ref=e1471]: edit
+            - group "Paginación de productos" [ref=e522]:
+              - generic [ref=e524]:
+                - generic [ref=e525]:
+                  - generic [ref=e526]: "Items per page:"
+                  - combobox "Items per page:" [ref=e531] [cursor=pointer]:
+                    - generic [ref=e532]:
+                      - generic [ref=e534]: "20"
+                      - img [ref=e537]
+                - generic [ref=e540]:
+                  - status [ref=e541]: 1 – 20 of 50
+                  - button "Previous page" [disabled] [ref=e542]:
+                    - img [ref=e543]
+                  - button "Next page" [ref=e547] [cursor=pointer]:
+                    - img [ref=e548]

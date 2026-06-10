@@ -1,0 +1,105 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Órdenes de compra
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - heading "Órdenes de compra" [level=2] [ref=e51]
+            - generic [ref=e54]:
+              - generic [ref=e55]: Buscar
+              - img [ref=e57]: search
+              - textbox "Buscar" [ref=e59]:
+                - /placeholder: N° orden, proveedor, usuario…
+            - button "Nueva orden" [ref=e60]:
+              - img [ref=e61]: add
+              - generic [ref=e62]: Nueva orden
+          - generic [ref=e65]:
+            - tablist [ref=e68]:
+              - generic [ref=e69]:
+                - tab "Pendientes" [ref=e70] [cursor=pointer]:
+                  - generic [ref=e72]: Pendientes
+                - tab "Aprobadas 1" [active] [selected] [ref=e73] [cursor=pointer]:
+                  - generic [ref=e75]:
+                    - text: Aprobadas
+                    - generic [ref=e76]: "1"
+                - tab "Recibidas 43" [ref=e77] [cursor=pointer]:
+                  - generic [ref=e79]:
+                    - text: Recibidas
+                    - generic [ref=e80]: "43"
+                - tab "Canceladas 26" [ref=e81] [cursor=pointer]:
+                  - generic [ref=e83]:
+                    - text: Canceladas
+                    - generic [ref=e84]: "26"
+            - generic:
+              - tabpanel "Aprobadas 1"
+          - generic [ref=e85]:
+            - table [ref=e89]:
+              - row "N° Orden Proveedor Total Creado por Fecha Estado" [ref=e90]:
+                - columnheader "N° Orden" [ref=e91]
+                - columnheader "Proveedor" [ref=e92]
+                - columnheader "Total" [ref=e93]
+                - columnheader "Creado por" [ref=e94]
+                - columnheader "Fecha" [ref=e95]
+                - columnheader "Estado" [ref=e96]
+                - columnheader [ref=e97]
+              - row "OC-2026-0068 Distribuidora Logística del Centro S.A. $980.00 admin 08/06/2026 16:21 Aprobada" [ref=e99] [cursor=pointer]:
+                - cell "OC-2026-0068" [ref=e100]:
+                  - generic [ref=e101]: OC-2026-0068
+                - cell "Distribuidora Logística del Centro S.A." [ref=e102]:
+                  - generic [ref=e103]: Distribuidora Logística del Centro S.A.
+                - cell "$980.00" [ref=e104]
+                - cell "admin" [ref=e105]
+                - cell "08/06/2026 16:21" [ref=e106]
+                - cell "Aprobada" [ref=e107]:
+                  - generic [ref=e108]: Aprobada
+                - cell [ref=e109]:
+                  - button [ref=e110]:
+                    - img [ref=e111]: done_all
+                  - button [ref=e114]:
+                    - img [ref=e115]: cancel
+            - group [ref=e118]:
+              - generic [ref=e120]:
+                - generic [ref=e121]:
+                  - generic [ref=e122]: "Items per page:"
+                  - combobox "Items per page:" [ref=e127] [cursor=pointer]:
+                    - generic [ref=e128]:
+                      - generic [ref=e130]: "20"
+                      - img [ref=e133]
+                - generic [ref=e136]:
+                  - status [ref=e137]: 1 – 1 of 1
+                  - button "Previous page" [disabled] [ref=e138]:
+                    - img [ref=e139]
+                  - button "Next page" [disabled] [ref=e143]:
+                    - img [ref=e144]

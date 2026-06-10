@@ -1,0 +1,161 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ir al contenido principal" [ref=e332] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button "Alternar menú lateral" [ref=e333] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - 'generic "Ubicación actual: Inventario → Bajo stock" [ref=e334]':
+            - img [ref=e15]: chevron_right
+            - text: Inventario → Bajo stock
+        - generic [ref=e16]:
+          - button "Notificaciones" [ref=e335] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button "Menú de usuario" [expanded] [ref=e336]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - 'generic "Rol: ADMIN" [ref=e337]': ADMIN
+      - generic [ref=e28]:
+        - navigation "Navegación principal" [ref=e338]:
+          - menubar [ref=e32]:
+            - menuitem [expanded] [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button "Expandir menú" [ref=e339] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - generic [ref=e51]:
+                - img [ref=e52]: remove_shopping_cart
+                - text: 3 sin stock
+              - generic [ref=e53]:
+                - img [ref=e54]: warning_amber
+                - text: 3 críticos
+            - table [ref=e56]:
+              - rowgroup [ref=e57]:
+                - row "Nivel SKU Nombre Categoría Proveedor Físico Reservado Disponible Mínimo Déficit Costo unit." [ref=e340]:
+                  - columnheader "Nivel" [ref=e341]
+                  - columnheader "SKU" [ref=e342]
+                  - columnheader "Nombre" [ref=e343]
+                  - columnheader "Categoría" [ref=e344]
+                  - columnheader "Proveedor" [ref=e345]
+                  - columnheader "Físico" [ref=e346]
+                  - columnheader "Reservado" [ref=e347]
+                  - columnheader "Disponible" [ref=e348]
+                  - columnheader "Mínimo" [ref=e349]
+                  - columnheader "Déficit" [ref=e350]
+                  - columnheader "Costo unit." [ref=e351]
+                  - columnheader [ref=e70]
+              - rowgroup [ref=e71]:
+                - row "Crítico PINT-BAR5G-049 Barniz marino 5 galones para exteriores Pinturas y Recubrimientos Constructora y Suministros del Bajío S.A. 2 0 2 10 +8 $1,300.00" [ref=e352]:
+                  - cell "Crítico" [ref=e353]:
+                    - generic [ref=e74]: Crítico
+                  - cell "PINT-BAR5G-049" [ref=e354]
+                  - cell "Barniz marino 5 galones para exteriores" [ref=e355]
+                  - cell "Pinturas y Recubrimientos" [ref=e356]
+                  - cell "Constructora y Suministros del Bajío S.A." [ref=e357]
+                  - cell "2" [ref=e358]
+                  - cell "0" [ref=e359]
+                  - cell "2" [ref=e360]
+                  - cell "10" [ref=e361]
+                  - cell "+8" [ref=e362]
+                  - cell "$1,300.00" [ref=e363]
+                  - cell [ref=e85]:
+                    - button [ref=e86] [cursor=pointer]:
+                      - img [ref=e87]: add_circle
+                - row "Sin stock COMP-SSD1T-044 SSD NVMe 1TB PCIe 4.0 7000MB/s Computación y Periféricos TechSupply México S.A. de C.V. 0 0 0 5 +5 $1,800.00" [ref=e364]:
+                  - cell "Sin stock" [ref=e365]:
+                    - generic [ref=e92]: Sin stock
+                  - cell "COMP-SSD1T-044" [ref=e366]
+                  - cell "SSD NVMe 1TB PCIe 4.0 7000MB/s" [ref=e367]
+                  - cell "Computación y Periféricos" [ref=e368]
+                  - cell "TechSupply México S.A. de C.V." [ref=e369]
+                  - cell "0" [ref=e370]
+                  - cell "0" [ref=e371]
+                  - cell "0" [ref=e372]
+                  - cell "5" [ref=e373]
+                  - cell "+5" [ref=e374]
+                  - cell "$1,800.00" [ref=e375]
+                  - cell [ref=e103]:
+                    - button [ref=e104] [cursor=pointer]:
+                      - img [ref=e105]: add_circle
+                - row "Crítico HELEC-SIE-048 Sierra Circular 7-1/4\" 1800W Herramientas Eléctricas Herramientas y Maquinaria del Pacífico S.A. 3 0 3 8 +5 $1,750.00" [ref=e376]:
+                  - cell "Crítico" [ref=e377]:
+                    - generic [ref=e110]: Crítico
+                  - cell "HELEC-SIE-048" [ref=e378]
+                  - cell "Sierra Circular 7-1/4\" 1800W" [ref=e379]
+                  - cell "Herramientas Eléctricas" [ref=e380]
+                  - cell "Herramientas y Maquinaria del Pacífico S.A." [ref=e381]
+                  - cell "3" [ref=e382]
+                  - cell "0" [ref=e383]
+                  - cell "3" [ref=e384]
+                  - cell "8" [ref=e385]
+                  - cell "+5" [ref=e386]
+                  - cell "$1,750.00" [ref=e387]
+                  - cell [ref=e121]:
+                    - button [ref=e122] [cursor=pointer]:
+                      - img [ref=e123]: add_circle
+                - row "Crítico SEGV-NVR16-050 NVR 16 Canales 4K PoE 16 Puertos Seguridad y Vigilancia Seguridad y Vigilancia Electrónica S.A. 1 0 1 4 +3 $5,500.00" [ref=e388]:
+                  - cell "Crítico" [ref=e389]:
+                    - generic [ref=e128]: Crítico
+                  - cell "SEGV-NVR16-050" [ref=e390]
+                  - cell "NVR 16 Canales 4K PoE 16 Puertos" [ref=e391]
+                  - cell "Seguridad y Vigilancia" [ref=e392]
+                  - cell "Seguridad y Vigilancia Electrónica S.A." [ref=e393]
+                  - cell "1" [ref=e394]
+                  - cell "0" [ref=e395]
+                  - cell "1" [ref=e396]
+                  - cell "4" [ref=e397]
+                  - cell "+3" [ref=e398]
+                  - cell "$5,500.00" [ref=e399]
+                  - cell [ref=e139]:
+                    - button [ref=e140] [cursor=pointer]:
+                      - img [ref=e141]: add_circle
+                - row "Sin stock ELEC-PRO-043 Proyector Laser 4K 3500 Lúmenes Electrónica de Consumo Distribuidora México Digital S.A. de C.V. 0 0 0 2 +2 $30,000.00" [ref=e400]:
+                  - cell "Sin stock" [ref=e401]:
+                    - generic [ref=e146]: Sin stock
+                  - cell "ELEC-PRO-043" [ref=e402]
+                  - cell "Proyector Laser 4K 3500 Lúmenes" [ref=e403]
+                  - cell "Electrónica de Consumo" [ref=e404]
+                  - cell "Distribuidora México Digital S.A. de C.V." [ref=e405]
+                  - cell "0" [ref=e406]
+                  - cell "0" [ref=e407]
+                  - cell "0" [ref=e408]
+                  - cell "2" [ref=e409]
+                  - cell "+2" [ref=e410]
+                  - cell "$30,000.00" [ref=e411]
+                  - cell [ref=e157]:
+                    - button [ref=e158] [cursor=pointer]:
+                      - img [ref=e159]: add_circle
+                - row "Sin stock BLAN-SEC10-045 Secadora de Ropa 10kg Carga Frontal Electrodomésticos de Línea Blanca Electro Industrial del Centro S.A. de C.V. 0 0 0 2 +2 $7,800.00" [ref=e412]:
+                  - cell "Sin stock" [ref=e413]:
+                    - generic [ref=e164]: Sin stock
+                  - cell "BLAN-SEC10-045" [ref=e414]
+                  - cell "Secadora de Ropa 10kg Carga Frontal" [ref=e415]
+                  - cell "Electrodomésticos de Línea Blanca" [ref=e416]
+                  - cell "Electro Industrial del Centro S.A. de C.V." [ref=e417]
+                  - cell "0" [ref=e418]
+                  - cell "0" [ref=e419]
+                  - cell "0" [ref=e420]
+                  - cell "2" [ref=e421]
+                  - cell "+2" [ref=e422]
+                  - cell "$7,800.00" [ref=e423]
+                  - cell [ref=e175]:
+                    - button [ref=e176] [cursor=pointer]:
+                      - img [ref=e177]: add_circle
+  - menu [ref=e426]:
+    - menuitem "Cerrar sesión" [active] [ref=e428] [cursor=pointer]:
+      - img [ref=e429]: logout
+      - generic [ref=e430]: Cerrar sesión

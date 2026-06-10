@@ -1,0 +1,134 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Productos" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Inventario → Productos
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [expanded] [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - generic [ref=e51]:
+              - generic [ref=e54]:
+                - generic [ref=e55]: Buscar por código o nombre
+                - textbox "Buscar por código o nombre" [ref=e57]
+                - img [ref=e59]: search
+              - generic [ref=e63] [cursor=pointer]:
+                - generic [ref=e64]: Categoría
+                - combobox "Categoría" [ref=e66]:
+                  - img [ref=e72]
+              - generic [ref=e77] [cursor=pointer]:
+                - generic [ref=e78]: Estado
+                - combobox "Estado" [active] [ref=e80]:
+                  - generic [ref=e81]:
+                    - generic [ref=e1008]: Sin stock
+                    - img [ref=e86]
+              - generic [ref=e91] [cursor=pointer]:
+                - generic [ref=e92]: Proveedor
+                - combobox "Proveedor" [ref=e94]:
+                  - img [ref=e100]
+              - button "Limpiar todos los filtros" [ref=e1009] [cursor=pointer]:
+                - img [ref=e1010]: filter_alt_off
+            - button "Nuevo producto" [ref=e104]:
+              - img [ref=e105]: add
+              - generic [ref=e106]: Nuevo producto
+          - generic [ref=e109]:
+            - table [ref=e110]:
+              - rowgroup [ref=e111]:
+                - row "Código Nombre Categoría Proveedor Stock Precio Estado" [ref=e112]:
+                  - columnheader "Código" [ref=e113]
+                  - columnheader "Nombre" [ref=e114]
+                  - columnheader "Categoría" [ref=e115]
+                  - columnheader "Proveedor" [ref=e116]
+                  - columnheader "Stock" [ref=e117]
+                  - columnheader "Precio" [ref=e118]
+                  - columnheader "Estado" [ref=e119]
+                  - columnheader [ref=e120]
+              - rowgroup [ref=e121]:
+                - 'row "ELEC-PRO-043 Proyector Laser 4K 3500 Lúmenes Electrónica de Consumo Distribuidora México Digital S.A. de C.V. Sin stock (mínimo: 2) $45,000.00 Sin stock Registrar movimiento para Proyector Laser 4K 3500 Lúmenes Ver o editar Proyector Laser 4K 3500 Lúmenes" [ref=e1013] [cursor=pointer]':
+                  - cell "ELEC-PRO-043" [ref=e1014]
+                  - cell "Proyector Laser 4K 3500 Lúmenes" [ref=e1015]
+                  - cell "Electrónica de Consumo" [ref=e1016]
+                  - cell "Distribuidora México Digital S.A. de C.V." [ref=e1017]
+                  - 'cell "Sin stock (mínimo: 2)" [ref=e1018]':
+                    - 'status "Sin stock (mínimo: 2)" [ref=e1020]': "0"
+                  - cell "$45,000.00" [ref=e1021]
+                  - cell "Sin stock" [ref=e1022]:
+                    - generic [ref=e1023]: Sin stock
+                  - cell "Registrar movimiento para Proyector Laser 4K 3500 Lúmenes Ver o editar Proyector Laser 4K 3500 Lúmenes" [ref=e1024]:
+                    - button "Registrar movimiento para Proyector Laser 4K 3500 Lúmenes" [ref=e1025]:
+                      - img [ref=e1026]: swap_vert
+                    - button "Ver o editar Proyector Laser 4K 3500 Lúmenes" [ref=e1029]:
+                      - img [ref=e1030]: edit
+                - 'row "BLAN-SEC10-045 Secadora de Ropa 10kg Carga Frontal Electrodomésticos de Línea Blanca Electro Industrial del Centro S.A. de C.V. Sin stock (mínimo: 2) $11,500.00 Sin stock Registrar movimiento para Secadora de Ropa 10kg Carga Frontal Ver o editar Secadora de Ropa 10kg Carga Frontal" [ref=e1033] [cursor=pointer]':
+                  - cell "BLAN-SEC10-045" [ref=e1034]
+                  - cell "Secadora de Ropa 10kg Carga Frontal" [ref=e1035]
+                  - cell "Electrodomésticos de Línea Blanca" [ref=e1036]
+                  - cell "Electro Industrial del Centro S.A. de C.V." [ref=e1037]
+                  - 'cell "Sin stock (mínimo: 2)" [ref=e1038]':
+                    - 'status "Sin stock (mínimo: 2)" [ref=e1040]': "0"
+                  - cell "$11,500.00" [ref=e1041]
+                  - cell "Sin stock" [ref=e1042]:
+                    - generic [ref=e1043]: Sin stock
+                  - cell "Registrar movimiento para Secadora de Ropa 10kg Carga Frontal Ver o editar Secadora de Ropa 10kg Carga Frontal" [ref=e1044]:
+                    - button "Registrar movimiento para Secadora de Ropa 10kg Carga Frontal" [ref=e1045]:
+                      - img [ref=e1046]: swap_vert
+                    - button "Ver o editar Secadora de Ropa 10kg Carga Frontal" [ref=e1049]:
+                      - img [ref=e1050]: edit
+                - 'row "COMP-SSD1T-044 SSD NVMe 1TB PCIe 4.0 7000MB/s Computación y Periféricos TechSupply México S.A. de C.V. Sin stock (mínimo: 5) $2,800.00 Sin stock Registrar movimiento para SSD NVMe 1TB PCIe 4.0 7000MB/s Ver o editar SSD NVMe 1TB PCIe 4.0 7000MB/s" [ref=e1053] [cursor=pointer]':
+                  - cell "COMP-SSD1T-044" [ref=e1054]
+                  - cell "SSD NVMe 1TB PCIe 4.0 7000MB/s" [ref=e1055]
+                  - cell "Computación y Periféricos" [ref=e1056]
+                  - cell "TechSupply México S.A. de C.V." [ref=e1057]
+                  - 'cell "Sin stock (mínimo: 5)" [ref=e1058]':
+                    - 'status "Sin stock (mínimo: 5)" [ref=e1060]': "0"
+                  - cell "$2,800.00" [ref=e1061]
+                  - cell "Sin stock" [ref=e1062]:
+                    - generic [ref=e1063]: Sin stock
+                  - cell "Registrar movimiento para SSD NVMe 1TB PCIe 4.0 7000MB/s Ver o editar SSD NVMe 1TB PCIe 4.0 7000MB/s" [ref=e1064]:
+                    - button "Registrar movimiento para SSD NVMe 1TB PCIe 4.0 7000MB/s" [ref=e1065]:
+                      - img [ref=e1066]: swap_vert
+                    - button "Ver o editar SSD NVMe 1TB PCIe 4.0 7000MB/s" [ref=e1069]:
+                      - img [ref=e1070]: edit
+            - group "Paginación de productos" [ref=e522]:
+              - generic [ref=e524]:
+                - generic [ref=e525]:
+                  - generic [ref=e526]: "Items per page:"
+                  - combobox "Items per page:" [ref=e531] [cursor=pointer]:
+                    - generic [ref=e532]:
+                      - generic [ref=e534]: "20"
+                      - img [ref=e537]
+                - generic [ref=e540]:
+                  - status [ref=e541]: 1 – 3 of 3
+                  - button "Previous page" [disabled] [ref=e542]:
+                    - img [ref=e543]
+                  - button "Next page" [disabled] [ref=e547]:
+                    - img [ref=e548]

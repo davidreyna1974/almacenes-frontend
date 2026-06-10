@@ -1,0 +1,138 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e3139] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e3140] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e3141]:
+            - img [ref=e36]: chevron_right
+            - text: Inventario → Productos
+        - generic [ref=e14]:
+          - button [ref=e3142] [cursor=pointer]:
+            - img [ref=e16]: notifications_none
+          - button [ref=e3143]:
+            - img [ref=e20]: arrow_drop_down
+            - generic [ref=e21]:
+              - text: admin
+              - generic [ref=e3144]: ADMIN
+      - generic [ref=e26]:
+        - navigation [ref=e3145]:
+          - menubar [ref=e30]:
+            - menuitem [expanded] [ref=e38] [cursor=pointer]:
+              - img [ref=e39]: inventory_2
+            - menuitem [ref=e40] [cursor=pointer]:
+              - img [ref=e41]: shopping_cart
+            - menuitem [ref=e42] [cursor=pointer]:
+              - img [ref=e43]: point_of_sale
+            - menuitem [ref=e44] [cursor=pointer]:
+              - img [ref=e45]: bar_chart
+            - menuitem [ref=e46] [cursor=pointer]:
+              - img [ref=e47]: manage_accounts
+          - button [ref=e3146] [cursor=pointer]:
+            - img [ref=e33]: chevron_right
+        - main [ref=e34]:
+          - generic [ref=e51]:
+            - generic [ref=e52]:
+              - generic [ref=e53]:
+                - generic [ref=e56]:
+                  - generic [ref=e57]: Buscar por código o nombre
+                  - textbox [ref=e3147]: TEST-ADMIN-SUITE-001
+                  - img [ref=e61]: search
+                - generic [ref=e65] [cursor=pointer]:
+                  - generic [ref=e66]: Categoría
+                  - combobox [ref=e3148]:
+                    - img [ref=e74]
+                - generic [ref=e79] [cursor=pointer]:
+                  - generic [ref=e80]: Estado
+                  - combobox [ref=e3149]:
+                    - img [ref=e88]
+                - generic [ref=e93] [cursor=pointer]:
+                  - generic [ref=e94]: Proveedor
+                  - combobox [ref=e3150]:
+                    - img [ref=e102]
+                - button [ref=e3151] [cursor=pointer]:
+                  - img [ref=e2568]: filter_alt_off
+              - button [ref=e3152]:
+                - img [ref=e107]: add
+                - generic [ref=e108]: Nuevo producto
+            - generic [ref=e1132]:
+              - table [ref=e1133]:
+                - rowgroup [ref=e1134]:
+                  - row [ref=e3153]:
+                    - columnheader [ref=e3154]: Código
+                    - columnheader [ref=e3155]: Nombre
+                    - columnheader [ref=e3156]: Categoría
+                    - columnheader [ref=e3157]: Proveedor
+                    - columnheader [ref=e3158]: Stock
+                    - columnheader [ref=e3159]: Precio
+                    - columnheader [ref=e3160]: Estado
+                    - columnheader [ref=e1143]
+                - rowgroup [ref=e1144]:
+                  - row [ref=e3161] [cursor=pointer]:
+                    - cell [ref=e3162]: TEST-ADMIN-SUITE-001
+                    - cell [ref=e3163]: Producto Test Suite ADMIN
+                    - cell [ref=e3164]: Calzado Industrial
+                    - cell [ref=e3165]: Agroquímica y Fertilizantes del Valle S.A.
+                    - cell [ref=e3166]:
+                      - status [ref=e3167]: "25"
+                    - cell [ref=e3168]: $999.99
+                    - cell [ref=e3169]:
+                      - generic [ref=e2957]: Disponible
+                    - cell [ref=e3170]:
+                      - button [ref=e3171]:
+                        - img [ref=e2960]: swap_vert
+                      - button [ref=e3172]:
+                        - img [ref=e2964]: edit
+              - group [ref=e3173]:
+                - generic [ref=e1547]:
+                  - generic [ref=e1548]:
+                    - generic [ref=e1549]: "Items per page:"
+                    - combobox [ref=e3174] [cursor=pointer]:
+                      - generic [ref=e1555]:
+                        - generic [ref=e1557]: "20"
+                        - img [ref=e1560]
+                  - generic [ref=e1563]:
+                    - status [ref=e1564]: 1 – 1 of 1
+                    - button [disabled] [ref=e3175]:
+                      - img [ref=e1566]
+                    - button [disabled] [ref=e3176]:
+                      - img [ref=e1571]
+  - dialog "Registrar movimiento de stock" [ref=e3180]:
+    - generic [ref=e3183]:
+      - heading "Registrar movimiento de stock" [level=2] [ref=e3184]
+      - generic [ref=e3185]:
+        - paragraph [ref=e3186]:
+          - strong [ref=e3187]: "Producto:"
+          - text: Producto Test Suite ADMIN (TEST-ADMIN-SUITE-001)
+        - paragraph [ref=e3188]:
+          - strong [ref=e3189]: "Stock actual:"
+          - text: "25"
+        - generic [ref=e3190]:
+          - generic [ref=e3193] [cursor=pointer]:
+            - generic [ref=e3194]:
+              - generic [ref=e3195]: Tipo de movimiento *
+              - generic [ref=e3196]: "*"
+            - combobox "Tipo de movimiento *" [active] [ref=e3198]:
+              - generic [ref=e3199]:
+                - generic [ref=e3201]: Entrada (IN)
+                - img [ref=e3204]
+          - generic [ref=e3209]:
+            - generic [ref=e3210]:
+              - generic [ref=e3211]: Cantidad *
+              - generic [ref=e3212]: "*"
+            - spinbutton "Cantidad *" [ref=e3214]
+          - generic [ref=e3218]:
+            - generic [ref=e3219]:
+              - generic [ref=e3220]: Motivo *
+              - generic [ref=e3221]: "*"
+            - textbox "Motivo *" [ref=e3223]
+      - generic [ref=e3225]:
+        - button "Cancelar" [ref=e3226]:
+          - generic [ref=e3227]: Cancelar
+        - button "Registrar" [disabled]:
+          - generic: Registrar
