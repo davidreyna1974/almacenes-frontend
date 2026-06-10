@@ -1,0 +1,291 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ir al contenido principal" [ref=e662] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button "Alternar menú lateral" [ref=e663] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - 'generic "Ubicación actual: Inventario → Categorías" [ref=e664]':
+            - img [ref=e15]: chevron_right
+            - text: Inventario → Categorías
+        - generic [ref=e16]:
+          - button "Notificaciones" [ref=e665] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button "Menú de usuario" [ref=e666]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - 'generic "Rol: ADMIN" [ref=e667]': ADMIN
+      - generic [ref=e28]:
+        - navigation "Navegación principal" [ref=e668]:
+          - menubar [ref=e32]:
+            - menuitem [expanded] [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button "Expandir menú" [ref=e669] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - heading "Categorías" [level=2] [ref=e670]
+              - generic [ref=e52]:
+                - button "Productos" [ref=e671]:
+                  - img [ref=e54]: shopping_bag
+                  - generic [ref=e55]: Productos
+                - button "Nueva categoría" [ref=e672]:
+                  - img [ref=e59]: add
+                  - generic [ref=e60]: Nueva categoría
+            - generic [ref=e63]:
+              - table [ref=e64]:
+                - rowgroup [ref=e65]:
+                  - row "Nombre Descripción Creado por" [ref=e673]:
+                    - columnheader "Nombre" [ref=e674]
+                    - columnheader "Descripción" [ref=e675]
+                    - columnheader "Creado por" [ref=e676]
+                    - columnheader [ref=e70]
+                - rowgroup [ref=e71]:
+                  - row "(editado) Detergentes, desinfectantes, escobas, trapeadores, cubetas y jabones. admin Ver productos de (editado) Editar (editado) Desactivar categoría (editado)" [ref=e677] [cursor=pointer]:
+                    - cell "(editado)" [ref=e678]
+                    - cell "Detergentes, desinfectantes, escobas, trapeadores, cubetas y jabones." [ref=e679]
+                    - cell "admin" [ref=e680]
+                    - cell "Ver productos de (editado) Editar (editado) Desactivar categoría (editado)" [ref=e681]:
+                      - button "Ver productos de (editado)" [ref=e682]:
+                        - img [ref=e683]: shopping_bag
+                      - button "Editar (editado)" [ref=e686]:
+                        - img [ref=e687]: edit
+                      - button "Desactivar categoría (editado)" [ref=e690]:
+                        - img [ref=e691]: delete_outline
+                  - row "Calzado Industrial Botas de casquillo, botas dieléctricas, zapatos antideslizantes y plantillas. admin Ver productos de Calzado Industrial Editar Calzado Industrial Desactivar categoría Calzado Industrial" [ref=e694] [cursor=pointer]:
+                    - cell "Calzado Industrial" [ref=e695]
+                    - cell "Botas de casquillo, botas dieléctricas, zapatos antideslizantes y plantillas." [ref=e696]
+                    - cell "admin" [ref=e697]
+                    - cell "Ver productos de Calzado Industrial Editar Calzado Industrial Desactivar categoría Calzado Industrial" [ref=e698]:
+                      - button "Ver productos de Calzado Industrial" [ref=e699]:
+                        - img [ref=e700]: shopping_bag
+                      - button "Editar Calzado Industrial" [ref=e703]:
+                        - img [ref=e704]: edit
+                      - button "Desactivar categoría Calzado Industrial" [ref=e707]:
+                        - img [ref=e708]: delete_outline
+                  - row "Cat-Int-23178 test admin Ver productos de Cat-Int-23178 Editar Cat-Int-23178 Desactivar categoría Cat-Int-23178" [ref=e711] [cursor=pointer]:
+                    - cell "Cat-Int-23178" [ref=e712]
+                    - cell "test" [ref=e713]
+                    - cell "admin" [ref=e714]
+                    - cell "Ver productos de Cat-Int-23178 Editar Cat-Int-23178 Desactivar categoría Cat-Int-23178" [ref=e715]:
+                      - button "Ver productos de Cat-Int-23178" [ref=e716]:
+                        - img [ref=e717]: shopping_bag
+                      - button "Editar Cat-Int-23178" [ref=e720]:
+                        - img [ref=e721]: edit
+                      - button "Desactivar categoría Cat-Int-23178" [ref=e724]:
+                        - img [ref=e725]: delete_outline
+                  - row "Cat-Int-35904 test admin Ver productos de Cat-Int-35904 Editar Cat-Int-35904 Desactivar categoría Cat-Int-35904" [ref=e728] [cursor=pointer]:
+                    - cell "Cat-Int-35904" [ref=e729]
+                    - cell "test" [ref=e730]
+                    - cell "admin" [ref=e731]
+                    - cell "Ver productos de Cat-Int-35904 Editar Cat-Int-35904 Desactivar categoría Cat-Int-35904" [ref=e732]:
+                      - button "Ver productos de Cat-Int-35904" [ref=e733]:
+                        - img [ref=e734]: shopping_bag
+                      - button "Editar Cat-Int-35904" [ref=e737]:
+                        - img [ref=e738]: edit
+                      - button "Desactivar categoría Cat-Int-35904" [ref=e741]:
+                        - img [ref=e742]: delete_outline
+                  - row "Cat-Int-40143 test admin Ver productos de Cat-Int-40143 Editar Cat-Int-40143 Desactivar categoría Cat-Int-40143" [ref=e745] [cursor=pointer]:
+                    - cell "Cat-Int-40143" [ref=e746]
+                    - cell "test" [ref=e747]
+                    - cell "admin" [ref=e748]
+                    - cell "Ver productos de Cat-Int-40143 Editar Cat-Int-40143 Desactivar categoría Cat-Int-40143" [ref=e749]:
+                      - button "Ver productos de Cat-Int-40143" [ref=e750]:
+                        - img [ref=e751]: shopping_bag
+                      - button "Editar Cat-Int-40143" [ref=e754]:
+                        - img [ref=e755]: edit
+                      - button "Desactivar categoría Cat-Int-40143" [ref=e758]:
+                        - img [ref=e759]: delete_outline
+                  - row "Cat-Int-57543 test admin Ver productos de Cat-Int-57543 Editar Cat-Int-57543 Desactivar categoría Cat-Int-57543" [ref=e762] [cursor=pointer]:
+                    - cell "Cat-Int-57543" [ref=e763]
+                    - cell "test" [ref=e764]
+                    - cell "admin" [ref=e765]
+                    - cell "Ver productos de Cat-Int-57543 Editar Cat-Int-57543 Desactivar categoría Cat-Int-57543" [ref=e766]:
+                      - button "Ver productos de Cat-Int-57543" [ref=e767]:
+                        - img [ref=e768]: shopping_bag
+                      - button "Editar Cat-Int-57543" [ref=e771]:
+                        - img [ref=e772]: edit
+                      - button "Desactivar categoría Cat-Int-57543" [ref=e775]:
+                        - img [ref=e776]: delete_outline
+                  - row "Cat-Int-94230 test admin Ver productos de Cat-Int-94230 Editar Cat-Int-94230 Desactivar categoría Cat-Int-94230" [ref=e779] [cursor=pointer]:
+                    - cell "Cat-Int-94230" [ref=e780]
+                    - cell "test" [ref=e781]
+                    - cell "admin" [ref=e782]
+                    - cell "Ver productos de Cat-Int-94230 Editar Cat-Int-94230 Desactivar categoría Cat-Int-94230" [ref=e783]:
+                      - button "Ver productos de Cat-Int-94230" [ref=e784]:
+                        - img [ref=e785]: shopping_bag
+                      - button "Editar Cat-Int-94230" [ref=e788]:
+                        - img [ref=e789]: edit
+                      - button "Desactivar categoría Cat-Int-94230" [ref=e792]:
+                        - img [ref=e793]: delete_outline
+                  - row "Cat-Mgr-R24138 Categoría de MANAGER mgrR24138 Ver productos de Cat-Mgr-R24138 Editar Cat-Mgr-R24138 Desactivar categoría Cat-Mgr-R24138" [ref=e796] [cursor=pointer]:
+                    - cell "Cat-Mgr-R24138" [ref=e797]
+                    - cell "Categoría de MANAGER" [ref=e798]
+                    - cell "mgrR24138" [ref=e799]
+                    - cell "Ver productos de Cat-Mgr-R24138 Editar Cat-Mgr-R24138 Desactivar categoría Cat-Mgr-R24138" [ref=e800]:
+                      - button "Ver productos de Cat-Mgr-R24138" [ref=e801]:
+                        - img [ref=e802]: shopping_bag
+                      - button "Editar Cat-Mgr-R24138" [ref=e805]:
+                        - img [ref=e806]: edit
+                      - button "Desactivar categoría Cat-Mgr-R24138" [ref=e809]:
+                        - img [ref=e810]: delete_outline
+                  - row "Cat-Mgr-R36816 Categoría de MANAGER mgrR36816 Ver productos de Cat-Mgr-R36816 Editar Cat-Mgr-R36816 Desactivar categoría Cat-Mgr-R36816" [ref=e813] [cursor=pointer]:
+                    - cell "Cat-Mgr-R36816" [ref=e814]
+                    - cell "Categoría de MANAGER" [ref=e815]
+                    - cell "mgrR36816" [ref=e816]
+                    - cell "Ver productos de Cat-Mgr-R36816 Editar Cat-Mgr-R36816 Desactivar categoría Cat-Mgr-R36816" [ref=e817]:
+                      - button "Ver productos de Cat-Mgr-R36816" [ref=e818]:
+                        - img [ref=e819]: shopping_bag
+                      - button "Editar Cat-Mgr-R36816" [ref=e822]:
+                        - img [ref=e823]: edit
+                      - button "Desactivar categoría Cat-Mgr-R36816" [ref=e826]:
+                        - img [ref=e827]: delete_outline
+                  - row "Cat-Mgr-R41075 Categoría de MANAGER mgrR41075 Ver productos de Cat-Mgr-R41075 Editar Cat-Mgr-R41075 Desactivar categoría Cat-Mgr-R41075" [ref=e830] [cursor=pointer]:
+                    - cell "Cat-Mgr-R41075" [ref=e831]
+                    - cell "Categoría de MANAGER" [ref=e832]
+                    - cell "mgrR41075" [ref=e833]
+                    - cell "Ver productos de Cat-Mgr-R41075 Editar Cat-Mgr-R41075 Desactivar categoría Cat-Mgr-R41075" [ref=e834]:
+                      - button "Ver productos de Cat-Mgr-R41075" [ref=e835]:
+                        - img [ref=e836]: shopping_bag
+                      - button "Editar Cat-Mgr-R41075" [ref=e839]:
+                        - img [ref=e840]: edit
+                      - button "Desactivar categoría Cat-Mgr-R41075" [ref=e843]:
+                        - img [ref=e844]: delete_outline
+                  - row "Cat-Mgr-R58523 Categoría de MANAGER mgrR58523 Ver productos de Cat-Mgr-R58523 Editar Cat-Mgr-R58523 Desactivar categoría Cat-Mgr-R58523" [ref=e847] [cursor=pointer]:
+                    - cell "Cat-Mgr-R58523" [ref=e848]
+                    - cell "Categoría de MANAGER" [ref=e849]
+                    - cell "mgrR58523" [ref=e850]
+                    - cell "Ver productos de Cat-Mgr-R58523 Editar Cat-Mgr-R58523 Desactivar categoría Cat-Mgr-R58523" [ref=e851]:
+                      - button "Ver productos de Cat-Mgr-R58523" [ref=e852]:
+                        - img [ref=e853]: shopping_bag
+                      - button "Editar Cat-Mgr-R58523" [ref=e856]:
+                        - img [ref=e857]: edit
+                      - button "Desactivar categoría Cat-Mgr-R58523" [ref=e860]:
+                        - img [ref=e861]: delete_outline
+                  - row "Cat-Mgr-R95214 Categoría de MANAGER mgrR95214 Ver productos de Cat-Mgr-R95214 Editar Cat-Mgr-R95214 Desactivar categoría Cat-Mgr-R95214" [ref=e864] [cursor=pointer]:
+                    - cell "Cat-Mgr-R95214" [ref=e865]
+                    - cell "Categoría de MANAGER" [ref=e866]
+                    - cell "mgrR95214" [ref=e867]
+                    - cell "Ver productos de Cat-Mgr-R95214 Editar Cat-Mgr-R95214 Desactivar categoría Cat-Mgr-R95214" [ref=e868]:
+                      - button "Ver productos de Cat-Mgr-R95214" [ref=e869]:
+                        - img [ref=e870]: shopping_bag
+                      - button "Editar Cat-Mgr-R95214" [ref=e873]:
+                        - img [ref=e874]: edit
+                      - button "Desactivar categoría Cat-Mgr-R95214" [ref=e877]:
+                        - img [ref=e878]: delete_outline
+                  - row "Categoría Test F06 admin Ver productos de Categoría Test F06 Editar Categoría Test F06 Desactivar categoría Categoría Test F06" [ref=e881] [cursor=pointer]:
+                    - cell "Categoría Test F06" [ref=e882]
+                    - cell [ref=e883]
+                    - cell "admin" [ref=e884]
+                    - cell "Ver productos de Categoría Test F06 Editar Categoría Test F06 Desactivar categoría Categoría Test F06" [ref=e885]:
+                      - button "Ver productos de Categoría Test F06" [ref=e886]:
+                        - img [ref=e887]: shopping_bag
+                      - button "Editar Categoría Test F06" [ref=e890]:
+                        - img [ref=e891]: edit
+                      - button "Desactivar categoría Categoría Test F06" [ref=e894]:
+                        - img [ref=e895]: delete_outline
+                  - row "Climatización y Ventilación Aires acondicionados, ventiladores industriales, extractores y calefactores. admin Ver productos de Climatización y Ventilación Editar Climatización y Ventilación Desactivar categoría Climatización y Ventilación" [ref=e898] [cursor=pointer]:
+                    - cell "Climatización y Ventilación" [ref=e899]
+                    - cell "Aires acondicionados, ventiladores industriales, extractores y calefactores." [ref=e900]
+                    - cell "admin" [ref=e901]
+                    - cell "Ver productos de Climatización y Ventilación Editar Climatización y Ventilación Desactivar categoría Climatización y Ventilación" [ref=e902]:
+                      - button "Ver productos de Climatización y Ventilación" [ref=e903]:
+                        - img [ref=e904]: shopping_bag
+                      - button "Editar Climatización y Ventilación" [ref=e907]:
+                        - img [ref=e908]: edit
+                      - button "Desactivar categoría Climatización y Ventilación" [ref=e911]:
+                        - img [ref=e912]: delete_outline
+                  - row "Computación y Periféricos Laptops, desktops, teclados, ratones, monitores y accesorios de cómputo. admin Ver productos de Computación y Periféricos Editar Computación y Periféricos Desactivar categoría Computación y Periféricos" [ref=e915] [cursor=pointer]:
+                    - cell "Computación y Periféricos" [ref=e916]
+                    - cell "Laptops, desktops, teclados, ratones, monitores y accesorios de cómputo." [ref=e917]
+                    - cell "admin" [ref=e918]
+                    - cell "Ver productos de Computación y Periféricos Editar Computación y Periféricos Desactivar categoría Computación y Periféricos" [ref=e919]:
+                      - button "Ver productos de Computación y Periféricos" [ref=e920]:
+                        - img [ref=e921]: shopping_bag
+                      - button "Editar Computación y Periféricos" [ref=e924]:
+                        - img [ref=e925]: edit
+                      - button "Desactivar categoría Computación y Periféricos" [ref=e928]:
+                        - img [ref=e929]: delete_outline
+                  - row "Electricidad e Iluminación Cables, interruptores, contactos, lámparas LED, reflectores y tableros. admin Ver productos de Electricidad e Iluminación Editar Electricidad e Iluminación Desactivar categoría Electricidad e Iluminación" [ref=e932] [cursor=pointer]:
+                    - cell "Electricidad e Iluminación" [ref=e933]
+                    - cell "Cables, interruptores, contactos, lámparas LED, reflectores y tableros." [ref=e934]
+                    - cell "admin" [ref=e935]
+                    - cell "Ver productos de Electricidad e Iluminación Editar Electricidad e Iluminación Desactivar categoría Electricidad e Iluminación" [ref=e936]:
+                      - button "Ver productos de Electricidad e Iluminación" [ref=e937]:
+                        - img [ref=e938]: shopping_bag
+                      - button "Editar Electricidad e Iluminación" [ref=e941]:
+                        - img [ref=e942]: edit
+                      - button "Desactivar categoría Electricidad e Iluminación" [ref=e945]:
+                        - img [ref=e946]: delete_outline
+                  - row "Electrodomésticos de Línea Blanca Refrigeradores, lavadoras, secadoras, lavavajillas y hornos de cocina. admin Ver productos de Electrodomésticos de Línea Blanca Editar Electrodomésticos de Línea Blanca Desactivar categoría Electrodomésticos de Línea Blanca" [ref=e949] [cursor=pointer]:
+                    - cell "Electrodomésticos de Línea Blanca" [ref=e950]
+                    - cell "Refrigeradores, lavadoras, secadoras, lavavajillas y hornos de cocina." [ref=e951]
+                    - cell "admin" [ref=e952]
+                    - cell "Ver productos de Electrodomésticos de Línea Blanca Editar Electrodomésticos de Línea Blanca Desactivar categoría Electrodomésticos de Línea Blanca" [ref=e953]:
+                      - button "Ver productos de Electrodomésticos de Línea Blanca" [ref=e954]:
+                        - img [ref=e955]: shopping_bag
+                      - button "Editar Electrodomésticos de Línea Blanca" [ref=e958]:
+                        - img [ref=e959]: edit
+                      - button "Desactivar categoría Electrodomésticos de Línea Blanca" [ref=e962]:
+                        - img [ref=e963]: delete_outline
+                  - row "Electrodomésticos de Línea Café Cafeteras, licuadoras, tostadoras, microondas y pequeños electrodomésticos. admin Ver productos de Electrodomésticos de Línea Café Editar Electrodomésticos de Línea Café Desactivar categoría Electrodomésticos de Línea Café" [ref=e966] [cursor=pointer]:
+                    - cell "Electrodomésticos de Línea Café" [ref=e967]
+                    - cell "Cafeteras, licuadoras, tostadoras, microondas y pequeños electrodomésticos." [ref=e968]
+                    - cell "admin" [ref=e969]
+                    - cell "Ver productos de Electrodomésticos de Línea Café Editar Electrodomésticos de Línea Café Desactivar categoría Electrodomésticos de Línea Café" [ref=e970]:
+                      - button "Ver productos de Electrodomésticos de Línea Café" [ref=e971]:
+                        - img [ref=e972]: shopping_bag
+                      - button "Editar Electrodomésticos de Línea Café" [ref=e975]:
+                        - img [ref=e976]: edit
+                      - button "Desactivar categoría Electrodomésticos de Línea Café" [ref=e979]:
+                        - img [ref=e980]: delete_outline
+                  - row "Electrónica duplicado admin Ver productos de Electrónica Editar Electrónica Desactivar categoría Electrónica" [ref=e983] [cursor=pointer]:
+                    - cell "Electrónica" [ref=e984]
+                    - cell "duplicado" [ref=e985]
+                    - cell "admin" [ref=e986]
+                    - cell "Ver productos de Electrónica Editar Electrónica Desactivar categoría Electrónica" [ref=e987]:
+                      - button "Ver productos de Electrónica" [ref=e988]:
+                        - img [ref=e989]: shopping_bag
+                      - button "Editar Electrónica" [ref=e992]:
+                        - img [ref=e993]: edit
+                      - button "Desactivar categoría Electrónica" [ref=e996]:
+                        - img [ref=e997]: delete_outline
+                  - row "Electrónica de Consumo Televisores, reproductores, audífonos y dispositivos de entretenimiento. admin Ver productos de Electrónica de Consumo Editar Electrónica de Consumo Desactivar categoría Electrónica de Consumo" [ref=e1000] [cursor=pointer]:
+                    - cell "Electrónica de Consumo" [ref=e1001]
+                    - cell "Televisores, reproductores, audífonos y dispositivos de entretenimiento." [ref=e1002]
+                    - cell "admin" [ref=e1003]
+                    - cell "Ver productos de Electrónica de Consumo Editar Electrónica de Consumo Desactivar categoría Electrónica de Consumo" [ref=e1004]:
+                      - button "Ver productos de Electrónica de Consumo" [ref=e1005]:
+                        - img [ref=e1006]: shopping_bag
+                      - button "Editar Electrónica de Consumo" [ref=e1009]:
+                        - img [ref=e1010]: edit
+                      - button "Desactivar categoría Electrónica de Consumo" [ref=e1013]:
+                        - img [ref=e1014]: delete_outline
+              - group "Paginación de categorías" [ref=e1017]:
+                - generic [ref=e414]:
+                  - generic [ref=e415]:
+                    - generic [ref=e416]: "Items per page:"
+                    - combobox "Items per page:" [ref=e1018] [cursor=pointer]:
+                      - generic [ref=e422]:
+                        - generic [ref=e424]: "20"
+                        - img [ref=e427]
+                  - generic [ref=e430]:
+                    - status [ref=e431]: 1 – 20 of 41
+                    - button "Previous page" [disabled] [ref=e1019]:
+                      - img [ref=e433]
+                    - button "Next page" [ref=e1020] [cursor=pointer]:
+                      - img [ref=e438]
+  - generic [ref=e1037]: Laptops, desktops, teclados, ratones, monitores y accesorios de cómputo.

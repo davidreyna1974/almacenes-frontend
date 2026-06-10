@@ -1,0 +1,128 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e462] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e463] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e464]:
+            - img [ref=e15]: chevron_right
+            - text: Compras → Órdenes de compra
+        - generic [ref=e16]:
+          - button [ref=e465] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e466]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: test_mgr
+              - generic [ref=e467]: MANAGER
+      - generic [ref=e28]:
+        - navigation [ref=e468]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+          - button [ref=e469] [cursor=pointer]:
+            - img [ref=e43]: chevron_right
+        - main [ref=e44]:
+          - generic [ref=e340]:
+            - generic [ref=e341]:
+              - button [ref=e342] [cursor=pointer]:
+                - img [ref=e343]: arrow_back
+              - generic [ref=e346]:
+                - heading [level=2] [ref=e470]: OC-2026-0062
+                - generic [ref=e348]: Pendiente
+              - generic [ref=e349]:
+                - button [ref=e471]:
+                  - img [ref=e351]: check_circle
+                  - generic [ref=e352]: Aprobar
+                - button [ref=e472]:
+                  - img [ref=e356]: cancel
+                  - generic [ref=e357]: Cancelar orden
+            - generic [ref=e360]:
+              - generic [ref=e361]:
+                - generic [ref=e362]:
+                  - heading [level=3] [ref=e473]: Información de la orden
+                  - generic [ref=e364]:
+                    - generic [ref=e367] [cursor=pointer]:
+                      - generic [ref=e368]:
+                        - text: Proveedor
+                        - generic [ref=e369]: "*"
+                      - combobox [ref=e474]:
+                        - generic [ref=e372]:
+                          - generic [ref=e374]: Distribuidora México Digital S.A. de C.V.
+                          - img [ref=e377]
+                    - generic [ref=e382]:
+                      - generic [ref=e383]: Notas
+                      - textbox [ref=e475]:
+                        - /placeholder: Observaciones opcionales
+                    - button [ref=e476]:
+                      - img [ref=e389]: save
+                      - generic [ref=e390]: Guardar cambios
+                - generic [ref=e393]:
+                  - generic [ref=e394]:
+                    - heading [level=3] [ref=e477]: Líneas de detalle
+                    - button [ref=e478]:
+                      - img [ref=e397]: add
+                      - generic [ref=e398]: Agregar línea
+                  - table [ref=e401]:
+                    - row [ref=e479]:
+                      - columnheader [ref=e480]: SKU
+                      - columnheader [ref=e481]: Producto
+                      - columnheader [ref=e482]: Cantidad
+                      - columnheader [ref=e483]: Precio unitario
+                      - columnheader [ref=e484]: Subtotal
+                      - columnheader [ref=e408]
+                    - row [ref=e485]:
+                      - cell [ref=e486]:
+                        - generic [ref=e411]: ELUM-CAB12-022
+                      - cell [ref=e487]:
+                        - generic [ref=e413]: Cable Duplex THW 12 AWG Rollo 100m
+                      - cell [ref=e488]: "10"
+                      - cell [ref=e489]: $450.00
+                      - cell [ref=e490]: $4,500.00
+                      - cell [ref=e417]:
+                        - button [ref=e418] [cursor=pointer]:
+                          - img [ref=e419]: edit
+                        - button [ref=e422] [cursor=pointer]:
+                          - img [ref=e423]: delete
+                  - generic [ref=e426]:
+                    - generic [ref=e427]: "Total de la orden:"
+                    - generic [ref=e428]: $4,500.00
+              - generic [ref=e430]:
+                - heading [level=3] [ref=e491]: Historial de estado
+                - generic [ref=e432]:
+                  - generic [ref=e433]:
+                    - img [ref=e434]: add_circle
+                    - generic [ref=e435]:
+                      - generic [ref=e436]: Creada
+                      - generic [ref=e437]: test_mgr
+                      - generic [ref=e438]: 07/06/2026 18:58
+                  - generic [ref=e439]:
+                    - img [ref=e440]: check_circle
+                    - generic [ref=e441]:
+                      - generic [ref=e442]: Aprobada
+                      - generic [ref=e443]: Pendiente
+                  - generic [ref=e444]:
+                    - img [ref=e445]: done_all
+                    - generic [ref=e446]:
+                      - generic [ref=e447]: Recibida
+                      - generic [ref=e448]: Pendiente
+  - dialog "Aprobar orden" [ref=e495]:
+    - generic [ref=e498]:
+      - heading "Aprobar orden" [level=2] [ref=e499]
+      - paragraph [ref=e501]: ¿Aprobar la orden OC-2026-0062? Los detalles quedarán bloqueados.
+      - generic [ref=e502]:
+        - button "Cancelar" [active] [ref=e503]:
+          - generic [ref=e504]: Cancelar
+        - button "Aprobar" [ref=e507]:
+          - generic [ref=e508]: Aprobar

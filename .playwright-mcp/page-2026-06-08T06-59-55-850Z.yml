@@ -1,0 +1,176 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Órdenes de compra
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - button [ref=e51] [cursor=pointer]:
+              - img [ref=e52]: arrow_back
+            - generic [ref=e55]:
+              - heading "OC-2026-0066" [level=2] [ref=e56]
+              - generic [ref=e57]: Aprobada
+            - generic [ref=e58]:
+              - button "Recibir mercancía" [ref=e59]:
+                - img [ref=e60]: done_all
+                - generic [ref=e61]: Recibir mercancía
+              - button "Cancelar orden" [ref=e64]:
+                - img [ref=e65]: cancel
+                - generic [ref=e66]: Cancelar orden
+          - generic [ref=e69]:
+            - generic [ref=e70]:
+              - generic [ref=e71]:
+                - heading "Información de la orden" [level=3] [ref=e72]
+                - generic [ref=e73]:
+                  - generic [ref=e74]:
+                    - generic:
+                      - generic:
+                        - generic [ref=e75]:
+                          - text: Proveedor
+                          - generic [ref=e76]: "*"
+                        - generic:
+                          - combobox "Proveedor" [disabled]:
+                            - generic:
+                              - generic:
+                                - generic: Seguridad y Vigilancia Electrónica S.A.
+                              - generic:
+                                - generic:
+                                  - img
+                  - generic [ref=e78]:
+                    - generic:
+                      - generic:
+                        - generic [ref=e79]: Notas
+                        - textbox "Notas" [disabled] [ref=e80]:
+                          - /placeholder: Observaciones opcionales
+                          - text: Prueba de edición de notas en orden PENDING
+              - generic [ref=e82]:
+                - heading "Líneas de detalle" [level=3] [ref=e84]
+                - table [ref=e85]:
+                  - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e86]:
+                    - columnheader "SKU" [ref=e87]
+                    - columnheader "Producto" [ref=e88]
+                    - columnheader "Cantidad" [ref=e89]
+                    - columnheader "Precio unitario" [ref=e90]
+                    - columnheader "Subtotal" [ref=e91]
+                    - columnheader [ref=e92]
+                  - row "LUBR-ACE20-035 Aceite Lubricante Motor 20W-50 Galón 1 $380.00 $380.00" [ref=e93]:
+                    - cell "LUBR-ACE20-035" [ref=e94]:
+                      - generic [ref=e95]: LUBR-ACE20-035
+                    - cell "Aceite Lubricante Motor 20W-50 Galón" [ref=e96]:
+                      - generic [ref=e97]: Aceite Lubricante Motor 20W-50 Galón
+                    - cell "1" [ref=e98]
+                    - cell "$380.00" [ref=e99]
+                    - cell "$380.00" [ref=e100]
+                    - cell [ref=e101]
+                  - row "HELEC-AMO-015 Amoladora Angular 4.5\" 1400W 1 $980.00 $980.00" [ref=e102]:
+                    - cell "HELEC-AMO-015" [ref=e103]:
+                      - generic [ref=e104]: HELEC-AMO-015
+                    - cell "Amoladora Angular 4.5\" 1400W" [ref=e105]:
+                      - generic [ref=e106]: Amoladora Angular 4.5" 1400W
+                    - cell "1" [ref=e107]
+                    - cell "$980.00" [ref=e108]
+                    - cell "$980.00" [ref=e109]
+                    - cell [ref=e110]
+                  - row "MOFI-ESC-026 Escritorio en L 160x120 cm Wengué 1 $4,200.00 $4,200.00" [ref=e111]:
+                    - cell "MOFI-ESC-026" [ref=e112]:
+                      - generic [ref=e113]: MOFI-ESC-026
+                    - cell "Escritorio en L 160x120 cm Wengué" [ref=e114]:
+                      - generic [ref=e115]: Escritorio en L 160x120 cm Wengué
+                    - cell "1" [ref=e116]
+                    - cell "$4,200.00" [ref=e117]
+                    - cell "$4,200.00" [ref=e118]
+                    - cell [ref=e119]
+                  - row "ELEC-TV55-001 Televisor LED 55\" 4K Smart TV 1 $12,999.00 $12,999.00" [ref=e120]:
+                    - cell "ELEC-TV55-001" [ref=e121]:
+                      - generic [ref=e122]: ELEC-TV55-001
+                    - cell "Televisor LED 55\" 4K Smart TV" [ref=e123]:
+                      - generic [ref=e124]: Televisor LED 55" 4K Smart TV
+                    - cell "1" [ref=e125]
+                    - cell "$12,999.00" [ref=e126]
+                    - cell "$12,999.00" [ref=e127]
+                    - cell [ref=e128]
+                  - row "PINT-BAR5G-049 Barniz marino 5 galones para exteriores 1 $2,100.00 $2,100.00" [ref=e129]:
+                    - cell "PINT-BAR5G-049" [ref=e130]:
+                      - generic [ref=e131]: PINT-BAR5G-049
+                    - cell "Barniz marino 5 galones para exteriores" [ref=e132]:
+                      - generic [ref=e133]: Barniz marino 5 galones para exteriores
+                    - cell "1" [ref=e134]
+                    - cell "$2,100.00" [ref=e135]
+                    - cell "$2,100.00" [ref=e136]
+                    - cell [ref=e137]
+                  - row "ELEC-SP40-002 Bocina Inalámbrica Bluetooth 40W 1 $1,299.00 $1,299.00" [ref=e138]:
+                    - cell "ELEC-SP40-002" [ref=e139]:
+                      - generic [ref=e140]: ELEC-SP40-002
+                    - cell "Bocina Inalámbrica Bluetooth 40W" [ref=e141]:
+                      - generic [ref=e142]: Bocina Inalámbrica Bluetooth 40W
+                    - cell "1" [ref=e143]
+                    - cell "$1,299.00" [ref=e144]
+                    - cell "$1,299.00" [ref=e145]
+                    - cell [ref=e146]
+                  - row "ELEC-TV32-046 Televisor LED 32\" HD Smart TV (Modelo 2022) 3 $4,500.00 $13,500.00" [ref=e147]:
+                    - cell "ELEC-TV32-046" [ref=e148]:
+                      - generic [ref=e149]: ELEC-TV32-046
+                    - cell "Televisor LED 32\" HD Smart TV (Modelo 2022)" [ref=e150]:
+                      - generic [ref=e151]: Televisor LED 32" HD Smart TV (Modelo 2022)
+                    - cell "3" [ref=e152]
+                    - cell "$4,500.00" [ref=e153]
+                    - cell "$13,500.00" [ref=e154]
+                    - cell [ref=e155]
+                - generic [ref=e156]:
+                  - generic [ref=e157]: "Total de la orden:"
+                  - generic [ref=e158]: $35,458.00
+            - generic [ref=e159]:
+              - generic [ref=e160]:
+                - heading "Historial de estado" [level=3] [ref=e161]
+                - generic [ref=e162]:
+                  - generic [ref=e163]:
+                    - img [ref=e164]: add_circle
+                    - generic [ref=e165]:
+                      - generic [ref=e166]: Creada
+                      - generic [ref=e167]: admin
+                      - generic [ref=e168]: 07/06/2026 20:39
+                  - generic [ref=e169]:
+                    - img [ref=e170]: check_circle
+                    - generic [ref=e171]:
+                      - generic [ref=e172]: Aprobada
+                      - generic [ref=e173]: admin
+                      - generic [ref=e174]: 08/06/2026 00:57
+                  - generic [ref=e175]:
+                    - img [ref=e176]: done_all
+                    - generic [ref=e177]:
+                      - generic [ref=e178]: Recibida
+                      - generic [ref=e179]: Pendiente
+              - generic [ref=e180]:
+                - generic [ref=e181]: "Última modificación:"
+                - generic [ref=e182]: 08/06/2026 00:57

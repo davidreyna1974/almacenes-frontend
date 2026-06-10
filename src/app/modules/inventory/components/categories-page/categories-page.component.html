@@ -2,28 +2,17 @@
 
   <!-- Barra de acciones -->
   <div class="catalog-page__toolbar">
-    <h2 class="catalog-page__title">Categorías</h2>
+
+    <div class="catalog-page__filters">
+      <!-- Búsqueda -->
+      <mat-form-field appearance="outline" class="filter-field filter-field--search">
+        <mat-label>Buscar categoría</mat-label>
+        <input matInput [formControl]="searchCtrl" autocomplete="off" />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
 
     <div class="catalog-page__actions">
-      <!-- Búsqueda -->
-      <mat-form-field appearance="outline" class="catalog-page__search">
-        <mat-icon matPrefix>search</mat-icon>
-        <input matInput [formControl]="searchCtrl" placeholder="Buscar categoría…" />
-        @if (searchCtrl.value) {
-          <button matSuffix mat-icon-button aria-label="Limpiar búsqueda" (click)="clearSearch()">
-            <mat-icon>close</mat-icon>
-          </button>
-        }
-      </mat-form-field>
-
-      <!-- Acceso cruzado: ir a Productos -->
-      <button mat-stroked-button
-              (click)="viewProducts()"
-              matTooltip="Ir a catálogo de productos" matTooltipShowDelay="300">
-        <mat-icon>shopping_bag</mat-icon>
-        Productos
-      </button>
-
       @if (canWrite()) {
         <button mat-flat-button color="primary" (click)="openNew()">
           <mat-icon>add</mat-icon>

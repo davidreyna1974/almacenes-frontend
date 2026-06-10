@@ -1,0 +1,70 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ir al contenido principal" [ref=e1708] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button "Alternar menú lateral" [ref=e1709] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - 'generic "Ubicación actual: Compras → Proveedores" [ref=e1710]':
+            - img [ref=e15]: chevron_right
+            - text: Compras → Proveedores
+        - generic [ref=e16]:
+          - button "Notificaciones" [ref=e1711] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button "Menú de usuario" [ref=e1712]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - 'generic "Rol: ADMIN" [ref=e1713]': ADMIN
+      - generic [ref=e28]:
+        - navigation "Navegación principal" [ref=e1714]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button "Expandir menú" [ref=e1715] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e50]:
+            - generic [ref=e51]:
+              - generic [ref=e52]:
+                - generic [ref=e55]:
+                  - generic [ref=e56]: Buscar proveedor
+                  - img [ref=e58]: search
+                  - textbox "Buscar proveedor" [ref=e1716]:
+                    - /placeholder: RFC o razón social
+                    - text: ABC123
+                - button "Nuevo proveedor" [ref=e1717]:
+                  - img [ref=e62]: add
+                  - generic [ref=e63]: Nuevo proveedor
+              - generic [ref=e1718]:
+                - img [ref=e1719]: local_shipping
+                - paragraph [ref=e1720]: Sin proveedores
+                - paragraph [ref=e1721]: No hay coincidencias para la búsqueda.
+              - table [ref=e66]:
+                - row "RFC Razón social Contacto Teléfono" [ref=e1722]:
+                  - columnheader "RFC" [ref=e1723]
+                  - columnheader "Razón social" [ref=e1724]
+                  - columnheader "Contacto" [ref=e1725]
+                  - columnheader "Teléfono" [ref=e1726]
+                  - columnheader [ref=e72]
+            - generic [ref=e1727]:
+              - img [ref=e1728]: local_shipping
+              - paragraph [ref=e1729]: Selecciona un proveedor para ver los detalles
+              - button "Nuevo proveedor" [ref=e1730]:
+                - img [ref=e1731]: add
+                - generic [ref=e1732]: Nuevo proveedor
+  - generic [ref=e1741]:
+    - generic [ref=e1742]: Proveedor desactivado.
+    - button "Cerrar" [ref=e1744]:
+      - generic [ref=e1745]: Cerrar

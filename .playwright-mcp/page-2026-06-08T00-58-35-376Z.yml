@@ -1,0 +1,122 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e338]':
+            - img [ref=e15]: chevron_right
+            - text: Compras → Órdenes de compra
+        - generic [ref=e16]:
+          - button "Notificaciones" [ref=e17] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button "Menú de usuario" [ref=e21]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: test_mgr
+              - 'generic "Rol: MANAGER" [ref=e25]': MANAGER
+      - generic [ref=e28]:
+        - navigation "Navegación principal" [ref=e31]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+          - button "Expandir menú" [ref=e42] [cursor=pointer]:
+            - img [ref=e43]: chevron_right
+        - main [ref=e44]:
+          - generic [ref=e340]:
+            - generic [ref=e341]:
+              - button [ref=e342] [cursor=pointer]:
+                - img [ref=e343]: arrow_back
+              - generic [ref=e346]:
+                - heading "OC-2026-0062" [level=2] [ref=e347]
+                - generic [ref=e348]: Pendiente
+              - generic [ref=e349]:
+                - button "Aprobar" [ref=e350]:
+                  - img [ref=e351]: check_circle
+                  - generic [ref=e352]: Aprobar
+                - button "Cancelar orden" [ref=e355]:
+                  - img [ref=e356]: cancel
+                  - generic [ref=e357]: Cancelar orden
+            - generic [ref=e360]:
+              - generic [ref=e361]:
+                - generic [ref=e362]:
+                  - heading "Información de la orden" [level=3] [ref=e363]
+                  - generic [ref=e364]:
+                    - generic [ref=e367] [cursor=pointer]:
+                      - generic [ref=e368]:
+                        - text: Proveedor
+                        - generic [ref=e369]: "*"
+                      - combobox "Proveedor" [ref=e371]:
+                        - generic [ref=e372]:
+                          - generic [ref=e374]: Distribuidora México Digital S.A. de C.V.
+                          - img [ref=e377]
+                    - generic [ref=e382]:
+                      - generic [ref=e383]: Notas
+                      - textbox "Notas" [ref=e385]:
+                        - /placeholder: Observaciones opcionales
+                    - button "Guardar cambios" [ref=e388]:
+                      - img [ref=e389]: save
+                      - generic [ref=e390]: Guardar cambios
+                - generic [ref=e393]:
+                  - generic [ref=e394]:
+                    - heading "Líneas de detalle" [level=3] [ref=e395]
+                    - button "Agregar línea" [ref=e396]:
+                      - img [ref=e397]: add
+                      - generic [ref=e398]: Agregar línea
+                  - table [ref=e401]:
+                    - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e402]:
+                      - columnheader "SKU" [ref=e403]
+                      - columnheader "Producto" [ref=e404]
+                      - columnheader "Cantidad" [ref=e405]
+                      - columnheader "Precio unitario" [ref=e406]
+                      - columnheader "Subtotal" [ref=e407]
+                      - columnheader [ref=e408]
+                    - row "ELUM-CAB12-022 Cable Duplex THW 12 AWG Rollo 100m 10 $450.00 $4,500.00" [ref=e409]:
+                      - cell "ELUM-CAB12-022" [ref=e410]:
+                        - generic [ref=e411]: ELUM-CAB12-022
+                      - cell "Cable Duplex THW 12 AWG Rollo 100m" [ref=e412]:
+                        - generic [ref=e413]: Cable Duplex THW 12 AWG Rollo 100m
+                      - cell "10" [ref=e414]
+                      - cell "$450.00" [ref=e415]
+                      - cell "$4,500.00" [ref=e416]
+                      - cell [ref=e417]:
+                        - button [ref=e418] [cursor=pointer]:
+                          - img [ref=e419]: edit
+                        - button [ref=e422] [cursor=pointer]:
+                          - img [ref=e423]: delete
+                  - generic [ref=e426]:
+                    - generic [ref=e427]: "Total de la orden:"
+                    - generic [ref=e428]: $4,500.00
+              - generic [ref=e430]:
+                - heading "Historial de estado" [level=3] [ref=e431]
+                - generic [ref=e432]:
+                  - generic [ref=e433]:
+                    - img [ref=e434]: add_circle
+                    - generic [ref=e435]:
+                      - generic [ref=e436]: Creada
+                      - generic [ref=e437]: test_mgr
+                      - generic [ref=e438]: 07/06/2026 18:58
+                  - generic [ref=e439]:
+                    - img [ref=e440]: check_circle
+                    - generic [ref=e441]:
+                      - generic [ref=e442]: Aprobada
+                      - generic [ref=e443]: Pendiente
+                  - generic [ref=e444]:
+                    - img [ref=e445]: done_all
+                    - generic [ref=e446]:
+                      - generic [ref=e447]: Recibida
+                      - generic [ref=e448]: Pendiente
+  - generic [ref=e455]:
+    - generic [ref=e456]: Orden creada correctamente.
+    - button "Cerrar" [ref=e458]:
+      - generic [ref=e459]: Cerrar

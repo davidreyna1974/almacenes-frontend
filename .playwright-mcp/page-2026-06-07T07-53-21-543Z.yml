@@ -1,0 +1,77 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e952] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e953] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Productos" [ref=e954]':
+          - img [ref=e15]: chevron_right
+          - text: Inventario → Productos
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e955] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e956]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e957]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e958]:
+        - menubar [ref=e32]:
+          - menuitem "Inventario" [expanded] [ref=e1010] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+            - generic [ref=e986]: Inventario
+            - img [ref=e1011]: expand_less
+          - group [ref=e1012]:
+            - menuitem "Productos" [ref=e1013] [cursor=pointer]:
+              - img [ref=e1014]: shopping_bag
+              - generic [ref=e1015]: Productos
+            - menuitem "Categorías" [ref=e1016] [cursor=pointer]:
+              - img [ref=e1017]: category
+              - generic [ref=e1018]: Categorías
+          - menuitem "Compras" [ref=e1019] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+            - generic [ref=e996]: Compras
+          - menuitem "Ventas" [ref=e1020] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+            - generic [ref=e998]: Ventas
+          - menuitem "Reportes" [ref=e1021] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+            - generic [ref=e1000]: Reportes
+          - menuitem "Usuarios" [ref=e1022] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+            - generic [ref=e1002]: Usuarios
+        - button "Colapsar menú" [ref=e1023] [cursor=pointer]:
+          - img [ref=e45]: chevron_left
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - generic [ref=e51]:
+              - generic [ref=e54]:
+                - generic [ref=e55]: Buscar por código o nombre
+                - textbox "Buscar por código o nombre" [active] [ref=e960]: TEST-ADMIN-SUITE-001
+                - img [ref=e59]: search
+              - generic [ref=e63] [cursor=pointer]:
+                - generic [ref=e64]: Categoría
+                - combobox "Categoría" [ref=e961]:
+                  - img [ref=e72]
+              - generic [ref=e77] [cursor=pointer]:
+                - generic [ref=e78]: Estado
+                - combobox "Estado" [ref=e962]:
+                  - img [ref=e86]
+              - generic [ref=e91] [cursor=pointer]:
+                - generic [ref=e92]: Proveedor
+                - combobox "Proveedor" [ref=e963]:
+                  - img [ref=e100]
+              - button "Limpiar todos los filtros" [ref=e964] [cursor=pointer]:
+                - img [ref=e554]: filter_alt_off
+            - button "Nuevo producto" [ref=e965]:
+              - img [ref=e105]: add
+              - generic [ref=e106]: Nuevo producto
+          - 'status "Sin resultados: Ningún registro coincide con los filtros aplicados." [ref=e968]':
+            - img [ref=e969]: search_off
+            - heading "Sin resultados" [level=3] [ref=e970]
+            - paragraph [ref=e971]: Ningún registro coincide con los filtros aplicados.

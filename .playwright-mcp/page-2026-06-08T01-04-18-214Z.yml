@@ -1,0 +1,130 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e515] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e516] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e517]:
+            - img [ref=e15]: chevron_right
+            - text: Compras → Órdenes de compra
+        - generic [ref=e16]:
+          - button [ref=e518] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e519]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: test_mgr
+              - generic [ref=e520]: MANAGER
+      - generic [ref=e28]:
+        - navigation [ref=e521]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+          - button [ref=e522] [cursor=pointer]:
+            - img [ref=e43]: chevron_right
+        - main [ref=e44]:
+          - generic [ref=e291]:
+            - generic [ref=e292]:
+              - button [ref=e293] [cursor=pointer]:
+                - img [ref=e294]: arrow_back
+              - generic [ref=e297]:
+                - heading [level=2] [ref=e523]: OC-2026-0064
+                - generic [ref=e299]: Aprobada
+              - generic [ref=e300]:
+                - button [ref=e524]:
+                  - img [ref=e473]: done_all
+                  - generic [ref=e474]: Recibir mercancía
+                - button [ref=e525]:
+                  - img [ref=e307]: cancel
+                  - generic [ref=e308]: Cancelar orden
+            - generic [ref=e311]:
+              - generic [ref=e312]:
+                - generic [ref=e313]:
+                  - heading [level=3] [ref=e526]: Información de la orden
+                  - generic [ref=e315]:
+                    - generic [ref=e316]:
+                      - generic:
+                        - generic:
+                          - generic [ref=e319]:
+                            - text: Proveedor
+                            - generic [ref=e320]: "*"
+                          - generic:
+                            - combobox [disabled]:
+                              - generic:
+                                - generic:
+                                  - generic: Climatización e Instalaciones Térmicas S.A.
+                                - generic:
+                                  - generic:
+                                    - img
+                    - generic [ref=e331]:
+                      - generic:
+                        - generic:
+                          - generic [ref=e334]: Notas
+                          - textbox [disabled] [ref=e527]:
+                            - /placeholder: Observaciones opcionales
+                - generic [ref=e344]:
+                  - heading [level=3] [ref=e528]: Líneas de detalle
+                  - table [ref=e352]:
+                    - row [ref=e529]:
+                      - columnheader [ref=e530]: SKU
+                      - columnheader [ref=e531]: Producto
+                      - columnheader [ref=e532]: Cantidad
+                      - columnheader [ref=e533]: Precio unitario
+                      - columnheader [ref=e534]: Subtotal
+                      - columnheader [ref=e359]
+                    - row [ref=e535]:
+                      - cell [ref=e536]:
+                        - generic [ref=e489]: PLOM-TUB2-020
+                      - cell [ref=e537]:
+                        - generic [ref=e491]: Tubo CPVC 1/2" x 3m Temperatura
+                      - cell [ref=e538]: "3"
+                      - cell [ref=e539]: $85.00
+                      - cell [ref=e540]: $255.00
+                      - cell [ref=e495]
+                  - generic [ref=e377]:
+                    - generic [ref=e378]: "Total de la orden:"
+                    - generic [ref=e379]: $255.00
+              - generic [ref=e380]:
+                - generic [ref=e381]:
+                  - heading [level=3] [ref=e541]: Historial de estado
+                  - generic [ref=e383]:
+                    - generic [ref=e384]:
+                      - img [ref=e385]: add_circle
+                      - generic [ref=e386]:
+                        - generic [ref=e387]: Creada
+                        - generic [ref=e388]: test_mgr
+                        - generic [ref=e389]: 07/06/2026 19:03
+                    - generic [ref=e390]:
+                      - img [ref=e391]: check_circle
+                      - generic [ref=e392]:
+                        - generic [ref=e393]: Aprobada
+                        - generic [ref=e497]: test_mgr
+                        - generic [ref=e498]: 07/06/2026 19:04
+                    - generic [ref=e395]:
+                      - img [ref=e396]: done_all
+                      - generic [ref=e397]:
+                        - generic [ref=e398]: Recibida
+                        - generic [ref=e399]: Pendiente
+                - generic [ref=e499]:
+                  - generic [ref=e500]: "Última modificación:"
+                  - generic [ref=e501]: 07/06/2026 19:04
+  - dialog "Cancelar orden" [ref=e545]:
+    - generic [ref=e548]:
+      - heading "Cancelar orden" [level=2] [ref=e549]
+      - paragraph [ref=e551]: ¿Cancelar la orden OC-2026-0064? Esta acción es irreversible.
+      - generic [ref=e552]:
+        - button "Cancelar" [active] [ref=e553]:
+          - generic [ref=e554]: Cancelar
+        - button "Cancelar orden" [ref=e557]:
+          - generic [ref=e558]: Cancelar orden

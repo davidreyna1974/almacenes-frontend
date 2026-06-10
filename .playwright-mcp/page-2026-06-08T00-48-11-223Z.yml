@@ -1,0 +1,683 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e865] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e866] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e867]:
+            - img [ref=e15]: chevron_right
+            - text: Compras → Proveedores
+        - generic [ref=e16]:
+          - button [ref=e868] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e869]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - generic [ref=e870]: ADMIN
+      - generic [ref=e28]:
+        - navigation [ref=e871]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button [ref=e872] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e50]:
+            - generic [ref=e51]:
+              - generic [ref=e52]:
+                - generic [ref=e55]:
+                  - generic [ref=e56]: Buscar proveedor
+                  - img [ref=e58]: search
+                  - textbox [ref=e873]:
+                    - /placeholder: RFC o razón social
+                - button [ref=e874]:
+                  - img [ref=e62]: add
+                  - generic [ref=e63]: Nuevo proveedor
+              - table [ref=e66]:
+                - row [ref=e875]:
+                  - columnheader [ref=e876]: RFC
+                  - columnheader [ref=e877]: Razón social
+                  - columnheader [ref=e878]: Contacto
+                  - columnheader [ref=e879]: Teléfono
+                  - columnheader [ref=e72]
+                - row [ref=e880] [cursor=pointer]:
+                  - cell [ref=e881]:
+                    - generic [ref=e75]: AGRO990625GG6
+                  - cell [ref=e882]:
+                    - generic [ref=e77]: Agroquímica y Fertilizantes del Valle S.A.
+                  - cell [ref=e883]: Ing. Laura Ramírez Torres
+                  - cell [ref=e884]: 3312-8901
+                  - cell [ref=e80]:
+                    - button [ref=e81]:
+                      - img [ref=e82]: edit
+                - row [ref=e885] [cursor=pointer]:
+                  - cell [ref=e886]:
+                    - generic [ref=e87]: CLIT880312HH7
+                  - cell [ref=e887]:
+                    - generic [ref=e89]: Climatización e Instalaciones Térmicas S.A.
+                  - cell [ref=e888]: Ing. Pablo Guerrero Méndez
+                  - cell [ref=e889]: 9993-2345
+                  - cell [ref=e92]:
+                    - button [ref=e93]:
+                      - img [ref=e94]: edit
+                - row [ref=e890] [cursor=pointer]:
+                  - cell [ref=e891]:
+                    - generic [ref=e99]: CONS880415TU7
+                  - cell [ref=e892]:
+                    - generic [ref=e101]: Constructora y Suministros del Bajío S.A.
+                  - cell [ref=e893]: Arq. Sandra López Gutiérrez
+                  - cell [ref=e894]: 4773-2345
+                  - cell [ref=e104]:
+                    - button [ref=e105]:
+                      - img [ref=e106]: edit
+                - row [ref=e895] [cursor=pointer]:
+                  - cell [ref=e896]:
+                    - generic [ref=e111]: DIST900420LL1
+                  - cell [ref=e897]:
+                    - generic [ref=e113]: Distribuidora Logística del Centro S.A.
+                  - cell [ref=e898]: Lic. César Montes Arriaga
+                  - cell [ref=e899]: 4423-8901
+                  - cell [ref=e116]:
+                    - button [ref=e117]:
+                      - img [ref=e118]: edit
+                - row [ref=e900] [cursor=pointer]:
+                  - cell [ref=e901]:
+                    - generic [ref=e123]: MEXD840315AB2
+                  - cell [ref=e902]:
+                    - generic [ref=e125]: Distribuidora México Digital S.A. de C.V.
+                  - cell [ref=e903]: Ing. Carlos Mendoza Ríos
+                  - cell [ref=e904]: 5555-1234
+                  - cell [ref=e128]:
+                    - button [ref=e129]:
+                      - img [ref=e130]: edit
+                - row [ref=e905] [cursor=pointer]:
+                  - cell [ref=e906]:
+                    - generic [ref=e135]: ELCI920601XY3
+                  - cell [ref=e907]:
+                    - generic [ref=e137]: Electro Industrial del Centro S.A. de C.V.
+                  - cell [ref=e908]: Lic. María Torres Sánchez
+                  - cell [ref=e909]: 4422-5678
+                  - cell [ref=e140]:
+                    - button [ref=e141]:
+                      - img [ref=e142]: edit
+                - row [ref=e910] [cursor=pointer]:
+                  - cell [ref=e911]:
+                    - generic [ref=e147]: EMBA910310XZ9
+                  - cell [ref=e912]:
+                    - generic [ref=e149]: Empaques y Embalajes del Sureste S.A.
+                  - cell [ref=e913]: Lic. Patricia Hernández Cruz
+                  - cell [ref=e914]: 9981-0123
+                  - cell [ref=e152]:
+                    - button [ref=e153]:
+                      - img [ref=e154]: edit
+                - row [ref=e915] [cursor=pointer]:
+                  - cell [ref=e916]:
+                    - generic [ref=e159]: FERR860720RS6
+                  - cell [ref=e917]:
+                    - generic [ref=e161]: Ferretera Industrial del Norte S.A. de C.V.
+                  - cell [ref=e918]: Sr. Juan Pablo Ortiz Morales
+                  - cell [ref=e919]: 6181-7890
+                  - cell [ref=e164]:
+                    - button [ref=e165]:
+                      - img [ref=e166]: edit
+                - row [ref=e920] [cursor=pointer]:
+                  - cell [ref=e921]:
+                    - generic [ref=e171]: HERM810715DD3
+                  - cell [ref=e922]:
+                    - generic [ref=e173]: Herramientas y Maquinaria del Pacífico S.A.
+                  - cell [ref=e923]: Sr. Jorge Antonio Medina Villa
+                  - cell [ref=e924]: 3221-6789
+                  - cell [ref=e176]:
+                    - button [ref=e177]:
+                      - img [ref=e178]: edit
+                - row [ref=e925] [cursor=pointer]:
+                  - cell [ref=e926]:
+                    - generic [ref=e183]: LIMP940918BB1
+                  - cell [ref=e927]:
+                    - generic [ref=e185]: Limpieza Profesional e Higiene S.A. de C.V.
+                  - cell [ref=e928]: Lic. Gabriela Moreno Fuentes
+                  - cell [ref=e929]: 2281-8901
+                  - cell [ref=e188]:
+                    - button [ref=e189]:
+                      - img [ref=e190]: edit
+                - row [ref=e930] [cursor=pointer]:
+                  - cell [ref=e931]:
+                    - generic [ref=e195]: MEDI950115JJ9
+                  - cell [ref=e932]:
+                    - generic [ref=e197]: Medicamentos y Salud Ocupacional S.A.
+                  - cell [ref=e933]: Dr. Antonio Flores Chávez
+                  - cell [ref=e934]: 4444-0123
+                  - cell [ref=e200]:
+                    - button [ref=e201]:
+                      - img [ref=e202]: edit
+                - row [ref=e935] [cursor=pointer]:
+                  - cell [ref=e936]:
+                    - generic [ref=e207]: MEDI810730KK0
+                  - cell [ref=e937]:
+                    - generic [ref=e209]: Medición y Calibración Industrial S.A.
+                  - cell [ref=e938]: Ing. Verónica Soto Ibarra
+                  - cell [ref=e939]: 8115-4567
+                  - cell [ref=e212]:
+                    - button [ref=e213]:
+                      - img [ref=e214]: edit
+                - row [ref=e940] [cursor=pointer]:
+                  - cell [ref=e941]:
+                    - generic [ref=e219]: MUEB850625AA0
+                  - cell [ref=e942]:
+                    - generic [ref=e221]: Muebles y Equipos Corporativos S.A. de C.V.
+                  - cell [ref=e943]: Sr. Fernando Castillo Reyna
+                  - cell [ref=e944]: 5556-4567
+                  - cell [ref=e224]:
+                    - button [ref=e225]:
+                      - img [ref=e226]: edit
+                - row [ref=e945] [cursor=pointer]:
+                  - cell [ref=e946]:
+                    - generic [ref=e231]: PAPE760829II8
+                  - cell [ref=e947]:
+                    - generic [ref=e233]: Papelería y Artículos de Oficina Nacional S.A.
+                  - cell [ref=e948]: Lic. Silvia Acosta Bravo
+                  - cell [ref=e949]: 5557-6789
+                  - cell [ref=e236]:
+                    - button [ref=e237]:
+                      - img [ref=e238]: edit
+                - row [ref=e950] [cursor=pointer]:
+                  - cell [ref=e951]:
+                    - generic [ref=e243]: AINT12406
+                  - cell [ref=e952]:
+                    - generic [ref=e245]: Proveedor AINT12406
+                  - cell [ref=e953]: —
+                  - cell [ref=e954]: —
+                  - cell [ref=e248]:
+                    - button [ref=e249]:
+                      - img [ref=e250]: edit
+                - row [ref=e955] [cursor=pointer]:
+                  - cell [ref=e956]:
+                    - generic [ref=e255]: AINT16394
+                  - cell [ref=e957]:
+                    - generic [ref=e257]: Proveedor AINT16394
+                  - cell [ref=e958]: —
+                  - cell [ref=e959]: —
+                  - cell [ref=e260]:
+                    - button [ref=e261]:
+                      - img [ref=e262]: edit
+                - row [ref=e960] [cursor=pointer]:
+                  - cell [ref=e961]:
+                    - generic [ref=e267]: AINT19434
+                  - cell [ref=e962]:
+                    - generic [ref=e269]: Proveedor AINT19434
+                  - cell [ref=e963]: —
+                  - cell [ref=e964]: —
+                  - cell [ref=e272]:
+                    - button [ref=e273]:
+                      - img [ref=e274]: edit
+                - row [ref=e965] [cursor=pointer]:
+                  - cell [ref=e966]:
+                    - generic [ref=e279]: AINT23178
+                  - cell [ref=e967]:
+                    - generic [ref=e281]: Proveedor AINT23178
+                  - cell [ref=e968]: —
+                  - cell [ref=e969]: —
+                  - cell [ref=e284]:
+                    - button [ref=e285]:
+                      - img [ref=e286]: edit
+                - row [ref=e970] [cursor=pointer]:
+                  - cell [ref=e971]:
+                    - generic [ref=e291]: AINT25584
+                  - cell [ref=e972]:
+                    - generic [ref=e293]: Proveedor AINT25584
+                  - cell [ref=e973]: —
+                  - cell [ref=e974]: —
+                  - cell [ref=e296]:
+                    - button [ref=e297]:
+                      - img [ref=e298]: edit
+                - row [ref=e975] [cursor=pointer]:
+                  - cell [ref=e976]:
+                    - generic [ref=e303]: AINT2902
+                  - cell [ref=e977]:
+                    - generic [ref=e305]: Proveedor AINT2902
+                  - cell [ref=e978]: —
+                  - cell [ref=e979]: —
+                  - cell [ref=e308]:
+                    - button [ref=e309]:
+                      - img [ref=e310]: edit
+                - row [ref=e980] [cursor=pointer]:
+                  - cell [ref=e981]:
+                    - generic [ref=e315]: AINT35135
+                  - cell [ref=e982]:
+                    - generic [ref=e317]: Proveedor AINT35135
+                  - cell [ref=e983]: —
+                  - cell [ref=e984]: —
+                  - cell [ref=e320]:
+                    - button [ref=e321]:
+                      - img [ref=e322]: edit
+                - row [ref=e985] [cursor=pointer]:
+                  - cell [ref=e986]:
+                    - generic [ref=e327]: AINT35904
+                  - cell [ref=e987]:
+                    - generic [ref=e329]: Proveedor AINT35904
+                  - cell [ref=e988]: —
+                  - cell [ref=e989]: —
+                  - cell [ref=e332]:
+                    - button [ref=e333]:
+                      - img [ref=e334]: edit
+                - row [ref=e990] [cursor=pointer]:
+                  - cell [ref=e991]:
+                    - generic [ref=e339]: AINT38227
+                  - cell [ref=e992]:
+                    - generic [ref=e341]: Proveedor AINT38227
+                  - cell [ref=e993]: —
+                  - cell [ref=e994]: —
+                  - cell [ref=e344]:
+                    - button [ref=e345]:
+                      - img [ref=e346]: edit
+                - row [ref=e995] [cursor=pointer]:
+                  - cell [ref=e996]:
+                    - generic [ref=e351]: AINT40143
+                  - cell [ref=e997]:
+                    - generic [ref=e353]: Proveedor AINT40143
+                  - cell [ref=e998]: —
+                  - cell [ref=e999]: —
+                  - cell [ref=e356]:
+                    - button [ref=e357]:
+                      - img [ref=e358]: edit
+                - row [ref=e1000] [cursor=pointer]:
+                  - cell [ref=e1001]:
+                    - generic [ref=e363]: AINT44000
+                  - cell [ref=e1002]:
+                    - generic [ref=e365]: Proveedor AINT44000
+                  - cell [ref=e1003]: —
+                  - cell [ref=e1004]: —
+                  - cell [ref=e368]:
+                    - button [ref=e369]:
+                      - img [ref=e370]: edit
+                - row [ref=e1005] [cursor=pointer]:
+                  - cell [ref=e1006]:
+                    - generic [ref=e375]: AINT57543
+                  - cell [ref=e1007]:
+                    - generic [ref=e377]: Proveedor AINT57543
+                  - cell [ref=e1008]: —
+                  - cell [ref=e1009]: —
+                  - cell [ref=e380]:
+                    - button [ref=e381]:
+                      - img [ref=e382]: edit
+                - row [ref=e1010] [cursor=pointer]:
+                  - cell [ref=e1011]:
+                    - generic [ref=e387]: AINT6074
+                  - cell [ref=e1012]:
+                    - generic [ref=e389]: Proveedor AINT6074
+                  - cell [ref=e1013]: —
+                  - cell [ref=e1014]: —
+                  - cell [ref=e392]:
+                    - button [ref=e393]:
+                      - img [ref=e394]: edit
+                - row [ref=e1015] [cursor=pointer]:
+                  - cell [ref=e1016]:
+                    - generic [ref=e399]: AINT70042
+                  - cell [ref=e1017]:
+                    - generic [ref=e401]: Proveedor AINT70042
+                  - cell [ref=e1018]: —
+                  - cell [ref=e1019]: —
+                  - cell [ref=e404]:
+                    - button [ref=e405]:
+                      - img [ref=e406]: edit
+                - row [ref=e1020] [cursor=pointer]:
+                  - cell [ref=e1021]:
+                    - generic [ref=e411]: AINT7162
+                  - cell [ref=e1022]:
+                    - generic [ref=e413]: Proveedor AINT7162
+                  - cell [ref=e1023]: —
+                  - cell [ref=e1024]: —
+                  - cell [ref=e416]:
+                    - button [ref=e417]:
+                      - img [ref=e418]: edit
+                - row [ref=e1025] [cursor=pointer]:
+                  - cell [ref=e1026]:
+                    - generic [ref=e423]: AINT86360
+                  - cell [ref=e1027]:
+                    - generic [ref=e425]: Proveedor AINT86360
+                  - cell [ref=e1028]: —
+                  - cell [ref=e1029]: —
+                  - cell [ref=e428]:
+                    - button [ref=e429]:
+                      - img [ref=e430]: edit
+                - row [ref=e1030] [cursor=pointer]:
+                  - cell [ref=e1031]:
+                    - generic [ref=e435]: AINT94230
+                  - cell [ref=e1032]:
+                    - generic [ref=e437]: Proveedor AINT94230
+                  - cell [ref=e1033]: —
+                  - cell [ref=e1034]: —
+                  - cell [ref=e440]:
+                    - button [ref=e441]:
+                      - img [ref=e442]: edit
+                - row [ref=e1035] [cursor=pointer]:
+                  - cell [ref=e1036]:
+                    - generic [ref=e447]: AINT96839
+                  - cell [ref=e1037]:
+                    - generic [ref=e449]: Proveedor AINT96839
+                  - cell [ref=e1038]: —
+                  - cell [ref=e1039]: —
+                  - cell [ref=e452]:
+                    - button [ref=e453]:
+                      - img [ref=e454]: edit
+                - row [ref=e1040] [cursor=pointer]:
+                  - cell [ref=e1041]:
+                    - generic [ref=e459]: AINT99146
+                  - cell [ref=e1042]:
+                    - generic [ref=e461]: Proveedor AINT99146
+                  - cell [ref=e1043]: —
+                  - cell [ref=e1044]: —
+                  - cell [ref=e464]:
+                    - button [ref=e465]:
+                      - img [ref=e466]: edit
+                - row [ref=e1045] [cursor=pointer]:
+                  - cell [ref=e1046]:
+                    - generic [ref=e471]: MGBR13318
+                  - cell [ref=e1047]:
+                    - generic [ref=e473]: Proveedor RBAC R13318
+                  - cell [ref=e1048]: —
+                  - cell [ref=e1049]: —
+                  - cell [ref=e476]:
+                    - button [ref=e477]:
+                      - img [ref=e478]: edit
+                - row [ref=e1050] [cursor=pointer]:
+                  - cell [ref=e1051]:
+                    - generic [ref=e483]: MGBR17308
+                  - cell [ref=e1052]:
+                    - generic [ref=e485]: Proveedor RBAC R17308
+                  - cell [ref=e1053]: —
+                  - cell [ref=e1054]: —
+                  - cell [ref=e488]:
+                    - button [ref=e489]:
+                      - img [ref=e490]: edit
+                - row [ref=e1055] [cursor=pointer]:
+                  - cell [ref=e1056]:
+                    - generic [ref=e495]: MGBR20326
+                  - cell [ref=e1057]:
+                    - generic [ref=e497]: Proveedor RBAC R20326
+                  - cell [ref=e1058]: —
+                  - cell [ref=e1059]: —
+                  - cell [ref=e500]:
+                    - button [ref=e501]:
+                      - img [ref=e502]: edit
+                - row [ref=e1060] [cursor=pointer]:
+                  - cell [ref=e1061]:
+                    - generic [ref=e507]: MGBR24138
+                  - cell [ref=e1062]:
+                    - generic [ref=e509]: Proveedor RBAC R24138
+                  - cell [ref=e1063]: —
+                  - cell [ref=e1064]: —
+                  - cell [ref=e512]:
+                    - button [ref=e513]:
+                      - img [ref=e514]: edit
+                - row [ref=e1065] [cursor=pointer]:
+                  - cell [ref=e1066]:
+                    - generic [ref=e519]: MGBR26542
+                  - cell [ref=e1067]:
+                    - generic [ref=e521]: Proveedor RBAC R26542
+                  - cell [ref=e1068]: —
+                  - cell [ref=e1069]: —
+                  - cell [ref=e524]:
+                    - button [ref=e525]:
+                      - img [ref=e526]: edit
+                - row [ref=e1070] [cursor=pointer]:
+                  - cell [ref=e1071]:
+                    - generic [ref=e531]: MGBR36029
+                  - cell [ref=e1072]:
+                    - generic [ref=e533]: Proveedor RBAC R36029
+                  - cell [ref=e1073]: —
+                  - cell [ref=e1074]: —
+                  - cell [ref=e536]:
+                    - button [ref=e537]:
+                      - img [ref=e538]: edit
+                - row [ref=e1075] [cursor=pointer]:
+                  - cell [ref=e1076]:
+                    - generic [ref=e543]: MGBR36816
+                  - cell [ref=e1077]:
+                    - generic [ref=e545]: Proveedor RBAC R36816
+                  - cell [ref=e1078]: —
+                  - cell [ref=e1079]: —
+                  - cell [ref=e548]:
+                    - button [ref=e549]:
+                      - img [ref=e550]: edit
+                - row [ref=e1080] [cursor=pointer]:
+                  - cell [ref=e1081]:
+                    - generic [ref=e555]: MGBR3784
+                  - cell [ref=e1082]:
+                    - generic [ref=e557]: Proveedor RBAC R3784
+                  - cell [ref=e1083]: —
+                  - cell [ref=e1084]: —
+                  - cell [ref=e560]:
+                    - button [ref=e561]:
+                      - img [ref=e562]: edit
+                - row [ref=e1085] [cursor=pointer]:
+                  - cell [ref=e1086]:
+                    - generic [ref=e567]: MGBR39152
+                  - cell [ref=e1087]:
+                    - generic [ref=e569]: Proveedor RBAC R39152
+                  - cell [ref=e1088]: —
+                  - cell [ref=e1089]: —
+                  - cell [ref=e572]:
+                    - button [ref=e573]:
+                      - img [ref=e574]: edit
+                - row [ref=e1090] [cursor=pointer]:
+                  - cell [ref=e1091]:
+                    - generic [ref=e579]: MGBR41075
+                  - cell [ref=e1092]:
+                    - generic [ref=e581]: Proveedor RBAC R41075
+                  - cell [ref=e1093]: —
+                  - cell [ref=e1094]: —
+                  - cell [ref=e584]:
+                    - button [ref=e585]:
+                      - img [ref=e586]: edit
+                - row [ref=e1095] [cursor=pointer]:
+                  - cell [ref=e1096]:
+                    - generic [ref=e591]: MGBR44964
+                  - cell [ref=e1097]:
+                    - generic [ref=e593]: Proveedor RBAC R44964
+                  - cell [ref=e1098]: —
+                  - cell [ref=e1099]: —
+                  - cell [ref=e596]:
+                    - button [ref=e597]:
+                      - img [ref=e598]: edit
+                - row [ref=e1100] [cursor=pointer]:
+                  - cell [ref=e1101]:
+                    - generic [ref=e603]: MGBR58523
+                  - cell [ref=e1102]:
+                    - generic [ref=e605]: Proveedor RBAC R58523
+                  - cell [ref=e1103]: —
+                  - cell [ref=e1104]: —
+                  - cell [ref=e608]:
+                    - button [ref=e609]:
+                      - img [ref=e610]: edit
+                - row [ref=e1105] [cursor=pointer]:
+                  - cell [ref=e1106]:
+                    - generic [ref=e615]: MGBR59
+                  - cell [ref=e1107]:
+                    - generic [ref=e617]: Proveedor RBAC R59
+                  - cell [ref=e1108]: —
+                  - cell [ref=e1109]: —
+                  - cell [ref=e620]:
+                    - button [ref=e621]:
+                      - img [ref=e622]: edit
+                - row [ref=e1110] [cursor=pointer]:
+                  - cell [ref=e1111]:
+                    - generic [ref=e627]: MGBR6985
+                  - cell [ref=e1112]:
+                    - generic [ref=e629]: Proveedor RBAC R6985
+                  - cell [ref=e1113]: —
+                  - cell [ref=e1114]: —
+                  - cell [ref=e632]:
+                    - button [ref=e633]:
+                      - img [ref=e634]: edit
+                - row [ref=e1115] [cursor=pointer]:
+                  - cell [ref=e1116]:
+                    - generic [ref=e639]: MGBR70934
+                  - cell [ref=e1117]:
+                    - generic [ref=e641]: Proveedor RBAC R70934
+                  - cell [ref=e1118]: —
+                  - cell [ref=e1119]: —
+                  - cell [ref=e644]:
+                    - button [ref=e645]:
+                      - img [ref=e646]: edit
+                - row [ref=e1120] [cursor=pointer]:
+                  - cell [ref=e1121]:
+                    - generic [ref=e651]: MGBR8056
+                  - cell [ref=e1122]:
+                    - generic [ref=e653]: Proveedor RBAC R8056
+                  - cell [ref=e1123]: —
+                  - cell [ref=e1124]: —
+                  - cell [ref=e656]:
+                    - button [ref=e657]:
+                      - img [ref=e658]: edit
+                - row [ref=e1125] [cursor=pointer]:
+                  - cell [ref=e1126]:
+                    - generic [ref=e663]: MGBR87261
+                  - cell [ref=e1127]:
+                    - generic [ref=e665]: Proveedor RBAC R87261
+                  - cell [ref=e1128]: —
+                  - cell [ref=e1129]: —
+                  - cell [ref=e668]:
+                    - button [ref=e669]:
+                      - img [ref=e670]: edit
+                - row [ref=e1130] [cursor=pointer]:
+                  - cell [ref=e1131]:
+                    - generic [ref=e675]: MGBR95214
+                  - cell [ref=e1132]:
+                    - generic [ref=e677]: Proveedor RBAC R95214
+                  - cell [ref=e1133]: —
+                  - cell [ref=e1134]: —
+                  - cell [ref=e680]:
+                    - button [ref=e681]:
+                      - img [ref=e682]: edit
+                - row [ref=e1135] [cursor=pointer]:
+                  - cell [ref=e1136]:
+                    - generic [ref=e687]: MGBR97733
+                  - cell [ref=e1137]:
+                    - generic [ref=e689]: Proveedor RBAC R97733
+                  - cell [ref=e1138]: —
+                  - cell [ref=e1139]: —
+                  - cell [ref=e692]:
+                    - button [ref=e693]:
+                      - img [ref=e694]: edit
+                - row [ref=e1140] [cursor=pointer]:
+                  - cell [ref=e1141]:
+                    - generic [ref=e699]: PROA780910MN4
+                  - cell [ref=e1142]:
+                    - generic [ref=e701]: Proveedora Nacional de Almacenes S.A.
+                  - cell [ref=e1143]: Sr. Roberto Jiménez Castro
+                  - cell [ref=e1144]: 3336-9012
+                  - cell [ref=e704]:
+                    - button [ref=e705]:
+                      - img [ref=e706]: edit
+                - row [ref=e1145] [cursor=pointer]:
+                  - cell [ref=e1146]:
+                    - generic [ref=e711]: QUIM730601VW8
+                  - cell [ref=e1147]:
+                    - generic [ref=e713]: Químicos y Lubricantes Industriales S.A.
+                  - cell [ref=e1148]: Ing. Miguel Ángel Reyes Díaz
+                  - cell [ref=e1149]: 7222-6789
+                  - cell [ref=e716]:
+                    - button [ref=e717]:
+                      - img [ref=e718]: edit
+                - row [ref=e1150] [cursor=pointer]:
+                  - cell [ref=e1151]:
+                    - generic [ref=e723]: ROPE960501EE4
+                  - cell [ref=e1152]:
+                    - generic [ref=e725]: Ropa de Protección y EPP S.A. de C.V.
+                  - cell [ref=e1153]: Lic. Claudia Vázquez Ávila
+                  - cell [ref=e1154]: 4613-0123
+                  - cell [ref=e728]:
+                    - button [ref=e729]:
+                      - img [ref=e730]: edit
+                - row [ref=e1155] [cursor=pointer]:
+                  - cell [ref=e1156]:
+                    - generic [ref=e735]: SEGV870203CC2
+                  - cell [ref=e1157]:
+                    - generic [ref=e737]: Seguridad y Vigilancia Electrónica S.A.
+                  - cell [ref=e1158]: Ing. Alejandro Ruiz Serrano
+                  - cell [ref=e1159]: 6672-2345
+                  - cell [ref=e740]:
+                    - button [ref=e741]:
+                      - img [ref=e742]: edit
+                - row [ref=e1160] [cursor=pointer]:
+                  - cell [ref=e1161]:
+                    - generic [ref=e747]: SOLD720914FF5
+                  - cell [ref=e1162]:
+                    - generic [ref=e749]: Soldadura y Equipos Industriales S.A.
+                  - cell [ref=e1163]: Ing. Raúl Espinosa Navarro
+                  - cell [ref=e1164]: 7771-4567
+                  - cell [ref=e752]:
+                    - button [ref=e753]:
+                      - img [ref=e754]: edit
+                - row [ref=e1165] [cursor=pointer]:
+                  - cell [ref=e1166]:
+                    - generic [ref=e759]: TECH950301PQ5
+                  - cell [ref=e1167]:
+                    - generic [ref=e761]: TechSupply México S.A. de C.V.
+                  - cell [ref=e1168]: Ing. Ana Lucía Vargas Pérez
+                  - cell [ref=e1169]: 8118-3456
+                  - cell [ref=e764]:
+                    - button [ref=e765]:
+                      - img [ref=e766]: edit
+            - generic [ref=e769]:
+              - heading [level=3] [ref=e1170]: Editar proveedor
+              - generic [ref=e782]:
+                - generic [ref=e783]:
+                  - generic [ref=e786]:
+                    - generic [ref=e787]:
+                      - text: RFC
+                      - generic [ref=e788]: "*"
+                    - textbox [ref=e1171]: AGRO990625GG6
+                  - generic [ref=e794]:
+                    - generic [ref=e795]:
+                      - text: Razón social
+                      - generic [ref=e796]: "*"
+                    - textbox [ref=e1172]: Agroquímica y Fertilizantes del Valle S.A.
+                  - generic [ref=e802]:
+                    - generic [ref=e803]: Nombre de contacto
+                    - textbox [ref=e1173]: Ing. Laura Ramírez Torres
+                  - generic [ref=e809]:
+                    - generic [ref=e810]: Teléfono
+                    - textbox [ref=e1174]: 3312-8901
+                  - generic [ref=e816]:
+                    - generic [ref=e817]: Correo electrónico
+                    - textbox [ref=e1175]: laura.ramirez@agrofertivalle.mx
+                  - generic [ref=e823]:
+                    - generic [ref=e824]: Dirección
+                    - textbox [ref=e1176]: Libramiento Sur 285, Zamora MICH CP 59600
+                - generic [ref=e853]:
+                  - img [ref=e854]: person
+                  - text: Creado por admin
+                - generic [ref=e828]:
+                  - button [ref=e1177]:
+                    - img [ref=e856]: block
+                    - generic [ref=e857]: Desactivar
+                  - button [ref=e1178]:
+                    - generic [ref=e830]: Cancelar
+                  - button [ref=e1179]:
+                    - img [ref=e834]: save
+                    - generic [ref=e835]: Guardar cambios
+  - dialog "Desactivar proveedor" [ref=e1183]:
+    - generic [ref=e1186]:
+      - heading "Desactivar proveedor" [level=2] [ref=e1187]
+      - paragraph [ref=e1189]: ¿Desactivar a "Agroquímica y Fertilizantes del Valle S.A."? No podrá usarse en nuevas órdenes.
+      - generic [ref=e1190]:
+        - button "Cancelar" [active] [ref=e1191]:
+          - generic [ref=e1192]: Cancelar
+        - button "Desactivar" [ref=e1195]:
+          - generic [ref=e1196]: Desactivar

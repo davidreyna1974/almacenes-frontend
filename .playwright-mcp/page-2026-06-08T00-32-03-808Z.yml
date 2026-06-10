@@ -1,0 +1,114 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e1659] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e1660] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e1661]:
+            - img [ref=e15]: chevron_right
+            - text: Compras → Proveedores
+        - generic [ref=e16]:
+          - button [ref=e1662] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e1663]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - generic [ref=e1664]: ADMIN
+      - generic [ref=e28]:
+        - navigation [ref=e1665]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button [ref=e1666] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e50]:
+            - generic [ref=e51]:
+              - generic [ref=e52]:
+                - generic [ref=e55]:
+                  - generic [ref=e56]: Buscar proveedor
+                  - img [ref=e58]: search
+                  - textbox [ref=e1667]:
+                    - /placeholder: RFC o razón social
+                    - text: ABC123
+                - button [ref=e1668]:
+                  - img [ref=e62]: add
+                  - generic [ref=e63]: Nuevo proveedor
+              - table [ref=e66]:
+                - row [ref=e1669]:
+                  - columnheader [ref=e1670]: RFC
+                  - columnheader [ref=e1671]: Razón social
+                  - columnheader [ref=e1672]: Contacto
+                  - columnheader [ref=e1673]: Teléfono
+                  - columnheader [ref=e72]
+                - row [ref=e1674] [cursor=pointer]:
+                  - cell [ref=e1675]:
+                    - generic [ref=e1490]: ABC123
+                  - cell [ref=e1676]:
+                    - generic [ref=e1492]: Proveedor Test Validación
+                  - cell [ref=e1677]: —
+                  - cell [ref=e1678]: —
+                  - cell [ref=e1495]:
+                    - button [ref=e1496]:
+                      - img [ref=e1497]: edit
+            - generic [ref=e781]:
+              - heading [level=3] [ref=e1679]: Editar proveedor
+              - generic [ref=e1596]:
+                - generic [ref=e1597]:
+                  - generic [ref=e1600]:
+                    - generic [ref=e1601]:
+                      - text: RFC
+                      - generic [ref=e1602]: "*"
+                    - textbox [ref=e1680]: ABC123
+                  - generic [ref=e1608]:
+                    - generic [ref=e1609]:
+                      - text: Razón social
+                      - generic [ref=e1610]: "*"
+                    - textbox [ref=e1681]: Proveedor Test Validación
+                  - generic [ref=e1616]:
+                    - generic [ref=e1617]: Nombre de contacto
+                    - textbox [ref=e1682]
+                  - generic [ref=e1623]:
+                    - generic [ref=e1624]: Teléfono
+                    - textbox [ref=e1683]
+                  - generic [ref=e1630]:
+                    - generic [ref=e1631]: Correo electrónico
+                    - textbox [ref=e1684]
+                  - generic [ref=e1637]:
+                    - generic [ref=e1638]: Dirección
+                    - textbox [ref=e1685]
+                - generic [ref=e1643]:
+                  - img [ref=e1644]: person
+                  - text: Creado por admin
+                - generic [ref=e1645]:
+                  - button [ref=e1686]:
+                    - img [ref=e1647]: block
+                    - generic [ref=e1648]: Desactivar
+                  - button [ref=e1687]:
+                    - generic [ref=e1652]: Cancelar
+                  - button [disabled]:
+                    - img: save
+                    - generic: Guardar cambios
+  - dialog "Desactivar proveedor" [ref=e1691]:
+    - generic [ref=e1694]:
+      - heading "Desactivar proveedor" [level=2] [ref=e1695]
+      - paragraph [ref=e1697]: ¿Desactivar a "Proveedor Test Validación"? No podrá usarse en nuevas órdenes.
+      - generic [ref=e1698]:
+        - button "Cancelar" [active] [ref=e1699]:
+          - generic [ref=e1700]: Cancelar
+        - button "Desactivar" [ref=e1703]:
+          - generic [ref=e1704]: Desactivar

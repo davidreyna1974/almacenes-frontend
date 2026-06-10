@@ -1,0 +1,86 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Nueva orden" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Nueva orden
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: test_mgr
+            - 'generic "Rol: MANAGER" [ref=e25]': MANAGER
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+        - button "Expandir menú" [ref=e42] [cursor=pointer]:
+          - img [ref=e43]: chevron_right
+      - main [ref=e44]:
+        - generic [ref=e47]:
+          - generic [ref=e48]:
+            - button [ref=e49] [cursor=pointer]:
+              - img [ref=e50]: arrow_back
+            - heading "Nueva orden de compra" [level=2] [ref=e54]
+          - generic [ref=e56]:
+            - generic [ref=e57]:
+              - heading "Información de la orden" [level=3] [ref=e58]
+              - generic [ref=e59]:
+                - generic [ref=e62] [cursor=pointer]:
+                  - generic [ref=e63]:
+                    - text: Proveedor
+                    - generic [ref=e64]: "*"
+                  - combobox "Proveedor" [ref=e66]:
+                    - generic [ref=e67]:
+                      - generic [ref=e225]: Climatización e Instalaciones Térmicas S.A.
+                      - img [ref=e71]
+                - generic [ref=e195]:
+                  - generic [ref=e196]: Notas
+                  - textbox "Notas" [ref=e198]:
+                    - /placeholder: Observaciones opcionales
+            - generic [ref=e200]:
+              - generic [ref=e201]:
+                - heading "Líneas de detalle" [level=3] [ref=e202]
+                - button "Agregar línea" [ref=e203]:
+                  - img [ref=e204]: add
+                  - generic [ref=e205]: Agregar línea
+              - table [ref=e211]:
+                - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e212]:
+                  - columnheader "SKU" [ref=e213]
+                  - columnheader "Producto" [ref=e214]
+                  - columnheader "Cantidad" [ref=e215]
+                  - columnheader "Precio unitario" [ref=e216]
+                  - columnheader "Subtotal" [ref=e217]
+                  - columnheader [ref=e218]
+                - row "PLOM-TUB2-020 Tubo CPVC 1/2\" x 3m Temperatura 3 $85.00 $255.00" [ref=e271]:
+                  - cell "PLOM-TUB2-020" [ref=e272]:
+                    - generic [ref=e273]: PLOM-TUB2-020
+                  - cell "Tubo CPVC 1/2\" x 3m Temperatura" [ref=e274]:
+                    - generic [ref=e275]: Tubo CPVC 1/2" x 3m Temperatura
+                  - cell "3" [ref=e276]
+                  - cell "$85.00" [ref=e277]
+                  - cell "$255.00" [ref=e278]
+                  - cell [ref=e279]:
+                    - button [ref=e280] [cursor=pointer]:
+                      - img [ref=e281]: remove_circle_outline
+            - generic [ref=e219]:
+              - button "Crear orden" [ref=e284]:
+                - img [ref=e285]: save
+                - generic [ref=e286]: Crear orden
+              - button "Cancelar" [ref=e220]:
+                - generic [ref=e221]: Cancelar

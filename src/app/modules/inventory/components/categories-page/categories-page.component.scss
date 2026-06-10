@@ -21,6 +21,13 @@
     color: var(--color-text-primary);
   }
 
+  &__filters {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+
   &__actions {
     display: flex;
     align-items: center;
@@ -45,6 +52,10 @@
     align-items: center;
     justify-content: center;
   }
+}
+
+.filter-field {
+  &--search { width: 220px; }
 }
 
 .catalog-table {

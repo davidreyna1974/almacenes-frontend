@@ -131,7 +131,7 @@ export class ProductsPageComponent implements OnInit {
     if (catId) this.categoryFilter.setValue(+catId, { emitEvent: false });
 
     forkJoin({
-      cats: this.categoryService.getActive(0, 200),
+      cats: this.categoryService.getActive('', 0, 200),
       sups: this.productService.getActiveSuppliers(),
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: ({ cats, sups }) => {

@@ -1,0 +1,164 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Productos" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Inventario → Productos
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [expanded] [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - generic [ref=e51]:
+              - generic [ref=e54]:
+                - generic [ref=e55]: Buscar por código o nombre
+                - textbox "Buscar por código o nombre" [ref=e57]
+                - img [ref=e59]: search
+              - generic [ref=e63] [cursor=pointer]:
+                - generic [ref=e64]: Categoría
+                - combobox "Categoría" [ref=e66]:
+                  - img [ref=e72]
+              - generic [ref=e77] [cursor=pointer]:
+                - generic [ref=e78]: Estado
+                - combobox "Estado" [ref=e80]:
+                  - img [ref=e86]
+              - generic [ref=e91] [cursor=pointer]:
+                - generic [ref=e92]: Proveedor
+                - combobox "Proveedor" [active] [ref=e94]:
+                  - generic [ref=e95]:
+                    - generic [ref=e1519]: TechSupply México S.A. de C.V.
+                    - img [ref=e100]
+              - button "Limpiar todos los filtros" [ref=e1520] [cursor=pointer]:
+                - img [ref=e1521]: filter_alt_off
+            - button "Nuevo producto" [ref=e104]:
+              - img [ref=e105]: add
+              - generic [ref=e106]: Nuevo producto
+          - generic [ref=e109]:
+            - table [ref=e110]:
+              - rowgroup [ref=e111]:
+                - row "Código Nombre Categoría Proveedor Stock Precio Estado" [ref=e112]:
+                  - columnheader "Código" [ref=e113]
+                  - columnheader "Nombre" [ref=e114]
+                  - columnheader "Categoría" [ref=e115]
+                  - columnheader "Proveedor" [ref=e116]
+                  - columnheader "Stock" [ref=e117]
+                  - columnheader "Precio" [ref=e118]
+                  - columnheader "Estado" [ref=e119]
+                  - columnheader [ref=e120]
+              - rowgroup [ref=e121]:
+                - 'row "COMP-USB2-047 Hub USB 2.0 de 7 Puertos (Descontinuado) Computación y Periféricos TechSupply México S.A. de C.V. Stock OK — actual: 3, mínimo: 0 $185.00 Descontinuado Registrar movimiento para Hub USB 2.0 de 7 Puertos (Descontinuado) Ver o editar Hub USB 2.0 de 7 Puertos (Descontinuado)" [ref=e1524] [cursor=pointer]':
+                  - cell "COMP-USB2-047" [ref=e1525]
+                  - cell "Hub USB 2.0 de 7 Puertos (Descontinuado)" [ref=e1526]
+                  - cell "Computación y Periféricos" [ref=e1527]
+                  - cell "TechSupply México S.A. de C.V." [ref=e1528]
+                  - 'cell "Stock OK — actual: 3, mínimo: 0" [ref=e1529]':
+                    - 'status "Stock OK — actual: 3, mínimo: 0" [ref=e1531]': "3"
+                  - cell "$185.00" [ref=e1532]
+                  - cell "Descontinuado" [ref=e1533]:
+                    - generic [ref=e1534]: Descontinuado
+                  - cell "Registrar movimiento para Hub USB 2.0 de 7 Puertos (Descontinuado) Ver o editar Hub USB 2.0 de 7 Puertos (Descontinuado)" [ref=e1535]:
+                    - button "Registrar movimiento para Hub USB 2.0 de 7 Puertos (Descontinuado)" [ref=e1536]:
+                      - img [ref=e1537]: swap_vert
+                    - button "Ver o editar Hub USB 2.0 de 7 Puertos (Descontinuado)" [ref=e1540]:
+                      - img [ref=e1541]: edit
+                - 'row "COMP-LT15-003 Laptop 15.6\" Core i7 16GB RAM Computación y Periféricos TechSupply México S.A. de C.V. Stock OK — actual: 30, mínimo: 5 $22,500.00 Disponible Registrar movimiento para Laptop 15.6\" Core i7 16GB RAM Ver o editar Laptop 15.6\" Core i7 16GB RAM" [ref=e1544] [cursor=pointer]':
+                  - cell "COMP-LT15-003" [ref=e1545]
+                  - cell "Laptop 15.6\" Core i7 16GB RAM" [ref=e1546]
+                  - cell "Computación y Periféricos" [ref=e1547]
+                  - cell "TechSupply México S.A. de C.V." [ref=e1548]
+                  - 'cell "Stock OK — actual: 30, mínimo: 5" [ref=e1549]':
+                    - 'status "Stock OK — actual: 30, mínimo: 5" [ref=e1551]': "30"
+                  - cell "$22,500.00" [ref=e1552]
+                  - cell "Disponible" [ref=e1553]:
+                    - generic [ref=e1554]: Disponible
+                  - cell "Registrar movimiento para Laptop 15.6\" Core i7 16GB RAM Ver o editar Laptop 15.6\" Core i7 16GB RAM" [ref=e1555]:
+                    - button "Registrar movimiento para Laptop 15.6\" Core i7 16GB RAM" [ref=e1556]:
+                      - img [ref=e1557]: swap_vert
+                    - button "Ver o editar Laptop 15.6\" Core i7 16GB RAM" [ref=e1560]:
+                      - img [ref=e1561]: edit
+                - 'row "COMP-MON-005 Monitor 27\" QHD 165Hz IPS Computación y Periféricos TechSupply México S.A. de C.V. Stock OK — actual: 18, mínimo: 5 $7,500.00 Disponible Registrar movimiento para Monitor 27\" QHD 165Hz IPS Ver o editar Monitor 27\" QHD 165Hz IPS" [ref=e1564] [cursor=pointer]':
+                  - cell "COMP-MON-005" [ref=e1565]
+                  - cell "Monitor 27\" QHD 165Hz IPS" [ref=e1566]
+                  - cell "Computación y Periféricos" [ref=e1567]
+                  - cell "TechSupply México S.A. de C.V." [ref=e1568]
+                  - 'cell "Stock OK — actual: 18, mínimo: 5" [ref=e1569]':
+                    - 'status "Stock OK — actual: 18, mínimo: 5" [ref=e1571]': "18"
+                  - cell "$7,500.00" [ref=e1572]
+                  - cell "Disponible" [ref=e1573]:
+                    - generic [ref=e1574]: Disponible
+                  - cell "Registrar movimiento para Monitor 27\" QHD 165Hz IPS Ver o editar Monitor 27\" QHD 165Hz IPS" [ref=e1575]:
+                    - button "Registrar movimiento para Monitor 27\" QHD 165Hz IPS" [ref=e1576]:
+                      - img [ref=e1577]: swap_vert
+                    - button "Ver o editar Monitor 27\" QHD 165Hz IPS" [ref=e1580]:
+                      - img [ref=e1581]: edit
+                - 'row "COMP-SSD1T-044 SSD NVMe 1TB PCIe 4.0 7000MB/s Computación y Periféricos TechSupply México S.A. de C.V. Sin stock (mínimo: 5) $2,800.00 Sin stock Registrar movimiento para SSD NVMe 1TB PCIe 4.0 7000MB/s Ver o editar SSD NVMe 1TB PCIe 4.0 7000MB/s" [ref=e1584] [cursor=pointer]':
+                  - cell "COMP-SSD1T-044" [ref=e1585]
+                  - cell "SSD NVMe 1TB PCIe 4.0 7000MB/s" [ref=e1586]
+                  - cell "Computación y Periféricos" [ref=e1587]
+                  - cell "TechSupply México S.A. de C.V." [ref=e1588]
+                  - 'cell "Sin stock (mínimo: 5)" [ref=e1589]':
+                    - 'status "Sin stock (mínimo: 5)" [ref=e1591]': "0"
+                  - cell "$2,800.00" [ref=e1592]
+                  - cell "Sin stock" [ref=e1593]:
+                    - generic [ref=e1594]: Sin stock
+                  - cell "Registrar movimiento para SSD NVMe 1TB PCIe 4.0 7000MB/s Ver o editar SSD NVMe 1TB PCIe 4.0 7000MB/s" [ref=e1595]:
+                    - button "Registrar movimiento para SSD NVMe 1TB PCIe 4.0 7000MB/s" [ref=e1596]:
+                      - img [ref=e1597]: swap_vert
+                    - button "Ver o editar SSD NVMe 1TB PCIe 4.0 7000MB/s" [ref=e1600]:
+                      - img [ref=e1601]: edit
+                - 'row "COMP-KBW-004 Teclado Mecánico Inalámbrico TKL Computación y Periféricos TechSupply México S.A. de C.V. Stock OK — actual: 120, mínimo: 20 $899.00 Disponible Registrar movimiento para Teclado Mecánico Inalámbrico TKL Ver o editar Teclado Mecánico Inalámbrico TKL" [ref=e1604] [cursor=pointer]':
+                  - cell "COMP-KBW-004" [ref=e1605]
+                  - cell "Teclado Mecánico Inalámbrico TKL" [ref=e1606]
+                  - cell "Computación y Periféricos" [ref=e1607]
+                  - cell "TechSupply México S.A. de C.V." [ref=e1608]
+                  - 'cell "Stock OK — actual: 120, mínimo: 20" [ref=e1609]':
+                    - 'status "Stock OK — actual: 120, mínimo: 20" [ref=e1611]': "120"
+                  - cell "$899.00" [ref=e1612]
+                  - cell "Disponible" [ref=e1613]:
+                    - generic [ref=e1614]: Disponible
+                  - cell "Registrar movimiento para Teclado Mecánico Inalámbrico TKL Ver o editar Teclado Mecánico Inalámbrico TKL" [ref=e1615]:
+                    - button "Registrar movimiento para Teclado Mecánico Inalámbrico TKL" [ref=e1616]:
+                      - img [ref=e1617]: swap_vert
+                    - button "Ver o editar Teclado Mecánico Inalámbrico TKL" [ref=e1620]:
+                      - img [ref=e1621]: edit
+            - group "Paginación de productos" [ref=e522]:
+              - generic [ref=e524]:
+                - generic [ref=e525]:
+                  - generic [ref=e526]: "Items per page:"
+                  - combobox "Items per page:" [ref=e531] [cursor=pointer]:
+                    - generic [ref=e532]:
+                      - generic [ref=e534]: "20"
+                      - img [ref=e537]
+                - generic [ref=e540]:
+                  - status [ref=e541]: 1 – 5 of 5
+                  - button "Previous page" [disabled] [ref=e542]:
+                    - img [ref=e543]
+                  - button "Next page" [disabled] [ref=e547]:
+                    - img [ref=e548]

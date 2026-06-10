@@ -1,0 +1,99 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Nueva orden" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Nueva orden
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e107]:
+          - generic [ref=e108]:
+            - button [ref=e109] [cursor=pointer]:
+              - img [ref=e110]: arrow_back
+            - heading "Nueva orden de compra" [level=2] [ref=e114]
+          - generic [ref=e116]:
+            - generic [ref=e117]:
+              - heading "Información de la orden" [level=3] [ref=e118]
+              - generic [ref=e119]:
+                - generic [ref=e122] [cursor=pointer]:
+                  - generic [ref=e123]:
+                    - text: Proveedor
+                    - generic [ref=e124]: "*"
+                  - combobox "Proveedor" [active] [ref=e126]:
+                    - generic [ref=e127]:
+                      - generic [ref=e306]: Electro Industrial del Centro S.A. de C.V.
+                      - img [ref=e132]
+                - generic [ref=e137]:
+                  - generic [ref=e138]: Notas
+                  - textbox "Notas" [ref=e140]:
+                    - /placeholder: Observaciones opcionales
+            - generic [ref=e142]:
+              - generic [ref=e143]:
+                - heading "Líneas de detalle" [level=3] [ref=e144]
+                - button "Agregar línea" [ref=e145]:
+                  - img [ref=e146]: add
+                  - generic [ref=e147]: Agregar línea
+              - table [ref=e150]:
+                - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e151]:
+                  - columnheader "SKU" [ref=e152]
+                  - columnheader "Producto" [ref=e153]
+                  - columnheader "Cantidad" [ref=e154]
+                  - columnheader "Precio unitario" [ref=e155]
+                  - columnheader "Subtotal" [ref=e156]
+                  - columnheader [ref=e157]
+                - row "PINT-BAR5G-049 Barniz marino 5 galones para exteriores 1 $2,100.00 $2,100.00" [ref=e158]:
+                  - cell "PINT-BAR5G-049" [ref=e159]:
+                    - generic [ref=e160]: PINT-BAR5G-049
+                  - cell "Barniz marino 5 galones para exteriores" [ref=e161]:
+                    - generic [ref=e162]: Barniz marino 5 galones para exteriores
+                  - cell "1" [ref=e163]
+                  - cell "$2,100.00" [ref=e164]
+                  - cell "$2,100.00" [ref=e165]
+                  - cell [ref=e166]:
+                    - button [ref=e167] [cursor=pointer]:
+                      - img [ref=e168]: remove_circle_outline
+                - row "LUBR-ACE20-035 Aceite Lubricante Motor 20W-50 Galón 1 $380.00 $380.00" [ref=e171]:
+                  - cell "LUBR-ACE20-035" [ref=e172]:
+                    - generic [ref=e173]: LUBR-ACE20-035
+                  - cell "Aceite Lubricante Motor 20W-50 Galón" [ref=e174]:
+                    - generic [ref=e175]: Aceite Lubricante Motor 20W-50 Galón
+                  - cell "1" [ref=e176]
+                  - cell "$380.00" [ref=e177]
+                  - cell "$380.00" [ref=e178]
+                  - cell [ref=e179]:
+                    - button [ref=e180] [cursor=pointer]:
+                      - img [ref=e181]: remove_circle_outline
+            - generic [ref=e184]:
+              - button "Crear orden" [ref=e307]:
+                - img [ref=e308]: save
+                - generic [ref=e309]: Crear orden
+              - button "Cancelar" [ref=e185]:
+                - generic [ref=e186]: Cancelar

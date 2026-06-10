@@ -1,0 +1,102 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e2789] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e2790] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Productos" [ref=e2791]':
+          - img [ref=e36]: chevron_right
+          - text: Inventario → Productos
+      - generic [ref=e14]:
+        - button "Notificaciones" [ref=e2792] [cursor=pointer]:
+          - img [ref=e16]: notifications_none
+        - button "Menú de usuario" [ref=e2793]:
+          - img [ref=e20]: arrow_drop_down
+          - generic [ref=e21]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e2794]': ADMIN
+    - generic [ref=e26]:
+      - navigation "Navegación principal" [ref=e2795]:
+        - menubar [ref=e30]:
+          - menuitem [expanded] [ref=e38] [cursor=pointer]:
+            - img [ref=e39]: inventory_2
+          - menuitem [ref=e40] [cursor=pointer]:
+            - img [ref=e41]: shopping_cart
+          - menuitem [ref=e42] [cursor=pointer]:
+            - img [ref=e43]: point_of_sale
+          - menuitem [ref=e44] [cursor=pointer]:
+            - img [ref=e45]: bar_chart
+          - menuitem [ref=e46] [cursor=pointer]:
+            - img [ref=e47]: manage_accounts
+        - button "Expandir menú" [ref=e2796] [cursor=pointer]:
+          - img [ref=e33]: chevron_right
+      - main [ref=e34]:
+        - generic [ref=e51]:
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - generic [ref=e56]:
+                - generic [ref=e57]: Buscar por código o nombre
+                - textbox "Buscar por código o nombre" [ref=e2797]: TEST-ADMIN-SUITE-001
+                - img [ref=e61]: search
+              - generic [ref=e65] [cursor=pointer]:
+                - generic [ref=e66]: Categoría
+                - combobox "Categoría" [ref=e2798]:
+                  - img [ref=e74]
+              - generic [ref=e79] [cursor=pointer]:
+                - generic [ref=e80]: Estado
+                - combobox "Estado" [ref=e2799]:
+                  - img [ref=e88]
+              - generic [ref=e93] [cursor=pointer]:
+                - generic [ref=e94]: Proveedor
+                - combobox "Proveedor" [ref=e2800]:
+                  - img [ref=e102]
+              - button "Limpiar todos los filtros" [ref=e2801] [cursor=pointer]:
+                - img [ref=e2568]: filter_alt_off
+            - button "Nuevo producto" [ref=e2802]:
+              - img [ref=e107]: add
+              - generic [ref=e108]: Nuevo producto
+          - generic [ref=e1132]:
+            - table [ref=e1133]:
+              - rowgroup [ref=e1134]:
+                - row "Código Nombre Categoría Proveedor Stock Precio Estado" [ref=e2803]:
+                  - columnheader "Código" [ref=e2804]
+                  - columnheader "Nombre" [ref=e2805]
+                  - columnheader "Categoría" [ref=e2806]
+                  - columnheader "Proveedor" [ref=e2807]
+                  - columnheader "Stock" [ref=e2808]
+                  - columnheader "Precio" [ref=e2809]
+                  - columnheader "Estado" [ref=e2810]
+                  - columnheader [ref=e1143]
+              - rowgroup [ref=e1144]:
+                - 'row "TEST-ADMIN-SUITE-001 Producto Test Suite ADMIN Calzado Industrial Agroquímica y Fertilizantes del Valle S.A. Bajo stock — actual: 5, mínimo: 10 $999.99 Disponible Registrar movimiento para Producto Test Suite ADMIN Ver o editar Producto Test Suite ADMIN" [ref=e2811] [cursor=pointer]':
+                  - cell "TEST-ADMIN-SUITE-001" [ref=e2812]
+                  - cell "Producto Test Suite ADMIN" [ref=e2813]
+                  - cell "Calzado Industrial" [ref=e2814]
+                  - cell "Agroquímica y Fertilizantes del Valle S.A." [ref=e2815]
+                  - 'cell "Bajo stock — actual: 5, mínimo: 10" [ref=e2816]':
+                    - 'status "Bajo stock — actual: 5, mínimo: 10" [ref=e2817]': "5"
+                  - cell "$999.99" [ref=e2818]
+                  - cell "Disponible" [ref=e2819]:
+                    - generic [ref=e2581]: Disponible
+                  - cell "Registrar movimiento para Producto Test Suite ADMIN Ver o editar Producto Test Suite ADMIN" [ref=e2820]:
+                    - button "Registrar movimiento para Producto Test Suite ADMIN" [ref=e2821]:
+                      - img [ref=e2584]: swap_vert
+                    - button "Ver o editar Producto Test Suite ADMIN" [ref=e2822]:
+                      - img [ref=e2588]: edit
+            - group "Paginación de productos" [ref=e2823]:
+              - generic [ref=e1547]:
+                - generic [ref=e1548]:
+                  - generic [ref=e1549]: "Items per page:"
+                  - combobox "Items per page:" [ref=e2824] [cursor=pointer]:
+                    - generic [ref=e1555]:
+                      - generic [ref=e1557]: "20"
+                      - img [ref=e1560]
+                - generic [ref=e1563]:
+                  - status [ref=e1564]: 1 – 1 of 1
+                  - button "Previous page" [disabled] [ref=e2825]:
+                    - img [ref=e1566]
+                  - button "Next page" [disabled] [ref=e2826]:
+                    - img [ref=e1571]

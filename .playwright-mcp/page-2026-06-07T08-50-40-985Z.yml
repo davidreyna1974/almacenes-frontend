@@ -1,0 +1,205 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Categorías" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Inventario → Categorías
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [expanded] [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - heading "Categorías" [level=2] [ref=e51]
+            - button "Nueva categoría" [ref=e53]:
+              - img [ref=e54]: add
+              - generic [ref=e55]: Nueva categoría
+          - generic [ref=e58]:
+            - table [ref=e59]:
+              - rowgroup [ref=e60]:
+                - row "Nombre Descripción Creado por" [ref=e61]:
+                  - columnheader "Nombre" [ref=e62]
+                  - columnheader "Descripción" [ref=e63]
+                  - columnheader "Creado por" [ref=e64]
+                  - columnheader [ref=e65]
+              - rowgroup [ref=e66]:
+                - row "(editado) Detergentes, desinfectantes, escobas, trapeadores, cubetas y jabones. admin Ver productos de (editado)" [ref=e67] [cursor=pointer]:
+                  - cell "(editado)" [ref=e68]
+                  - cell "Detergentes, desinfectantes, escobas, trapeadores, cubetas y jabones." [ref=e69]
+                  - cell "admin" [ref=e70]
+                  - cell "Ver productos de (editado)" [ref=e71]:
+                    - button "Ver productos de (editado)" [ref=e72]:
+                      - img [ref=e73]: shopping_bag
+                - row "Calzado Industrial Botas de casquillo, botas dieléctricas, zapatos antideslizantes y plantillas. admin Ver productos de Calzado Industrial" [ref=e76] [cursor=pointer]:
+                  - cell "Calzado Industrial" [ref=e77]
+                  - cell "Botas de casquillo, botas dieléctricas, zapatos antideslizantes y plantillas." [ref=e78]
+                  - cell "admin" [ref=e79]
+                  - cell "Ver productos de Calzado Industrial" [ref=e80]:
+                    - button "Ver productos de Calzado Industrial" [ref=e81]:
+                      - img [ref=e82]: shopping_bag
+                - row "Cat-Int-23178 test admin Ver productos de Cat-Int-23178" [ref=e85] [cursor=pointer]:
+                  - cell "Cat-Int-23178" [ref=e86]
+                  - cell "test" [ref=e87]
+                  - cell "admin" [ref=e88]
+                  - cell "Ver productos de Cat-Int-23178" [ref=e89]:
+                    - button "Ver productos de Cat-Int-23178" [ref=e90]:
+                      - img [ref=e91]: shopping_bag
+                - row "Cat-Int-35904 test admin Ver productos de Cat-Int-35904" [ref=e94] [cursor=pointer]:
+                  - cell "Cat-Int-35904" [ref=e95]
+                  - cell "test" [ref=e96]
+                  - cell "admin" [ref=e97]
+                  - cell "Ver productos de Cat-Int-35904" [ref=e98]:
+                    - button "Ver productos de Cat-Int-35904" [ref=e99]:
+                      - img [ref=e100]: shopping_bag
+                - row "Cat-Int-40143 test admin Ver productos de Cat-Int-40143" [ref=e103] [cursor=pointer]:
+                  - cell "Cat-Int-40143" [ref=e104]
+                  - cell "test" [ref=e105]
+                  - cell "admin" [ref=e106]
+                  - cell "Ver productos de Cat-Int-40143" [ref=e107]:
+                    - button "Ver productos de Cat-Int-40143" [ref=e108]:
+                      - img [ref=e109]: shopping_bag
+                - row "Cat-Int-57543 test admin Ver productos de Cat-Int-57543" [ref=e112] [cursor=pointer]:
+                  - cell "Cat-Int-57543" [ref=e113]
+                  - cell "test" [ref=e114]
+                  - cell "admin" [ref=e115]
+                  - cell "Ver productos de Cat-Int-57543" [ref=e116]:
+                    - button "Ver productos de Cat-Int-57543" [ref=e117]:
+                      - img [ref=e118]: shopping_bag
+                - row "Cat-Int-94230 test admin Ver productos de Cat-Int-94230" [ref=e121] [cursor=pointer]:
+                  - cell "Cat-Int-94230" [ref=e122]
+                  - cell "test" [ref=e123]
+                  - cell "admin" [ref=e124]
+                  - cell "Ver productos de Cat-Int-94230" [ref=e125]:
+                    - button "Ver productos de Cat-Int-94230" [ref=e126]:
+                      - img [ref=e127]: shopping_bag
+                - row "Cat-Mgr-R24138 Categoría de MANAGER mgrR24138 Ver productos de Cat-Mgr-R24138" [ref=e130] [cursor=pointer]:
+                  - cell "Cat-Mgr-R24138" [ref=e131]
+                  - cell "Categoría de MANAGER" [ref=e132]
+                  - cell "mgrR24138" [ref=e133]
+                  - cell "Ver productos de Cat-Mgr-R24138" [ref=e134]:
+                    - button "Ver productos de Cat-Mgr-R24138" [ref=e135]:
+                      - img [ref=e136]: shopping_bag
+                - row "Cat-Mgr-R36816 Categoría de MANAGER mgrR36816 Ver productos de Cat-Mgr-R36816" [ref=e139] [cursor=pointer]:
+                  - cell "Cat-Mgr-R36816" [ref=e140]
+                  - cell "Categoría de MANAGER" [ref=e141]
+                  - cell "mgrR36816" [ref=e142]
+                  - cell "Ver productos de Cat-Mgr-R36816" [ref=e143]:
+                    - button "Ver productos de Cat-Mgr-R36816" [ref=e144]:
+                      - img [ref=e145]: shopping_bag
+                - row "Cat-Mgr-R41075 Categoría de MANAGER mgrR41075 Ver productos de Cat-Mgr-R41075" [ref=e148] [cursor=pointer]:
+                  - cell "Cat-Mgr-R41075" [ref=e149]
+                  - cell "Categoría de MANAGER" [ref=e150]
+                  - cell "mgrR41075" [ref=e151]
+                  - cell "Ver productos de Cat-Mgr-R41075" [ref=e152]:
+                    - button "Ver productos de Cat-Mgr-R41075" [ref=e153]:
+                      - img [ref=e154]: shopping_bag
+                - row "Cat-Mgr-R58523 Categoría de MANAGER mgrR58523 Ver productos de Cat-Mgr-R58523" [ref=e157] [cursor=pointer]:
+                  - cell "Cat-Mgr-R58523" [ref=e158]
+                  - cell "Categoría de MANAGER" [ref=e159]
+                  - cell "mgrR58523" [ref=e160]
+                  - cell "Ver productos de Cat-Mgr-R58523" [ref=e161]:
+                    - button "Ver productos de Cat-Mgr-R58523" [ref=e162]:
+                      - img [ref=e163]: shopping_bag
+                - row "Cat-Mgr-R95214 Categoría de MANAGER mgrR95214 Ver productos de Cat-Mgr-R95214" [ref=e166] [cursor=pointer]:
+                  - cell "Cat-Mgr-R95214" [ref=e167]
+                  - cell "Categoría de MANAGER" [ref=e168]
+                  - cell "mgrR95214" [ref=e169]
+                  - cell "Ver productos de Cat-Mgr-R95214" [ref=e170]:
+                    - button "Ver productos de Cat-Mgr-R95214" [ref=e171]:
+                      - img [ref=e172]: shopping_bag
+                - row "Categoría Test F06 admin Ver productos de Categoría Test F06" [ref=e175] [cursor=pointer]:
+                  - cell "Categoría Test F06" [ref=e176]
+                  - cell [ref=e177]
+                  - cell "admin" [ref=e178]
+                  - cell "Ver productos de Categoría Test F06" [ref=e179]:
+                    - button "Ver productos de Categoría Test F06" [ref=e180]:
+                      - img [ref=e181]: shopping_bag
+                - row "Climatización y Ventilación Aires acondicionados, ventiladores industriales, extractores y calefactores. admin Ver productos de Climatización y Ventilación" [ref=e184] [cursor=pointer]:
+                  - cell "Climatización y Ventilación" [ref=e185]
+                  - cell "Aires acondicionados, ventiladores industriales, extractores y calefactores." [ref=e186]
+                  - cell "admin" [ref=e187]
+                  - cell "Ver productos de Climatización y Ventilación" [ref=e188]:
+                    - button "Ver productos de Climatización y Ventilación" [ref=e189]:
+                      - img [ref=e190]: shopping_bag
+                - row "Computación y Periféricos Laptops, desktops, teclados, ratones, monitores y accesorios de cómputo. admin Ver productos de Computación y Periféricos" [ref=e193] [cursor=pointer]:
+                  - cell "Computación y Periféricos" [ref=e194]
+                  - cell "Laptops, desktops, teclados, ratones, monitores y accesorios de cómputo." [ref=e195]
+                  - cell "admin" [ref=e196]
+                  - cell "Ver productos de Computación y Periféricos" [ref=e197]:
+                    - button "Ver productos de Computación y Periféricos" [ref=e198]:
+                      - img [ref=e199]: shopping_bag
+                - row "Electricidad e Iluminación Cables, interruptores, contactos, lámparas LED, reflectores y tableros. admin Ver productos de Electricidad e Iluminación" [ref=e202] [cursor=pointer]:
+                  - cell "Electricidad e Iluminación" [ref=e203]
+                  - cell "Cables, interruptores, contactos, lámparas LED, reflectores y tableros." [ref=e204]
+                  - cell "admin" [ref=e205]
+                  - cell "Ver productos de Electricidad e Iluminación" [ref=e206]:
+                    - button "Ver productos de Electricidad e Iluminación" [ref=e207]:
+                      - img [ref=e208]: shopping_bag
+                - row "Electrodomésticos de Línea Blanca Refrigeradores, lavadoras, secadoras, lavavajillas y hornos de cocina. admin Ver productos de Electrodomésticos de Línea Blanca" [ref=e211] [cursor=pointer]:
+                  - cell "Electrodomésticos de Línea Blanca" [ref=e212]
+                  - cell "Refrigeradores, lavadoras, secadoras, lavavajillas y hornos de cocina." [ref=e213]
+                  - cell "admin" [ref=e214]
+                  - cell "Ver productos de Electrodomésticos de Línea Blanca" [ref=e215]:
+                    - button "Ver productos de Electrodomésticos de Línea Blanca" [ref=e216]:
+                      - img [ref=e217]: shopping_bag
+                - row "Electrodomésticos de Línea Café Cafeteras, licuadoras, tostadoras, microondas y pequeños electrodomésticos. admin Ver productos de Electrodomésticos de Línea Café" [ref=e220] [cursor=pointer]:
+                  - cell "Electrodomésticos de Línea Café" [ref=e221]
+                  - cell "Cafeteras, licuadoras, tostadoras, microondas y pequeños electrodomésticos." [ref=e222]
+                  - cell "admin" [ref=e223]
+                  - cell "Ver productos de Electrodomésticos de Línea Café" [ref=e224]:
+                    - button "Ver productos de Electrodomésticos de Línea Café" [ref=e225]:
+                      - img [ref=e226]: shopping_bag
+                - row "Electrónica duplicado admin Ver productos de Electrónica" [ref=e229] [cursor=pointer]:
+                  - cell "Electrónica" [ref=e230]
+                  - cell "duplicado" [ref=e231]
+                  - cell "admin" [ref=e232]
+                  - cell "Ver productos de Electrónica" [ref=e233]:
+                    - button "Ver productos de Electrónica" [ref=e234]:
+                      - img [ref=e235]: shopping_bag
+                - row "Electrónica de Consumo Televisores, reproductores, audífonos y dispositivos de entretenimiento. admin Ver productos de Electrónica de Consumo" [ref=e238] [cursor=pointer]:
+                  - cell "Electrónica de Consumo" [ref=e239]
+                  - cell "Televisores, reproductores, audífonos y dispositivos de entretenimiento." [ref=e240]
+                  - cell "admin" [ref=e241]
+                  - cell "Ver productos de Electrónica de Consumo" [ref=e242]:
+                    - button "Ver productos de Electrónica de Consumo" [ref=e243]:
+                      - img [ref=e244]: shopping_bag
+            - group "Paginación de categorías" [ref=e247]:
+              - generic [ref=e249]:
+                - generic [ref=e250]:
+                  - generic [ref=e251]: "Items per page:"
+                  - combobox "Items per page:" [ref=e256] [cursor=pointer]:
+                    - generic [ref=e257]:
+                      - generic [ref=e259]: "20"
+                      - img [ref=e262]
+                - generic [ref=e265]:
+                  - status [ref=e266]: 1 – 20 of 41
+                  - button "Previous page" [disabled] [ref=e267]:
+                    - img [ref=e268]
+                  - button "Next page" [ref=e272] [cursor=pointer]:
+                    - img [ref=e273]

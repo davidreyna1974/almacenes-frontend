@@ -1,0 +1,118 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e1865] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e1866] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Productos" [ref=e1867]':
+          - img [ref=e15]: chevron_right
+          - text: Inventario → Productos
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e1868] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e1869]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e1870]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e1871]:
+        - menubar [ref=e32]:
+          - menuitem [expanded] [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e1872] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e805]:
+          - generic [ref=e806]:
+            - generic [ref=e807]:
+              - generic [ref=e810]:
+                - generic [ref=e811]: Buscar por código o nombre
+                - textbox "Buscar por código o nombre" [ref=e1873]
+                - img [ref=e815]: search
+              - generic [ref=e819] [cursor=pointer]:
+                - generic [ref=e820]: Categoría
+                - combobox "Categoría" [active] [ref=e1874]:
+                  - generic [ref=e823]:
+                    - generic [ref=e3062]: Cat-Int-12406
+                    - img [ref=e828]
+              - generic [ref=e833] [cursor=pointer]:
+                - generic [ref=e834]: Estado
+                - combobox "Estado" [ref=e1875]:
+                  - img [ref=e842]
+              - generic [ref=e847] [cursor=pointer]:
+                - generic [ref=e848]: Proveedor
+                - combobox "Proveedor" [ref=e1876]:
+                  - img [ref=e856]
+              - button "Limpiar todos los filtros" [ref=e3063] [cursor=pointer]:
+                - img [ref=e3064]: filter_alt_off
+            - button "Nuevo producto" [ref=e1877]:
+              - img [ref=e861]: add
+              - generic [ref=e862]: Nuevo producto
+          - generic [ref=e865]:
+            - table [ref=e866]:
+              - rowgroup [ref=e867]:
+                - row "Código Nombre Categoría Proveedor Stock Precio Costo unit. Estado" [ref=e1878]:
+                  - columnheader "Código" [ref=e1879]
+                  - columnheader "Nombre" [ref=e1880]
+                  - columnheader "Categoría" [ref=e1881]
+                  - columnheader "Proveedor" [ref=e1882]
+                  - columnheader "Stock" [ref=e1883]
+                  - columnheader "Precio" [ref=e1884]
+                  - columnheader "Costo unit." [ref=e1885]
+                  - columnheader "Estado" [ref=e1886]
+                  - columnheader [ref=e877]
+              - rowgroup [ref=e878]:
+                - 'row "SKU-CANCEL-13082 Prod SKU-CANCEL-13082 Cat-Int-12406 Proveedor AINT12406 Stock OK · Físico: 20 · Mínimo: 2 $999.00 $500.00 Disponible Registrar movimiento para Prod SKU-CANCEL-13082" [ref=e3067] [cursor=pointer]':
+                  - cell "SKU-CANCEL-13082" [ref=e3068]
+                  - cell "Prod SKU-CANCEL-13082" [ref=e3069]
+                  - cell "Cat-Int-12406" [ref=e3070]
+                  - cell "Proveedor AINT12406" [ref=e3071]
+                  - 'cell "Stock OK · Físico: 20 · Mínimo: 2" [ref=e3072]':
+                    - 'status "Stock OK · Físico: 20 · Mínimo: 2" [ref=e3074]': "20"
+                  - cell "$999.00" [ref=e3075]
+                  - cell "$500.00" [ref=e3076]
+                  - cell "Disponible" [ref=e3077]:
+                    - generic [ref=e3078]: Disponible
+                  - cell "Registrar movimiento para Prod SKU-CANCEL-13082" [ref=e3079]:
+                    - button "Registrar movimiento para Prod SKU-CANCEL-13082" [ref=e3080]:
+                      - img [ref=e3081]: swap_vert
+                - 'row "SKU-SO-12823 Producto Integración 12823 Cat-Int-12406 Proveedor AINT12406 Stock OK · Físico: 15 · Reservado: 2 · Disponible: 13 · Mínimo: 5 $999.00 $750.00 Disponible Registrar movimiento para Producto Integración 12823" [ref=e3084] [cursor=pointer]':
+                  - cell "SKU-SO-12823" [ref=e3085]
+                  - cell "Producto Integración 12823" [ref=e3086]
+                  - cell "Cat-Int-12406" [ref=e3087]
+                  - cell "Proveedor AINT12406" [ref=e3088]
+                  - 'cell "Stock OK · Físico: 15 · Reservado: 2 · Disponible: 13 · Mínimo: 5" [ref=e3089]':
+                    - 'status "Stock OK · Físico: 15 · Reservado: 2 · Disponible: 13 · Mínimo: 5" [ref=e3091]': "15"
+                  - cell "$999.00" [ref=e3092]
+                  - cell "$750.00" [ref=e3093]
+                  - cell "Disponible" [ref=e3094]:
+                    - generic [ref=e3095]: Disponible
+                  - cell "Registrar movimiento para Producto Integración 12823" [ref=e3096]:
+                    - button "Registrar movimiento para Producto Integración 12823" [ref=e3097]:
+                      - img [ref=e3098]: swap_vert
+            - group "Paginación de productos" [ref=e2127]:
+              - generic [ref=e1221]:
+                - generic [ref=e1222]:
+                  - generic [ref=e1223]: "Items per page:"
+                  - combobox "Items per page:" [ref=e2128] [cursor=pointer]:
+                    - generic [ref=e1229]:
+                      - generic [ref=e1231]: "20"
+                      - img [ref=e1234]
+                - generic [ref=e1237]:
+                  - status [ref=e1238]: 1 – 2 of 2
+                  - button "Previous page" [disabled] [ref=e2129]:
+                    - img [ref=e1240]
+                  - button "Next page" [disabled] [ref=e2130]:
+                    - img [ref=e1245]

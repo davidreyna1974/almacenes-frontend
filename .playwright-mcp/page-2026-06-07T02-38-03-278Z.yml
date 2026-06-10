@@ -1,0 +1,294 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ir al contenido principal" [ref=e660] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button "Alternar menú lateral" [ref=e661] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - 'generic "Ubicación actual: Inventario → Categorías" [ref=e662]':
+            - img [ref=e15]: chevron_right
+            - text: Inventario → Categorías
+        - generic [ref=e16]:
+          - button "Notificaciones" [ref=e663] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button "Menú de usuario" [ref=e664]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: manager01
+              - 'generic "Rol: MANAGER" [ref=e665]': MANAGER
+      - generic [ref=e28]:
+        - navigation "Navegación principal" [ref=e666]:
+          - menubar [ref=e32]:
+            - menuitem [expanded] [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+          - button "Expandir menú" [ref=e667] [cursor=pointer]:
+            - img [ref=e43]: chevron_right
+        - main [ref=e44]:
+          - generic [ref=e47]:
+            - generic [ref=e48]:
+              - heading "Categorías" [level=2] [ref=e668]
+              - generic [ref=e50]:
+                - button "Productos" [ref=e669]:
+                  - img [ref=e52]: shopping_bag
+                  - generic [ref=e53]: Productos
+                - button "Nueva categoría" [ref=e670]:
+                  - img [ref=e57]: add
+                  - generic [ref=e58]: Nueva categoría
+            - generic [ref=e61]:
+              - table [ref=e62]:
+                - rowgroup [ref=e63]:
+                  - row "Nombre Descripción Creado por" [ref=e671]:
+                    - columnheader "Nombre" [ref=e672]
+                    - columnheader "Descripción" [ref=e673]
+                    - columnheader "Creado por" [ref=e674]
+                    - columnheader [ref=e68]
+                - rowgroup [ref=e69]:
+                  - row "Alimentos y Bebidas (Seco) Granos, cereales, conservas, condimentos, harinas y productos de larga duración. admin Ver productos de Alimentos y Bebidas (Seco) Editar Alimentos y Bebidas (Seco) Desactivar categoría Alimentos y Bebidas (Seco)" [ref=e675] [cursor=pointer]:
+                    - cell "Alimentos y Bebidas (Seco)" [ref=e676]
+                    - cell "Granos, cereales, conservas, condimentos, harinas y productos de larga duración." [ref=e677]
+                    - cell "admin" [ref=e678]
+                    - cell "Ver productos de Alimentos y Bebidas (Seco) Editar Alimentos y Bebidas (Seco) Desactivar categoría Alimentos y Bebidas (Seco)" [ref=e679]:
+                      - button "Ver productos de Alimentos y Bebidas (Seco)" [ref=e680]:
+                        - img [ref=e681]: shopping_bag
+                      - button "Editar Alimentos y Bebidas (Seco)" [ref=e684]:
+                        - img [ref=e685]: edit
+                      - button "Desactivar categoría Alimentos y Bebidas (Seco)" [ref=e688]:
+                        - img [ref=e689]: delete_outline
+                  - row "Artículos de Limpieza Detergentes, desinfectantes, escobas, trapeadores, cubetas y jabones. admin Ver productos de Artículos de Limpieza Editar Artículos de Limpieza Desactivar categoría Artículos de Limpieza" [ref=e692] [cursor=pointer]:
+                    - cell "Artículos de Limpieza" [ref=e693]
+                    - cell "Detergentes, desinfectantes, escobas, trapeadores, cubetas y jabones." [ref=e694]
+                    - cell "admin" [ref=e695]
+                    - cell "Ver productos de Artículos de Limpieza Editar Artículos de Limpieza Desactivar categoría Artículos de Limpieza" [ref=e696]:
+                      - button "Ver productos de Artículos de Limpieza" [ref=e697]:
+                        - img [ref=e698]: shopping_bag
+                      - button "Editar Artículos de Limpieza" [ref=e701]:
+                        - img [ref=e702]: edit
+                      - button "Desactivar categoría Artículos de Limpieza" [ref=e705]:
+                        - img [ref=e706]: delete_outline
+                  - row "Calzado Industrial Botas de casquillo, botas dieléctricas, zapatos antideslizantes y plantillas. admin Ver productos de Calzado Industrial Editar Calzado Industrial Desactivar categoría Calzado Industrial" [ref=e709] [cursor=pointer]:
+                    - cell "Calzado Industrial" [ref=e710]
+                    - cell "Botas de casquillo, botas dieléctricas, zapatos antideslizantes y plantillas." [ref=e711]
+                    - cell "admin" [ref=e712]
+                    - cell "Ver productos de Calzado Industrial Editar Calzado Industrial Desactivar categoría Calzado Industrial" [ref=e713]:
+                      - button "Ver productos de Calzado Industrial" [ref=e714]:
+                        - img [ref=e715]: shopping_bag
+                      - button "Editar Calzado Industrial" [ref=e718]:
+                        - img [ref=e719]: edit
+                      - button "Desactivar categoría Calzado Industrial" [ref=e722]:
+                        - img [ref=e723]: delete_outline
+                  - row "Categoría de Prueba MANAGER — EDITADA por test MANAGER. manager01 Ver productos de Categoría de Prueba MANAGER Editar Categoría de Prueba MANAGER Desactivar categoría Categoría de Prueba MANAGER" [ref=e726] [cursor=pointer]:
+                    - cell "Categoría de Prueba MANAGER" [ref=e727]
+                    - cell "— EDITADA por test MANAGER." [ref=e728]
+                    - cell "manager01" [ref=e729]
+                    - cell "Ver productos de Categoría de Prueba MANAGER Editar Categoría de Prueba MANAGER Desactivar categoría Categoría de Prueba MANAGER" [ref=e730]:
+                      - button "Ver productos de Categoría de Prueba MANAGER" [ref=e731]:
+                        - img [ref=e732]: shopping_bag
+                      - button "Editar Categoría de Prueba MANAGER" [ref=e735]:
+                        - img [ref=e736]: edit
+                      - button "Desactivar categoría Categoría de Prueba MANAGER" [ref=e739]:
+                        - img [ref=e740]: delete_outline
+                  - row "Climatización y Ventilación Aires acondicionados, ventiladores industriales, extractores y calefactores. admin Ver productos de Climatización y Ventilación Editar Climatización y Ventilación Desactivar categoría Climatización y Ventilación" [ref=e743] [cursor=pointer]:
+                    - cell "Climatización y Ventilación" [ref=e744]
+                    - cell "Aires acondicionados, ventiladores industriales, extractores y calefactores." [ref=e745]
+                    - cell "admin" [ref=e746]
+                    - cell "Ver productos de Climatización y Ventilación Editar Climatización y Ventilación Desactivar categoría Climatización y Ventilación" [ref=e747]:
+                      - button "Ver productos de Climatización y Ventilación" [ref=e748]:
+                        - img [ref=e749]: shopping_bag
+                      - button "Editar Climatización y Ventilación" [ref=e752]:
+                        - img [ref=e753]: edit
+                      - button "Desactivar categoría Climatización y Ventilación" [ref=e756]:
+                        - img [ref=e757]: delete_outline
+                  - row "Computación y Periféricos Laptops, desktops, teclados, ratones, monitores y accesorios de cómputo. admin Ver productos de Computación y Periféricos Editar Computación y Periféricos Desactivar categoría Computación y Periféricos" [ref=e760] [cursor=pointer]:
+                    - cell "Computación y Periféricos" [ref=e761]
+                    - cell "Laptops, desktops, teclados, ratones, monitores y accesorios de cómputo." [ref=e762]
+                    - cell "admin" [ref=e763]
+                    - cell "Ver productos de Computación y Periféricos Editar Computación y Periféricos Desactivar categoría Computación y Periféricos" [ref=e764]:
+                      - button "Ver productos de Computación y Periféricos" [ref=e765]:
+                        - img [ref=e766]: shopping_bag
+                      - button "Editar Computación y Periféricos" [ref=e769]:
+                        - img [ref=e770]: edit
+                      - button "Desactivar categoría Computación y Periféricos" [ref=e773]:
+                        - img [ref=e774]: delete_outline
+                  - row "Electricidad e Iluminación Cables, interruptores, contactos, lámparas LED, reflectores y tableros. admin Ver productos de Electricidad e Iluminación Editar Electricidad e Iluminación Desactivar categoría Electricidad e Iluminación" [ref=e777] [cursor=pointer]:
+                    - cell "Electricidad e Iluminación" [ref=e778]
+                    - cell "Cables, interruptores, contactos, lámparas LED, reflectores y tableros." [ref=e779]
+                    - cell "admin" [ref=e780]
+                    - cell "Ver productos de Electricidad e Iluminación Editar Electricidad e Iluminación Desactivar categoría Electricidad e Iluminación" [ref=e781]:
+                      - button "Ver productos de Electricidad e Iluminación" [ref=e782]:
+                        - img [ref=e783]: shopping_bag
+                      - button "Editar Electricidad e Iluminación" [ref=e786]:
+                        - img [ref=e787]: edit
+                      - button "Desactivar categoría Electricidad e Iluminación" [ref=e790]:
+                        - img [ref=e791]: delete_outline
+                  - row "Electrodomésticos de Línea Blanca Refrigeradores, lavadoras, secadoras, lavavajillas y hornos de cocina. admin Ver productos de Electrodomésticos de Línea Blanca Editar Electrodomésticos de Línea Blanca Desactivar categoría Electrodomésticos de Línea Blanca" [ref=e794] [cursor=pointer]:
+                    - cell "Electrodomésticos de Línea Blanca" [ref=e795]
+                    - cell "Refrigeradores, lavadoras, secadoras, lavavajillas y hornos de cocina." [ref=e796]
+                    - cell "admin" [ref=e797]
+                    - cell "Ver productos de Electrodomésticos de Línea Blanca Editar Electrodomésticos de Línea Blanca Desactivar categoría Electrodomésticos de Línea Blanca" [ref=e798]:
+                      - button "Ver productos de Electrodomésticos de Línea Blanca" [ref=e799]:
+                        - img [ref=e800]: shopping_bag
+                      - button "Editar Electrodomésticos de Línea Blanca" [ref=e803]:
+                        - img [ref=e804]: edit
+                      - button "Desactivar categoría Electrodomésticos de Línea Blanca" [ref=e807]:
+                        - img [ref=e808]: delete_outline
+                  - row "Electrodomésticos de Línea Café Cafeteras, licuadoras, tostadoras, microondas y pequeños electrodomésticos. admin Ver productos de Electrodomésticos de Línea Café Editar Electrodomésticos de Línea Café Desactivar categoría Electrodomésticos de Línea Café" [ref=e811] [cursor=pointer]:
+                    - cell "Electrodomésticos de Línea Café" [ref=e812]
+                    - cell "Cafeteras, licuadoras, tostadoras, microondas y pequeños electrodomésticos." [ref=e813]
+                    - cell "admin" [ref=e814]
+                    - cell "Ver productos de Electrodomésticos de Línea Café Editar Electrodomésticos de Línea Café Desactivar categoría Electrodomésticos de Línea Café" [ref=e815]:
+                      - button "Ver productos de Electrodomésticos de Línea Café" [ref=e816]:
+                        - img [ref=e817]: shopping_bag
+                      - button "Editar Electrodomésticos de Línea Café" [ref=e820]:
+                        - img [ref=e821]: edit
+                      - button "Desactivar categoría Electrodomésticos de Línea Café" [ref=e824]:
+                        - img [ref=e825]: delete_outline
+                  - row "Electrónica de Consumo Televisores, reproductores, audífonos y dispositivos de entretenimiento. admin Ver productos de Electrónica de Consumo Editar Electrónica de Consumo Desactivar categoría Electrónica de Consumo" [ref=e828] [cursor=pointer]:
+                    - cell "Electrónica de Consumo" [ref=e829]
+                    - cell "Televisores, reproductores, audífonos y dispositivos de entretenimiento." [ref=e830]
+                    - cell "admin" [ref=e831]
+                    - cell "Ver productos de Electrónica de Consumo Editar Electrónica de Consumo Desactivar categoría Electrónica de Consumo" [ref=e832]:
+                      - button "Ver productos de Electrónica de Consumo" [ref=e833]:
+                        - img [ref=e834]: shopping_bag
+                      - button "Editar Electrónica de Consumo" [ref=e837]:
+                        - img [ref=e838]: edit
+                      - button "Desactivar categoría Electrónica de Consumo" [ref=e841]:
+                        - img [ref=e842]: delete_outline
+                  - row "Embalaje e Insumos Logísticos Cajas de cartón, cintas, esquineros, estiramiento y materiales de empaque. admin Ver productos de Embalaje e Insumos Logísticos Editar Embalaje e Insumos Logísticos Desactivar categoría Embalaje e Insumos Logísticos" [ref=e845] [cursor=pointer]:
+                    - cell "Embalaje e Insumos Logísticos" [ref=e846]
+                    - cell "Cajas de cartón, cintas, esquineros, estiramiento y materiales de empaque." [ref=e847]
+                    - cell "admin" [ref=e848]
+                    - cell "Ver productos de Embalaje e Insumos Logísticos Editar Embalaje e Insumos Logísticos Desactivar categoría Embalaje e Insumos Logísticos" [ref=e849]:
+                      - button "Ver productos de Embalaje e Insumos Logísticos" [ref=e850]:
+                        - img [ref=e851]: shopping_bag
+                      - button "Editar Embalaje e Insumos Logísticos" [ref=e854]:
+                        - img [ref=e855]: edit
+                      - button "Desactivar categoría Embalaje e Insumos Logísticos" [ref=e858]:
+                        - img [ref=e859]: delete_outline
+                  - row "Equipos de Almacenamiento Racks industriales, pallets, estantería metálica, contenedores y cajones. admin Ver productos de Equipos de Almacenamiento Editar Equipos de Almacenamiento Desactivar categoría Equipos de Almacenamiento" [ref=e862] [cursor=pointer]:
+                    - cell "Equipos de Almacenamiento" [ref=e863]
+                    - cell "Racks industriales, pallets, estantería metálica, contenedores y cajones." [ref=e864]
+                    - cell "admin" [ref=e865]
+                    - cell "Ver productos de Equipos de Almacenamiento Editar Equipos de Almacenamiento Desactivar categoría Equipos de Almacenamiento" [ref=e866]:
+                      - button "Ver productos de Equipos de Almacenamiento" [ref=e867]:
+                        - img [ref=e868]: shopping_bag
+                      - button "Editar Equipos de Almacenamiento" [ref=e871]:
+                        - img [ref=e872]: edit
+                      - button "Desactivar categoría Equipos de Almacenamiento" [ref=e875]:
+                        - img [ref=e876]: delete_outline
+                  - row "Equipos de Protección Personal Cascos, guantes, lentes, tapones auditivos, chalecos y calzado de seguridad. admin Ver productos de Equipos de Protección Personal Editar Equipos de Protección Personal Desactivar categoría Equipos de Protección Personal" [ref=e879] [cursor=pointer]:
+                    - cell "Equipos de Protección Personal" [ref=e880]
+                    - cell "Cascos, guantes, lentes, tapones auditivos, chalecos y calzado de seguridad." [ref=e881]
+                    - cell "admin" [ref=e882]
+                    - cell "Ver productos de Equipos de Protección Personal Editar Equipos de Protección Personal Desactivar categoría Equipos de Protección Personal" [ref=e883]:
+                      - button "Ver productos de Equipos de Protección Personal" [ref=e884]:
+                        - img [ref=e885]: shopping_bag
+                      - button "Editar Equipos de Protección Personal" [ref=e888]:
+                        - img [ref=e889]: edit
+                      - button "Desactivar categoría Equipos de Protección Personal" [ref=e892]:
+                        - img [ref=e893]: delete_outline
+                  - row "Equipos de Transporte Interno Montacargas manuales, carretillas, patines hidráulicos y dollies. admin Ver productos de Equipos de Transporte Interno Editar Equipos de Transporte Interno Desactivar categoría Equipos de Transporte Interno" [ref=e896] [cursor=pointer]:
+                    - cell "Equipos de Transporte Interno" [ref=e897]
+                    - cell "Montacargas manuales, carretillas, patines hidráulicos y dollies." [ref=e898]
+                    - cell "admin" [ref=e899]
+                    - cell "Ver productos de Equipos de Transporte Interno Editar Equipos de Transporte Interno Desactivar categoría Equipos de Transporte Interno" [ref=e900]:
+                      - button "Ver productos de Equipos de Transporte Interno" [ref=e901]:
+                        - img [ref=e902]: shopping_bag
+                      - button "Editar Equipos de Transporte Interno" [ref=e905]:
+                        - img [ref=e906]: edit
+                      - button "Desactivar categoría Equipos de Transporte Interno" [ref=e909]:
+                        - img [ref=e910]: delete_outline
+                  - row "Herramientas Eléctricas Taladros, amoladoras, sierras eléctricas, pistolas de calor y rotomartillos. admin Ver productos de Herramientas Eléctricas Editar Herramientas Eléctricas Desactivar categoría Herramientas Eléctricas" [ref=e913] [cursor=pointer]:
+                    - cell "Herramientas Eléctricas" [ref=e914]
+                    - cell "Taladros, amoladoras, sierras eléctricas, pistolas de calor y rotomartillos." [ref=e915]
+                    - cell "admin" [ref=e916]
+                    - cell "Ver productos de Herramientas Eléctricas Editar Herramientas Eléctricas Desactivar categoría Herramientas Eléctricas" [ref=e917]:
+                      - button "Ver productos de Herramientas Eléctricas" [ref=e918]:
+                        - img [ref=e919]: shopping_bag
+                      - button "Editar Herramientas Eléctricas" [ref=e922]:
+                        - img [ref=e923]: edit
+                      - button "Desactivar categoría Herramientas Eléctricas" [ref=e926]:
+                        - img [ref=e927]: delete_outline
+                  - row "Herramientas Manuales Llaves, desarmadores, pinzas, martillos, sierras y herramientas de mano. admin Ver productos de Herramientas Manuales Editar Herramientas Manuales Desactivar categoría Herramientas Manuales" [ref=e930] [cursor=pointer]:
+                    - cell "Herramientas Manuales" [ref=e931]
+                    - cell "Llaves, desarmadores, pinzas, martillos, sierras y herramientas de mano." [ref=e932]
+                    - cell "admin" [ref=e933]
+                    - cell "Ver productos de Herramientas Manuales Editar Herramientas Manuales Desactivar categoría Herramientas Manuales" [ref=e934]:
+                      - button "Ver productos de Herramientas Manuales" [ref=e935]:
+                        - img [ref=e936]: shopping_bag
+                      - button "Editar Herramientas Manuales" [ref=e939]:
+                        - img [ref=e940]: edit
+                      - button "Desactivar categoría Herramientas Manuales" [ref=e943]:
+                        - img [ref=e944]: delete_outline
+                  - row "Jardinería y Exteriores Macetas, tierra, fertilizantes, herramientas de jardín, mangueras y aspersores. admin Ver productos de Jardinería y Exteriores Editar Jardinería y Exteriores Desactivar categoría Jardinería y Exteriores" [ref=e947] [cursor=pointer]:
+                    - cell "Jardinería y Exteriores" [ref=e948]
+                    - cell "Macetas, tierra, fertilizantes, herramientas de jardín, mangueras y aspersores." [ref=e949]
+                    - cell "admin" [ref=e950]
+                    - cell "Ver productos de Jardinería y Exteriores Editar Jardinería y Exteriores Desactivar categoría Jardinería y Exteriores" [ref=e951]:
+                      - button "Ver productos de Jardinería y Exteriores" [ref=e952]:
+                        - img [ref=e953]: shopping_bag
+                      - button "Editar Jardinería y Exteriores" [ref=e956]:
+                        - img [ref=e957]: edit
+                      - button "Desactivar categoría Jardinería y Exteriores" [ref=e960]:
+                        - img [ref=e961]: delete_outline
+                  - row "Lubricantes y Químicos Aceites lubricantes, grasas, solventes, limpiametales y penetrantes. admin Ver productos de Lubricantes y Químicos Editar Lubricantes y Químicos Desactivar categoría Lubricantes y Químicos" [ref=e964] [cursor=pointer]:
+                    - cell "Lubricantes y Químicos" [ref=e965]
+                    - cell "Aceites lubricantes, grasas, solventes, limpiametales y penetrantes." [ref=e966]
+                    - cell "admin" [ref=e967]
+                    - cell "Ver productos de Lubricantes y Químicos Editar Lubricantes y Químicos Desactivar categoría Lubricantes y Químicos" [ref=e968]:
+                      - button "Ver productos de Lubricantes y Químicos" [ref=e969]:
+                        - img [ref=e970]: shopping_bag
+                      - button "Editar Lubricantes y Químicos" [ref=e973]:
+                        - img [ref=e974]: edit
+                      - button "Desactivar categoría Lubricantes y Químicos" [ref=e977]:
+                        - img [ref=e978]: delete_outline
+                  - row "Material de Construcción Cemento, varillas, blocks, arena, grava y materiales estructurales. admin Ver productos de Material de Construcción Editar Material de Construcción Desactivar categoría Material de Construcción" [ref=e981] [cursor=pointer]:
+                    - cell "Material de Construcción" [ref=e982]
+                    - cell "Cemento, varillas, blocks, arena, grava y materiales estructurales." [ref=e983]
+                    - cell "admin" [ref=e984]
+                    - cell "Ver productos de Material de Construcción Editar Material de Construcción Desactivar categoría Material de Construcción" [ref=e985]:
+                      - button "Ver productos de Material de Construcción" [ref=e986]:
+                        - img [ref=e987]: shopping_bag
+                      - button "Editar Material de Construcción" [ref=e990]:
+                        - img [ref=e991]: edit
+                      - button "Desactivar categoría Material de Construcción" [ref=e994]:
+                        - img [ref=e995]: delete_outline
+                  - row "Medición y Calibración Vernieres, micrómetros, niveles, cintas métricas, medidores láser y manómetros. admin Ver productos de Medición y Calibración Editar Medición y Calibración Desactivar categoría Medición y Calibración" [ref=e998] [cursor=pointer]:
+                    - cell "Medición y Calibración" [ref=e999]
+                    - cell "Vernieres, micrómetros, niveles, cintas métricas, medidores láser y manómetros." [ref=e1000]
+                    - cell "admin" [ref=e1001]
+                    - cell "Ver productos de Medición y Calibración Editar Medición y Calibración Desactivar categoría Medición y Calibración" [ref=e1002]:
+                      - button "Ver productos de Medición y Calibración" [ref=e1003]:
+                        - img [ref=e1004]: shopping_bag
+                      - button "Editar Medición y Calibración" [ref=e1007]:
+                        - img [ref=e1008]: edit
+                      - button "Desactivar categoría Medición y Calibración" [ref=e1011]:
+                        - img [ref=e1012]: delete_outline
+              - group "Paginación de categorías" [ref=e1015]:
+                - generic [ref=e412]:
+                  - generic [ref=e413]:
+                    - generic [ref=e414]: "Items per page:"
+                    - combobox "Items per page:" [ref=e1016] [cursor=pointer]:
+                      - generic [ref=e420]:
+                        - generic [ref=e422]: "20"
+                        - img [ref=e425]
+                  - generic [ref=e428]:
+                    - status [ref=e429]: 1 – 20 of 31
+                    - button "Previous page" [disabled] [ref=e1017]:
+                      - img [ref=e431]
+                    - button "Next page" [ref=e1018] [cursor=pointer]:
+                      - img [ref=e436]
+  - generic:
+    - generic [ref=e1025]:
+      - generic [ref=e1026]: Categoría actualizada correctamente.
+      - button "Cerrar" [ref=e1028]:
+        - generic [ref=e1029]: Cerrar
+    - generic [ref=e1035]: — EDITADA por test MANAGER.

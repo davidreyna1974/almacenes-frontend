@@ -1,0 +1,125 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e468] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e469] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e470]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Órdenes de compra
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e471] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e472]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e473]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e474]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e475] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e296]:
+          - generic [ref=e297]:
+            - button [ref=e298] [cursor=pointer]:
+              - img [ref=e299]: arrow_back
+            - generic [ref=e302]:
+              - heading "OC-2026-0058" [level=2] [ref=e476]
+              - generic [ref=e304]: Aprobada
+            - generic [ref=e305]:
+              - button "Recibir mercancía" [ref=e477]:
+                - img [ref=e478]: done_all
+                - generic [ref=e479]: Recibir mercancía
+              - button "Cancelar orden" [ref=e482]:
+                - img [ref=e312]: cancel
+                - generic [ref=e313]: Cancelar orden
+          - generic [ref=e316]:
+            - generic [ref=e317]:
+              - generic [ref=e318]:
+                - heading "Información de la orden" [level=3] [ref=e483]
+                - generic [ref=e320]:
+                  - generic [ref=e321]:
+                    - generic:
+                      - generic:
+                        - generic [ref=e324]:
+                          - text: Proveedor
+                          - generic [ref=e325]: "*"
+                        - generic:
+                          - combobox "Proveedor" [disabled]:
+                            - generic:
+                              - generic:
+                                - generic: Químicos y Lubricantes Industriales S.A.
+                              - generic:
+                                - generic:
+                                  - img
+                  - generic [ref=e336]:
+                    - generic:
+                      - generic:
+                        - generic [ref=e339]: Notas
+                        - textbox "Notas" [disabled] [ref=e484]:
+                          - /placeholder: Observaciones opcionales
+              - generic [ref=e349]:
+                - heading "Líneas de detalle" [level=3] [ref=e485]
+                - table [ref=e357]:
+                  - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e486]:
+                    - columnheader "SKU" [ref=e487]
+                    - columnheader "Producto" [ref=e488]
+                    - columnheader "Cantidad" [ref=e489]
+                    - columnheader "Precio unitario" [ref=e490]
+                    - columnheader "Subtotal" [ref=e491]
+                    - columnheader [ref=e364]
+                  - row "LUBR-ACE20-035 Aceite Lubricante Motor 20W-50 Galón 15 $230.00 $3,450.00" [ref=e492]:
+                    - cell "LUBR-ACE20-035" [ref=e493]:
+                      - generic [ref=e494]: LUBR-ACE20-035
+                    - cell "Aceite Lubricante Motor 20W-50 Galón" [ref=e495]:
+                      - generic [ref=e496]: Aceite Lubricante Motor 20W-50 Galón
+                    - cell "15" [ref=e497]
+                    - cell "$230.00" [ref=e498]
+                    - cell "$3,450.00" [ref=e499]
+                    - cell [ref=e500]:
+                      - button [ref=e501] [cursor=pointer]:
+                        - img [ref=e502]: edit
+                      - button [ref=e505] [cursor=pointer]:
+                        - img [ref=e506]: delete
+                - generic [ref=e382]:
+                  - generic [ref=e383]: "Total de la orden:"
+                  - generic [ref=e384]: $3,450.00
+            - generic [ref=e385]:
+              - generic [ref=e386]:
+                - heading "Historial de estado" [level=3] [ref=e509]
+                - generic [ref=e388]:
+                  - generic [ref=e389]:
+                    - img [ref=e390]: add_circle
+                    - generic [ref=e391]:
+                      - generic [ref=e392]: Creada
+                      - generic [ref=e393]: admin
+                      - generic [ref=e394]: 07/06/2026 18:08
+                  - generic [ref=e395]:
+                    - img [ref=e396]: check_circle
+                    - generic [ref=e397]:
+                      - generic [ref=e398]: Aprobada
+                      - generic [ref=e510]: admin
+                      - generic [ref=e511]: 07/06/2026 18:09
+                  - generic [ref=e400]:
+                    - img [ref=e401]: done_all
+                    - generic [ref=e402]:
+                      - generic [ref=e403]: Recibida
+                      - generic [ref=e404]: Pendiente
+              - generic [ref=e512]:
+                - generic [ref=e513]: "Última modificación:"
+                - generic [ref=e514]: 07/06/2026 18:09

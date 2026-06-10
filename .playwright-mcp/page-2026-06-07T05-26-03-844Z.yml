@@ -1,0 +1,66 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Productos" [ref=e35]':
+          - img [ref=e36]: chevron_right
+          - text: Inventario → Productos
+      - generic [ref=e14]:
+        - button "Notificaciones" [ref=e15] [cursor=pointer]:
+          - img [ref=e16]: notifications_none
+        - button "Menú de usuario" [ref=e19]:
+          - img [ref=e20]: arrow_drop_down
+          - generic [ref=e21]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e37]': ADMIN
+    - generic [ref=e26]:
+      - navigation "Navegación principal" [ref=e29]:
+        - menubar [ref=e30]:
+          - menuitem [expanded] [ref=e38] [cursor=pointer]:
+            - img [ref=e39]: inventory_2
+          - menuitem [ref=e40] [cursor=pointer]:
+            - img [ref=e41]: shopping_cart
+          - menuitem [ref=e42] [cursor=pointer]:
+            - img [ref=e43]: point_of_sale
+          - menuitem [ref=e44] [cursor=pointer]:
+            - img [ref=e45]: bar_chart
+          - menuitem [ref=e46] [cursor=pointer]:
+            - img [ref=e47]: manage_accounts
+        - button "Expandir menú" [ref=e48] [cursor=pointer]:
+          - img [ref=e33]: chevron_right
+      - main [ref=e34]:
+        - generic [ref=e51]:
+          - generic [ref=e52]:
+            - generic [ref=e53]:
+              - generic [ref=e56]:
+                - generic [ref=e57]: Buscar por código o nombre
+                - textbox "Buscar por código o nombre" [ref=e59]
+                - img [ref=e61]: search
+              - generic [ref=e65] [cursor=pointer]:
+                - generic [ref=e66]: Categoría
+                - combobox "Categoría" [active] [ref=e68]:
+                  - generic [ref=e69]:
+                    - generic [ref=e644]: Calzado Industrial
+                    - img [ref=e74]
+              - generic [ref=e79] [cursor=pointer]:
+                - generic [ref=e80]: Estado
+                - combobox "Estado" [ref=e82]:
+                  - img [ref=e88]
+              - generic [ref=e93] [cursor=pointer]:
+                - generic [ref=e94]: Proveedor
+                - combobox "Proveedor" [ref=e96]:
+                  - img [ref=e102]
+              - button "Limpiar todos los filtros" [ref=e645] [cursor=pointer]:
+                - img [ref=e646]: filter_alt_off
+            - button "Nuevo producto" [ref=e106]:
+              - img [ref=e107]: add
+              - generic [ref=e108]: Nuevo producto
+          - 'status "Sin resultados: Ningún registro coincide con los filtros aplicados." [ref=e651]':
+            - img [ref=e652]: search_off
+            - heading "Sin resultados" [level=3] [ref=e653]
+            - paragraph [ref=e654]: Ningún registro coincide con los filtros aplicados.

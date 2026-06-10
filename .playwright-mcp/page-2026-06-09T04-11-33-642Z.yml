@@ -1,0 +1,72 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Productos" [ref=e745]':
+          - img [ref=e15]: chevron_right
+          - text: Inventario → Productos
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [expanded] [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e747]:
+          - generic [ref=e748]:
+            - generic [ref=e749]:
+              - generic [ref=e752]:
+                - generic [ref=e753]: Buscar por código o nombre
+                - textbox "Buscar por código o nombre" [ref=e755]
+                - img [ref=e757]: search
+              - generic [ref=e761] [cursor=pointer]:
+                - generic [ref=e762]: Categoría
+                - combobox "Categoría" [ref=e764]:
+                  - img [ref=e770]
+              - generic [ref=e775] [cursor=pointer]:
+                - generic [ref=e776]: Estado
+                - combobox "Estado" [ref=e778]:
+                  - img [ref=e784]
+              - generic [ref=e789] [cursor=pointer]:
+                - generic [ref=e790]: Proveedor
+                - combobox "Proveedor" [ref=e792]:
+                  - img [ref=e798]
+            - button "Nuevo producto" [ref=e802]:
+              - img [ref=e803]: add
+              - generic [ref=e804]: Nuevo producto
+          - progressbar [ref=e807]
+          - table [ref=e815]:
+            - rowgroup [ref=e816]:
+              - row "Código Nombre Categoría Proveedor Stock Precio Costo unit. Estado" [ref=e817]:
+                - columnheader "Código" [ref=e818]
+                - columnheader "Nombre" [ref=e819]
+                - columnheader "Categoría" [ref=e820]
+                - columnheader "Proveedor" [ref=e821]
+                - columnheader "Stock" [ref=e822]
+                - columnheader "Precio" [ref=e823]
+                - columnheader "Costo unit." [ref=e824]
+                - columnheader "Estado" [ref=e825]
+                - columnheader [ref=e826]
+            - rowgroup

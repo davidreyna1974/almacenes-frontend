@@ -1,0 +1,379 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e367] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e368] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e369]:
+            - img [ref=e15]: chevron_right
+            - text: Compras → Proveedores
+        - generic [ref=e16]:
+          - button [ref=e370] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e371]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - generic [ref=e372]: ADMIN
+      - generic [ref=e28]:
+        - navigation [ref=e373]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button [ref=e374] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - generic [ref=e54]:
+                - generic [ref=e55]: Buscar proveedor
+                - textbox [ref=e375]:
+                  - /placeholder: RFC o razón social
+                - img [ref=e59]: search
+              - button [ref=e376]:
+                - img [ref=e63]: add
+                - generic [ref=e64]: Nuevo proveedor
+            - table [ref=e68]:
+              - rowgroup [ref=e69]:
+                - row [ref=e377]:
+                  - columnheader [ref=e378]: RFC
+                  - columnheader [ref=e379]: Razón social
+                  - columnheader [ref=e380]: Contacto
+                  - columnheader [ref=e381]: Teléfono
+              - rowgroup [ref=e75]:
+                - row [ref=e382] [cursor=pointer]:
+                  - cell [ref=e383]: AGRO990625GG6
+                  - cell [ref=e384]: Agroquímica y Fertilizantes del Valle S.A.
+                  - cell [ref=e385]: Ing. Laura Ramírez Torres
+                  - cell [ref=e386]: 3312-8901
+                - row [ref=e387] [cursor=pointer]:
+                  - cell [ref=e388]: CLIT880312HH7
+                  - cell [ref=e389]: Climatización e Instalaciones Térmicas S.A.
+                  - cell [ref=e390]: Ing. Pablo Guerrero Méndez
+                  - cell [ref=e391]: 9993-2345
+                - row [ref=e392] [cursor=pointer]:
+                  - cell [ref=e393]: CONS880415TU7
+                  - cell [ref=e394]: Constructora y Suministros del Bajío S.A.
+                  - cell [ref=e395]: Arq. Sandra López Gutiérrez
+                  - cell [ref=e396]: 4773-2345
+                - row [ref=e397] [cursor=pointer]:
+                  - cell [ref=e398]: DIST900420LL1
+                  - cell [ref=e399]: Distribuidora Logística del Centro S.A.
+                  - cell [ref=e400]: Lic. César Montes Arriaga
+                  - cell [ref=e401]: 4423-8901
+                - row [ref=e402] [cursor=pointer]:
+                  - cell [ref=e403]: MEXD840315AB2
+                  - cell [ref=e404]: Distribuidora México Digital S.A. de C.V.
+                  - cell [ref=e405]: Ing. Carlos Mendoza Ríos
+                  - cell [ref=e406]: 5555-1234
+                - row [ref=e407] [cursor=pointer]:
+                  - cell [ref=e408]: ELCI920601XY3
+                  - cell [ref=e409]: Electro Industrial del Centro S.A. de C.V.
+                  - cell [ref=e410]: Lic. María Torres Sánchez
+                  - cell [ref=e411]: 4422-5678
+                - row [ref=e412] [cursor=pointer]:
+                  - cell [ref=e413]: EMBA910310XZ9
+                  - cell [ref=e414]: Empaques y Embalajes del Sureste S.A.
+                  - cell [ref=e415]: Lic. Patricia Hernández Cruz
+                  - cell [ref=e416]: 9981-0123
+                - row [ref=e417] [cursor=pointer]:
+                  - cell [ref=e418]: FERR860720RS6
+                  - cell [ref=e419]: Ferretera Industrial del Norte S.A. de C.V.
+                  - cell [ref=e420]: Sr. Juan Pablo Ortiz Morales
+                  - cell [ref=e421]: 6181-7890
+                - row [ref=e422] [cursor=pointer]:
+                  - cell [ref=e423]: HERM810715DD3
+                  - cell [ref=e424]: Herramientas y Maquinaria del Pacífico S.A.
+                  - cell [ref=e425]: Sr. Jorge Antonio Medina Villa
+                  - cell [ref=e426]: 3221-6789
+                - row [ref=e427] [cursor=pointer]:
+                  - cell [ref=e428]: LIMP940918BB1
+                  - cell [ref=e429]: Limpieza Profesional e Higiene S.A. de C.V.
+                  - cell [ref=e430]: Lic. Gabriela Moreno Fuentes
+                  - cell [ref=e431]: 2281-8901
+                - row [ref=e432] [cursor=pointer]:
+                  - cell [ref=e433]: MEDI950115JJ9
+                  - cell [ref=e434]: Medicamentos y Salud Ocupacional S.A.
+                  - cell [ref=e435]: Dr. Antonio Flores Chávez
+                  - cell [ref=e436]: 4444-0123
+                - row [ref=e437] [cursor=pointer]:
+                  - cell [ref=e438]: MEDI810730KK0
+                  - cell [ref=e439]: Medición y Calibración Industrial S.A.
+                  - cell [ref=e440]: Ing. Verónica Soto Ibarra
+                  - cell [ref=e441]: 8115-4567
+                - row [ref=e442] [cursor=pointer]:
+                  - cell [ref=e443]: MUEB850625AA0
+                  - cell [ref=e444]: Muebles y Equipos Corporativos S.A. de C.V.
+                  - cell [ref=e445]: Sr. Fernando Castillo Reyna
+                  - cell [ref=e446]: 5556-4567
+                - row [ref=e447] [cursor=pointer]:
+                  - cell [ref=e448]: PAPE760829II8
+                  - cell [ref=e449]: Papelería y Artículos de Oficina Nacional S.A.
+                  - cell [ref=e450]: Lic. Silvia Acosta Bravo
+                  - cell [ref=e451]: 5557-6789
+                - row [ref=e452] [cursor=pointer]:
+                  - cell [ref=e453]: AINT12406
+                  - cell [ref=e454]: Proveedor AINT12406
+                  - cell [ref=e455]: —
+                  - cell [ref=e456]: —
+                - row [ref=e457] [cursor=pointer]:
+                  - cell [ref=e458]: AINT16394
+                  - cell [ref=e459]: Proveedor AINT16394
+                  - cell [ref=e460]: —
+                  - cell [ref=e461]: —
+                - row [ref=e462] [cursor=pointer]:
+                  - cell [ref=e463]: AINT19434
+                  - cell [ref=e464]: Proveedor AINT19434
+                  - cell [ref=e465]: —
+                  - cell [ref=e466]: —
+                - row [ref=e467] [cursor=pointer]:
+                  - cell [ref=e468]: AINT23178
+                  - cell [ref=e469]: Proveedor AINT23178
+                  - cell [ref=e470]: —
+                  - cell [ref=e471]: —
+                - row [ref=e472] [cursor=pointer]:
+                  - cell [ref=e473]: AINT25584
+                  - cell [ref=e474]: Proveedor AINT25584
+                  - cell [ref=e475]: —
+                  - cell [ref=e476]: —
+                - row [ref=e477] [cursor=pointer]:
+                  - cell [ref=e478]: AINT2902
+                  - cell [ref=e479]: Proveedor AINT2902
+                  - cell [ref=e480]: —
+                  - cell [ref=e481]: —
+                - row [ref=e482] [cursor=pointer]:
+                  - cell [ref=e483]: AINT35135
+                  - cell [ref=e484]: Proveedor AINT35135
+                  - cell [ref=e485]: —
+                  - cell [ref=e486]: —
+                - row [ref=e487] [cursor=pointer]:
+                  - cell [ref=e488]: AINT35904
+                  - cell [ref=e489]: Proveedor AINT35904
+                  - cell [ref=e490]: —
+                  - cell [ref=e491]: —
+                - row [ref=e492] [cursor=pointer]:
+                  - cell [ref=e493]: AINT38227
+                  - cell [ref=e494]: Proveedor AINT38227
+                  - cell [ref=e495]: —
+                  - cell [ref=e496]: —
+                - row [ref=e497] [cursor=pointer]:
+                  - cell [ref=e498]: AINT40143
+                  - cell [ref=e499]: Proveedor AINT40143
+                  - cell [ref=e500]: —
+                  - cell [ref=e501]: —
+                - row [ref=e502] [cursor=pointer]:
+                  - cell [ref=e503]: AINT44000
+                  - cell [ref=e504]: Proveedor AINT44000
+                  - cell [ref=e505]: —
+                  - cell [ref=e506]: —
+                - row [ref=e507] [cursor=pointer]:
+                  - cell [ref=e508]: AINT57543
+                  - cell [ref=e509]: Proveedor AINT57543
+                  - cell [ref=e510]: —
+                  - cell [ref=e511]: —
+                - row [ref=e512] [cursor=pointer]:
+                  - cell [ref=e513]: AINT6074
+                  - cell [ref=e514]: Proveedor AINT6074
+                  - cell [ref=e515]: —
+                  - cell [ref=e516]: —
+                - row [ref=e517] [cursor=pointer]:
+                  - cell [ref=e518]: AINT70042
+                  - cell [ref=e519]: Proveedor AINT70042
+                  - cell [ref=e520]: —
+                  - cell [ref=e521]: —
+                - row [ref=e522] [cursor=pointer]:
+                  - cell [ref=e523]: AINT7162
+                  - cell [ref=e524]: Proveedor AINT7162
+                  - cell [ref=e525]: —
+                  - cell [ref=e526]: —
+                - row [ref=e527] [cursor=pointer]:
+                  - cell [ref=e528]: AINT86360
+                  - cell [ref=e529]: Proveedor AINT86360
+                  - cell [ref=e530]: —
+                  - cell [ref=e531]: —
+                - row [ref=e532] [cursor=pointer]:
+                  - cell [ref=e533]: AINT94230
+                  - cell [ref=e534]: Proveedor AINT94230
+                  - cell [ref=e535]: —
+                  - cell [ref=e536]: —
+                - row [ref=e537] [cursor=pointer]:
+                  - cell [ref=e538]: AINT96839
+                  - cell [ref=e539]: Proveedor AINT96839
+                  - cell [ref=e540]: —
+                  - cell [ref=e541]: —
+                - row [ref=e542] [cursor=pointer]:
+                  - cell [ref=e543]: AINT99146
+                  - cell [ref=e544]: Proveedor AINT99146
+                  - cell [ref=e545]: —
+                  - cell [ref=e546]: —
+                - row [ref=e547] [cursor=pointer]:
+                  - cell [ref=e548]: MGBR13318
+                  - cell [ref=e549]: Proveedor RBAC R13318
+                  - cell [ref=e550]: —
+                  - cell [ref=e551]: —
+                - row [ref=e552] [cursor=pointer]:
+                  - cell [ref=e553]: MGBR17308
+                  - cell [ref=e554]: Proveedor RBAC R17308
+                  - cell [ref=e555]: —
+                  - cell [ref=e556]: —
+                - row [ref=e557] [cursor=pointer]:
+                  - cell [ref=e558]: MGBR20326
+                  - cell [ref=e559]: Proveedor RBAC R20326
+                  - cell [ref=e560]: —
+                  - cell [ref=e561]: —
+                - row [ref=e562] [cursor=pointer]:
+                  - cell [ref=e563]: MGBR24138
+                  - cell [ref=e564]: Proveedor RBAC R24138
+                  - cell [ref=e565]: —
+                  - cell [ref=e566]: —
+                - row [ref=e567] [cursor=pointer]:
+                  - cell [ref=e568]: MGBR26542
+                  - cell [ref=e569]: Proveedor RBAC R26542
+                  - cell [ref=e570]: —
+                  - cell [ref=e571]: —
+                - row [ref=e572] [cursor=pointer]:
+                  - cell [ref=e573]: MGBR36029
+                  - cell [ref=e574]: Proveedor RBAC R36029
+                  - cell [ref=e575]: —
+                  - cell [ref=e576]: —
+                - row [ref=e577] [cursor=pointer]:
+                  - cell [ref=e578]: MGBR36816
+                  - cell [ref=e579]: Proveedor RBAC R36816
+                  - cell [ref=e580]: —
+                  - cell [ref=e581]: —
+                - row [ref=e582] [cursor=pointer]:
+                  - cell [ref=e583]: MGBR3784
+                  - cell [ref=e584]: Proveedor RBAC R3784
+                  - cell [ref=e585]: —
+                  - cell [ref=e586]: —
+                - row [ref=e587] [cursor=pointer]:
+                  - cell [ref=e588]: MGBR39152
+                  - cell [ref=e589]: Proveedor RBAC R39152
+                  - cell [ref=e590]: —
+                  - cell [ref=e591]: —
+                - row [ref=e592] [cursor=pointer]:
+                  - cell [ref=e593]: MGBR41075
+                  - cell [ref=e594]: Proveedor RBAC R41075
+                  - cell [ref=e595]: —
+                  - cell [ref=e596]: —
+                - row [ref=e597] [cursor=pointer]:
+                  - cell [ref=e598]: MGBR44964
+                  - cell [ref=e599]: Proveedor RBAC R44964
+                  - cell [ref=e600]: —
+                  - cell [ref=e601]: —
+                - row [ref=e602] [cursor=pointer]:
+                  - cell [ref=e603]: MGBR58523
+                  - cell [ref=e604]: Proveedor RBAC R58523
+                  - cell [ref=e605]: —
+                  - cell [ref=e606]: —
+                - row [ref=e607] [cursor=pointer]:
+                  - cell [ref=e608]: MGBR59
+                  - cell [ref=e609]: Proveedor RBAC R59
+                  - cell [ref=e610]: —
+                  - cell [ref=e611]: —
+                - row [ref=e612] [cursor=pointer]:
+                  - cell [ref=e613]: MGBR6985
+                  - cell [ref=e614]: Proveedor RBAC R6985
+                  - cell [ref=e615]: —
+                  - cell [ref=e616]: —
+                - row [ref=e617] [cursor=pointer]:
+                  - cell [ref=e618]: MGBR70934
+                  - cell [ref=e619]: Proveedor RBAC R70934
+                  - cell [ref=e620]: —
+                  - cell [ref=e621]: —
+                - row [ref=e622] [cursor=pointer]:
+                  - cell [ref=e623]: MGBR8056
+                  - cell [ref=e624]: Proveedor RBAC R8056
+                  - cell [ref=e625]: —
+                  - cell [ref=e626]: —
+                - row [ref=e627] [cursor=pointer]:
+                  - cell [ref=e628]: MGBR87261
+                  - cell [ref=e629]: Proveedor RBAC R87261
+                  - cell [ref=e630]: —
+                  - cell [ref=e631]: —
+                - row [ref=e632] [cursor=pointer]:
+                  - cell [ref=e633]: MGBR95214
+                  - cell [ref=e634]: Proveedor RBAC R95214
+                  - cell [ref=e635]: —
+                  - cell [ref=e636]: —
+                - row [ref=e637] [cursor=pointer]:
+                  - cell [ref=e638]: MGBR97733
+                  - cell [ref=e639]: Proveedor RBAC R97733
+                  - cell [ref=e640]: —
+                  - cell [ref=e641]: —
+                - row [ref=e642] [cursor=pointer]:
+                  - cell [ref=e643]: PROA780910MN4
+                  - cell [ref=e644]: Proveedora Nacional de Almacenes S.A.
+                  - cell [ref=e645]: Sr. Roberto Jiménez Castro
+                  - cell [ref=e646]: 3336-9012
+                - row [ref=e647] [cursor=pointer]:
+                  - cell [ref=e648]: QUIM730601VW8
+                  - cell [ref=e649]: Químicos y Lubricantes Industriales S.A.
+                  - cell [ref=e650]: Ing. Miguel Ángel Reyes Díaz
+                  - cell [ref=e651]: 7222-6789
+                - row [ref=e652] [cursor=pointer]:
+                  - cell [ref=e653]: ROPE960501EE4
+                  - cell [ref=e654]: Ropa de Protección y EPP S.A. de C.V.
+                  - cell [ref=e655]: Lic. Claudia Vázquez Ávila
+                  - cell [ref=e656]: 4613-0123
+                - row [ref=e657] [cursor=pointer]:
+                  - cell [ref=e658]: SEGV870203CC2
+                  - cell [ref=e659]: Seguridad y Vigilancia Electrónica S.A.
+                  - cell [ref=e660]: Ing. Alejandro Ruiz Serrano
+                  - cell [ref=e661]: 6672-2345
+                - row [ref=e662] [cursor=pointer]:
+                  - cell [ref=e663]: SOLD720914FF5
+                  - cell [ref=e664]: Soldadura y Equipos Industriales S.A.
+                  - cell [ref=e665]: Ing. Raúl Espinosa Navarro
+                  - cell [ref=e666]: 7771-4567
+                - row [ref=e667] [cursor=pointer]:
+                  - cell [ref=e668]: TECH950301PQ5
+                  - cell [ref=e669]: TechSupply México S.A. de C.V.
+                  - cell [ref=e670]: Ing. Ana Lucía Vargas Pérez
+                  - cell [ref=e671]: 8118-3456
+  - dialog "Nuevo proveedor" [ref=e675]:
+    - generic [ref=e678]:
+      - heading "Nuevo proveedor" [level=2] [ref=e679]
+      - generic [ref=e682]:
+        - generic [ref=e683]:
+          - generic [ref=e686]:
+            - generic [ref=e687]:
+              - text: RFC
+              - generic [ref=e688]: "*"
+            - textbox "RFC" [active] [ref=e690]
+          - generic [ref=e694]:
+            - generic [ref=e695]:
+              - text: Razón social
+              - generic [ref=e696]: "*"
+            - textbox "Razón social" [ref=e698]
+          - generic [ref=e702]:
+            - generic [ref=e703]: Nombre de contacto
+            - textbox "Nombre de contacto" [ref=e705]
+          - generic [ref=e709]:
+            - generic [ref=e710]: Teléfono
+            - textbox "Teléfono" [ref=e712]
+          - generic [ref=e716]:
+            - generic [ref=e717]: Correo electrónico
+            - textbox "Correo electrónico" [ref=e719]
+          - generic [ref=e723]:
+            - generic [ref=e724]: Dirección
+            - textbox "Dirección" [ref=e726]
+        - generic [ref=e728]:
+          - button "Cancelar" [ref=e729]:
+            - generic [ref=e730]: Cancelar
+          - button "Crear proveedor" [disabled]:
+            - img: save
+            - generic: Crear proveedor

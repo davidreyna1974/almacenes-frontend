@@ -1,0 +1,202 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e608] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e609] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e610]:
+            - img [ref=e15]: chevron_right
+            - text: Inventario → Categorías
+        - generic [ref=e16]:
+          - button [ref=e611] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e612]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - generic [ref=e613]: ADMIN
+      - generic [ref=e28]:
+        - navigation [ref=e614]:
+          - menubar [ref=e32]:
+            - menuitem [expanded] [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button [ref=e615] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - heading [level=2] [ref=e616]: Categorías
+              - button [ref=e617]:
+                - img [ref=e54]: add
+                - generic [ref=e55]: Nueva categoría
+            - generic [ref=e58]:
+              - table [ref=e59]:
+                - rowgroup [ref=e60]:
+                  - row [ref=e618]:
+                    - columnheader [ref=e619]: Nombre
+                    - columnheader [ref=e620]: Descripción
+                    - columnheader [ref=e64]
+                - rowgroup [ref=e65]:
+                  - row [ref=e621] [cursor=pointer]:
+                    - cell [ref=e622]: Calzado Industrial
+                    - cell [ref=e623]: Botas de casquillo, botas dieléctricas, zapatos antideslizantes y plantillas.
+                    - cell [ref=e624]:
+                      - button [ref=e625]:
+                        - img [ref=e436]: shopping_bag
+                  - row [ref=e626] [cursor=pointer]:
+                    - cell [ref=e627]: Cat-Int-12406
+                    - cell [ref=e628]: test
+                    - cell [ref=e629]:
+                      - button [ref=e630]:
+                        - img [ref=e444]: shopping_bag
+                  - row [ref=e631] [cursor=pointer]:
+                    - cell [ref=e632]: Cat-Int-16394
+                    - cell [ref=e633]: test
+                    - cell [ref=e634]:
+                      - button [ref=e635]:
+                        - img [ref=e452]: shopping_bag
+                  - row [ref=e636] [cursor=pointer]:
+                    - cell [ref=e637]: Cat-Int-19434
+                    - cell [ref=e638]: test
+                    - cell [ref=e639]:
+                      - button [ref=e640]:
+                        - img [ref=e460]: shopping_bag
+                  - row [ref=e641] [cursor=pointer]:
+                    - cell [ref=e642]: Cat-Int-23178
+                    - cell [ref=e643]: test
+                    - cell [ref=e644]:
+                      - button [ref=e645]:
+                        - img [ref=e468]: shopping_bag
+                  - row [ref=e646] [cursor=pointer]:
+                    - cell [ref=e647]: Cat-Int-25584
+                    - cell [ref=e648]: test
+                    - cell [ref=e649]:
+                      - button [ref=e650]:
+                        - img [ref=e476]: shopping_bag
+                  - row [ref=e651] [cursor=pointer]:
+                    - cell [ref=e652]: Cat-Int-2902
+                    - cell [ref=e653]: test
+                    - cell [ref=e654]:
+                      - button [ref=e655]:
+                        - img [ref=e484]: shopping_bag
+                  - row [ref=e656] [cursor=pointer]:
+                    - cell [ref=e657]: Cat-Int-35135
+                    - cell [ref=e658]: test
+                    - cell [ref=e659]:
+                      - button [ref=e660]:
+                        - img [ref=e492]: shopping_bag
+                  - row [ref=e661] [cursor=pointer]:
+                    - cell [ref=e662]: Cat-Int-35904
+                    - cell [ref=e663]: test
+                    - cell [ref=e664]:
+                      - button [ref=e665]:
+                        - img [ref=e500]: shopping_bag
+                  - row [ref=e666] [cursor=pointer]:
+                    - cell [ref=e667]: Cat-Int-38227
+                    - cell [ref=e668]: test
+                    - cell [ref=e669]:
+                      - button [ref=e670]:
+                        - img [ref=e508]: shopping_bag
+                  - row [ref=e671] [cursor=pointer]:
+                    - cell [ref=e672]: Cat-Int-40143
+                    - cell [ref=e673]: test
+                    - cell [ref=e674]:
+                      - button [ref=e675]:
+                        - img [ref=e516]: shopping_bag
+                  - row [ref=e676] [cursor=pointer]:
+                    - cell [ref=e677]: Cat-Int-44000
+                    - cell [ref=e678]: test
+                    - cell [ref=e679]:
+                      - button [ref=e680]:
+                        - img [ref=e524]: shopping_bag
+                  - row [ref=e681] [cursor=pointer]:
+                    - cell [ref=e682]: Cat-Int-57543
+                    - cell [ref=e683]: test
+                    - cell [ref=e684]:
+                      - button [ref=e685]:
+                        - img [ref=e532]: shopping_bag
+                  - row [ref=e686] [cursor=pointer]:
+                    - cell [ref=e687]: Cat-Int-6074
+                    - cell [ref=e688]: test
+                    - cell [ref=e689]:
+                      - button [ref=e690]:
+                        - img [ref=e540]: shopping_bag
+                  - row [ref=e691] [cursor=pointer]:
+                    - cell [ref=e692]: Cat-Int-70042
+                    - cell [ref=e693]: test
+                    - cell [ref=e694]:
+                      - button [ref=e695]:
+                        - img [ref=e548]: shopping_bag
+                  - row [ref=e696] [cursor=pointer]:
+                    - cell [ref=e697]: Cat-Int-7162
+                    - cell [ref=e698]: test
+                    - cell [ref=e699]:
+                      - button [ref=e700]:
+                        - img [ref=e556]: shopping_bag
+                  - row [ref=e701] [cursor=pointer]:
+                    - cell [ref=e702]: Cat-Int-86360
+                    - cell [ref=e703]: test
+                    - cell [ref=e704]:
+                      - button [ref=e705]:
+                        - img [ref=e564]: shopping_bag
+                  - row [ref=e706] [cursor=pointer]:
+                    - cell [ref=e707]: Cat-Int-94230
+                    - cell [ref=e708]: test
+                    - cell [ref=e709]:
+                      - button [ref=e710]:
+                        - img [ref=e572]: shopping_bag
+                  - row [ref=e711] [cursor=pointer]:
+                    - cell [ref=e712]: Cat-Int-96839
+                    - cell [ref=e713]: test
+                    - cell [ref=e714]:
+                      - button [ref=e715]:
+                        - img [ref=e580]: shopping_bag
+                  - row [ref=e716] [cursor=pointer]:
+                    - cell [ref=e717]: Cat-Int-99146
+                    - cell [ref=e718]: test
+                    - cell [ref=e719]:
+                      - button [ref=e720]:
+                        - img [ref=e588]: shopping_bag
+              - group [ref=e721]:
+                - generic [ref=e228]:
+                  - generic [ref=e229]:
+                    - generic [ref=e230]: "Items per page:"
+                    - combobox [ref=e722] [cursor=pointer]:
+                      - generic [ref=e236]:
+                        - generic [ref=e238]: "20"
+                        - img [ref=e241]
+                  - generic [ref=e244]:
+                    - status [ref=e245]: 1 – 20 of 69
+                    - button [disabled] [ref=e723]:
+                      - img [ref=e247]
+                    - button [ref=e724] [cursor=pointer]:
+                      - img [ref=e252]
+  - dialog [ref=e728]:
+    - generic [ref=e733]:
+      - heading "Nueva categoría" [level=3] [ref=e734]
+      - generic [ref=e737]:
+        - generic [ref=e738]:
+          - text: Nombre
+          - generic [ref=e739]: "*"
+        - textbox "Nombre" [active] [ref=e741]
+      - generic [ref=e745]:
+        - generic [ref=e746]: Descripción
+        - textbox "Descripción" [ref=e748]
+      - generic [ref=e751]:
+        - button "Cancelar" [ref=e752]:
+          - generic [ref=e753]: Cancelar
+        - button "Crear categoría" [disabled]:
+          - generic: Crear categoría

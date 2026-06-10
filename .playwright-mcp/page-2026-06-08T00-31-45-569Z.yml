@@ -1,0 +1,105 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - 'generic "Ubicación actual: Compras → Proveedores" [ref=e14]':
+            - img [ref=e15]: chevron_right
+            - text: Compras → Proveedores
+        - generic [ref=e16]:
+          - button "Notificaciones" [ref=e17] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button "Menú de usuario" [ref=e21]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+      - generic [ref=e28]:
+        - navigation "Navegación principal" [ref=e31]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button "Expandir menú" [ref=e44] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e50]:
+            - generic [ref=e51]:
+              - generic [ref=e52]:
+                - generic [ref=e55]:
+                  - generic [ref=e56]: Buscar proveedor
+                  - img [ref=e58]: search
+                  - textbox "Buscar proveedor" [ref=e60]:
+                    - /placeholder: RFC o razón social
+                    - text: ABC123
+                - button "Nuevo proveedor" [ref=e61]:
+                  - img [ref=e62]: add
+                  - generic [ref=e63]: Nuevo proveedor
+              - table [ref=e66]:
+                - row "RFC Razón social Contacto Teléfono" [ref=e67]:
+                  - columnheader "RFC" [ref=e68]
+                  - columnheader "Razón social" [ref=e69]
+                  - columnheader "Contacto" [ref=e70]
+                  - columnheader "Teléfono" [ref=e71]
+                  - columnheader [ref=e72]
+                - row "ABC123 Proveedor Test Validación — —" [ref=e1488] [cursor=pointer]:
+                  - cell "ABC123" [ref=e1489]:
+                    - generic [ref=e1490]: ABC123
+                  - cell "Proveedor Test Validación" [ref=e1491]:
+                    - generic [ref=e1492]: Proveedor Test Validación
+                  - cell "—" [ref=e1493]
+                  - cell "—" [ref=e1494]
+                  - cell [ref=e1495]:
+                    - button [active] [ref=e1496]:
+                      - img [ref=e1497]: edit
+            - generic [ref=e781]:
+              - heading "Editar proveedor" [level=3] [ref=e1594]
+              - generic [ref=e1596]:
+                - generic [ref=e1597]:
+                  - generic [ref=e1600]:
+                    - generic [ref=e1601]:
+                      - text: RFC
+                      - generic [ref=e1602]: "*"
+                    - textbox "RFC" [ref=e1604]: ABC123
+                  - generic [ref=e1608]:
+                    - generic [ref=e1609]:
+                      - text: Razón social
+                      - generic [ref=e1610]: "*"
+                    - textbox "Razón social" [ref=e1612]: Proveedor Test Validación
+                  - generic [ref=e1616]:
+                    - generic [ref=e1617]: Nombre de contacto
+                    - textbox "Nombre de contacto" [ref=e1619]
+                  - generic [ref=e1623]:
+                    - generic [ref=e1624]: Teléfono
+                    - textbox "Teléfono" [ref=e1626]
+                  - generic [ref=e1630]:
+                    - generic [ref=e1631]: Correo electrónico
+                    - textbox "Correo electrónico" [ref=e1633]
+                  - generic [ref=e1637]:
+                    - generic [ref=e1638]: Dirección
+                    - textbox "Dirección" [ref=e1640]
+                - generic [ref=e1643]:
+                  - img [ref=e1644]: person
+                  - text: Creado por admin
+                - generic [ref=e1645]:
+                  - button "Desactivar" [ref=e1646]:
+                    - img [ref=e1647]: block
+                    - generic [ref=e1648]: Desactivar
+                  - button "Cancelar" [ref=e1651]:
+                    - generic [ref=e1652]: Cancelar
+                  - button "Guardar cambios" [disabled]:
+                    - img: save
+                    - generic: Guardar cambios
+  - generic [ref=e1658]: Ver / editar

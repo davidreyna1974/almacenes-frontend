@@ -1,0 +1,102 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e8992] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e8993] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Productos" [ref=e8994]':
+          - img [ref=e15]: chevron_right
+          - text: Inventario → Productos
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e8995] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e8996]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e8997]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e8998]:
+        - menubar [ref=e32]:
+          - menuitem [expanded] [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e8999] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - generic [ref=e51]:
+              - generic [ref=e54]:
+                - generic [ref=e55]: Buscar por código o nombre
+                - textbox "Buscar por código o nombre" [active] [ref=e9000]: editado QA
+                - img [ref=e59]: search
+              - generic [ref=e63] [cursor=pointer]:
+                - generic [ref=e64]: Categoría
+                - combobox "Categoría" [ref=e9001]:
+                  - img [ref=e72]
+              - generic [ref=e77] [cursor=pointer]:
+                - generic [ref=e78]: Estado
+                - combobox "Estado" [ref=e9002]:
+                  - img [ref=e86]
+              - generic [ref=e91] [cursor=pointer]:
+                - generic [ref=e92]: Proveedor
+                - combobox "Proveedor" [ref=e9003]:
+                  - img [ref=e100]
+              - button "Limpiar todos los filtros" [ref=e9004] [cursor=pointer]:
+                - img [ref=e8474]: filter_alt_off
+            - button "Nuevo producto" [ref=e9005]:
+              - img [ref=e105]: add
+              - generic [ref=e106]: Nuevo producto
+          - generic [ref=e9025]:
+            - table [ref=e9026]:
+              - rowgroup [ref=e9027]:
+                - row "Código Nombre Categoría Proveedor Stock Precio Costo unit. Estado" [ref=e9028]:
+                  - columnheader "Código" [ref=e9029]
+                  - columnheader "Nombre" [ref=e9030]
+                  - columnheader "Categoría" [ref=e9031]
+                  - columnheader "Proveedor" [ref=e9032]
+                  - columnheader "Stock" [ref=e9033]
+                  - columnheader "Precio" [ref=e9034]
+                  - columnheader "Costo unit." [ref=e9035]
+                  - columnheader "Estado" [ref=e9036]
+                  - columnheader [ref=e9037]
+              - rowgroup [ref=e9038]:
+                - 'row "HMAN-DES-013 (editado QA) Herramientas Manuales Ferretera Industrial del Norte S.A. de C.V. Stock OK · Físico: 90 · Mínimo: 20 $320.00 $180.00 Disponible Registrar movimiento para (editado QA)" [ref=e9039] [cursor=pointer]':
+                  - cell "HMAN-DES-013" [ref=e9040]
+                  - cell "(editado QA)" [ref=e9041]
+                  - cell "Herramientas Manuales" [ref=e9042]
+                  - cell "Ferretera Industrial del Norte S.A. de C.V." [ref=e9043]
+                  - 'cell "Stock OK · Físico: 90 · Mínimo: 20" [ref=e9044]':
+                    - 'status "Stock OK · Físico: 90 · Mínimo: 20" [ref=e9046]': "90"
+                  - cell "$320.00" [ref=e9047]
+                  - cell "$180.00" [ref=e9048]
+                  - cell "Disponible" [ref=e9049]:
+                    - generic [ref=e9050]: Disponible
+                  - cell "Registrar movimiento para (editado QA)" [ref=e9051]:
+                    - button "Registrar movimiento para (editado QA)" [ref=e9052]:
+                      - img [ref=e9053]: swap_vert
+            - group "Paginación de productos" [ref=e9056]:
+              - generic [ref=e9058]:
+                - generic [ref=e9059]:
+                  - generic [ref=e9060]: "Items per page:"
+                  - combobox "Items per page:" [ref=e9065] [cursor=pointer]:
+                    - generic [ref=e9066]:
+                      - generic [ref=e9068]: "20"
+                      - img [ref=e9071]
+                - generic [ref=e9074]:
+                  - status [ref=e9075]: 1 – 1 of 1
+                  - button "Previous page" [disabled] [ref=e9076]:
+                    - img [ref=e9077]
+                  - button "Next page" [disabled] [ref=e9081]:
+                    - img [ref=e9082]

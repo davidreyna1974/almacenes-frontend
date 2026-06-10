@@ -1,0 +1,677 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ir al contenido principal" [ref=e1192] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button "Alternar menú lateral" [ref=e1193] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - 'generic "Ubicación actual: Compras → Proveedores" [ref=e1194]':
+            - img [ref=e15]: chevron_right
+            - text: Compras → Proveedores
+        - generic [ref=e16]:
+          - button "Notificaciones" [ref=e1195] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button "Menú de usuario" [ref=e1196]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - 'generic "Rol: ADMIN" [ref=e1197]': ADMIN
+      - generic [ref=e28]:
+        - navigation "Navegación principal" [ref=e1198]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button "Expandir menú" [ref=e1199] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e57]:
+            - generic [ref=e58]:
+              - generic [ref=e59]:
+                - generic [ref=e62]:
+                  - generic [ref=e63]: Buscar proveedor
+                  - img [ref=e65]: search
+                  - textbox "Buscar proveedor" [ref=e1200]:
+                    - /placeholder: RFC o razón social
+                - button "Nuevo proveedor" [ref=e1201]:
+                  - img [ref=e69]: add
+                  - generic [ref=e70]: Nuevo proveedor
+              - table [ref=e73]:
+                - row "RFC Razón social Contacto Teléfono" [ref=e1202]:
+                  - columnheader "RFC" [ref=e1203]
+                  - columnheader "Razón social" [ref=e1204]
+                  - columnheader "Contacto" [ref=e1205]
+                  - columnheader "Teléfono" [ref=e1206]
+                  - columnheader [ref=e79]
+                - row "AGRO990625GG6 Agroquímica y Fertilizantes del Valle S.A. Ing. Laura Ramírez Torres 3312-8901" [ref=e1207] [cursor=pointer]:
+                  - cell "AGRO990625GG6" [ref=e1208]:
+                    - generic [ref=e92]: AGRO990625GG6
+                  - cell "Agroquímica y Fertilizantes del Valle S.A." [ref=e1209]:
+                    - generic [ref=e94]: Agroquímica y Fertilizantes del Valle S.A.
+                  - cell "Ing. Laura Ramírez Torres" [ref=e1210]
+                  - cell "3312-8901" [ref=e1211]
+                  - cell [ref=e97]:
+                    - button [ref=e98]:
+                      - img [ref=e99]: edit
+                - row "CLIT880312HH7 Climatización e Instalaciones Térmicas S.A. Ing. Pablo Guerrero Méndez 9993-2345" [ref=e1212] [cursor=pointer]:
+                  - cell "CLIT880312HH7" [ref=e1213]:
+                    - generic [ref=e104]: CLIT880312HH7
+                  - cell "Climatización e Instalaciones Térmicas S.A." [ref=e1214]:
+                    - generic [ref=e106]: Climatización e Instalaciones Térmicas S.A.
+                  - cell "Ing. Pablo Guerrero Méndez" [ref=e1215]
+                  - cell "9993-2345" [ref=e1216]
+                  - cell [ref=e109]:
+                    - button [ref=e110]:
+                      - img [ref=e111]: edit
+                - row "CONS880415TU7 Constructora y Suministros del Bajío S.A. Arq. Sandra López Gutiérrez 4773-2345" [ref=e1217] [cursor=pointer]:
+                  - cell "CONS880415TU7" [ref=e1218]:
+                    - generic [ref=e116]: CONS880415TU7
+                  - cell "Constructora y Suministros del Bajío S.A." [ref=e1219]:
+                    - generic [ref=e118]: Constructora y Suministros del Bajío S.A.
+                  - cell "Arq. Sandra López Gutiérrez" [ref=e1220]
+                  - cell "4773-2345" [ref=e1221]
+                  - cell [ref=e121]:
+                    - button [ref=e122]:
+                      - img [ref=e123]: edit
+                - row "DIST900420LL1 Distribuidora Logística del Centro S.A. Lic. César Montes Arriaga 4423-8901" [ref=e1222] [cursor=pointer]:
+                  - cell "DIST900420LL1" [ref=e1223]:
+                    - generic [ref=e128]: DIST900420LL1
+                  - cell "Distribuidora Logística del Centro S.A." [ref=e1224]:
+                    - generic [ref=e130]: Distribuidora Logística del Centro S.A.
+                  - cell "Lic. César Montes Arriaga" [ref=e1225]
+                  - cell "4423-8901" [ref=e1226]
+                  - cell [ref=e133]:
+                    - button [ref=e134]:
+                      - img [ref=e135]: edit
+                - row "MEXD840315AB2 Distribuidora México Digital S.A. de C.V. Ing. Carlos Mendoza Ríos 5555-1234" [ref=e1227] [cursor=pointer]:
+                  - cell "MEXD840315AB2" [ref=e1228]:
+                    - generic [ref=e140]: MEXD840315AB2
+                  - cell "Distribuidora México Digital S.A. de C.V." [ref=e1229]:
+                    - generic [ref=e142]: Distribuidora México Digital S.A. de C.V.
+                  - cell "Ing. Carlos Mendoza Ríos" [ref=e1230]
+                  - cell "5555-1234" [ref=e1231]
+                  - cell [ref=e145]:
+                    - button [ref=e146]:
+                      - img [ref=e147]: edit
+                - row "ELCI920601XY3 Electro Industrial del Centro S.A. de C.V. Lic. María Torres Sánchez 4422-5678" [ref=e1232] [cursor=pointer]:
+                  - cell "ELCI920601XY3" [ref=e1233]:
+                    - generic [ref=e152]: ELCI920601XY3
+                  - cell "Electro Industrial del Centro S.A. de C.V." [ref=e1234]:
+                    - generic [ref=e154]: Electro Industrial del Centro S.A. de C.V.
+                  - cell "Lic. María Torres Sánchez" [ref=e1235]
+                  - cell "4422-5678" [ref=e1236]
+                  - cell [ref=e157]:
+                    - button [ref=e158]:
+                      - img [ref=e159]: edit
+                - row "EMBA910310XZ9 Empaques y Embalajes del Sureste S.A. Lic. Patricia Hernández Cruz 9981-0123" [ref=e1237] [cursor=pointer]:
+                  - cell "EMBA910310XZ9" [ref=e1238]:
+                    - generic [ref=e164]: EMBA910310XZ9
+                  - cell "Empaques y Embalajes del Sureste S.A." [ref=e1239]:
+                    - generic [ref=e166]: Empaques y Embalajes del Sureste S.A.
+                  - cell "Lic. Patricia Hernández Cruz" [ref=e1240]
+                  - cell "9981-0123" [ref=e1241]
+                  - cell [ref=e169]:
+                    - button [ref=e170]:
+                      - img [ref=e171]: edit
+                - row "FERR860720RS6 Ferretera Industrial del Norte S.A. de C.V. Sr. Juan Pablo Ortiz Morales 6181-7890" [ref=e1242] [cursor=pointer]:
+                  - cell "FERR860720RS6" [ref=e1243]:
+                    - generic [ref=e176]: FERR860720RS6
+                  - cell "Ferretera Industrial del Norte S.A. de C.V." [ref=e1244]:
+                    - generic [ref=e178]: Ferretera Industrial del Norte S.A. de C.V.
+                  - cell "Sr. Juan Pablo Ortiz Morales" [ref=e1245]
+                  - cell "6181-7890" [ref=e1246]
+                  - cell [ref=e181]:
+                    - button [ref=e182]:
+                      - img [ref=e183]: edit
+                - row "HERM810715DD3 Herramientas y Maquinaria del Pacífico S.A. Sr. Jorge Antonio Medina Villa 3221-6789" [ref=e1247] [cursor=pointer]:
+                  - cell "HERM810715DD3" [ref=e1248]:
+                    - generic [ref=e188]: HERM810715DD3
+                  - cell "Herramientas y Maquinaria del Pacífico S.A." [ref=e1249]:
+                    - generic [ref=e190]: Herramientas y Maquinaria del Pacífico S.A.
+                  - cell "Sr. Jorge Antonio Medina Villa" [ref=e1250]
+                  - cell "3221-6789" [ref=e1251]
+                  - cell [ref=e193]:
+                    - button [ref=e194]:
+                      - img [ref=e195]: edit
+                - row "LIMP940918BB1 Limpieza Profesional e Higiene S.A. de C.V. Lic. Gabriela Moreno Fuentes 2281-8901" [ref=e1252] [cursor=pointer]:
+                  - cell "LIMP940918BB1" [ref=e1253]:
+                    - generic [ref=e200]: LIMP940918BB1
+                  - cell "Limpieza Profesional e Higiene S.A. de C.V." [ref=e1254]:
+                    - generic [ref=e202]: Limpieza Profesional e Higiene S.A. de C.V.
+                  - cell "Lic. Gabriela Moreno Fuentes" [ref=e1255]
+                  - cell "2281-8901" [ref=e1256]
+                  - cell [ref=e205]:
+                    - button [ref=e206]:
+                      - img [ref=e207]: edit
+                - row "MEDI950115JJ9 Medicamentos y Salud Ocupacional S.A. Dr. Antonio Flores Chávez 4444-0123" [ref=e1257] [cursor=pointer]:
+                  - cell "MEDI950115JJ9" [ref=e1258]:
+                    - generic [ref=e212]: MEDI950115JJ9
+                  - cell "Medicamentos y Salud Ocupacional S.A." [ref=e1259]:
+                    - generic [ref=e214]: Medicamentos y Salud Ocupacional S.A.
+                  - cell "Dr. Antonio Flores Chávez" [ref=e1260]
+                  - cell "4444-0123" [ref=e1261]
+                  - cell [ref=e217]:
+                    - button [ref=e218]:
+                      - img [ref=e219]: edit
+                - row "MEDI810730KK0 Medición y Calibración Industrial S.A. Ing. Verónica Soto Ibarra 8115-4567" [ref=e1262] [cursor=pointer]:
+                  - cell "MEDI810730KK0" [ref=e1263]:
+                    - generic [ref=e224]: MEDI810730KK0
+                  - cell "Medición y Calibración Industrial S.A." [ref=e1264]:
+                    - generic [ref=e226]: Medición y Calibración Industrial S.A.
+                  - cell "Ing. Verónica Soto Ibarra" [ref=e1265]
+                  - cell "8115-4567" [ref=e1266]
+                  - cell [ref=e229]:
+                    - button [ref=e230]:
+                      - img [ref=e231]: edit
+                - row "MUEB850625AA0 Muebles y Equipos Corporativos S.A. de C.V. Sr. Fernando Castillo Reyna 5556-4567" [ref=e1267] [cursor=pointer]:
+                  - cell "MUEB850625AA0" [ref=e1268]:
+                    - generic [ref=e236]: MUEB850625AA0
+                  - cell "Muebles y Equipos Corporativos S.A. de C.V." [ref=e1269]:
+                    - generic [ref=e238]: Muebles y Equipos Corporativos S.A. de C.V.
+                  - cell "Sr. Fernando Castillo Reyna" [ref=e1270]
+                  - cell "5556-4567" [ref=e1271]
+                  - cell [ref=e241]:
+                    - button [ref=e242]:
+                      - img [ref=e243]: edit
+                - row "PAPE760829II8 Papelería y Artículos de Oficina Nacional S.A. Lic. Silvia Acosta Bravo 5557-6789" [ref=e1272] [cursor=pointer]:
+                  - cell "PAPE760829II8" [ref=e1273]:
+                    - generic [ref=e248]: PAPE760829II8
+                  - cell "Papelería y Artículos de Oficina Nacional S.A." [ref=e1274]:
+                    - generic [ref=e250]: Papelería y Artículos de Oficina Nacional S.A.
+                  - cell "Lic. Silvia Acosta Bravo" [ref=e1275]
+                  - cell "5557-6789" [ref=e1276]
+                  - cell [ref=e253]:
+                    - button [ref=e254]:
+                      - img [ref=e255]: edit
+                - row "AINT12406 Proveedor AINT12406 — —" [ref=e1277] [cursor=pointer]:
+                  - cell "AINT12406" [ref=e1278]:
+                    - generic [ref=e260]: AINT12406
+                  - cell "Proveedor AINT12406" [ref=e1279]:
+                    - generic [ref=e262]: Proveedor AINT12406
+                  - cell "—" [ref=e1280]
+                  - cell "—" [ref=e1281]
+                  - cell [ref=e265]:
+                    - button [ref=e266]:
+                      - img [ref=e267]: edit
+                - row "AINT16394 Proveedor AINT16394 — —" [ref=e1282] [cursor=pointer]:
+                  - cell "AINT16394" [ref=e1283]:
+                    - generic [ref=e272]: AINT16394
+                  - cell "Proveedor AINT16394" [ref=e1284]:
+                    - generic [ref=e274]: Proveedor AINT16394
+                  - cell "—" [ref=e1285]
+                  - cell "—" [ref=e1286]
+                  - cell [ref=e277]:
+                    - button [ref=e278]:
+                      - img [ref=e279]: edit
+                - row "AINT19434 Proveedor AINT19434 — —" [ref=e1287] [cursor=pointer]:
+                  - cell "AINT19434" [ref=e1288]:
+                    - generic [ref=e284]: AINT19434
+                  - cell "Proveedor AINT19434" [ref=e1289]:
+                    - generic [ref=e286]: Proveedor AINT19434
+                  - cell "—" [ref=e1290]
+                  - cell "—" [ref=e1291]
+                  - cell [ref=e289]:
+                    - button [ref=e290]:
+                      - img [ref=e291]: edit
+                - row "AINT23178 Proveedor AINT23178 — —" [ref=e1292] [cursor=pointer]:
+                  - cell "AINT23178" [ref=e1293]:
+                    - generic [ref=e296]: AINT23178
+                  - cell "Proveedor AINT23178" [ref=e1294]:
+                    - generic [ref=e298]: Proveedor AINT23178
+                  - cell "—" [ref=e1295]
+                  - cell "—" [ref=e1296]
+                  - cell [ref=e301]:
+                    - button [ref=e302]:
+                      - img [ref=e303]: edit
+                - row "AINT25584 Proveedor AINT25584 — —" [ref=e1297] [cursor=pointer]:
+                  - cell "AINT25584" [ref=e1298]:
+                    - generic [ref=e308]: AINT25584
+                  - cell "Proveedor AINT25584" [ref=e1299]:
+                    - generic [ref=e310]: Proveedor AINT25584
+                  - cell "—" [ref=e1300]
+                  - cell "—" [ref=e1301]
+                  - cell [ref=e313]:
+                    - button [ref=e314]:
+                      - img [ref=e315]: edit
+                - row "AINT2902 Proveedor AINT2902 — —" [ref=e1302] [cursor=pointer]:
+                  - cell "AINT2902" [ref=e1303]:
+                    - generic [ref=e320]: AINT2902
+                  - cell "Proveedor AINT2902" [ref=e1304]:
+                    - generic [ref=e322]: Proveedor AINT2902
+                  - cell "—" [ref=e1305]
+                  - cell "—" [ref=e1306]
+                  - cell [ref=e325]:
+                    - button [ref=e326]:
+                      - img [ref=e327]: edit
+                - row "AINT35135 Proveedor AINT35135 — —" [ref=e1307] [cursor=pointer]:
+                  - cell "AINT35135" [ref=e1308]:
+                    - generic [ref=e332]: AINT35135
+                  - cell "Proveedor AINT35135" [ref=e1309]:
+                    - generic [ref=e334]: Proveedor AINT35135
+                  - cell "—" [ref=e1310]
+                  - cell "—" [ref=e1311]
+                  - cell [ref=e337]:
+                    - button [ref=e338]:
+                      - img [ref=e339]: edit
+                - row "AINT35904 Proveedor AINT35904 — —" [ref=e1312] [cursor=pointer]:
+                  - cell "AINT35904" [ref=e1313]:
+                    - generic [ref=e344]: AINT35904
+                  - cell "Proveedor AINT35904" [ref=e1314]:
+                    - generic [ref=e346]: Proveedor AINT35904
+                  - cell "—" [ref=e1315]
+                  - cell "—" [ref=e1316]
+                  - cell [ref=e349]:
+                    - button [ref=e350]:
+                      - img [ref=e351]: edit
+                - row "AINT38227 Proveedor AINT38227 — —" [ref=e1317] [cursor=pointer]:
+                  - cell "AINT38227" [ref=e1318]:
+                    - generic [ref=e356]: AINT38227
+                  - cell "Proveedor AINT38227" [ref=e1319]:
+                    - generic [ref=e358]: Proveedor AINT38227
+                  - cell "—" [ref=e1320]
+                  - cell "—" [ref=e1321]
+                  - cell [ref=e361]:
+                    - button [ref=e362]:
+                      - img [ref=e363]: edit
+                - row "AINT40143 Proveedor AINT40143 — —" [ref=e1322] [cursor=pointer]:
+                  - cell "AINT40143" [ref=e1323]:
+                    - generic [ref=e368]: AINT40143
+                  - cell "Proveedor AINT40143" [ref=e1324]:
+                    - generic [ref=e370]: Proveedor AINT40143
+                  - cell "—" [ref=e1325]
+                  - cell "—" [ref=e1326]
+                  - cell [ref=e373]:
+                    - button [ref=e374]:
+                      - img [ref=e375]: edit
+                - row "AINT44000 Proveedor AINT44000 — —" [ref=e1327] [cursor=pointer]:
+                  - cell "AINT44000" [ref=e1328]:
+                    - generic [ref=e380]: AINT44000
+                  - cell "Proveedor AINT44000" [ref=e1329]:
+                    - generic [ref=e382]: Proveedor AINT44000
+                  - cell "—" [ref=e1330]
+                  - cell "—" [ref=e1331]
+                  - cell [ref=e385]:
+                    - button [ref=e386]:
+                      - img [ref=e387]: edit
+                - row "AINT57543 Proveedor AINT57543 — —" [ref=e1332] [cursor=pointer]:
+                  - cell "AINT57543" [ref=e1333]:
+                    - generic [ref=e392]: AINT57543
+                  - cell "Proveedor AINT57543" [ref=e1334]:
+                    - generic [ref=e394]: Proveedor AINT57543
+                  - cell "—" [ref=e1335]
+                  - cell "—" [ref=e1336]
+                  - cell [ref=e397]:
+                    - button [ref=e398]:
+                      - img [ref=e399]: edit
+                - row "AINT6074 Proveedor AINT6074 — —" [ref=e1337] [cursor=pointer]:
+                  - cell "AINT6074" [ref=e1338]:
+                    - generic [ref=e404]: AINT6074
+                  - cell "Proveedor AINT6074" [ref=e1339]:
+                    - generic [ref=e406]: Proveedor AINT6074
+                  - cell "—" [ref=e1340]
+                  - cell "—" [ref=e1341]
+                  - cell [ref=e409]:
+                    - button [ref=e410]:
+                      - img [ref=e411]: edit
+                - row "AINT70042 Proveedor AINT70042 — —" [ref=e1342] [cursor=pointer]:
+                  - cell "AINT70042" [ref=e1343]:
+                    - generic [ref=e416]: AINT70042
+                  - cell "Proveedor AINT70042" [ref=e1344]:
+                    - generic [ref=e418]: Proveedor AINT70042
+                  - cell "—" [ref=e1345]
+                  - cell "—" [ref=e1346]
+                  - cell [ref=e421]:
+                    - button [ref=e422]:
+                      - img [ref=e423]: edit
+                - row "AINT7162 Proveedor AINT7162 — —" [ref=e1347] [cursor=pointer]:
+                  - cell "AINT7162" [ref=e1348]:
+                    - generic [ref=e428]: AINT7162
+                  - cell "Proveedor AINT7162" [ref=e1349]:
+                    - generic [ref=e430]: Proveedor AINT7162
+                  - cell "—" [ref=e1350]
+                  - cell "—" [ref=e1351]
+                  - cell [ref=e433]:
+                    - button [ref=e434]:
+                      - img [ref=e435]: edit
+                - row "AINT86360 Proveedor AINT86360 — —" [ref=e1352] [cursor=pointer]:
+                  - cell "AINT86360" [ref=e1353]:
+                    - generic [ref=e440]: AINT86360
+                  - cell "Proveedor AINT86360" [ref=e1354]:
+                    - generic [ref=e442]: Proveedor AINT86360
+                  - cell "—" [ref=e1355]
+                  - cell "—" [ref=e1356]
+                  - cell [ref=e445]:
+                    - button [ref=e446]:
+                      - img [ref=e447]: edit
+                - row "AINT94230 Proveedor AINT94230 — —" [ref=e1357] [cursor=pointer]:
+                  - cell "AINT94230" [ref=e1358]:
+                    - generic [ref=e452]: AINT94230
+                  - cell "Proveedor AINT94230" [ref=e1359]:
+                    - generic [ref=e454]: Proveedor AINT94230
+                  - cell "—" [ref=e1360]
+                  - cell "—" [ref=e1361]
+                  - cell [ref=e457]:
+                    - button [ref=e458]:
+                      - img [ref=e459]: edit
+                - row "AINT96839 Proveedor AINT96839 — —" [ref=e1362] [cursor=pointer]:
+                  - cell "AINT96839" [ref=e1363]:
+                    - generic [ref=e464]: AINT96839
+                  - cell "Proveedor AINT96839" [ref=e1364]:
+                    - generic [ref=e466]: Proveedor AINT96839
+                  - cell "—" [ref=e1365]
+                  - cell "—" [ref=e1366]
+                  - cell [ref=e469]:
+                    - button [ref=e470]:
+                      - img [ref=e471]: edit
+                - row "AINT99146 Proveedor AINT99146 — —" [ref=e1367] [cursor=pointer]:
+                  - cell "AINT99146" [ref=e1368]:
+                    - generic [ref=e476]: AINT99146
+                  - cell "Proveedor AINT99146" [ref=e1369]:
+                    - generic [ref=e478]: Proveedor AINT99146
+                  - cell "—" [ref=e1370]
+                  - cell "—" [ref=e1371]
+                  - cell [ref=e481]:
+                    - button [ref=e482]:
+                      - img [ref=e483]: edit
+                - row "MGBR13318 Proveedor RBAC R13318 — —" [ref=e1372] [cursor=pointer]:
+                  - cell "MGBR13318" [ref=e1373]:
+                    - generic [ref=e488]: MGBR13318
+                  - cell "Proveedor RBAC R13318" [ref=e1374]:
+                    - generic [ref=e490]: Proveedor RBAC R13318
+                  - cell "—" [ref=e1375]
+                  - cell "—" [ref=e1376]
+                  - cell [ref=e493]:
+                    - button [ref=e494]:
+                      - img [ref=e495]: edit
+                - row "MGBR17308 Proveedor RBAC R17308 — —" [ref=e1377] [cursor=pointer]:
+                  - cell "MGBR17308" [ref=e1378]:
+                    - generic [ref=e500]: MGBR17308
+                  - cell "Proveedor RBAC R17308" [ref=e1379]:
+                    - generic [ref=e502]: Proveedor RBAC R17308
+                  - cell "—" [ref=e1380]
+                  - cell "—" [ref=e1381]
+                  - cell [ref=e505]:
+                    - button [ref=e506]:
+                      - img [ref=e507]: edit
+                - row "MGBR20326 Proveedor RBAC R20326 — —" [ref=e1382] [cursor=pointer]:
+                  - cell "MGBR20326" [ref=e1383]:
+                    - generic [ref=e512]: MGBR20326
+                  - cell "Proveedor RBAC R20326" [ref=e1384]:
+                    - generic [ref=e514]: Proveedor RBAC R20326
+                  - cell "—" [ref=e1385]
+                  - cell "—" [ref=e1386]
+                  - cell [ref=e517]:
+                    - button [ref=e518]:
+                      - img [ref=e519]: edit
+                - row "MGBR24138 Proveedor RBAC R24138 — —" [ref=e1387] [cursor=pointer]:
+                  - cell "MGBR24138" [ref=e1388]:
+                    - generic [ref=e524]: MGBR24138
+                  - cell "Proveedor RBAC R24138" [ref=e1389]:
+                    - generic [ref=e526]: Proveedor RBAC R24138
+                  - cell "—" [ref=e1390]
+                  - cell "—" [ref=e1391]
+                  - cell [ref=e529]:
+                    - button [ref=e530]:
+                      - img [ref=e531]: edit
+                - row "MGBR26542 Proveedor RBAC R26542 — —" [ref=e1392] [cursor=pointer]:
+                  - cell "MGBR26542" [ref=e1393]:
+                    - generic [ref=e536]: MGBR26542
+                  - cell "Proveedor RBAC R26542" [ref=e1394]:
+                    - generic [ref=e538]: Proveedor RBAC R26542
+                  - cell "—" [ref=e1395]
+                  - cell "—" [ref=e1396]
+                  - cell [ref=e541]:
+                    - button [ref=e542]:
+                      - img [ref=e543]: edit
+                - row "MGBR36029 Proveedor RBAC R36029 — —" [ref=e1397] [cursor=pointer]:
+                  - cell "MGBR36029" [ref=e1398]:
+                    - generic [ref=e548]: MGBR36029
+                  - cell "Proveedor RBAC R36029" [ref=e1399]:
+                    - generic [ref=e550]: Proveedor RBAC R36029
+                  - cell "—" [ref=e1400]
+                  - cell "—" [ref=e1401]
+                  - cell [ref=e553]:
+                    - button [ref=e554]:
+                      - img [ref=e555]: edit
+                - row "MGBR36816 Proveedor RBAC R36816 — —" [ref=e1402] [cursor=pointer]:
+                  - cell "MGBR36816" [ref=e1403]:
+                    - generic [ref=e560]: MGBR36816
+                  - cell "Proveedor RBAC R36816" [ref=e1404]:
+                    - generic [ref=e562]: Proveedor RBAC R36816
+                  - cell "—" [ref=e1405]
+                  - cell "—" [ref=e1406]
+                  - cell [ref=e565]:
+                    - button [ref=e566]:
+                      - img [ref=e567]: edit
+                - row "MGBR3784 Proveedor RBAC R3784 — —" [ref=e1407] [cursor=pointer]:
+                  - cell "MGBR3784" [ref=e1408]:
+                    - generic [ref=e572]: MGBR3784
+                  - cell "Proveedor RBAC R3784" [ref=e1409]:
+                    - generic [ref=e574]: Proveedor RBAC R3784
+                  - cell "—" [ref=e1410]
+                  - cell "—" [ref=e1411]
+                  - cell [ref=e577]:
+                    - button [ref=e578]:
+                      - img [ref=e579]: edit
+                - row "MGBR39152 Proveedor RBAC R39152 — —" [ref=e1412] [cursor=pointer]:
+                  - cell "MGBR39152" [ref=e1413]:
+                    - generic [ref=e584]: MGBR39152
+                  - cell "Proveedor RBAC R39152" [ref=e1414]:
+                    - generic [ref=e586]: Proveedor RBAC R39152
+                  - cell "—" [ref=e1415]
+                  - cell "—" [ref=e1416]
+                  - cell [ref=e589]:
+                    - button [ref=e590]:
+                      - img [ref=e591]: edit
+                - row "MGBR41075 Proveedor RBAC R41075 — —" [ref=e1417] [cursor=pointer]:
+                  - cell "MGBR41075" [ref=e1418]:
+                    - generic [ref=e596]: MGBR41075
+                  - cell "Proveedor RBAC R41075" [ref=e1419]:
+                    - generic [ref=e598]: Proveedor RBAC R41075
+                  - cell "—" [ref=e1420]
+                  - cell "—" [ref=e1421]
+                  - cell [ref=e601]:
+                    - button [ref=e602]:
+                      - img [ref=e603]: edit
+                - row "MGBR44964 Proveedor RBAC R44964 — —" [ref=e1422] [cursor=pointer]:
+                  - cell "MGBR44964" [ref=e1423]:
+                    - generic [ref=e608]: MGBR44964
+                  - cell "Proveedor RBAC R44964" [ref=e1424]:
+                    - generic [ref=e610]: Proveedor RBAC R44964
+                  - cell "—" [ref=e1425]
+                  - cell "—" [ref=e1426]
+                  - cell [ref=e613]:
+                    - button [ref=e614]:
+                      - img [ref=e615]: edit
+                - row "MGBR58523 Proveedor RBAC R58523 — —" [ref=e1427] [cursor=pointer]:
+                  - cell "MGBR58523" [ref=e1428]:
+                    - generic [ref=e620]: MGBR58523
+                  - cell "Proveedor RBAC R58523" [ref=e1429]:
+                    - generic [ref=e622]: Proveedor RBAC R58523
+                  - cell "—" [ref=e1430]
+                  - cell "—" [ref=e1431]
+                  - cell [ref=e625]:
+                    - button [ref=e626]:
+                      - img [ref=e627]: edit
+                - row "MGBR59 Proveedor RBAC R59 — —" [ref=e1432] [cursor=pointer]:
+                  - cell "MGBR59" [ref=e1433]:
+                    - generic [ref=e632]: MGBR59
+                  - cell "Proveedor RBAC R59" [ref=e1434]:
+                    - generic [ref=e634]: Proveedor RBAC R59
+                  - cell "—" [ref=e1435]
+                  - cell "—" [ref=e1436]
+                  - cell [ref=e637]:
+                    - button [ref=e638]:
+                      - img [ref=e639]: edit
+                - row "MGBR6985 Proveedor RBAC R6985 — —" [ref=e1437] [cursor=pointer]:
+                  - cell "MGBR6985" [ref=e1438]:
+                    - generic [ref=e644]: MGBR6985
+                  - cell "Proveedor RBAC R6985" [ref=e1439]:
+                    - generic [ref=e646]: Proveedor RBAC R6985
+                  - cell "—" [ref=e1440]
+                  - cell "—" [ref=e1441]
+                  - cell [ref=e649]:
+                    - button [ref=e650]:
+                      - img [ref=e651]: edit
+                - row "MGBR70934 Proveedor RBAC R70934 — —" [ref=e1442] [cursor=pointer]:
+                  - cell "MGBR70934" [ref=e1443]:
+                    - generic [ref=e656]: MGBR70934
+                  - cell "Proveedor RBAC R70934" [ref=e1444]:
+                    - generic [ref=e658]: Proveedor RBAC R70934
+                  - cell "—" [ref=e1445]
+                  - cell "—" [ref=e1446]
+                  - cell [ref=e661]:
+                    - button [ref=e662]:
+                      - img [ref=e663]: edit
+                - row "MGBR8056 Proveedor RBAC R8056 — —" [ref=e1447] [cursor=pointer]:
+                  - cell "MGBR8056" [ref=e1448]:
+                    - generic [ref=e668]: MGBR8056
+                  - cell "Proveedor RBAC R8056" [ref=e1449]:
+                    - generic [ref=e670]: Proveedor RBAC R8056
+                  - cell "—" [ref=e1450]
+                  - cell "—" [ref=e1451]
+                  - cell [ref=e673]:
+                    - button [ref=e674]:
+                      - img [ref=e675]: edit
+                - row "MGBR87261 Proveedor RBAC R87261 — —" [ref=e1452] [cursor=pointer]:
+                  - cell "MGBR87261" [ref=e1453]:
+                    - generic [ref=e680]: MGBR87261
+                  - cell "Proveedor RBAC R87261" [ref=e1454]:
+                    - generic [ref=e682]: Proveedor RBAC R87261
+                  - cell "—" [ref=e1455]
+                  - cell "—" [ref=e1456]
+                  - cell [ref=e685]:
+                    - button [ref=e686]:
+                      - img [ref=e687]: edit
+                - row "MGBR95214 Proveedor RBAC R95214 — —" [ref=e1457] [cursor=pointer]:
+                  - cell "MGBR95214" [ref=e1458]:
+                    - generic [ref=e692]: MGBR95214
+                  - cell "Proveedor RBAC R95214" [ref=e1459]:
+                    - generic [ref=e694]: Proveedor RBAC R95214
+                  - cell "—" [ref=e1460]
+                  - cell "—" [ref=e1461]
+                  - cell [ref=e697]:
+                    - button [ref=e698]:
+                      - img [ref=e699]: edit
+                - row "MGBR97733 Proveedor RBAC R97733 — —" [ref=e1462] [cursor=pointer]:
+                  - cell "MGBR97733" [ref=e1463]:
+                    - generic [ref=e704]: MGBR97733
+                  - cell "Proveedor RBAC R97733" [ref=e1464]:
+                    - generic [ref=e706]: Proveedor RBAC R97733
+                  - cell "—" [ref=e1465]
+                  - cell "—" [ref=e1466]
+                  - cell [ref=e709]:
+                    - button [ref=e710]:
+                      - img [ref=e711]: edit
+                - row "PROA780910MN4 Proveedora Nacional de Almacenes S.A. Sr. Roberto Jiménez Castro 3336-9012" [ref=e1467] [cursor=pointer]:
+                  - cell "PROA780910MN4" [ref=e1468]:
+                    - generic [ref=e716]: PROA780910MN4
+                  - cell "Proveedora Nacional de Almacenes S.A." [ref=e1469]:
+                    - generic [ref=e718]: Proveedora Nacional de Almacenes S.A.
+                  - cell "Sr. Roberto Jiménez Castro" [ref=e1470]
+                  - cell "3336-9012" [ref=e1471]
+                  - cell [ref=e721]:
+                    - button [ref=e722]:
+                      - img [ref=e723]: edit
+                - row "QUIM730601VW8 Químicos y Lubricantes Industriales S.A. Ing. Miguel Ángel Reyes Díaz 7222-6789" [ref=e1472] [cursor=pointer]:
+                  - cell "QUIM730601VW8" [ref=e1473]:
+                    - generic [ref=e728]: QUIM730601VW8
+                  - cell "Químicos y Lubricantes Industriales S.A." [ref=e1474]:
+                    - generic [ref=e730]: Químicos y Lubricantes Industriales S.A.
+                  - cell "Ing. Miguel Ángel Reyes Díaz" [ref=e1475]
+                  - cell "7222-6789" [ref=e1476]
+                  - cell [ref=e733]:
+                    - button [ref=e734]:
+                      - img [ref=e735]: edit
+                - row "ROPE960501EE4 Ropa de Protección y EPP S.A. de C.V. Lic. Claudia Vázquez Ávila 4613-0123" [ref=e1477] [cursor=pointer]:
+                  - cell "ROPE960501EE4" [ref=e1478]:
+                    - generic [ref=e740]: ROPE960501EE4
+                  - cell "Ropa de Protección y EPP S.A. de C.V." [ref=e1479]:
+                    - generic [ref=e742]: Ropa de Protección y EPP S.A. de C.V.
+                  - cell "Lic. Claudia Vázquez Ávila" [ref=e1480]
+                  - cell "4613-0123" [ref=e1481]
+                  - cell [ref=e745]:
+                    - button [ref=e746]:
+                      - img [ref=e747]: edit
+                - row "SEGV870203CC2 Seguridad y Vigilancia Electrónica S.A. Ing. Alejandro Ruiz Serrano 6672-2345" [ref=e1482] [cursor=pointer]:
+                  - cell "SEGV870203CC2" [ref=e1483]:
+                    - generic [ref=e752]: SEGV870203CC2
+                  - cell "Seguridad y Vigilancia Electrónica S.A." [ref=e1484]:
+                    - generic [ref=e754]: Seguridad y Vigilancia Electrónica S.A.
+                  - cell "Ing. Alejandro Ruiz Serrano" [ref=e1485]
+                  - cell "6672-2345" [ref=e1486]
+                  - cell [ref=e757]:
+                    - button [ref=e758]:
+                      - img [ref=e759]: edit
+                - row "SOLD720914FF5 Soldadura y Equipos Industriales S.A. Ing. Raúl Espinosa Navarro 7771-4567" [ref=e1487] [cursor=pointer]:
+                  - cell "SOLD720914FF5" [ref=e1488]:
+                    - generic [ref=e764]: SOLD720914FF5
+                  - cell "Soldadura y Equipos Industriales S.A." [ref=e1489]:
+                    - generic [ref=e766]: Soldadura y Equipos Industriales S.A.
+                  - cell "Ing. Raúl Espinosa Navarro" [ref=e1490]
+                  - cell "7771-4567" [ref=e1491]
+                  - cell [ref=e769]:
+                    - button [ref=e770]:
+                      - img [ref=e771]: edit
+                - row "TECH950301PQ5 TechSupply México S.A. de C.V. Ing. Ana Lucía Vargas Pérez 8118-3456" [ref=e1492] [cursor=pointer]:
+                  - cell "TECH950301PQ5" [ref=e1493]:
+                    - generic [ref=e776]: TECH950301PQ5
+                  - cell "TechSupply México S.A. de C.V." [ref=e1494]:
+                    - generic [ref=e778]: TechSupply México S.A. de C.V.
+                  - cell "Ing. Ana Lucía Vargas Pérez" [ref=e1495]
+                  - cell "8118-3456" [ref=e1496]
+                  - cell [ref=e781]:
+                    - button [ref=e782]:
+                      - img [ref=e783]: edit
+            - generic [ref=e80]:
+              - heading "Editar proveedor" [level=3] [ref=e1497]
+              - generic [ref=e789]:
+                - generic [ref=e790]:
+                  - generic [ref=e793]:
+                    - generic [ref=e794]:
+                      - text: RFC
+                      - generic [ref=e795]: "*"
+                    - textbox "RFC" [ref=e1498]: AGRO990625GG6
+                  - generic [ref=e801]:
+                    - generic [ref=e802]:
+                      - text: Razón social
+                      - generic [ref=e803]: "*"
+                    - textbox "Razón social" [ref=e1499]: Agroquímica y Fertilizantes del Valle S.A.
+                  - generic [ref=e809]:
+                    - generic [ref=e810]: Nombre de contacto
+                    - textbox "Nombre de contacto" [ref=e1500]: Ing. Laura Ramírez Torres
+                  - generic [ref=e816]:
+                    - generic [ref=e817]: Teléfono
+                    - textbox "Teléfono" [ref=e1501]: 3312-8901
+                  - generic [ref=e823]:
+                    - generic [ref=e824]: Correo electrónico
+                    - textbox "Correo electrónico" [ref=e1502]: laura.ramirez@agrofertivalle.mx
+                  - generic [ref=e830]:
+                    - generic [ref=e831]: Dirección
+                    - textbox "Dirección" [ref=e1503]: Libramiento Sur 285, Zamora MICH CP 59600
+                - generic [ref=e836]:
+                  - img [ref=e837]: person
+                  - text: Creado por admin
+                - generic [ref=e838]:
+                  - button "Desactivar" [active] [ref=e1504]:
+                    - img [ref=e840]: block
+                    - generic [ref=e841]: Desactivar
+                  - button "Cancelar" [ref=e1505]:
+                    - generic [ref=e845]: Cancelar
+                  - button "Guardar cambios" [ref=e1506]:
+                    - img [ref=e849]: save
+                    - generic [ref=e850]: Guardar cambios
+  - generic [ref=e1513]:
+    - generic [ref=e1514]: "No se puede desactivar el proveedor: tiene órdenes de compra en estado PENDING o APPROVED. Cancélelas o recíbalas primero."
+    - button "Cerrar" [ref=e1516]:
+      - generic [ref=e1517]: Cerrar

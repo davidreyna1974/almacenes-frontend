@@ -1,0 +1,80 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Nueva orden" [ref=e88]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Nueva orden
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e90]:
+          - generic [ref=e91]:
+            - button [ref=e92] [cursor=pointer]:
+              - img [ref=e93]: arrow_back
+            - heading "Nueva orden de compra" [level=2] [ref=e97]
+          - generic [ref=e99]:
+            - generic [ref=e100]:
+              - heading "Información de la orden" [level=3] [ref=e101]
+              - generic [ref=e102]:
+                - generic [ref=e105] [cursor=pointer]:
+                  - generic [ref=e106]:
+                    - text: Proveedor
+                    - generic [ref=e107]: "*"
+                  - combobox "Proveedor" [active] [ref=e109]:
+                    - generic [ref=e110]:
+                      - generic [ref=e270]: Químicos y Lubricantes Industriales S.A.
+                      - img [ref=e115]
+                - generic [ref=e120]:
+                  - generic [ref=e121]: Notas
+                  - textbox "Notas" [ref=e123]:
+                    - /placeholder: Observaciones opcionales
+            - generic [ref=e125]:
+              - generic [ref=e126]:
+                - heading "Líneas de detalle" [level=3] [ref=e127]
+                - button "Agregar línea" [ref=e128]:
+                  - img [ref=e129]: add
+                  - generic [ref=e130]: Agregar línea
+              - generic [ref=e133]:
+                - img [ref=e134]: playlist_add
+                - paragraph [ref=e135]: Sin líneas de detalle — agrega al menos un producto
+              - table [ref=e136]:
+                - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e137]:
+                  - columnheader "SKU" [ref=e138]
+                  - columnheader "Producto" [ref=e139]
+                  - columnheader "Cantidad" [ref=e140]
+                  - columnheader "Precio unitario" [ref=e141]
+                  - columnheader "Subtotal" [ref=e142]
+                  - columnheader [ref=e143]
+            - generic [ref=e144]:
+              - button "Crear orden" [disabled]:
+                - img: save
+                - generic: Crear orden
+              - button "Cancelar" [ref=e145]:
+                - generic [ref=e146]: Cancelar

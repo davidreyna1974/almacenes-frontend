@@ -1,0 +1,271 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e2767] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e2768] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e2769]:
+            - img [ref=e15]: chevron_right
+            - text: Inventario → Productos
+        - generic [ref=e16]:
+          - button [ref=e2770] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e2771]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - generic [ref=e2772]: ADMIN
+      - generic [ref=e28]:
+        - navigation [ref=e2773]:
+          - menubar [ref=e32]:
+            - menuitem [expanded] [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button [ref=e2774] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e2600]:
+            - generic [ref=e2601]:
+              - generic [ref=e2602]:
+                - generic [ref=e2605]:
+                  - generic [ref=e2606]: Buscar por código o nombre
+                  - textbox [ref=e2775]
+                  - img [ref=e2610]: search
+                - generic [ref=e2614] [cursor=pointer]:
+                  - generic [ref=e2615]: Categoría
+                  - combobox [ref=e2776]:
+                    - generic [ref=e2618]:
+                      - generic [ref=e2620]: Herramientas Eléctricas
+                      - img [ref=e2623]
+                - generic [ref=e2628] [cursor=pointer]:
+                  - generic [ref=e2629]: Estado
+                  - combobox [ref=e2777]:
+                    - img [ref=e2637]
+                - generic [ref=e2642] [cursor=pointer]:
+                  - generic [ref=e2643]: Proveedor
+                  - combobox [ref=e2778]:
+                    - img [ref=e2651]
+                - button [ref=e2779] [cursor=pointer]:
+                  - img [ref=e2655]: filter_alt_off
+              - button [ref=e2780]:
+                - img [ref=e2660]: add
+                - generic [ref=e2661]: Nuevo producto
+            - generic [ref=e2664]:
+              - table [ref=e2665]:
+                - rowgroup [ref=e2666]:
+                  - row [ref=e2781]:
+                    - columnheader [ref=e2782]: Código
+                    - columnheader [ref=e2783]: Nombre
+                    - columnheader [ref=e2784]: Categoría
+                    - columnheader [ref=e2785]: Proveedor
+                    - columnheader [ref=e2786]: Stock
+                    - columnheader [ref=e2787]: Precio
+                    - columnheader [ref=e2788]: Estado
+                    - columnheader [ref=e2675]
+                - rowgroup [ref=e2676]:
+                  - row [ref=e2789] [cursor=pointer]:
+                    - cell [ref=e2790]: HELEC-AMO-015
+                    - cell [ref=e2791]: Amoladora Angular 4.5" 1400W
+                    - cell [ref=e2792]: Herramientas Eléctricas
+                    - cell [ref=e2793]: Herramientas y Maquinaria del Pacífico S.A.
+                    - cell [ref=e2794]:
+                      - status [ref=e2795]: "55"
+                    - cell [ref=e2796]: $980.00
+                    - cell [ref=e2797]:
+                      - generic [ref=e2687]: Disponible
+                    - cell [ref=e2798]:
+                      - button [ref=e2799]:
+                        - img [ref=e2690]: swap_vert
+                      - button [ref=e2800]:
+                        - img [ref=e2694]: edit
+                  - row [ref=e2801] [cursor=pointer]:
+                    - cell [ref=e2802]: HELEC-SIE-048
+                    - cell [ref=e2803]: Sierra Circular 7-1/4" 1800W
+                    - cell [ref=e2804]: Herramientas Eléctricas
+                    - cell [ref=e2805]: Herramientas y Maquinaria del Pacífico S.A.
+                    - cell [ref=e2806]:
+                      - status [ref=e2807]: "3"
+                    - cell [ref=e2808]: $2,850.00
+                    - cell [ref=e2809]:
+                      - generic [ref=e2707]: Disponible
+                    - cell [ref=e2810]:
+                      - button [ref=e2811]:
+                        - img [ref=e2710]: swap_vert
+                      - button [ref=e2812]:
+                        - img [ref=e2714]: edit
+                  - row [ref=e2813] [cursor=pointer]:
+                    - cell [ref=e2814]: HELEC-TAL-014
+                    - cell [ref=e2815]: Taladro Percutor 13mm 900W
+                    - cell [ref=e2816]: Herramientas Eléctricas
+                    - cell [ref=e2817]: Herramientas y Maquinaria del Pacífico S.A.
+                    - cell [ref=e2818]:
+                      - status [ref=e2819]: "40"
+                    - cell [ref=e2820]: $1,450.00
+                    - cell [ref=e2821]:
+                      - generic [ref=e2727]: Disponible
+                    - cell [ref=e2822]:
+                      - button [ref=e2823]:
+                        - img [ref=e2730]: swap_vert
+                      - button [ref=e2824]:
+                        - img [ref=e2734]: edit
+              - group [ref=e2825]:
+                - generic [ref=e2739]:
+                  - generic [ref=e2740]:
+                    - generic [ref=e2741]: "Items per page:"
+                    - combobox [ref=e2826] [cursor=pointer]:
+                      - generic [ref=e2747]:
+                        - generic [ref=e2749]: "20"
+                        - img [ref=e2752]
+                  - generic [ref=e2755]:
+                    - status [ref=e2756]: 1 – 3 of 3
+                    - button [disabled] [ref=e2827]:
+                      - img [ref=e2758]
+                    - button [disabled] [ref=e2828]:
+                      - img [ref=e2763]
+  - dialog [ref=e2832]:
+    - generic [ref=e2837]:
+      - tablist [ref=e2840]:
+        - generic [ref=e2841]:
+          - tab "Datos" [selected] [ref=e2842] [cursor=pointer]:
+            - generic [ref=e2844]: Datos
+          - tab "Kardex" [ref=e2845] [cursor=pointer]:
+            - generic [ref=e2847]: Kardex
+      - generic [ref=e2848]:
+        - tabpanel "Datos" [ref=e2849]:
+          - generic [ref=e2852]:
+            - heading "Nuevo producto" [level=3] [ref=e2853]
+            - generic [ref=e2854]:
+              - generic [ref=e2857]:
+                - generic [ref=e2858]:
+                  - generic [ref=e2859]: SKU *
+                  - generic [ref=e2860]: "*"
+                - textbox "SKU *" [ref=e2862]: HELEC-TEST-ADM
+              - generic [ref=e2866]:
+                - generic [ref=e2867]:
+                  - generic [ref=e2868]: Nombre *
+                  - generic [ref=e2869]: "*"
+                - textbox "Nombre *" [ref=e2871]: Rotomartillo de Prueba ADMIN
+              - generic [ref=e2875]:
+                - generic [ref=e2876]:
+                  - generic [ref=e2877]: Precio *
+                  - generic [ref=e2878]: "*"
+                - generic [ref=e2879]: $
+                - spinbutton "Precio *" [ref=e2881]: "3200"
+              - generic [ref=e2885]:
+                - generic [ref=e2886]:
+                  - generic [ref=e2887]: Costo unitario *
+                  - generic [ref=e2888]: "*"
+                - generic [ref=e2889]: $
+                - spinbutton "Costo unitario *" [ref=e2891]: "2100"
+              - generic [ref=e2895]:
+                - generic [ref=e2896]:
+                  - text: Stock actual
+                  - generic [ref=e2897]: "*"
+                - spinbutton "Stock actual" [ref=e2899]: "15"
+              - generic [ref=e2903]:
+                - generic [ref=e2904]:
+                  - text: Stock mínimo
+                  - generic [ref=e2905]: "*"
+                - spinbutton "Stock mínimo" [ref=e2907]: "5"
+              - generic [ref=e2911] [cursor=pointer]:
+                - generic [ref=e2912]:
+                  - generic [ref=e2913]: Estado *
+                  - generic [ref=e2914]: "*"
+                - combobox "Estado *" [ref=e2916]:
+                  - generic [ref=e2917]:
+                    - generic [ref=e2919]: Disponible
+                    - img [ref=e2922]
+              - generic [ref=e2927] [cursor=pointer]:
+                - generic [ref=e2928]:
+                  - generic [ref=e2929]: Categoría *
+                  - generic [ref=e2930]: "*"
+                - combobox "Categoría *" [expanded] [active] [ref=e2932]:
+                  - img [ref=e2938]
+                  - listbox "Categoría *" [ref=e2974]:
+                    - option "Alimentos y Bebidas (Seco)" [ref=e2975]:
+                      - generic [ref=e2976]: Alimentos y Bebidas (Seco)
+                    - option "Artículos de Limpieza" [ref=e2977]:
+                      - generic [ref=e2978]: Artículos de Limpieza
+                    - option "Calzado Industrial" [ref=e2979]:
+                      - generic [ref=e2980]: Calzado Industrial
+                    - option "Climatización y Ventilación" [ref=e2981]:
+                      - generic [ref=e2982]: Climatización y Ventilación
+                    - option "Computación y Periféricos" [ref=e2983]:
+                      - generic [ref=e2984]: Computación y Periféricos
+                    - option "Electricidad e Iluminación" [ref=e2985]:
+                      - generic [ref=e2986]: Electricidad e Iluminación
+                    - option "Electrodomésticos de Línea Blanca" [ref=e2987]:
+                      - generic [ref=e2988]: Electrodomésticos de Línea Blanca
+                    - option "Electrodomésticos de Línea Café" [ref=e2989]:
+                      - generic [ref=e2990]: Electrodomésticos de Línea Café
+                    - option "Electrónica de Consumo" [ref=e2991]:
+                      - generic [ref=e2992]: Electrónica de Consumo
+                    - option "Embalaje e Insumos Logísticos" [ref=e2993]:
+                      - generic [ref=e2994]: Embalaje e Insumos Logísticos
+                    - option "Equipos de Almacenamiento" [ref=e2995]:
+                      - generic [ref=e2996]: Equipos de Almacenamiento
+                    - option "Equipos de Protección Personal" [ref=e2997]:
+                      - generic [ref=e2998]: Equipos de Protección Personal
+                    - option "Equipos de Transporte Interno" [ref=e2999]:
+                      - generic [ref=e3000]: Equipos de Transporte Interno
+                    - option "Herramientas Eléctricas" [ref=e3001]:
+                      - generic [ref=e3002]: Herramientas Eléctricas
+                    - option "Herramientas Manuales" [ref=e3003]:
+                      - generic [ref=e3004]: Herramientas Manuales
+                    - option "Jardinería y Exteriores" [ref=e3005]:
+                      - generic [ref=e3006]: Jardinería y Exteriores
+                    - option "Lubricantes y Químicos" [ref=e3007]:
+                      - generic [ref=e3008]: Lubricantes y Químicos
+                    - option "Material de Construcción" [ref=e3009]:
+                      - generic [ref=e3010]: Material de Construcción
+                    - option "Medición y Calibración" [ref=e3011]:
+                      - generic [ref=e3012]: Medición y Calibración
+                    - option "Muebles de Oficina" [ref=e3013]:
+                      - generic [ref=e3014]: Muebles de Oficina
+                    - option "Muebles para el Hogar" [ref=e3015]:
+                      - generic [ref=e3016]: Muebles para el Hogar
+                    - option "Neumática e Hidráulica" [ref=e3017]:
+                      - generic [ref=e3018]: Neumática e Hidráulica
+                    - option "Papelería y Oficina" [ref=e3019]:
+                      - generic [ref=e3020]: Papelería y Oficina
+                    - option "Pinturas y Recubrimientos" [ref=e3021]:
+                      - generic [ref=e3022]: Pinturas y Recubrimientos
+                    - option "Plomería y Sanitarios" [ref=e3023]:
+                      - generic [ref=e3024]: Plomería y Sanitarios
+                    - option "Productos Farmacéuticos" [ref=e3025]:
+                      - generic [ref=e3026]: Productos Farmacéuticos
+                    - option "Ropa de Trabajo y Uniformes" [ref=e3027]:
+                      - generic [ref=e3028]: Ropa de Trabajo y Uniformes
+                    - option "Seguridad y Vigilancia" [ref=e3029]:
+                      - generic [ref=e3030]: Seguridad y Vigilancia
+                    - option "Soldadura y Corte" [ref=e3031]:
+                      - generic [ref=e3032]: Soldadura y Corte
+                    - option "Telefonía y Comunicaciones" [ref=e3033]:
+                      - generic [ref=e3034]: Telefonía y Comunicaciones
+              - generic [ref=e2943] [cursor=pointer]:
+                - generic [ref=e2944]:
+                  - generic [ref=e2945]: Proveedor *
+                  - generic [ref=e2946]: "*"
+                - combobox "Proveedor *" [ref=e2948]:
+                  - img [ref=e2954]
+              - generic [ref=e2959]:
+                - generic [ref=e2960]: Descripción
+                - textbox "Descripción" [ref=e2962]
+            - generic [ref=e2965]:
+              - button "Cancelar" [ref=e2966]:
+                - generic [ref=e2967]: Cancelar
+              - button "Crear producto" [disabled]:
+                - generic: Crear producto
+        - tabpanel [ref=e2970]

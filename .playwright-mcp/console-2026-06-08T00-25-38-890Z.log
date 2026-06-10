@@ -1,0 +1,5 @@
+[     213ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-KDRVKD3Y.js?v=d3bb7404:11231
+[  626324ms] [ERROR] WebSocket connection to 'ws://localhost:4200/?token=PYYz94QLfsEJ' failed:  @ http://localhost:4200/@vite/client:744
+[  626325ms] [LOG] [vite] server connection lost. Polling for restart... @ http://localhost:4200/@vite/client:864
+[  626464ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-KDRVKD3Y.js?v=d3bb7404:11231
+[  626502ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8080/api/v1/purchases/suppliers/active?page=0&size=200:0

@@ -1,0 +1,138 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e584] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e585] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e586]:
+            - img [ref=e15]: chevron_right
+            - text: Inventario → Productos
+        - generic [ref=e16]:
+          - button [ref=e587] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e588]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - generic [ref=e589]: ADMIN
+      - generic [ref=e28]:
+        - navigation [ref=e590]:
+          - menubar [ref=e32]:
+            - menuitem [expanded] [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button [ref=e591] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - generic [ref=e51]:
+                - generic [ref=e54]:
+                  - generic [ref=e55]: Buscar por código o nombre
+                  - textbox [ref=e592]: TEST-ADMIN-SUITE-001
+                  - img [ref=e59]: search
+                - generic [ref=e63] [cursor=pointer]:
+                  - generic [ref=e64]: Categoría
+                  - combobox [ref=e593]:
+                    - img [ref=e72]
+                - generic [ref=e77] [cursor=pointer]:
+                  - generic [ref=e78]: Estado
+                  - combobox [ref=e594]:
+                    - img [ref=e86]
+                - generic [ref=e91] [cursor=pointer]:
+                  - generic [ref=e92]: Proveedor
+                  - combobox [ref=e595]:
+                    - img [ref=e100]
+                - button [ref=e596] [cursor=pointer]:
+                  - img [ref=e561]: filter_alt_off
+              - button [ref=e597]:
+                - img [ref=e105]: add
+                - generic [ref=e106]: Nuevo producto
+            - generic [ref=e116]:
+              - table [ref=e117]:
+                - rowgroup [ref=e118]:
+                  - row [ref=e598]:
+                    - columnheader [ref=e599]: Código
+                    - columnheader [ref=e600]: Nombre
+                    - columnheader [ref=e601]: Categoría
+                    - columnheader [ref=e602]: Proveedor
+                    - columnheader [ref=e603]: Stock
+                    - columnheader [ref=e604]: Precio
+                    - columnheader [ref=e605]: Estado
+                    - columnheader [ref=e127]
+                - rowgroup [ref=e129]:
+                  - row [ref=e606] [cursor=pointer]:
+                    - cell [ref=e607]: TEST-ADMIN-SUITE-001
+                    - cell [ref=e608]: Producto Test Suite ADMIN
+                    - cell [ref=e609]: Calzado Industrial
+                    - cell [ref=e610]: Agroquímica y Fertilizantes del Valle S.A.
+                    - cell [ref=e611]:
+                      - status [ref=e612]: "25"
+                    - cell [ref=e613]: $999.99
+                    - cell [ref=e614]:
+                      - generic [ref=e574]: Disponible
+                    - cell [ref=e615]:
+                      - button [ref=e616]:
+                        - img [ref=e577]: swap_vert
+                      - button [ref=e617]:
+                        - img [ref=e581]: edit
+              - group [ref=e618]:
+                - generic [ref=e532]:
+                  - generic [ref=e533]:
+                    - generic [ref=e534]: "Items per page:"
+                    - combobox [ref=e619] [cursor=pointer]:
+                      - generic [ref=e540]:
+                        - generic [ref=e542]: "20"
+                        - img [ref=e545]
+                  - generic [ref=e548]:
+                    - status [ref=e549]: 1 – 1 of 1
+                    - button [disabled] [ref=e620]:
+                      - img [ref=e551]
+                    - button [disabled] [ref=e621]:
+                      - img [ref=e556]
+  - dialog "Registrar movimiento de stock" [ref=e625]:
+    - generic [ref=e628]:
+      - heading "Registrar movimiento de stock" [level=2] [ref=e629]
+      - generic [ref=e630]:
+        - paragraph [ref=e631]:
+          - strong [ref=e632]: "Producto:"
+          - text: Producto Test Suite ADMIN (TEST-ADMIN-SUITE-001)
+        - paragraph [ref=e633]:
+          - strong [ref=e634]: "Stock actual:"
+          - text: "25"
+        - generic [ref=e635]:
+          - generic [ref=e638] [cursor=pointer]:
+            - generic [ref=e639]:
+              - generic [ref=e640]: Tipo de movimiento *
+              - generic [ref=e641]: "*"
+            - combobox "Tipo de movimiento *" [active] [ref=e643]:
+              - generic [ref=e644]:
+                - generic [ref=e646]: Salida (OUT)
+                - img [ref=e649]
+          - generic [ref=e654]:
+            - generic [ref=e655]:
+              - generic [ref=e656]: Cantidad *
+              - generic [ref=e657]: "*"
+            - spinbutton "Cantidad *" [ref=e659]
+          - generic [ref=e663]:
+            - generic [ref=e664]:
+              - generic [ref=e665]: Motivo *
+              - generic [ref=e666]: "*"
+            - textbox "Motivo *" [ref=e668]
+      - generic [ref=e670]:
+        - button "Cancelar" [ref=e671]:
+          - generic [ref=e672]: Cancelar
+        - button "Registrar" [disabled]:
+          - generic: Registrar

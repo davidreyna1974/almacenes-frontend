@@ -1,0 +1,193 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e611] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e612] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Nueva orden" [ref=e701]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Nueva orden
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e614] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e615]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: test_mgr
+            - 'generic "Rol: MANAGER" [ref=e616]': MANAGER
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e617]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+        - button "Expandir menú" [ref=e618] [cursor=pointer]:
+          - img [ref=e43]: chevron_right
+      - main [ref=e44]:
+        - generic [ref=e703]:
+          - generic [ref=e704]:
+            - button [ref=e705] [cursor=pointer]:
+              - img [ref=e706]: arrow_back
+            - heading "Nueva orden de compra" [level=2] [ref=e710]
+          - generic [ref=e712]:
+            - generic [ref=e713]:
+              - heading "Información de la orden" [level=3] [ref=e714]
+              - generic [ref=e715]:
+                - generic [ref=e718] [cursor=pointer]:
+                  - generic [ref=e719]:
+                    - text: Proveedor
+                    - generic [ref=e720]: "*"
+                  - combobox "Proveedor" [expanded] [active] [ref=e722]:
+                    - img [ref=e728]
+                    - listbox "Proveedor" [ref=e764]:
+                      - option "Agroquímica y Fertilizantes del Valle S.A." [ref=e765]:
+                        - generic [ref=e766]: Agroquímica y Fertilizantes del Valle S.A.
+                      - option "Climatización e Instalaciones Térmicas S.A." [ref=e767]:
+                        - generic [ref=e768]: Climatización e Instalaciones Térmicas S.A.
+                      - option "Constructora y Suministros del Bajío S.A." [ref=e769]:
+                        - generic [ref=e770]: Constructora y Suministros del Bajío S.A.
+                      - option "Distribuidora Logística del Centro S.A." [ref=e771]:
+                        - generic [ref=e772]: Distribuidora Logística del Centro S.A.
+                      - option "Distribuidora México Digital S.A. de C.V." [ref=e773]:
+                        - generic [ref=e774]: Distribuidora México Digital S.A. de C.V.
+                      - option "Electro Industrial del Centro S.A. de C.V." [ref=e775]:
+                        - generic [ref=e776]: Electro Industrial del Centro S.A. de C.V.
+                      - option "Empaques y Embalajes del Sureste S.A." [ref=e777]:
+                        - generic [ref=e778]: Empaques y Embalajes del Sureste S.A.
+                      - option "Ferretera Industrial del Norte S.A. de C.V." [ref=e779]:
+                        - generic [ref=e780]: Ferretera Industrial del Norte S.A. de C.V.
+                      - option "Herramientas y Maquinaria del Pacífico S.A." [ref=e781]:
+                        - generic [ref=e782]: Herramientas y Maquinaria del Pacífico S.A.
+                      - option "Limpieza Profesional e Higiene S.A. de C.V." [ref=e783]:
+                        - generic [ref=e784]: Limpieza Profesional e Higiene S.A. de C.V.
+                      - option "Medicamentos y Salud Ocupacional S.A." [ref=e785]:
+                        - generic [ref=e786]: Medicamentos y Salud Ocupacional S.A.
+                      - option "Medición y Calibración Industrial S.A." [ref=e787]:
+                        - generic [ref=e788]: Medición y Calibración Industrial S.A.
+                      - option "Muebles y Equipos Corporativos S.A. de C.V." [ref=e789]:
+                        - generic [ref=e790]: Muebles y Equipos Corporativos S.A. de C.V.
+                      - option "Papelería y Artículos de Oficina Nacional S.A." [ref=e791]:
+                        - generic [ref=e792]: Papelería y Artículos de Oficina Nacional S.A.
+                      - option "Proveedor AINT12406" [ref=e793]:
+                        - generic [ref=e794]: Proveedor AINT12406
+                      - option "Proveedor AINT16394" [ref=e795]:
+                        - generic [ref=e796]: Proveedor AINT16394
+                      - option "Proveedor AINT19434" [ref=e797]:
+                        - generic [ref=e798]: Proveedor AINT19434
+                      - option "Proveedor AINT23178" [ref=e799]:
+                        - generic [ref=e800]: Proveedor AINT23178
+                      - option "Proveedor AINT25584" [ref=e801]:
+                        - generic [ref=e802]: Proveedor AINT25584
+                      - option "Proveedor AINT2902" [ref=e803]:
+                        - generic [ref=e804]: Proveedor AINT2902
+                      - option "Proveedor AINT35135" [ref=e805]:
+                        - generic [ref=e806]: Proveedor AINT35135
+                      - option "Proveedor AINT35904" [ref=e807]:
+                        - generic [ref=e808]: Proveedor AINT35904
+                      - option "Proveedor AINT38227" [ref=e809]:
+                        - generic [ref=e810]: Proveedor AINT38227
+                      - option "Proveedor AINT40143" [ref=e811]:
+                        - generic [ref=e812]: Proveedor AINT40143
+                      - option "Proveedor AINT44000" [ref=e813]:
+                        - generic [ref=e814]: Proveedor AINT44000
+                      - option "Proveedor AINT57543" [ref=e815]:
+                        - generic [ref=e816]: Proveedor AINT57543
+                      - option "Proveedor AINT6074" [ref=e817]:
+                        - generic [ref=e818]: Proveedor AINT6074
+                      - option "Proveedor AINT70042" [ref=e819]:
+                        - generic [ref=e820]: Proveedor AINT70042
+                      - option "Proveedor AINT7162" [ref=e821]:
+                        - generic [ref=e822]: Proveedor AINT7162
+                      - option "Proveedor AINT86360" [ref=e823]:
+                        - generic [ref=e824]: Proveedor AINT86360
+                      - option "Proveedor AINT94230" [ref=e825]:
+                        - generic [ref=e826]: Proveedor AINT94230
+                      - option "Proveedor AINT96839" [ref=e827]:
+                        - generic [ref=e828]: Proveedor AINT96839
+                      - option "Proveedor AINT99146" [ref=e829]:
+                        - generic [ref=e830]: Proveedor AINT99146
+                      - option "Proveedor RBAC R13318" [ref=e831]:
+                        - generic [ref=e832]: Proveedor RBAC R13318
+                      - option "Proveedor RBAC R17308" [ref=e833]:
+                        - generic [ref=e834]: Proveedor RBAC R17308
+                      - option "Proveedor RBAC R20326" [ref=e835]:
+                        - generic [ref=e836]: Proveedor RBAC R20326
+                      - option "Proveedor RBAC R24138" [ref=e837]:
+                        - generic [ref=e838]: Proveedor RBAC R24138
+                      - option "Proveedor RBAC R26542" [ref=e839]:
+                        - generic [ref=e840]: Proveedor RBAC R26542
+                      - option "Proveedor RBAC R36029" [ref=e841]:
+                        - generic [ref=e842]: Proveedor RBAC R36029
+                      - option "Proveedor RBAC R36816" [ref=e843]:
+                        - generic [ref=e844]: Proveedor RBAC R36816
+                      - option "Proveedor RBAC R3784" [ref=e845]:
+                        - generic [ref=e846]: Proveedor RBAC R3784
+                      - option "Proveedor RBAC R39152" [ref=e847]:
+                        - generic [ref=e848]: Proveedor RBAC R39152
+                      - option "Proveedor RBAC R41075" [ref=e849]:
+                        - generic [ref=e850]: Proveedor RBAC R41075
+                      - option "Proveedor RBAC R44964" [ref=e851]:
+                        - generic [ref=e852]: Proveedor RBAC R44964
+                      - option "Proveedor RBAC R58523" [ref=e853]:
+                        - generic [ref=e854]: Proveedor RBAC R58523
+                      - option "Proveedor RBAC R59" [ref=e855]:
+                        - generic [ref=e856]: Proveedor RBAC R59
+                      - option "Proveedor RBAC R6985" [ref=e857]:
+                        - generic [ref=e858]: Proveedor RBAC R6985
+                      - option "Proveedor RBAC R70934" [ref=e859]:
+                        - generic [ref=e860]: Proveedor RBAC R70934
+                      - option "Proveedor RBAC R8056" [ref=e861]:
+                        - generic [ref=e862]: Proveedor RBAC R8056
+                      - option "Proveedor RBAC R87261" [ref=e863]:
+                        - generic [ref=e864]: Proveedor RBAC R87261
+                      - option "Proveedor RBAC R95214" [ref=e865]:
+                        - generic [ref=e866]: Proveedor RBAC R95214
+                      - option "Proveedor RBAC R97733" [ref=e867]:
+                        - generic [ref=e868]: Proveedor RBAC R97733
+                      - option "Proveedora Nacional de Almacenes S.A." [ref=e869]:
+                        - generic [ref=e870]: Proveedora Nacional de Almacenes S.A.
+                      - option "Químicos y Lubricantes Industriales S.A." [ref=e871]:
+                        - generic [ref=e872]: Químicos y Lubricantes Industriales S.A.
+                      - option "Ropa de Protección y EPP S.A. de C.V." [ref=e873]:
+                        - generic [ref=e874]: Ropa de Protección y EPP S.A. de C.V.
+                      - option "Seguridad y Vigilancia Electrónica S.A." [ref=e875]:
+                        - generic [ref=e876]: Seguridad y Vigilancia Electrónica S.A.
+                      - option "Soldadura y Equipos Industriales S.A." [ref=e877]:
+                        - generic [ref=e878]: Soldadura y Equipos Industriales S.A.
+                      - option "TechSupply México S.A. de C.V." [ref=e879]:
+                        - generic [ref=e880]: TechSupply México S.A. de C.V.
+                - generic [ref=e733]:
+                  - generic [ref=e734]: Notas
+                  - textbox "Notas" [ref=e736]:
+                    - /placeholder: Observaciones opcionales
+            - generic [ref=e738]:
+              - generic [ref=e739]:
+                - heading "Líneas de detalle" [level=3] [ref=e740]
+                - button "Agregar línea" [ref=e741]:
+                  - img [ref=e742]: add
+                  - generic [ref=e743]: Agregar línea
+              - generic [ref=e746]:
+                - img [ref=e747]: playlist_add
+                - paragraph [ref=e748]: Sin líneas de detalle — agrega al menos un producto
+              - table [ref=e749]:
+                - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e750]:
+                  - columnheader "SKU" [ref=e751]
+                  - columnheader "Producto" [ref=e752]
+                  - columnheader "Cantidad" [ref=e753]
+                  - columnheader "Precio unitario" [ref=e754]
+                  - columnheader "Subtotal" [ref=e755]
+                  - columnheader [ref=e756]
+            - generic [ref=e757]:
+              - button "Crear orden" [disabled]:
+                - img: save
+                - generic: Crear orden
+              - button "Cancelar" [ref=e758]:
+                - generic [ref=e759]: Cancelar

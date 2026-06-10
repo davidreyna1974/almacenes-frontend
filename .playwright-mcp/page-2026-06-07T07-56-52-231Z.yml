@@ -1,0 +1,36 @@
+- generic [ref=e1679]:
+  - link "Ir al contenido principal" [ref=e1680] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e1681]:
+    - banner [ref=e1683]:
+      - generic [ref=e1684]:
+        - button "Alternar menú lateral" [ref=e1685] [cursor=pointer]:
+          - img [ref=e1686]: menu
+        - generic [ref=e1689]: Almacenes
+      - generic [ref=e1690]:
+        - button "Notificaciones" [ref=e1691] [cursor=pointer]:
+          - img [ref=e1692]: notifications_none
+        - button "Menú de usuario" [ref=e1695]:
+          - img [ref=e1696]: arrow_drop_down
+          - generic [ref=e1697]:
+            - text: testmgr11497
+            - 'generic "Rol: MANAGER" [ref=e1699]': MANAGER
+    - generic [ref=e1702]:
+      - navigation "Navegación principal" [ref=e1705]:
+        - menubar [ref=e1706]:
+          - menuitem "Inventario" [ref=e1707] [cursor=pointer]:
+            - img [ref=e1708]: inventory_2
+            - generic [ref=e1709]: Inventario
+            - img [ref=e1710]: expand_more
+          - menuitem "Compras" [ref=e1711] [cursor=pointer]:
+            - img [ref=e1712]: shopping_cart
+            - generic [ref=e1713]: Compras
+          - menuitem "Ventas" [ref=e1714] [cursor=pointer]:
+            - img [ref=e1715]: point_of_sale
+            - generic [ref=e1716]: Ventas
+          - menuitem "Reportes" [ref=e1717] [cursor=pointer]:
+            - img [ref=e1718]: bar_chart
+            - generic [ref=e1719]: Reportes
+        - button "Colapsar menú" [ref=e1721] [cursor=pointer]:
+          - img [ref=e1722]: chevron_left
+      - main [ref=e1723]

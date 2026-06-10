@@ -1,0 +1,71 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e611] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e612] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e613]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Órdenes de compra
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e614] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e615]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: test_mgr
+            - 'generic "Rol: MANAGER" [ref=e616]': MANAGER
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e617]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+        - button "Expandir menú" [ref=e618] [cursor=pointer]:
+          - img [ref=e43]: chevron_right
+      - main [ref=e44]:
+        - generic [ref=e655]:
+          - generic [ref=e656]:
+            - heading "Órdenes de compra" [level=2] [ref=e657]
+            - generic [ref=e660]:
+              - generic [ref=e661]: Buscar
+              - img [ref=e663]: search
+              - textbox "Buscar" [ref=e665]:
+                - /placeholder: N° orden, proveedor, usuario…
+            - button "Nueva orden" [ref=e666]:
+              - img [ref=e667]: add
+              - generic [ref=e668]: Nueva orden
+          - generic [ref=e671]:
+            - tablist [ref=e674]:
+              - generic [ref=e675]:
+                - tab "Pendientes" [selected] [ref=e676] [cursor=pointer]:
+                  - generic [ref=e678]: Pendientes
+                - tab "Aprobadas" [ref=e679] [cursor=pointer]:
+                  - generic [ref=e681]: Aprobadas
+                - tab "Recibidas" [ref=e682] [cursor=pointer]:
+                  - generic [ref=e684]: Recibidas
+                - tab "Canceladas" [ref=e685] [cursor=pointer]:
+                  - generic [ref=e687]: Canceladas
+            - generic:
+              - tabpanel "Pendientes"
+          - generic [ref=e688]:
+            - generic [ref=e689]:
+              - img [ref=e690]: receipt_long
+              - paragraph [ref=e691]: Sin órdenes pendientes
+            - table [ref=e692]:
+              - row "N° Orden Proveedor Total Creado por Fecha Estado" [ref=e693]:
+                - columnheader "N° Orden" [ref=e694]
+                - columnheader "Proveedor" [ref=e695]
+                - columnheader "Total" [ref=e696]
+                - columnheader "Creado por" [ref=e697]
+                - columnheader "Fecha" [ref=e698]
+                - columnheader "Estado" [ref=e699]
+                - columnheader [ref=e700]

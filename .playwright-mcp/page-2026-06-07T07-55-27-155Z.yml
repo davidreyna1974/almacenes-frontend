@@ -1,0 +1,387 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - 'generic "Ubicación actual: Inventario → Productos" [ref=e14]':
+            - img [ref=e15]: chevron_right
+            - text: Inventario → Productos
+        - generic [ref=e16]:
+          - button "Notificaciones" [ref=e17] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button "Menú de usuario" [ref=e21]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+      - generic [ref=e28]:
+        - navigation "Navegación principal" [ref=e31]:
+          - menubar [ref=e32]:
+            - menuitem [expanded] [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button "Expandir menú" [ref=e44] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - generic [ref=e51]:
+                - generic [ref=e54]:
+                  - generic [ref=e55]: Buscar por código o nombre
+                  - textbox "Buscar por código o nombre" [ref=e57]
+                  - img [ref=e59]: search
+                - generic [ref=e63] [cursor=pointer]:
+                  - generic [ref=e64]: Categoría
+                  - combobox "Categoría" [ref=e66]:
+                    - img [ref=e72]
+                - generic [ref=e77] [cursor=pointer]:
+                  - generic [ref=e78]: Estado
+                  - combobox "Estado" [ref=e80]:
+                    - img [ref=e86]
+                - generic [ref=e91] [cursor=pointer]:
+                  - generic [ref=e92]: Proveedor
+                  - combobox "Proveedor" [ref=e94]:
+                    - img [ref=e100]
+              - button "Nuevo producto" [ref=e104]:
+                - img [ref=e105]: add
+                - generic [ref=e106]: Nuevo producto
+            - generic [ref=e109]:
+              - table [ref=e110]:
+                - rowgroup [ref=e111]:
+                  - row "Código Nombre Categoría Proveedor Stock Precio Estado" [ref=e112]:
+                    - columnheader "Código" [ref=e113]
+                    - columnheader "Nombre" [ref=e114]
+                    - columnheader "Categoría" [ref=e115]
+                    - columnheader "Proveedor" [ref=e116]
+                    - columnheader "Stock" [ref=e117]
+                    - columnheader "Precio" [ref=e118]
+                    - columnheader "Estado" [ref=e119]
+                    - columnheader [ref=e120]
+                - rowgroup [ref=e121]:
+                  - 'row "HMAN-JLL-012 Juego de Llaves Combinadas 14 piezas Herramientas Manuales Ferretera Industrial del Norte S.A. de C.V. Stock OK — actual: 60, mínimo: 15 $650.00 Disponible Registrar movimiento para Juego de Llaves Combinadas 14 piezas Ver o editar Juego de Llaves Combinadas 14 piezas" [ref=e553] [cursor=pointer]':
+                    - cell "HMAN-JLL-012" [ref=e554]
+                    - cell "Juego de Llaves Combinadas 14 piezas" [ref=e555]
+                    - cell "Herramientas Manuales" [ref=e556]
+                    - cell "Ferretera Industrial del Norte S.A. de C.V." [ref=e557]
+                    - 'cell "Stock OK — actual: 60, mínimo: 15" [ref=e558]':
+                      - 'status "Stock OK — actual: 60, mínimo: 15" [ref=e560]': "60"
+                    - cell "$650.00" [ref=e561]
+                    - cell "Disponible" [ref=e562]:
+                      - generic [ref=e563]: Disponible
+                    - cell "Registrar movimiento para Juego de Llaves Combinadas 14 piezas Ver o editar Juego de Llaves Combinadas 14 piezas" [ref=e564]:
+                      - button "Registrar movimiento para Juego de Llaves Combinadas 14 piezas" [ref=e565]:
+                        - img [ref=e566]: swap_vert
+                      - button "Ver o editar Juego de Llaves Combinadas 14 piezas" [ref=e569]:
+                        - img [ref=e570]: edit
+                  - 'row "COMP-LT15-003 Laptop 15.6\" Core i7 16GB RAM Computación y Periféricos TechSupply México S.A. de C.V. Stock OK — actual: 35, mínimo: 5 $22,500.00 Disponible Registrar movimiento para Laptop 15.6\" Core i7 16GB RAM Ver o editar Laptop 15.6\" Core i7 16GB RAM" [ref=e573] [cursor=pointer]':
+                    - cell "COMP-LT15-003" [ref=e574]
+                    - cell "Laptop 15.6\" Core i7 16GB RAM" [ref=e575]
+                    - cell "Computación y Periféricos" [ref=e576]
+                    - cell "TechSupply México S.A. de C.V." [ref=e577]
+                    - 'cell "Stock OK — actual: 35, mínimo: 5" [ref=e578]':
+                      - 'status "Stock OK — actual: 35, mínimo: 5" [ref=e580]': "35"
+                    - cell "$22,500.00" [ref=e581]
+                    - cell "Disponible" [ref=e582]:
+                      - generic [ref=e583]: Disponible
+                    - cell "Registrar movimiento para Laptop 15.6\" Core i7 16GB RAM Ver o editar Laptop 15.6\" Core i7 16GB RAM" [ref=e584]:
+                      - button "Registrar movimiento para Laptop 15.6\" Core i7 16GB RAM" [ref=e585]:
+                        - img [ref=e586]: swap_vert
+                      - button "Ver o editar Laptop 15.6\" Core i7 16GB RAM" [ref=e589]:
+                        - img [ref=e590]: edit
+                  - 'row "BLAN-LAV17-009 Lavadora Automática 17kg Inverter Electrodomésticos de Línea Blanca Electro Industrial del Centro S.A. de C.V. Stock OK — actual: 8, mínimo: 3 $14,999.00 Disponible Registrar movimiento para Lavadora Automática 17kg Inverter Ver o editar Lavadora Automática 17kg Inverter" [ref=e593] [cursor=pointer]':
+                    - cell "BLAN-LAV17-009" [ref=e594]
+                    - cell "Lavadora Automática 17kg Inverter" [ref=e595]
+                    - cell "Electrodomésticos de Línea Blanca" [ref=e596]
+                    - cell "Electro Industrial del Centro S.A. de C.V." [ref=e597]
+                    - 'cell "Stock OK — actual: 8, mínimo: 3" [ref=e598]':
+                      - 'status "Stock OK — actual: 8, mínimo: 3" [ref=e600]': "8"
+                    - cell "$14,999.00" [ref=e601]
+                    - cell "Disponible" [ref=e602]:
+                      - generic [ref=e603]: Disponible
+                    - cell "Registrar movimiento para Lavadora Automática 17kg Inverter Ver o editar Lavadora Automática 17kg Inverter" [ref=e604]:
+                      - button "Registrar movimiento para Lavadora Automática 17kg Inverter" [ref=e605]:
+                        - img [ref=e606]: swap_vert
+                      - button "Ver o editar Lavadora Automática 17kg Inverter" [ref=e609]:
+                        - img [ref=e610]: edit
+                  - 'row "CAFE-LIC-011 Licuadora Industrial 2L 1500W Electrodomésticos de Línea Café Electro Industrial del Centro S.A. de C.V. Stock OK — actual: 50, mínimo: 10 $1,850.00 Disponible Registrar movimiento para Licuadora Industrial 2L 1500W Ver o editar Licuadora Industrial 2L 1500W" [ref=e613] [cursor=pointer]':
+                    - cell "CAFE-LIC-011" [ref=e614]
+                    - cell "Licuadora Industrial 2L 1500W" [ref=e615]
+                    - cell "Electrodomésticos de Línea Café" [ref=e616]
+                    - cell "Electro Industrial del Centro S.A. de C.V." [ref=e617]
+                    - 'cell "Stock OK — actual: 50, mínimo: 10" [ref=e618]':
+                      - 'status "Stock OK — actual: 50, mínimo: 10" [ref=e620]': "50"
+                    - cell "$1,850.00" [ref=e621]
+                    - cell "Disponible" [ref=e622]:
+                      - generic [ref=e623]: Disponible
+                    - cell "Registrar movimiento para Licuadora Industrial 2L 1500W Ver o editar Licuadora Industrial 2L 1500W" [ref=e624]:
+                      - button "Registrar movimiento para Licuadora Industrial 2L 1500W" [ref=e625]:
+                        - img [ref=e626]: swap_vert
+                      - button "Ver o editar Licuadora Industrial 2L 1500W" [ref=e629]:
+                        - img [ref=e630]: edit
+                  - 'row "CLIM-AC12-039 Minisplit Inverter 12000 BTU WiFi Climatización y Ventilación Climatización e Instalaciones Térmicas S.A. Stock OK — actual: 15, mínimo: 4 $14,500.00 Disponible Registrar movimiento para Minisplit Inverter 12000 BTU WiFi Ver o editar Minisplit Inverter 12000 BTU WiFi" [ref=e633] [cursor=pointer]':
+                    - cell "CLIM-AC12-039" [ref=e634]
+                    - cell "Minisplit Inverter 12000 BTU WiFi" [ref=e635]
+                    - cell "Climatización y Ventilación" [ref=e636]
+                    - cell "Climatización e Instalaciones Térmicas S.A." [ref=e637]
+                    - 'cell "Stock OK — actual: 15, mínimo: 4" [ref=e638]':
+                      - 'status "Stock OK — actual: 15, mínimo: 4" [ref=e640]': "15"
+                    - cell "$14,500.00" [ref=e641]
+                    - cell "Disponible" [ref=e642]:
+                      - generic [ref=e643]: Disponible
+                    - cell "Registrar movimiento para Minisplit Inverter 12000 BTU WiFi Ver o editar Minisplit Inverter 12000 BTU WiFi" [ref=e644]:
+                      - button "Registrar movimiento para Minisplit Inverter 12000 BTU WiFi" [ref=e645]:
+                        - img [ref=e646]: swap_vert
+                      - button "Ver o editar Minisplit Inverter 12000 BTU WiFi" [ref=e649]:
+                        - img [ref=e650]: edit
+                  - 'row "COMP-MON-005 Monitor 27\" QHD 165Hz IPS Computación y Periféricos TechSupply México S.A. de C.V. Stock OK — actual: 18, mínimo: 5 $7,500.00 Disponible Registrar movimiento para Monitor 27\" QHD 165Hz IPS Ver o editar Monitor 27\" QHD 165Hz IPS" [ref=e653] [cursor=pointer]':
+                    - cell "COMP-MON-005" [ref=e654]
+                    - cell "Monitor 27\" QHD 165Hz IPS" [ref=e655]
+                    - cell "Computación y Periféricos" [ref=e656]
+                    - cell "TechSupply México S.A. de C.V." [ref=e657]
+                    - 'cell "Stock OK — actual: 18, mínimo: 5" [ref=e658]':
+                      - 'status "Stock OK — actual: 18, mínimo: 5" [ref=e660]': "18"
+                    - cell "$7,500.00" [ref=e661]
+                    - cell "Disponible" [ref=e662]:
+                      - generic [ref=e663]: Disponible
+                    - cell "Registrar movimiento para Monitor 27\" QHD 165Hz IPS Ver o editar Monitor 27\" QHD 165Hz IPS" [ref=e664]:
+                      - button "Registrar movimiento para Monitor 27\" QHD 165Hz IPS" [ref=e665]:
+                        - img [ref=e666]: swap_vert
+                      - button "Ver o editar Monitor 27\" QHD 165Hz IPS" [ref=e669]:
+                        - img [ref=e670]: edit
+                  - 'row "SEGV-NVR16-050 NVR 16 Canales 4K PoE 16 Puertos Seguridad y Vigilancia Seguridad y Vigilancia Electrónica S.A. Bajo stock — actual: 1, mínimo: 4 $8,500.00 Disponible Registrar movimiento para NVR 16 Canales 4K PoE 16 Puertos Ver o editar NVR 16 Canales 4K PoE 16 Puertos" [ref=e673] [cursor=pointer]':
+                    - cell "SEGV-NVR16-050" [ref=e674]
+                    - cell "NVR 16 Canales 4K PoE 16 Puertos" [ref=e675]
+                    - cell "Seguridad y Vigilancia" [ref=e676]
+                    - cell "Seguridad y Vigilancia Electrónica S.A." [ref=e677]
+                    - 'cell "Bajo stock — actual: 1, mínimo: 4" [ref=e678]':
+                      - 'status "Bajo stock — actual: 1, mínimo: 4" [ref=e680]': "1"
+                    - cell "$8,500.00" [ref=e681]
+                    - cell "Disponible" [ref=e682]:
+                      - generic [ref=e683]: Disponible
+                    - cell "Registrar movimiento para NVR 16 Canales 4K PoE 16 Puertos Ver o editar NVR 16 Canales 4K PoE 16 Puertos" [ref=e684]:
+                      - button "Registrar movimiento para NVR 16 Canales 4K PoE 16 Puertos" [ref=e685]:
+                        - img [ref=e686]: swap_vert
+                      - button "Ver o editar NVR 16 Canales 4K PoE 16 Puertos" [ref=e689]:
+                        - img [ref=e690]: edit
+                  - 'row "ALMAC-PAL-038 Pallet de Plástico 1200x1000 mm Equipos de Almacenamiento Distribuidora Logística del Centro S.A. Stock OK — actual: 30, mínimo: 8 $850.00 Disponible Registrar movimiento para Pallet de Plástico 1200x1000 mm Ver o editar Pallet de Plástico 1200x1000 mm" [ref=e693] [cursor=pointer]':
+                    - cell "ALMAC-PAL-038" [ref=e694]
+                    - cell "Pallet de Plástico 1200x1000 mm" [ref=e695]
+                    - cell "Equipos de Almacenamiento" [ref=e696]
+                    - cell "Distribuidora Logística del Centro S.A." [ref=e697]
+                    - 'cell "Stock OK — actual: 30, mínimo: 8" [ref=e698]':
+                      - 'status "Stock OK — actual: 30, mínimo: 8" [ref=e700]': "30"
+                    - cell "$850.00" [ref=e701]
+                    - cell "Disponible" [ref=e702]:
+                      - generic [ref=e703]: Disponible
+                    - cell "Registrar movimiento para Pallet de Plástico 1200x1000 mm Ver o editar Pallet de Plástico 1200x1000 mm" [ref=e704]:
+                      - button "Registrar movimiento para Pallet de Plástico 1200x1000 mm" [ref=e705]:
+                        - img [ref=e706]: swap_vert
+                      - button "Ver o editar Pallet de Plástico 1200x1000 mm" [ref=e709]:
+                        - img [ref=e710]: edit
+                  - 'row "ELUM-LED18-021 Panel LED Empotrable 18W Redondo Electricidad e Iluminación Electro Industrial del Centro S.A. de C.V. Stock OK — actual: 150, mínimo: 30 $285.00 Disponible Registrar movimiento para Panel LED Empotrable 18W Redondo Ver o editar Panel LED Empotrable 18W Redondo" [ref=e713] [cursor=pointer]':
+                    - cell "ELUM-LED18-021" [ref=e714]
+                    - cell "Panel LED Empotrable 18W Redondo" [ref=e715]
+                    - cell "Electricidad e Iluminación" [ref=e716]
+                    - cell "Electro Industrial del Centro S.A. de C.V." [ref=e717]
+                    - 'cell "Stock OK — actual: 150, mínimo: 30" [ref=e718]':
+                      - 'status "Stock OK — actual: 150, mínimo: 30" [ref=e720]': "150"
+                    - cell "$285.00" [ref=e721]
+                    - cell "Disponible" [ref=e722]:
+                      - generic [ref=e723]: Disponible
+                    - cell "Registrar movimiento para Panel LED Empotrable 18W Redondo Ver o editar Panel LED Empotrable 18W Redondo" [ref=e724]:
+                      - button "Registrar movimiento para Panel LED Empotrable 18W Redondo" [ref=e725]:
+                        - img [ref=e726]: swap_vert
+                      - button "Ver o editar Panel LED Empotrable 18W Redondo" [ref=e729]:
+                        - img [ref=e730]: edit
+                  - 'row "LIMP-PAP-028 Papel Higiénico Industrial 2 capas x 48 (editado) Limpieza Profesional e Higiene S.A. de C.V. Stock OK — actual: 120, mínimo: 24 $480.00 Disponible Registrar movimiento para Papel Higiénico Industrial 2 capas x 48 Ver o editar Papel Higiénico Industrial 2 capas x 48" [ref=e733] [cursor=pointer]':
+                    - cell "LIMP-PAP-028" [ref=e734]
+                    - cell "Papel Higiénico Industrial 2 capas x 48" [ref=e735]
+                    - cell "(editado)" [ref=e736]
+                    - cell "Limpieza Profesional e Higiene S.A. de C.V." [ref=e737]
+                    - 'cell "Stock OK — actual: 120, mínimo: 24" [ref=e738]':
+                      - 'status "Stock OK — actual: 120, mínimo: 24" [ref=e740]': "120"
+                    - cell "$480.00" [ref=e741]
+                    - cell "Disponible" [ref=e742]:
+                      - generic [ref=e743]: Disponible
+                    - cell "Registrar movimiento para Papel Higiénico Industrial 2 capas x 48 Ver o editar Papel Higiénico Industrial 2 capas x 48" [ref=e744]:
+                      - button "Registrar movimiento para Papel Higiénico Industrial 2 capas x 48" [ref=e745]:
+                        - img [ref=e746]: swap_vert
+                      - button "Ver o editar Papel Higiénico Industrial 2 capas x 48" [ref=e749]:
+                        - img [ref=e750]: edit
+                  - 'row "PINT-VIN19-018 Pintura Vinílica Interior Blanco 19L Pinturas y Recubrimientos Constructora y Suministros del Bajío S.A. Stock OK — actual: 80, mínimo: 20 $890.00 Disponible Registrar movimiento para Pintura Vinílica Interior Blanco 19L Ver o editar Pintura Vinílica Interior Blanco 19L" [ref=e753] [cursor=pointer]':
+                    - cell "PINT-VIN19-018" [ref=e754]
+                    - cell "Pintura Vinílica Interior Blanco 19L" [ref=e755]
+                    - cell "Pinturas y Recubrimientos" [ref=e756]
+                    - cell "Constructora y Suministros del Bajío S.A." [ref=e757]
+                    - 'cell "Stock OK — actual: 80, mínimo: 20" [ref=e758]':
+                      - 'status "Stock OK — actual: 80, mínimo: 20" [ref=e760]': "80"
+                    - cell "$890.00" [ref=e761]
+                    - cell "Disponible" [ref=e762]:
+                      - generic [ref=e763]: Disponible
+                    - cell "Registrar movimiento para Pintura Vinílica Interior Blanco 19L Ver o editar Pintura Vinílica Interior Blanco 19L" [ref=e764]:
+                      - button "Registrar movimiento para Pintura Vinílica Interior Blanco 19L" [ref=e765]:
+                        - img [ref=e766]: swap_vert
+                      - button "Ver o editar Pintura Vinílica Interior Blanco 19L" [ref=e769]:
+                        - img [ref=e770]: edit
+                  - 'row "SKU-CANCEL-23904 Prod SKU-CANCEL-23904 Cat-Int-23178 Proveedor AINT23178 Stock OK — actual: 20, mínimo: 2 $999.00 Disponible Registrar movimiento para Prod SKU-CANCEL-23904 Ver o editar Prod SKU-CANCEL-23904" [ref=e773] [cursor=pointer]':
+                    - cell "SKU-CANCEL-23904" [ref=e774]
+                    - cell "Prod SKU-CANCEL-23904" [ref=e775]
+                    - cell "Cat-Int-23178" [ref=e776]
+                    - cell "Proveedor AINT23178" [ref=e777]
+                    - 'cell "Stock OK — actual: 20, mínimo: 2" [ref=e778]':
+                      - 'status "Stock OK — actual: 20, mínimo: 2" [ref=e780]': "20"
+                    - cell "$999.00" [ref=e781]
+                    - cell "Disponible" [ref=e782]:
+                      - generic [ref=e783]: Disponible
+                    - cell "Registrar movimiento para Prod SKU-CANCEL-23904 Ver o editar Prod SKU-CANCEL-23904" [ref=e784]:
+                      - button "Registrar movimiento para Prod SKU-CANCEL-23904" [ref=e785]:
+                        - img [ref=e786]: swap_vert
+                      - button "Ver o editar Prod SKU-CANCEL-23904" [ref=e789]:
+                        - img [ref=e790]: edit
+                  - 'row "SKU-CANCEL-36594 Prod SKU-CANCEL-36594 Cat-Int-35904 Proveedor AINT35904 Stock OK — actual: 20, mínimo: 2 $999.00 Disponible Registrar movimiento para Prod SKU-CANCEL-36594 Ver o editar Prod SKU-CANCEL-36594" [ref=e793] [cursor=pointer]':
+                    - cell "SKU-CANCEL-36594" [ref=e794]
+                    - cell "Prod SKU-CANCEL-36594" [ref=e795]
+                    - cell "Cat-Int-35904" [ref=e796]
+                    - cell "Proveedor AINT35904" [ref=e797]
+                    - 'cell "Stock OK — actual: 20, mínimo: 2" [ref=e798]':
+                      - 'status "Stock OK — actual: 20, mínimo: 2" [ref=e800]': "20"
+                    - cell "$999.00" [ref=e801]
+                    - cell "Disponible" [ref=e802]:
+                      - generic [ref=e803]: Disponible
+                    - cell "Registrar movimiento para Prod SKU-CANCEL-36594 Ver o editar Prod SKU-CANCEL-36594" [ref=e804]:
+                      - button "Registrar movimiento para Prod SKU-CANCEL-36594" [ref=e805]:
+                        - img [ref=e806]: swap_vert
+                      - button "Ver o editar Prod SKU-CANCEL-36594" [ref=e809]:
+                        - img [ref=e810]: edit
+                  - 'row "SKU-CANCEL-40846 Prod SKU-CANCEL-40846 Cat-Int-40143 Proveedor AINT40143 Stock OK — actual: 20, mínimo: 2 $999.00 Disponible Registrar movimiento para Prod SKU-CANCEL-40846 Ver o editar Prod SKU-CANCEL-40846" [ref=e813] [cursor=pointer]':
+                    - cell "SKU-CANCEL-40846" [ref=e814]
+                    - cell "Prod SKU-CANCEL-40846" [ref=e815]
+                    - cell "Cat-Int-40143" [ref=e816]
+                    - cell "Proveedor AINT40143" [ref=e817]
+                    - 'cell "Stock OK — actual: 20, mínimo: 2" [ref=e818]':
+                      - 'status "Stock OK — actual: 20, mínimo: 2" [ref=e820]': "20"
+                    - cell "$999.00" [ref=e821]
+                    - cell "Disponible" [ref=e822]:
+                      - generic [ref=e823]: Disponible
+                    - cell "Registrar movimiento para Prod SKU-CANCEL-40846 Ver o editar Prod SKU-CANCEL-40846" [ref=e824]:
+                      - button "Registrar movimiento para Prod SKU-CANCEL-40846" [ref=e825]:
+                        - img [ref=e826]: swap_vert
+                      - button "Ver o editar Prod SKU-CANCEL-40846" [ref=e829]:
+                        - img [ref=e830]: edit
+                  - 'row "SKU-CANCEL-58281 Prod SKU-CANCEL-58281 Cat-Int-57543 Proveedor AINT57543 Stock OK — actual: 20, mínimo: 2 $999.00 Disponible Registrar movimiento para Prod SKU-CANCEL-58281 Ver o editar Prod SKU-CANCEL-58281" [ref=e833] [cursor=pointer]':
+                    - cell "SKU-CANCEL-58281" [ref=e834]
+                    - cell "Prod SKU-CANCEL-58281" [ref=e835]
+                    - cell "Cat-Int-57543" [ref=e836]
+                    - cell "Proveedor AINT57543" [ref=e837]
+                    - 'cell "Stock OK — actual: 20, mínimo: 2" [ref=e838]':
+                      - 'status "Stock OK — actual: 20, mínimo: 2" [ref=e840]': "20"
+                    - cell "$999.00" [ref=e841]
+                    - cell "Disponible" [ref=e842]:
+                      - generic [ref=e843]: Disponible
+                    - cell "Registrar movimiento para Prod SKU-CANCEL-58281 Ver o editar Prod SKU-CANCEL-58281" [ref=e844]:
+                      - button "Registrar movimiento para Prod SKU-CANCEL-58281" [ref=e845]:
+                        - img [ref=e846]: swap_vert
+                      - button "Ver o editar Prod SKU-CANCEL-58281" [ref=e849]:
+                        - img [ref=e850]: edit
+                  - 'row "SKU-CANCEL-94968 Prod SKU-CANCEL-94968 Cat-Int-94230 Proveedor AINT94230 Stock OK — actual: 20, mínimo: 2 $999.00 Disponible Registrar movimiento para Prod SKU-CANCEL-94968 Ver o editar Prod SKU-CANCEL-94968" [ref=e853] [cursor=pointer]':
+                    - cell "SKU-CANCEL-94968" [ref=e854]
+                    - cell "Prod SKU-CANCEL-94968" [ref=e855]
+                    - cell "Cat-Int-94230" [ref=e856]
+                    - cell "Proveedor AINT94230" [ref=e857]
+                    - 'cell "Stock OK — actual: 20, mínimo: 2" [ref=e858]':
+                      - 'status "Stock OK — actual: 20, mínimo: 2" [ref=e860]': "20"
+                    - cell "$999.00" [ref=e861]
+                    - cell "Disponible" [ref=e862]:
+                      - generic [ref=e863]: Disponible
+                    - cell "Registrar movimiento para Prod SKU-CANCEL-94968 Ver o editar Prod SKU-CANCEL-94968" [ref=e864]:
+                      - button "Registrar movimiento para Prod SKU-CANCEL-94968" [ref=e865]:
+                        - img [ref=e866]: swap_vert
+                      - button "Ver o editar Prod SKU-CANCEL-94968" [ref=e869]:
+                        - img [ref=e870]: edit
+                  - 'row "HELEC-TEST-MGR Producto de Prueba MANAGER Herramientas Eléctricas Herramientas y Maquinaria del Pacífico S.A. Stock OK — actual: 20, mínimo: 4 $1,500.00 Disponible Registrar movimiento para Producto de Prueba MANAGER Ver o editar Producto de Prueba MANAGER" [ref=e873] [cursor=pointer]':
+                    - cell "HELEC-TEST-MGR" [ref=e874]
+                    - cell "Producto de Prueba MANAGER" [ref=e875]
+                    - cell "Herramientas Eléctricas" [ref=e876]
+                    - cell "Herramientas y Maquinaria del Pacífico S.A." [ref=e877]
+                    - 'cell "Stock OK — actual: 20, mínimo: 4" [ref=e878]':
+                      - 'status "Stock OK — actual: 20, mínimo: 4" [ref=e880]': "20"
+                    - cell "$1,500.00" [ref=e881]
+                    - cell "Disponible" [ref=e882]:
+                      - generic [ref=e883]: Disponible
+                    - cell "Registrar movimiento para Producto de Prueba MANAGER Ver o editar Producto de Prueba MANAGER" [ref=e884]:
+                      - button "Registrar movimiento para Producto de Prueba MANAGER" [ref=e885]:
+                        - img [ref=e886]: swap_vert
+                      - button "Ver o editar Producto de Prueba MANAGER" [ref=e889]:
+                        - img [ref=e890]: edit
+                  - 'row "SKU-SO-23630 Producto Integración 23630 Cat-Int-23178 Proveedor AINT23178 Stock OK — actual: 15, mínimo: 5 $999.00 Disponible Registrar movimiento para Producto Integración 23630 Ver o editar Producto Integración 23630" [ref=e893] [cursor=pointer]':
+                    - cell "SKU-SO-23630" [ref=e894]
+                    - cell "Producto Integración 23630" [ref=e895]
+                    - cell "Cat-Int-23178" [ref=e896]
+                    - cell "Proveedor AINT23178" [ref=e897]
+                    - 'cell "Stock OK — actual: 15, mínimo: 5" [ref=e898]':
+                      - 'status "Stock OK — actual: 15, mínimo: 5" [ref=e900]': "15"
+                    - cell "$999.00" [ref=e901]
+                    - cell "Disponible" [ref=e902]:
+                      - generic [ref=e903]: Disponible
+                    - cell "Registrar movimiento para Producto Integración 23630 Ver o editar Producto Integración 23630" [ref=e904]:
+                      - button "Registrar movimiento para Producto Integración 23630" [ref=e905]:
+                        - img [ref=e906]: swap_vert
+                      - button "Ver o editar Producto Integración 23630" [ref=e909]:
+                        - img [ref=e910]: edit
+                  - 'row "SKU-SO-36331 Producto Integración 36331 Cat-Int-35904 Proveedor AINT35904 Stock OK — actual: 15, mínimo: 5 $999.00 Disponible Registrar movimiento para Producto Integración 36331 Ver o editar Producto Integración 36331" [ref=e913] [cursor=pointer]':
+                    - cell "SKU-SO-36331" [ref=e914]
+                    - cell "Producto Integración 36331" [ref=e915]
+                    - cell "Cat-Int-35904" [ref=e916]
+                    - cell "Proveedor AINT35904" [ref=e917]
+                    - 'cell "Stock OK — actual: 15, mínimo: 5" [ref=e918]':
+                      - 'status "Stock OK — actual: 15, mínimo: 5" [ref=e920]': "15"
+                    - cell "$999.00" [ref=e921]
+                    - cell "Disponible" [ref=e922]:
+                      - generic [ref=e923]: Disponible
+                    - cell "Registrar movimiento para Producto Integración 36331 Ver o editar Producto Integración 36331" [ref=e924]:
+                      - button "Registrar movimiento para Producto Integración 36331" [ref=e925]:
+                        - img [ref=e926]: swap_vert
+                      - button "Ver o editar Producto Integración 36331" [ref=e929]:
+                        - img [ref=e930]: edit
+                  - 'row "SKU-SO-40579 Producto Integración 40579 Cat-Int-40143 Proveedor AINT40143 Stock OK — actual: 15, mínimo: 5 $999.00 Disponible Registrar movimiento para Producto Integración 40579 Ver o editar Producto Integración 40579" [ref=e933] [cursor=pointer]':
+                    - cell "SKU-SO-40579" [ref=e934]
+                    - cell "Producto Integración 40579" [ref=e935]
+                    - cell "Cat-Int-40143" [ref=e936]
+                    - cell "Proveedor AINT40143" [ref=e937]
+                    - 'cell "Stock OK — actual: 15, mínimo: 5" [ref=e938]':
+                      - 'status "Stock OK — actual: 15, mínimo: 5" [ref=e940]': "15"
+                    - cell "$999.00" [ref=e941]
+                    - cell "Disponible" [ref=e942]:
+                      - generic [ref=e943]: Disponible
+                    - cell "Registrar movimiento para Producto Integración 40579 Ver o editar Producto Integración 40579" [ref=e944]:
+                      - button "Registrar movimiento para Producto Integración 40579" [ref=e945]:
+                        - img [ref=e946]: swap_vert
+                      - button "Ver o editar Producto Integración 40579" [ref=e949]:
+                        - img [ref=e950]: edit
+              - group "Paginación de productos" [ref=e522]:
+                - generic [ref=e524]:
+                  - generic [ref=e525]:
+                    - generic [ref=e526]: "Items per page:"
+                    - combobox "Items per page:" [ref=e531] [cursor=pointer]:
+                      - generic [ref=e532]:
+                        - generic [ref=e534]: "20"
+                        - img [ref=e537]
+                  - generic [ref=e540]:
+                    - status [ref=e541]: 21 – 40 of 66
+                    - button "Previous page" [ref=e542] [cursor=pointer]:
+                      - img [ref=e543]
+                    - button "Next page" [active] [ref=e547] [cursor=pointer]:
+                      - img [ref=e548]
+  - generic [ref=e956]: Next page

@@ -1,0 +1,118 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ir al contenido principal" [ref=e562] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button "Alternar menú lateral" [ref=e563] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e564]':
+            - img [ref=e15]: chevron_right
+            - text: Compras → Órdenes de compra
+        - generic [ref=e16]:
+          - button "Notificaciones" [ref=e565] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button "Menú de usuario" [ref=e566]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: test_mgr
+              - 'generic "Rol: MANAGER" [ref=e567]': MANAGER
+      - generic [ref=e28]:
+        - navigation "Navegación principal" [ref=e568]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+          - button "Expandir menú" [ref=e569] [cursor=pointer]:
+            - img [ref=e43]: chevron_right
+        - main [ref=e44]:
+          - generic [ref=e291]:
+            - generic [ref=e292]:
+              - button [ref=e293] [cursor=pointer]:
+                - img [ref=e294]: arrow_back
+              - generic [ref=e297]:
+                - heading "OC-2026-0064" [level=2] [ref=e570]
+                - generic [ref=e299]: Cancelada
+            - generic [ref=e311]:
+              - generic [ref=e312]:
+                - generic [ref=e313]:
+                  - heading "Información de la orden" [level=3] [ref=e571]
+                  - generic [ref=e315]:
+                    - generic [ref=e316]:
+                      - generic:
+                        - generic:
+                          - generic [ref=e319]:
+                            - text: Proveedor
+                            - generic [ref=e320]: "*"
+                          - generic:
+                            - combobox "Proveedor" [disabled]:
+                              - generic:
+                                - generic:
+                                  - generic: Climatización e Instalaciones Térmicas S.A.
+                                - generic:
+                                  - generic:
+                                    - img
+                    - generic [ref=e331]:
+                      - generic:
+                        - generic:
+                          - generic [ref=e334]: Notas
+                          - textbox "Notas" [disabled] [ref=e572]:
+                            - /placeholder: Observaciones opcionales
+                - generic [ref=e344]:
+                  - heading "Líneas de detalle" [level=3] [ref=e573]
+                  - table [ref=e352]:
+                    - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e574]:
+                      - columnheader "SKU" [ref=e575]
+                      - columnheader "Producto" [ref=e576]
+                      - columnheader "Cantidad" [ref=e577]
+                      - columnheader "Precio unitario" [ref=e578]
+                      - columnheader "Subtotal" [ref=e579]
+                      - columnheader [ref=e359]
+                    - row "PLOM-TUB2-020 Tubo CPVC 1/2\" x 3m Temperatura 3 $85.00 $255.00" [ref=e580]:
+                      - cell "PLOM-TUB2-020" [ref=e581]:
+                        - generic [ref=e582]: PLOM-TUB2-020
+                      - cell "Tubo CPVC 1/2\" x 3m Temperatura" [ref=e583]:
+                        - generic [ref=e584]: Tubo CPVC 1/2" x 3m Temperatura
+                      - cell "3" [ref=e585]
+                      - cell "$85.00" [ref=e586]
+                      - cell "$255.00" [ref=e587]
+                      - cell [ref=e588]
+                  - generic [ref=e377]:
+                    - generic [ref=e378]: "Total de la orden:"
+                    - generic [ref=e379]: $255.00
+              - generic [ref=e380]:
+                - generic [ref=e381]:
+                  - heading "Historial de estado" [level=3] [ref=e589]
+                  - generic [ref=e383]:
+                    - generic [ref=e384]:
+                      - img [ref=e385]: add_circle
+                      - generic [ref=e386]:
+                        - generic [ref=e387]: Creada
+                        - generic [ref=e388]: test_mgr
+                        - generic [ref=e389]: 07/06/2026 19:03
+                    - generic [ref=e390]:
+                      - img [ref=e391]: check_circle
+                      - generic [ref=e392]:
+                        - generic [ref=e393]: Aprobada
+                        - generic [ref=e497]: test_mgr
+                        - generic [ref=e498]: 07/06/2026 19:04
+                    - generic [ref=e395]:
+                      - img [ref=e396]: cancel
+                      - generic [ref=e397]:
+                        - generic [ref=e590]: Cancelada
+                        - generic [ref=e591]: test_mgr
+                        - generic [ref=e592]: 07/06/2026 19:04
+                - generic [ref=e499]:
+                  - generic [ref=e500]: "Última modificación:"
+                  - generic [ref=e501]: 07/06/2026 19:04
+  - generic [ref=e599]:
+    - generic [ref=e600]: Orden cancelada.
+    - button "Cerrar" [ref=e602]:
+      - generic [ref=e603]: Cerrar
