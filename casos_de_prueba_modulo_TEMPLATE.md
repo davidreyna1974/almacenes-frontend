@@ -84,23 +84,16 @@
 
 ### 1b. Búsqueda (BSRCH)
 
-<<<<<<< HEAD
-=======
 > ⚠️ **Requisito obligatorio**: toda búsqueda LIKE del backend DEBE usar `f_unaccent()` con
 > `nativeQuery=true`. BUG-INV-06 (2026-06-09) demostró que `LOWER()` en JPQL no elimina diacríticos.
 > BSRCH-[P]-03 (accent insensitive) es el caso de prueba de verificación de este requisito.
 > Ver §7 de `memoria_tecnica_global_proyecto.md` para el patrón completo de implementación.
 
->>>>>>> feature/inventory
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
 | BSRCH-[P]-01 | Buscar por [campo principal] exacto | [ROL] | Hay registros en BD | Filtra correctamente | ⏳ PENDIENTE | |
 | BSRCH-[P]-02 | Buscar en minúsculas (case insensitive) | [ROL] | Registro con mayúsculas | Encuentra el registro | ⏳ PENDIENTE | |
-<<<<<<< HEAD
-| BSRCH-[P]-03 | Buscar sin acento (accent insensitive) | [ROL] | Registro con acento | Encuentra el registro | ⏳ PENDIENTE | |
-=======
 | BSRCH-[P]-03 | Buscar sin acento (accent insensitive) | [ROL] | Registro con acento, ej. buscar "galon" → "Galón" | Encuentra el registro | ⏳ PENDIENTE | Verificar que el backend usa f_unaccent() |
->>>>>>> feature/inventory
 | BSRCH-[P]-04 | Buscar término sin resultados | [ROL] | Término no existe | Estado vacío: ícono + mensaje contextual | ⏳ PENDIENTE | |
 | BSRCH-[P]-05 | Limpiar campo de búsqueda | [ROL] | Campo con término activo | Lista restaurada; todos los registros visibles | ⏳ PENDIENTE | |
 | BSRCH-[P]-06 | Botón X de limpieza visible SOLO cuando hay texto | [ROL] | Campo vacío vs con texto | Sin texto → sin X; con texto → X visible | ⏳ PENDIENTE | |

@@ -14,7 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subject, EMPTY, forkJoin, of } from 'rxjs';
+import { Subject, EMPTY, forkJoin } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, switchMap, catchError } from 'rxjs/operators';
 
 import { ProductService } from '../../services/product.service';
@@ -137,15 +137,8 @@ export class ProductsPageComponent implements OnInit {
     if (catId) this.categoryFilter.setValue(+catId, { emitEvent: false });
 
     forkJoin({
-<<<<<<< HEAD
-      cats: this.categoryService.getActive(0, 200),
-      sups: this.productService.getActiveSuppliers().pipe(
-        catchError(() => of({ content: [] as SupplierOption[] } as PageResponse<SupplierOption>))
-      ),
-=======
       cats: this.categoryService.getActive('', 0, 200),
       sups: this.productService.getActiveSuppliers(),
->>>>>>> feature/inventory
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: ({ cats, sups }) => {
         this.categories = cats.content;

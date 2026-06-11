@@ -129,11 +129,7 @@ justifica. Un monolito bien estructurado por módulos es más mantenible a esta 
 
 ```
 GET /api/v1/inventory/products
-<<<<<<< HEAD
-    ?search=taladro        (opcional) búsqueda parcial en sku y name, case-insensitive
-=======
-    ?search=taladro        (opcional) búsqueda parcial en sku y name
->>>>>>> feature/inventory
+    ?search=taladro        (opcional) búsqueda parcial en sku y name, insensible a mayúsculas y acentos
     &categoryId=1          (opcional) filtra por categoría exacta
     &status=AVAILABLE      (opcional) filtra por estado: AVAILABLE | DISCONTINUED | OUT_OF_STOCK
     &supplierId=2          (opcional) filtra por proveedor exacto
@@ -144,18 +140,12 @@ GET /api/v1/inventory/products
 Comportamiento:
   - Siempre filtra active = true (soft-delete excluido implícitamente).
   - Sin parámetros → todos los productos activos paginados.
-<<<<<<< HEAD
   - search busca en SKU (LIKE) y nombre (LIKE) simultáneamente con OR.
+  - Búsqueda insensible a MAYÚSCULAS y ACENTOS (ver §7 — estándar de búsqueda).
   - Los demás filtros se combinan con AND entre sí y con search.
   - Ordenado por name ASC.
   - JPQL usa CAST(:search AS string) para evitar el error lower(bytea)
     de PostgreSQL cuando search es null (Hibernate 6 + PostgreSQL 15).
-=======
-  - search busca en SKU y nombre simultáneamente con OR.
-  - Búsqueda insensible a MAYÚSCULAS y ACENTOS (ver §7 — estándar de búsqueda).
-  - Los demás filtros se combinan con AND entre sí y con search.
-  - Ordenado por name ASC.
->>>>>>> feature/inventory
 
 Campos del ProductResponseDTO (campos clave para el frontend):
   id, sku, name, description, price, unitCost
@@ -170,11 +160,6 @@ Implementación frontend: ProductService.search(params) en
   src/app/modules/inventory/services/product.service.ts
 ```
 
-<<<<<<< HEAD
-⚠️ **Nota histórica**: antes de esta implementación (2026-06-06) no existía ningún
-endpoint GET para el catálogo de productos con búsqueda de texto. El endpoint
-`GET /products/sku/{sku}` solo hace lookup exacto (1 resultado o 404).
-=======
 ### Endpoint de búsqueda de categorías
 
 ```
@@ -208,7 +193,6 @@ GET /api/v1/sales/clients/active
 ⚠️ **Nota histórica**: antes de 2026-06-09 el endpoint de productos usaba JPQL con
 `LOWER()`, que no normaliza acentos. `GET /products/sku/{sku}` sigue siendo lookup
 exacto (1 resultado o 404).
->>>>>>> feature/inventory
 
 ### Formato de errores del backend
 
@@ -543,8 +527,6 @@ La Sección 7 de cada memoria técnica documenta:
 - Patrón: `getStatusLabel(status: string): string { return { AVAILABLE: 'Disponible', ... }[status] ?? status; }`
 - Nunca mostrar valores como `AVAILABLE`, `PENDING`, `IN`, `OUT` directamente en la UI.
 
-<<<<<<< HEAD
-=======
 ### Estándar de búsqueda de texto — insensible a acentos (aplica a todos los módulos)
 
 **Origen**: BUG-INV-06 (2026-06-09) — "galon" no encontraba "Galón" porque `LOWER()` en JPQL
@@ -616,7 +598,6 @@ String normalized = (search != null && !search.isBlank()) ? search.trim() : null
 El backend interpreta `search=""` como búsqueda activa; `search IS NULL` solo se activa si
 el parámetro está ausente del request.
 
->>>>>>> feature/inventory
 ### Variables de entorno
 
 ```bash
