@@ -253,15 +253,12 @@ difíciles de detectar que solo aparecen en el browser con datos reales.**
 > de negocio exige `availableStock`. El error no se detectó en tests porque los tests no verificaban
 > la trazabilidad regla-de-negocio → componente UI. Solo se detectó en revisión explícita del código.
 
-<<<<<<< HEAD
-=======
 > **Lección real (Módulo 2 — Inventory, BUG-INV-06 — 2026-06-09):** La búsqueda de productos
 > usaba `LOWER()` en JPQL, que elimina mayúsculas pero NO diacríticos. "galon" no encontraba
 > "Galón". Fix: PostgreSQL `unaccent` extension + función `f_unaccent(text)` inmutable + query
 > nativa en el repositorio. Este estándar aplica a TODAS las búsquedas LIKE del sistema.
 > Ver §7 de `memoria_tecnica_global_proyecto.md` — "Estándar de búsqueda de texto".
 
->>>>>>> feature/inventory
 **5. Verificar trazabilidad regla-de-negocio → componente UI** — para cada validación del backend
 (`*ServiceImpl`), identificar el componente UI responsable y confirmar que:
 - muestra los datos relevantes para esa regla (no un campo proxy)
@@ -283,12 +280,9 @@ difíciles de detectar que solo aparecen en el browser con datos reales.**
     campos de auditoría) y que el formulario no los exponga como editables
 [ ] Verifiqué que cada columna/dato sensible (unitCost, datos financieros) está oculto
     para los roles que no deben verlo — no solo en el backend sino también en el frontend
-<<<<<<< HEAD
-=======
 [ ] Si el módulo incluye búsqueda LIKE por texto libre: el endpoint de backend usa
     f_unaccent() (nativeQuery=true) y el frontend usa debounceTime(350) + search vacío = omitir
     parámetro (ver §7 memoria_tecnica_global_proyecto.md — "Estándar de búsqueda de texto")
->>>>>>> feature/inventory
 ```
 
 ---
