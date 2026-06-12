@@ -55,7 +55,7 @@ describe('CategoryService', () => {
   });
 
   it('getActive: debe respetar page y size personalizados', () => {
-    service.getActive(2, 10).subscribe();
+    service.getActive('', 2, 10).subscribe();
 
     const req = httpMock.expectOne(r => r.url.includes('/inventory/categories/active'));
     expect(req.request.params.get('page')).toBe('2');

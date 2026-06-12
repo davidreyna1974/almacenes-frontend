@@ -30,6 +30,7 @@ const DIALOG_CONFIG = {
   position:      { top: '64px' },
   backdropClass: 'catalog-backdrop',
   panelClass:    'catalog-form-dialog',
+  disableClose:  true,
 };
 
 @Component({

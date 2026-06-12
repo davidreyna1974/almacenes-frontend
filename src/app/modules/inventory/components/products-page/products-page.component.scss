@@ -66,6 +66,12 @@
 
 .catalog-table {
   width: 100%;
+
+  .mat-mdc-header-cell {
+    font-weight: 600;
+    color: #6B3C6B;
+    background: #F2E4F2;
+  }
 }
 
 .catalog-row {

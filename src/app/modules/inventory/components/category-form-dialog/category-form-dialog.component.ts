@@ -71,7 +71,7 @@ export class CategoryFormDialogComponent {
       confirmLabel: 'Desactivar',
       dangerous:    true,
     };
-    this.dialog.open(ConfirmDialogComponent, { data: confirmData, width: '420px' })
+    this.dialog.open(ConfirmDialogComponent, { data: confirmData, width: '420px', disableClose: true })
       .afterClosed()
       .pipe(
         filter(r => r === true),

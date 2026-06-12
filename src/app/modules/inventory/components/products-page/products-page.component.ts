@@ -14,7 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Subject, EMPTY, forkJoin } from 'rxjs';
+import { Subject, EMPTY, forkJoin, of } from 'rxjs';
 import { debounceTime, distinctUntilChanged, filter, switchMap, catchError } from 'rxjs/operators';
 
 import { ProductService } from '../../services/product.service';
@@ -36,6 +36,7 @@ const DIALOG_CONFIG = {
   position:      { top: '64px' },
   backdropClass: 'catalog-backdrop',
   panelClass:    'catalog-form-dialog',
+  disableClose:  true,
 };
 
 const PRODUCT_STATUSES = [
@@ -117,6 +118,13 @@ export class ProductsPageComponent implements OnInit {
         || this.authService.hasRole('ROLE_MANAGER')
         || this.authService.hasRole('ROLE_WAREHOUSEMAN');
   }
+  // SALES no tiene acceso a /api/v1/purchases/** (BUG-INV-12) — el filtro de
+  // proveedor depende de ese endpoint, por lo que se oculta para ese rol.
+  canViewSupplierFilter(): boolean {
+    return this.authService.hasRole('ROLE_ADMIN')
+        || this.authService.hasRole('ROLE_MANAGER')
+        || this.authService.hasRole('ROLE_WAREHOUSEMAN');
+  }
 
   // ─── Inicialización ─────────────────────────────────────────────────────────
 
@@ -136,13 +144,15 @@ export class ProductsPageComponent implements OnInit {
     const catId = this.route.snapshot.queryParamMap.get('categoryId');
     if (catId) this.categoryFilter.setValue(+catId, { emitEvent: false });
 
+    // SALES no tiene acceso a GET /api/v1/purchases/** (403) — se omite la
+    // petición de proveedores para ese rol en vez de romper el forkJoin (BUG-INV-12).
     forkJoin({
       cats: this.categoryService.getActive('', 0, 200),
-      sups: this.productService.getActiveSuppliers(),
+      sups: this.canViewSupplierFilter() ? this.productService.getActiveSuppliers() : of(null),
     }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: ({ cats, sups }) => {
         this.categories = cats.content;
-        this.suppliers  = sups.content;
+        this.suppliers  = sups?.content ?? [];
         this.cdr.detectChanges();
       }
     });
@@ -212,7 +222,9 @@ export class ProductsPageComponent implements OnInit {
   }
 
   onPageChange(event: PageEvent): void {
-    this.currentPage = event.pageIndex;
+    // Si cambia el tamaño de página, mat-paginator recalcula pageIndex para
+    // preservar el primer elemento visible — forzamos vuelta a la página 0 (BUG-INV-10).
+    this.currentPage = event.pageSize !== this.pageSize ? 0 : event.pageIndex;
     this.pageSize    = event.pageSize;
     this.searchTrigger$.next();
   }
