@@ -1198,6 +1198,199 @@ No incluir casos de viewport 400×700 en ningún módulo futuro.
 
 ---
 
+### L28: Cabeceras de seguridad HTTP — checklist obligatorio para despliegue a producción (CYBER-18)
+
+**Hallazgo (2026-06-11, CYBER-18 / ASVS V14.4)**: en `dev`, el backend (Spring Security 6
+defaults) ya envía `X-Content-Type-Options: nosniff` y `X-Frame-Options: DENY` — correcto sin
+configuración adicional. Pero `Content-Security-Policy` y `Strict-Transport-Security` están
+ausentes en el backend, y el frontend (`ng serve`) no envía NINGUNA cabecera de seguridad
+(`curl -I http://localhost:4200/` no devuelve nada relevante) — es el dev-server de Angular
+CLI y no debe configurarse para esto.
+
+**No es un bug de código** — es una tarea de configuración de infraestructura que solo aplica
+al desplegar a producción. Checklist obligatorio antes de cualquier despliegue a producción:
+
+```
+[ ] Servidor estático del frontend (nginx/Apache/CDN) configurado para enviar:
+    [ ] Content-Security-Policy (al menos default-src 'self'; ajustar para
+        fonts.googleapis.com/fonts.gstatic.com usados en index.html)
+    [ ] Strict-Transport-Security: max-age=31536000; includeSubDomains (solo si HTTPS)
+    [ ] X-Content-Type-Options: nosniff
+    [ ] X-Frame-Options: DENY (o configurarlo vía CSP frame-ancestors)
+[ ] Backend: agregar Strict-Transport-Security vía SecurityConfig.headers(...) si se
+    sirve directamente sobre HTTPS (sin reverse proxy que ya lo agregue)
+[ ] Backend: agregar Content-Security-Policy vía SecurityConfig.headers(...) si las
+    respuestas de error (HTML de /error, Swagger UI) se exponen en producción
+[ ] CORS_ALLOWED_ORIGINS (ver L15/BUG-INV-15) actualizado al dominio real de producción
+[ ] Re-ejecutar CYBER-13/CYBER-18 contra el dominio de producción tras el despliegue
+```
+
+**Por qué no se implementó ahora**: requiere decidir el servidor estático de producción
+(nginx/CDN/etc., aún no elegido) y el dominio HTTPS real — configurarlo prematuramente en
+`environment.prod.ts` o en código sin esos datos generaría una configuración incorrecta o
+rota. Revisar este checklist al definir la infraestructura de despliegue.
+
+---
+
+### L29: Matriz de campos sensibles × roles — diseñar la redacción ANTES de implementar el endpoint (BUG-INV-11)
+
+**Hallazgo (2026-06-12)**: `unitCost` estuvo expuesto en el JSON de los 7 endpoints de
+lectura de `ProductServiceImpl` para roles (WAREHOUSEMAN, SALES) que no deben verlo —
+excessive data exposure (CYBER-07). Se corrigió retroactivamente con
+`redactUnitCost(...)`, pero pudo evitarse si la matriz de visibilidad se hubiera definido
+antes de codificar.
+
+**Regla obligatoria — MANDATORIA para TODOS los módulos futuros (Sales incluido)**:
+
+Antes de implementar cualquier servicio de lectura, documentar en la Sección 4 de la
+memoria técnica del módulo una **matriz de campos sensibles × roles** por DTO:
+
+| Campo | ADMIN | MANAGER | WAREHOUSEMAN | SALES |
+|---|---|---|---|---|
+| `unitCost` | valor real | valor real | `null` | `null` |
+| `marginPercent` | valor real | valor real | `null` | `null` |
+| `creditLimit`, `discountPercent` (ejemplo Sales) | valor real | valor real | `null`/N/A | según RBAC del módulo |
+
+Para cada campo marcado `null`/redactado en algún rol:
+1. Escribir el test de redacción por rol PRIMERO (`@Test shouldRedactXxxForRole...`),
+   antes de implementar el campo en el DTO/mapper.
+2. Implementar la redacción centralizada (ej. `redactXxx(dto, role)`) aplicada en
+   TODOS los endpoints de lectura que devuelvan ese DTO — no solo en el endpoint
+   "principal".
+3. Verificar en el frontend que el campo está AUSENTE del DOM para los roles sin
+   acceso (no solo oculto con CSS) — caso `RBAC-[F]-06` del template de casos de
+   prueba.
+
+**Por qué**: detectar esto en el browser (como ocurrió con BUG-INV-11) significa que ya
+se filtró el dato en al menos un endpoint durante el desarrollo. Diseñar la matriz
+primero convierte la redacción en un requisito explícito desde el día 1, no en un
+parche posterior.
+
+---
+
+### L30: 401 vs 403 explícitos + rate limiting de login — definir desde el diseño inicial de cualquier módulo con autenticación/autorización (BUG-INV-09, BUG-INV-17, BUG-INV-13)
+
+**Hallazgo (2026-06-11/12)**: Spring Security usa por defecto `Http403ForbiddenEntryPoint`
+para "no autenticado" Y "sin permiso", rompiendo la semántica RFC 7235 y la lógica de
+`error.interceptor.ts` (BUG-INV-09). Además, `POST /auth/login` no tenía rate
+limiting/lockout, permitiendo fuerza bruta (BUG-INV-17, CYBER-19). Como efecto colateral
+de corregir BUG-INV-09, también se resolvió BUG-INV-13 (escalada cosmética de UI con JWT
+manipulado).
+
+**Regla obligatoria — MANDATORIA, checklist de apertura para CUALQUIER módulo con
+autenticación/autorización**:
+
+```
+[ ] JwtAuthenticationEntryPoint (401 — "no autenticado": sin token, token inválido/
+    expirado/firma manipulada) y JwtAccessDeniedHandler (403 — "autenticado sin el
+    rol/permiso requerido") YA configurados en SecurityConfig desde el primer commit
+    — NUNCA depender de Http403ForbiddenEntryPoint por defecto. (Ya implementado
+    globalmente desde BUG-INV-09 — verificar que sigue activo, no revertir.)
+[ ] error.interceptor.ts del frontend maneja 401 (limpiar sesión + redirect a
+    /login?reason=expired) y 403 (snackbar "No tienes permiso...") de forma
+    diferenciada. (Ya implementado globalmente — verificar que sigue activo.)
+[ ] CUALQUIER endpoint de autenticación nuevo (login, recuperación de contraseña,
+    cambio de PIN, etc.) implementa rate limiting/lockout (ej. patrón
+    LoginAttemptService: 5 intentos fallidos → bloqueo temporal, por usuario,
+    case-insensitive) → 429 Too Many Requests, desde el primer commit — no como
+    corrección posterior.
+[ ] CYBER-02 (JWT manipulado en localStorage) y CYBER-19 (rate limiting de login,
+    cuando aplique) se ejecutan como parte del cierre de CUALQUIER pantalla con
+    login/sesión, no solo del módulo Auth.
+```
+
+**Por qué**: ambos bugs fueron severidad ALTA y se originaron por confiar en
+comportamientos por defecto de Spring Security. Definirlo en el diseño inicial evita
+horas de corrección retroactiva (incluyendo actualización de clases de test de
+seguridad).
+
+---
+
+### L31: Diálogos con `disableClose: true` por defecto + reset de paginador centralizado en filtros (BUG-INV-14, BUG-INV-10)
+
+**Hallazgo (2026-06-12)**: los diálogos de movimiento de stock (y otros) se cerraban al
+hacer click en el backdrop, perdiendo cambios sin confirmación (BUG-INV-14). Por
+separado, el paginador de productos no regresaba a la página 0 al cambiar de filtro o
+término de búsqueda, mostrando una página vacía o resultados incoherentes (BUG-INV-10).
+Ambos patrones se repiten en cualquier módulo con diálogos de edición y listas con
+filtros — Sales los tendrá desde el primer componente.
+
+**Regla obligatoria — MANDATORIA desde el primer diálogo/lista de cada módulo futuro**:
+
+```
+[ ] TODO MatDialog.open(...) que contenga un formulario o cambios de estado usa
+    disableClose: true por defecto (opt-out, no opt-in). Si se requiere permitir
+    cerrar con backdrop/ESC para un diálogo puramente informativo (sin formulario),
+    documentar la excepción explícitamente en la memoria técnica del módulo.
+[ ] TODA lista paginada con filtros/búsqueda resetea el paginador a la página 0
+    (paginator.firstPage() o equivalente) en el mismo punto centralizado donde se
+    aplica el filtro — no duplicar esta lógica por componente. Si existe un servicio/
+    componente base de lista compartido, implementar el reset ahí una sola vez.
+```
+
+**Por qué**: ambos bugs son fáciles de pasar por alto porque el comportamiento "roto"
+(cerrar con backdrop, página vacía tras filtrar) no genera errores de consola ni falla
+tests unitarios — solo se detecta en uso real. Hacerlos el comportamiento por defecto
+(no una corrección caso por caso) evita que se repitan en módulos futuros.
+
+---
+
+### L32: Mixin SCSS compartido para headers de tabla — consistencia visual desde el primer componente (BUG-INV-07)
+
+**Hallazgo (2026-06-12)**: `products-page` y `categories-page` no tenían la regla
+`.mat-mdc-header-cell { font-weight: 600; color: #6B3C6B; background: #F2E4F2; }` que sí
+tenía `suppliers-page` (Compras) — inconsistencia visual entre módulos por copiar/pegar
+incompleto del estilo de tabla.
+
+**Regla obligatoria — MANDATORIA**: extraer la regla de header de tabla a un
+**mixin/placeholder SCSS compartido** (ej. `%catalog-table-header` o
+`@mixin catalog-table-header` en `src/styles/_mixins.scss` o equivalente) e incluirlo
+(`@include`/`@extend`) en CADA `.catalog-table` desde el primer componente de tabla del
+módulo — no copiar la regla manualmente componente por componente. `VIS-GEN-07` del
+template de casos de prueba verifica esto.
+
+**Por qué**: una regla compartida no puede "olvidarse" en un componente nuevo — se
+incluye una vez y hereda el estándar automáticamente. La duplicación manual es la causa
+raíz de BUG-INV-07 y de futuras inconsistencias visuales similares (ver también L22).
+
+---
+
+### L33: `forkJoin` con `catchError` por observable dependiente de rol + convención de datos de prueba (BUG-INV-12, BUG-INV-18)
+
+**Hallazgo (2026-06-12)**: el formulario de productos usaba `forkJoin` para cargar
+categorías + proveedores activos en paralelo. `GET /purchases/suppliers/active`
+devolvía 403 para SALES, lo que hacía fallar el `forkJoin` COMPLETO (incluyendo
+categorías, que SALES sí puede leer) — BUG-INV-12. Por separado, un proveedor de prueba
+con payload XSS (`<script>alert(1)</script>`, `id=623`) quedó visible en listados/demos
+tras una sesión de pruebas de seguridad — BUG-INV-18 (desactivado el 2026-06-12, ya
+resuelto).
+
+**Reglas obligatorias — MANDATORIAS**:
+
+```
+[ ] Cualquier forkJoin (u operador equivalente que falla si UNA fuente falla) que
+    combine observables cuya disponibilidad depende del ROL del usuario autenticado
+    DEBE envolver cada observable dependiente de rol con
+    catchError(() => of(<valor por defecto seguro, ej. página vacía>)) — un 403/404
+    en una fuente no debe romper las demás. Probar el formulario/pantalla completa
+    con CADA rol que tiene acceso, no solo con ADMIN (Propuesta B, checklist de
+    cierre de componente).
+[ ] Datos creados durante sesiones de pruebas de seguridad (payloads XSS/SQLi/etc.)
+    se identifican con un prefijo reconocible, ej. "[QA] " o "TEST_" en el campo de
+    nombre/razón social — y se desactivan/eliminan (soft delete) al cerrar la ronda
+    de pruebas, ANTES de declarar el módulo "done". El checklist de cierre de módulo
+    (Propuesta D) incluye verificar que no existan registros activos con ese prefijo
+    o con payloads de prueba evidentes (`<script>`, `' OR 1=1`, etc.) en las tablas
+    afectadas por el módulo.
+```
+
+**Por qué**: BUG-INV-12 es severidad MEDIA pero afecta a TODOS los roles con acceso
+parcial a un formulario (cualquier combinación de fuentes con RBAC distinto). BUG-INV-18
+no es una vulnerabilidad activa, pero deja basura visible en demos/producción si no se
+limpia sistemáticamente.
+
+---
+
 ## 10. Roadmap
 
 ### Backend — pendiente

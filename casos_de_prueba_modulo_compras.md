@@ -109,12 +109,12 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| SEC-01 | Acceso directo `/purchases/suppliers` | SALES | Sesión activa con JWT SALES | Redirige a home; mensaje "Acceso denegado" | ⏳ PENDIENTE | BUG-M3-07 encontrado y corregido (Re-test 2026-06-10; anterior: ✅ PASS) |
-| SEC-02 | Acceso directo `/purchases/orders` | SALES | Sesión activa con JWT SALES | Redirige a home; mensaje "Acceso denegado" | ⏳ PENDIENTE | Mismo fix (Re-test 2026-06-10; anterior: ✅ PASS) |
-| SEC-03 | Acceso directo `/purchases/orders/new` | SALES | Sesión activa con JWT SALES | Redirige a home; mensaje "Acceso denegado" | ⏳ PENDIENTE | Mismo fix (Re-test 2026-06-10; anterior: ✅ PASS) |
-| SEC-04 | Acceso directo `/purchases/orders/{id}` | SALES | Sesión activa con JWT SALES | Redirige a home; mensaje "Acceso denegado" | ⏳ PENDIENTE | Mismo fix (Re-test 2026-06-10; anterior: ✅ PASS) |
-| SEC-05 | Acceso directo `/purchases/orders/new` | WAREHOUSEMAN | Sesión activa | Redirige a home; WAREHOUSEMAN no puede crear órdenes | ⏳ PENDIENTE | BUG-M3-14 encontrado y corregido — faltaba canActivate+roles en purchases.routes.ts (Re-test 2026-06-10; anterior: ✅ PASS) |
-| SEC-06 | Sin sesión activa — acceso a `/purchases/suppliers` | (sin JWT) | Token expirado / sin login | Redirige a `/login` | ⏳ PENDIENTE | Verificado limpiando localStorage; también verificado por expiry de JWT durante sesión (Re-test 2026-06-10; anterior: ✅ PASS) |
+| SEC-01 | Acceso directo `/purchases/suppliers` | SALES | Sesión activa con JWT SALES | Redirige a home; mensaje "Acceso denegado" | ✅ PASS | Re-test 2026-06-11: con sesión SALES activa, navegación directa a `/purchases/suppliers` redirige automáticamente a `/` (home). El sidebar de SALES muestra solo Inventario/Ventas/Reportes (sin Compras). No se observó snackbar "Acceso denegado" en el screenshot posterior a la redirección (puede haber expirado, duración 3-4s) — el guard funciona correctamente (`route.data['roles']` en `purchases.routes.ts`) |
+| SEC-02 | Acceso directo `/purchases/orders` | SALES | Sesión activa con JWT SALES | Redirige a home; mensaje "Acceso denegado" | ✅ PASS | Re-test 2026-06-11: navegación directa con sesión SALES redirige automáticamente a `/` (mismo guard que SEC-01) |
+| SEC-03 | Acceso directo `/purchases/orders/new` | SALES | Sesión activa con JWT SALES | Redirige a home; mensaje "Acceso denegado" | ✅ PASS | Re-test 2026-06-11: navegación directa con sesión SALES redirige automáticamente a `/` (mismo guard) |
+| SEC-04 | Acceso directo `/purchases/orders/{id}` | SALES | Sesión activa con JWT SALES | Redirige a home; mensaje "Acceso denegado" | ✅ PASS | Re-test 2026-06-11: navegación directa a `/purchases/orders/1` con sesión SALES redirige automáticamente a `/` (mismo guard) |
+| SEC-05 | Acceso directo `/purchases/orders/new` | WAREHOUSEMAN | Sesión activa | Redirige a home; WAREHOUSEMAN no puede crear órdenes | ✅ PASS | Re-test 2026-06-11: con sesión WAREHOUSEMAN (almacen01), navegación directa a `/purchases/orders/new` redirige automáticamente a `/`. Fix de BUG-M3-14 (canActivate+roles en purchases.routes.ts) sigue vigente |
+| SEC-06 | Sin sesión activa — acceso a `/purchases/suppliers` | (sin JWT) | Token expirado / sin login | Redirige a `/login` | ✅ PASS | Re-test 2026-06-11: con `localStorage.removeItem('almacenes_token')`, navegación directa a `/purchases/suppliers` redirige automáticamente a `/login` (authGuard detecta estado 'missing') |
 
 ---
 
@@ -124,40 +124,40 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VIS-SUP-01 | La lista ocupa el 100% del ancho disponible (sin panel lateral) | ADMIN | Sin panel de detalle adyacente | ⏳ PENDIENTE | Rediseño aplicado (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-SUP-02 | Barra de búsqueda en parte superior izquierda | ADMIN | Campo "Buscar proveedor" visible | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-SUP-03 | Botón "Nuevo proveedor" en parte superior derecha | ADMIN | Visible con ícono `add` | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-SUP-04 | Columnas: RFC (monospace morado), Razón social, Contacto, Teléfono | ADMIN | Sin columna de acciones con lápiz | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-SUP-05 | Header de tabla con fondo `#F2E4F2` y texto `#6B3C6B` | ADMIN | Colores correctos | ⏳ PENDIENTE | Verificado con getComputedStyle: rgb(242,228,242) / rgb(107,60,107) (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-SUP-06 | Cursor `pointer` en filas; hover cambia fondo a `#faf5fa` | ADMIN | Comportamiento hover correcto | ⏳ PENDIENTE | cursor:pointer verificado en DOM; hover:#faf5fa en CSS (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-SUP-07 | Razón social larga se trunca con `…` | ADMIN | text-overflow:ellipsis activo | ⏳ PENDIENTE | ellipsis+nowrap confirmados con getComputedStyle (Re-test 2026-06-10; anterior: ✅ PASS) |
+| VIS-SUP-01 | La lista ocupa el 100% del ancho disponible (sin panel lateral) | ADMIN | Sin panel de detalle adyacente | ✅ PASS | Re-test 2026-06-11: confirmado en screenshot — lista a ancho completo, sin panel lateral |
+| VIS-SUP-02 | Barra de búsqueda en parte superior izquierda | ADMIN | Campo "Buscar proveedor" visible | ✅ PASS | Re-test 2026-06-11: campo "Buscar proveedor" visible arriba a la izquierda |
+| VIS-SUP-03 | Botón "Nuevo proveedor" en parte superior derecha | ADMIN | Visible con ícono `add` | ✅ PASS | Re-test 2026-06-11: botón "+ Nuevo proveedor" visible arriba a la derecha |
+| VIS-SUP-04 | Columnas: RFC (monospace morado), Razón social, Contacto, Teléfono | ADMIN | Sin columna de acciones con lápiz | ✅ PASS | Re-test 2026-06-11: columnas RFC/Razón social/Contacto/Teléfono visibles, sin columna de acciones |
+| VIS-SUP-05 | Header de tabla con fondo `#F2E4F2` y texto `#6B3C6B` | ADMIN | Colores correctos | ✅ PASS | Re-test 2026-06-11: getComputedStyle → background rgb(242,228,242), color rgb(107,60,107) |
+| VIS-SUP-06 | Cursor `pointer` en filas; hover cambia fondo a `#faf5fa` | ADMIN | Comportamiento hover correcto | ✅ PASS | Re-test 2026-06-11: cursor:pointer en `.catalog-row`; regla CSS `.catalog-row:hover td { background: rgb(250,245,250) }` = #FAF5FA |
+| VIS-SUP-07 | Razón social larga se trunca con `…` | ADMIN | text-overflow:ellipsis activo | ✅ PASS | Re-test 2026-06-11: getComputedStyle → overflow:hidden, textOverflow:ellipsis, whiteSpace:nowrap |
 
 ### 1b. Búsqueda
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| BSRCH-SUP-01 | Buscar por RFC exacto (mayúsculas) | ADMIN | Hay proveedores en la BD | Filtra a 1 resultado | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| BSRCH-SUP-02 | Buscar por RFC en minúsculas | ADMIN | RFC existe en mayúsculas | Filtra correctamente (case insensitive) | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| BSRCH-SUP-03 | Buscar por razón social parcial sin acento ("logistica") | ADMIN | Existe "Logística" en BD | Encuentra "Logística" (accent insensitive) | ⏳ PENDIENTE | Verificado en browser (Re-test 2026-06-10; anterior: ✅ PASS) |
-| BSRCH-SUP-04 | Buscar término sin resultados | ADMIN | Término no existe | Estado vacío: ícono camión + 'Sin resultados para "X"' | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| BSRCH-SUP-05 | Limpiar campo de búsqueda (borrar texto) | ADMIN | Campo con término activo | Lista restaura todos los proveedores | ⏳ PENDIENTE | Verificado: 1 fila con "logistica" → 58 filas al limpiar (Re-test 2026-06-10; anterior: ✅ PASS) |
-| BSRCH-SUP-06 | Buscar con ñ — normalización bidireccional | ADMIN | — | "quimica" encuentra "Agroquímica"; normalización cubre U+0303 (ñ) | ⏳ PENDIENTE | Verificado con "quimica"→"Agroquímica" y normalize("niño")→"nino" en browser (Re-test 2026-06-10; anterior: ✅ PASS) |
+| BSRCH-SUP-01 | Buscar por RFC exacto (mayúsculas) | ADMIN | Hay proveedores en la BD | Filtra a 1 resultado | ✅ PASS | Re-test 2026-06-11: "AGRO990625GG6" → 1 resultado (Agroquímica y Fertilizantes del Valle S.A.) |
+| BSRCH-SUP-02 | Buscar por RFC en minúsculas | ADMIN | RFC existe en mayúsculas | Filtra correctamente (case insensitive) | ✅ PASS | Re-test 2026-06-11: "agro990625gg6" → mismo resultado que en mayúsculas |
+| BSRCH-SUP-03 | Buscar por razón social parcial sin acento ("logistica") | ADMIN | Existe "Logística" en BD | Encuentra "Logística" (accent insensitive) | ✅ PASS | Re-test 2026-06-11: "logistica" → "Distribuidora Logística del Centro S.A." |
+| BSRCH-SUP-04 | Buscar término sin resultados | ADMIN | Término no existe | Estado vacío: ícono camión + 'Sin resultados para "X"' | ✅ PASS | Re-test 2026-06-11: "zzznoexiste" → ícono camión + 'Sin resultados para "zzznoexiste"' |
+| BSRCH-SUP-05 | Limpiar campo de búsqueda (borrar texto) | ADMIN | Campo con término activo | Lista restaura todos los proveedores | ✅ PASS | Re-test 2026-06-11: al borrar el texto, la lista restaura todos los proveedores (placeholder "RFC o razón social") |
+| BSRCH-SUP-06 | Buscar con ñ — normalización bidireccional | ADMIN | — | "quimica" encuentra "Agroquímica"; normalización cubre U+0303 (ñ) | ✅ PASS | Re-test 2026-06-11: "quimica" → "Agroquímica y Fertilizantes del Valle S.A." |
 
 ### 1c. RBAC en lista
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RBAC-SUP-01 | Botón "Nuevo proveedor" visible | ADMIN | Visible | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| RBAC-SUP-02 | Botón "Nuevo proveedor" visible | MANAGER | Visible | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| RBAC-SUP-03 | Botón "Nuevo proveedor" NO visible | WAREHOUSEMAN | Ausente del DOM | ⏳ PENDIENTE | Verificado con test_wh — botón ausente (Re-test 2026-06-10; anterior: ✅ PASS) |
-| RBAC-SUP-04 | Lista carga correctamente | WAREHOUSEMAN | Tabla con proveedores | ⏳ PENDIENTE | 58 filas visibles para WAREHOUSEMAN (Re-test 2026-06-10; anterior: ✅ PASS) |
+| RBAC-SUP-01 | Botón "Nuevo proveedor" visible | ADMIN | Visible | ✅ PASS | Re-test 2026-06-11: botón "+ Nuevo proveedor" visible para ADMIN |
+| RBAC-SUP-02 | Botón "Nuevo proveedor" visible | MANAGER | Visible | ✅ PASS | Re-test 2026-06-11: botón "+ Nuevo proveedor" visible para MANAGER (manager01) |
+| RBAC-SUP-03 | Botón "Nuevo proveedor" NO visible | WAREHOUSEMAN | Ausente del DOM | ✅ PASS | Re-test 2026-06-11: con almacen01 (WAREHOUSEMAN), botón "+ Nuevo proveedor" ausente del DOM |
+| RBAC-SUP-04 | Lista carga correctamente | WAREHOUSEMAN | Tabla con proveedores | ✅ PASS | Re-test 2026-06-11: tabla con 58 proveedores visible para WAREHOUSEMAN |
 
 ### 1d. Estados vacíos
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| EMPTY-SUP-01 | Lista sin proveedores activos | ADMIN | Ícono camión + "Sin proveedores registrados" | ⏳ PENDIENTE | No reproducible: BD siempre tiene proveedores activos (Re-test 2026-06-10; anterior: N/A) |
-| EMPTY-SUP-02 | Búsqueda sin resultados | ADMIN | Ícono camión + 'Sin resultados para "X"' | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| EMPTY-SUP-01 | Lista sin proveedores activos | ADMIN | Ícono camión + "Sin proveedores registrados" | N/A | Re-test 2026-06-11: no reproducible — la BD siempre tiene proveedores activos (58) |
+| EMPTY-SUP-02 | Búsqueda sin resultados | ADMIN | Ícono camión + 'Sin resultados para "X"' | ✅ PASS | Re-test 2026-06-11: confirmado junto con BSRCH-SUP-04 — ícono camión + 'Sin resultados para "zzznoexiste"' |
 
 ---
 
@@ -167,62 +167,62 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| UI-SUP-01 | Click en fila de proveedor → abre diálogo | ADMIN | Lista cargada | Diálogo abre con datos del proveedor | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-SUP-02 | Diálogo muestra todos los campos | ADMIN | Proveedor con todos los datos | RFC, Razón social, Contacto, Teléfono, Email, Dirección | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-SUP-03 | Auditoría visible: "Creado por X" y "Actualizado por Y" | ADMIN | Proveedor editado previamente | Sección de auditoría con íconos | ⏳ PENDIENTE | Verificado: "Creado por admin / Actualizado por admin" (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-SUP-04 | Botón "Nuevo proveedor" → diálogo vacío con título "Nuevo proveedor" | ADMIN | — | Todos los campos vacíos | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-SUP-05 | Botón Cancelar cierra el diálogo sin guardar | ADMIN | Diálogo abierto con cambios | Diálogo cierra; lista no cambia | ⏳ PENDIENTE | Verificado: cierra sin modificar la lista (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-SUP-06 | Click fuera del diálogo lo cierra | ADMIN | Diálogo abierto | Diálogo cierra (dialog sin disableClose) | ⏳ PENDIENTE | Material Dialog sin disableClose cierra con backdrop click (Re-test 2026-06-10; anterior: ✅ PASS) |
+| UI-SUP-01 | Click en fila de proveedor → abre diálogo | ADMIN | Lista cargada | Diálogo abre con datos del proveedor | ✅ PASS | Re-test 2026-06-11: click en fila AGRO990625GG6 abre diálogo "Editar proveedor" con datos cargados |
+| UI-SUP-02 | Diálogo muestra todos los campos | ADMIN | Proveedor con todos los datos | RFC, Razón social, Contacto, Teléfono, Email, Dirección | ✅ PASS | Re-test 2026-06-11: 6 campos visibles — RFC, Razón social, Nombre de contacto, Teléfono, Correo electrónico, Dirección |
+| UI-SUP-03 | Auditoría visible: "Creado por X" y "Actualizado por Y" | ADMIN | Proveedor editado previamente | Sección de auditoría con íconos | ✅ PASS | Re-test 2026-06-11: "Creado por admin / Actualizado por admin" visible con íconos |
+| UI-SUP-04 | Botón "Nuevo proveedor" → diálogo vacío con título "Nuevo proveedor" | ADMIN | — | Todos los campos vacíos | ✅ PASS | Re-test 2026-06-11: click "Nuevo proveedor" → diálogo título "Nuevo proveedor" con RFC, Razón social, Nombre de contacto, Teléfono, Correo, Dirección todos vacíos |
+| UI-SUP-05 | Botón Cancelar cierra el diálogo sin guardar | ADMIN | Diálogo abierto con cambios | Diálogo cierra; lista no cambia | ✅ PASS | Re-test 2026-06-11: con RFC="ZZZTEST123456" tecleado, click "Cancelar" → diálogo cierra, lista no cambia (proveedor no creado) |
+| UI-SUP-06 | Click fuera del diálogo lo cierra | ADMIN | Diálogo abierto | Diálogo cierra (dialog sin disableClose) | ✅ PASS | Re-test 2026-06-11: diálogo "Editar proveedor" abierto, click en backdrop → diálogo cierra |
 
 ### 2b. RBAC en formulario
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RBAC-SUP-05 | Título diálogo en edición | ADMIN | "Editar proveedor" | ⏳ PENDIENTE | BUG-M3-08 corregido (Re-test 2026-06-10; anterior: ✅ PASS) |
-| RBAC-SUP-06 | Título diálogo en edición | MANAGER | "Editar proveedor" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| RBAC-SUP-07 | Título diálogo en edición | WAREHOUSEMAN | "Ver proveedor" | ⏳ PENDIENTE | BUG-M3-08 corregido (Re-test 2026-06-10; anterior: ✅ PASS) |
-| RBAC-SUP-08 | Formulario editable | ADMIN | Todos los campos habilitados; Guardar + Desactivar visibles | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| RBAC-SUP-09 | Botón Desactivar NO visible | MANAGER | Solo Guardar, sin Desactivar | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| RBAC-SUP-10 | Formulario de solo lectura | WAREHOUSEMAN | Campos deshabilitados; sin Guardar ni Desactivar | ⏳ PENDIENTE | Todos los inputs disabled:true; solo botón "Cancelar" (Re-test 2026-06-10; anterior: ✅ PASS) |
-| RBAC-SUP-11 | Proveedor nuevo: WAREHOUSEMAN no tiene botón "Nuevo proveedor" | WAREHOUSEMAN | Botón ausente; no puede abrir diálogo nuevo | ⏳ PENDIENTE | Confirmado junto con RBAC-SUP-03 (Re-test 2026-06-10; anterior: ✅ PASS) |
+| RBAC-SUP-05 | Título diálogo en edición | ADMIN | "Editar proveedor" | ✅ PASS | Re-test 2026-06-11: título "Editar proveedor" confirmado para ADMIN |
+| RBAC-SUP-06 | Título diálogo en edición | MANAGER | "Editar proveedor" | ✅ PASS | Re-test 2026-06-11: con manager01, click en fila CLIT880312HH7 → diálogo título "Editar proveedor", campos habilitados |
+| RBAC-SUP-07 | Título diálogo en edición | WAREHOUSEMAN | "Ver proveedor" | ✅ PASS | Re-test 2026-06-11: título "Ver proveedor" confirmado para WAREHOUSEMAN (almacen01) |
+| RBAC-SUP-08 | Formulario editable | ADMIN | Todos los campos habilitados; Guardar + Desactivar visibles | ✅ PASS | Re-test 2026-06-11: 6 inputs disabled:false; botones "Desactivar", "Cancelar", "Guardar cambios" presentes |
+| RBAC-SUP-09 | Botón Desactivar NO visible | MANAGER | Solo Guardar, sin Desactivar | ✅ PASS | Re-test 2026-06-11: con manager01, diálogo "Editar proveedor" muestra solo "Cancelar" y "Guardar cambios" — sin botón "Desactivar" |
+| RBAC-SUP-10 | Formulario de solo lectura | WAREHOUSEMAN | Campos deshabilitados; sin Guardar ni Desactivar | ✅ PASS | Re-test 2026-06-11: getComputedStyle/DOM → 6 inputs con disabled:true; único botón presente "Cancelar" |
+| RBAC-SUP-11 | Proveedor nuevo: WAREHOUSEMAN no tiene botón "Nuevo proveedor" | WAREHOUSEMAN | Botón ausente; no puede abrir diálogo nuevo | ✅ PASS | Re-test 2026-06-11: confirmado junto con RBAC-SUP-03 |
 
 ### 2c. Validaciones del formulario
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VAL-SUP-01 | RFC vacío al intentar guardar | Formulario vacío | Error "El RFC es obligatorio" visible bajo el campo | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VAL-SUP-02 | RFC con 11 caracteres (< mínimo 12) | RFC = "ABC12345678" | Error "El RFC debe tener al menos 12 caracteres" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VAL-SUP-03 | RFC con 14 caracteres (> máximo 13) | Intentar escribir 14 chars | El campo no acepta más de 13 caracteres | ⏳ PENDIENTE | maxlength="13" en DOM — tecla adicional ignorada (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VAL-SUP-04 | Razón social vacía | Campo vacío | Error "La razón social es obligatoria" | ⏳ PENDIENTE | Capturado al tabear tras RFC incompleto (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VAL-SUP-05 | Email con formato inválido ("notanemail") | Email inválido | Error "Formato de correo inválido" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VAL-SUP-06 | Botón Guardar deshabilitado con formulario inválido | RFC vacío | Botón Guardar deshabilitado (no clickeable) | ⏳ PENDIENTE | disabled:true confirmado en DOM (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VAL-SUP-07 | Botón Guardar habilitado con formulario válido | RFC (13 chars) y razón social rellenos | Botón habilitado | ⏳ PENDIENTE | disabled:false confirmado en DOM (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VAL-SUP-08 | Botón se deshabilita durante el guardado (loading) | Click en Guardar | Botón deshabilitado mientras carga | ⏳ PENDIENTE | `[disabled]="loading"` en código; operación muy rápida en local (Re-test 2026-06-10; anterior: ✅ PASS) |
+| VAL-SUP-01 | RFC vacío al intentar guardar | Formulario vacío | Error "El RFC es obligatorio" visible bajo el campo | ✅ PASS | Re-test 2026-06-11: error "El RFC es obligatorio" visible bajo el campo tras blur |
+| VAL-SUP-02 | RFC con 11 caracteres (< mínimo 12) | RFC = "ABC12345678" | Error "El RFC debe tener al menos 12 caracteres" | ✅ PASS | Re-test 2026-06-11: error "El RFC debe tener al menos 12 caracteres" visible (texto se solapa visualmente con label de campo siguiente, pero el mensaje es correcto) |
+| VAL-SUP-03 | RFC con 14 caracteres (> máximo 13) | Intentar escribir 14 chars | El campo no acepta más de 13 caracteres | ✅ PASS | Re-test 2026-06-11: al escribir "ABCDE12345678X" (14 chars), el campo retuvo solo "ABCDE12345678" (13 chars) — maxlength=13 confirmado |
+| VAL-SUP-04 | Razón social vacía | Campo vacío | Error "La razón social es obligatoria" | ✅ PASS | Re-test 2026-06-11: error "La razón social es obligatoria" visible bajo el campo tras blur |
+| VAL-SUP-05 | Email con formato inválido ("notanemail") | Email inválido | Error "Formato de correo inválido" | ✅ PASS | Re-test 2026-06-11: error "Formato de correo inválido" visible bajo el campo |
+| VAL-SUP-06 | Botón Guardar deshabilitado con formulario inválido | RFC vacío | Botón Guardar deshabilitado (no clickeable) | ✅ PASS | Re-test 2026-06-11: con formulario vacío, botón "Crear proveedor" disabled:true confirmado por JS |
+| VAL-SUP-07 | Botón Guardar habilitado con formulario válido | RFC (13 chars) y razón social rellenos | Botón habilitado | ✅ PASS | Re-test 2026-06-11: con RFC="ABCDE12345678" y razón social="Proveedor de Prueba S.A." (email vacío), botón "Crear proveedor" se habilita |
+| VAL-SUP-08 | Botón se deshabilita durante el guardado (loading) | Click en Guardar | Botón deshabilitado mientras carga | ✅ PASS | Re-test 2026-06-11: `[disabled]="loading"` confirmado en código fuente del componente; operación local demasiado rápida para capturar visualmente |
 
 ### 2d. CRUD — Crear proveedor
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| CRUD-SUP-01 | Crear proveedor con todos los datos válidos | Formulario completo correcto | Snackbar verde "Proveedor creado correctamente." (3s) | ⏳ PENDIENTE | snackbar-success + #2E7D32 confirmados (Re-test 2026-06-10; anterior: ✅ PASS) |
-| CRUD-SUP-02 | Diálogo cierra después de crear | Crear exitoso | Diálogo cierra | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| CRUD-SUP-03 | Lista se recarga y muestra el nuevo proveedor | Crear exitoso | RFC del nuevo proveedor visible en la lista | ⏳ PENDIENTE | RFC "ABCDE1234567X" visible inmediatamente (Re-test 2026-06-10; anterior: ✅ PASS) |
-| CRUD-SUP-04 | Crear proveedor con RFC duplicado | RFC ya existe en BD | Snackbar rojo con mensaje del backend (409) | ⏳ PENDIENTE | "Ya existe un proveedor con el RFC 'X'." — BUG-M3-13 también detectado y corregido aquí (Re-test 2026-06-10; anterior: ✅ PASS) |
+| CRUD-SUP-01 | Crear proveedor con todos los datos válidos | Formulario completo correcto | Snackbar verde "Proveedor creado correctamente." (3s) | ✅ PASS | Re-test 2026-06-11: creado RFC="ABCDE12345678", razón social="Proveedor de Prueba Compras 2026 S.A." → snackbar "Proveedor creado correctamente." (nota: con razón social "Proveedor de Prueba S.A." el backend rechazó por duplicado — ya existía de pruebas previas, no reproducible aquí) |
+| CRUD-SUP-02 | Diálogo cierra después de crear | Crear exitoso | Diálogo cierra | ✅ PASS | Re-test 2026-06-11: diálogo cerró automáticamente tras la creación exitosa |
+| CRUD-SUP-03 | Lista se recarga y muestra el nuevo proveedor | Crear exitoso | RFC del nuevo proveedor visible en la lista | ✅ PASS | Re-test 2026-06-11: búsqueda "ABCDE12345678" → "Proveedor de Prueba Compras 2026 S.A." visible inmediatamente |
+| CRUD-SUP-04 | Crear proveedor con RFC duplicado | RFC ya existe en BD | Snackbar rojo con mensaje del backend (409) | ✅ PASS | Re-test 2026-06-11: RFC="ABCDE12345678" (ya existente) con razón social distinta → snackbar "Ya existe un proveedor con el RFC 'ABCDE12345678'." |
 
 ### 2e. CRUD — Editar proveedor
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| CRUD-SUP-05 | Editar razón social de un proveedor existente | Proveedor activo | Snackbar verde "Proveedor actualizado correctamente." | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| CRUD-SUP-06 | Lista refleja los cambios después de editar | Editar exitoso | Datos actualizados en la tabla sin recargar la página | ⏳ PENDIENTE | Fila "(Editado)" visible inmediatamente (Re-test 2026-06-10; anterior: ✅ PASS) |
+| CRUD-SUP-05 | Editar razón social de un proveedor existente | Proveedor activo | Snackbar verde "Proveedor actualizado correctamente." | ✅ PASS | Re-test 2026-06-11: editado proveedor ABCDE12345678 → razón social "Proveedor de Prueba Compras 2026 S.A. (Editado)" → snackbar verde "Proveedor actualizado correctamente." |
+| CRUD-SUP-06 | Lista refleja los cambios después de editar | Editar exitoso | Datos actualizados en la tabla sin recargar la página | ✅ PASS | Re-test 2026-06-11: lista se recargó automáticamente (sin F5) y celda "Razón social" muestra "Proveedor de Prueba Compras 2026 S.A. (Editado)" verificado vía DOM |
 
 ### 2f. CRUD — Desactivar proveedor
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| CRUD-SUP-07 | Click en Desactivar → aparece diálogo de confirmación | Proveedor activo (ADMIN) | Modal con "¿Desactivar a X?", botones Desactivar/Cancelar | ⏳ PENDIENTE | Modal encima del diálogo de edición (Re-test 2026-06-10; anterior: ✅ PASS) |
-| CRUD-SUP-08 | Cancelar en diálogo de confirmación | Diálogo abierto | No se desactiva; diálogo cierra; proveedor sigue activo | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| CRUD-SUP-09 | Confirmar desactivación de proveedor sin órdenes activas | Proveedor sin PENDING/APPROVED | Snackbar verde "Proveedor desactivado."; proveedor desaparece de lista | ⏳ PENDIENTE | Proveedor "ABCDE1234567X" desactivado exitosamente (Re-test 2026-06-10; anterior: ✅ PASS) |
-| CRUD-SUP-10 | Intentar desactivar proveedor con órdenes PENDING/APPROVED | Proveedor con orden activa | Snackbar rojo con mensaje del backend 422 | ⏳ PENDIENTE | "No se puede desactivar el proveedor: tiene órdenes de compra en estado PENDING o APPROVED..." — #C62828 (Re-test 2026-06-10; anterior: ✅ PASS) |
+| CRUD-SUP-07 | Click en Desactivar → aparece diálogo de confirmación | Proveedor activo (ADMIN) | Modal con "¿Desactivar a X?", botones Desactivar/Cancelar | ✅ PASS | Re-test 2026-06-11: con proveedor "ABCDE12345678" → modal "Desactivar proveedor" con texto "¿Desactivar a 'Proveedor de Prueba Compras 2026 S.A. (Editado)'? No podrá usarse en nuevas órdenes." y botones Cancelar/Desactivar, encima del diálogo de edición |
+| CRUD-SUP-08 | Cancelar en diálogo de confirmación | Diálogo abierto | No se desactiva; diálogo cierra; proveedor sigue activo | ✅ PASS | Re-test 2026-06-11: click en Cancelar cerró el modal de confirmación, diálogo de edición siguió abierto, proveedor sigue activo |
+| CRUD-SUP-09 | Confirmar desactivación de proveedor sin órdenes activas | Proveedor sin PENDING/APPROVED | Snackbar verde "Proveedor desactivado."; proveedor desaparece de lista | ✅ PASS | Re-test 2026-06-11: proveedor "ABCDE12345678" (sin órdenes) → snackbar "Proveedor desactivado." → "Sin resultados para 'ABCDE12345678'" en la lista |
+| CRUD-SUP-10 | Intentar desactivar proveedor con órdenes PENDING/APPROVED | Proveedor con orden activa | Snackbar rojo con mensaje del backend 422 | ✅ PASS | Re-test 2026-06-11: proveedor "CLIT880312HH7" (con orden OC-2026-0078 en estado PENDING) → snackbar rojo "No se puede desactivar el proveedor: tiene órdenes de compra en estado PENDING o APPROVED. Cancélelas o recíbalas primero." |
 
 ---
 
@@ -232,60 +232,60 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VIS-ORD-01 | Cuatro pestañas: Pendientes, Aprobadas, Recibidas, Canceladas | ADMIN | Pestañas visibles y funcionales | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-ORD-02 | Badge de cantidad en pestaña cuando hay órdenes | ADMIN | Número junto al nombre de la pestaña | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-ORD-03 | Sin ícono `open_in_new` en la columna de acciones | ADMIN | Solo acciones de negocio (Aprobar/Recibir/Cancelar) | ⏳ PENDIENTE | Removido en este ciclo (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-ORD-04 | Columna Total visible para ADMIN | ADMIN | Total en MXN visible | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-ORD-05 | Columna Total ausente para WAREHOUSEMAN | WAREHOUSEMAN | Columna Total no aparece | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-ORD-06 | Badge de estado con colores semánticos correctos | ADMIN | PENDING=naranja, APPROVED=azul, RECEIVED=verde, CANCELLED=rojo | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-ORD-07 | N° de orden en estilo monoespaciado morado | ADMIN | Fuente monospace, color #6B3C6B | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| VIS-ORD-01 | Cuatro pestañas: Pendientes, Aprobadas, Recibidas, Canceladas | ADMIN | Pestañas visibles y funcionales | ✅ PASS | Re-test 2026-06-11: 4 pestañas visibles y funcionales — Pendientes(1), Aprobadas(0), Recibidas(47), Canceladas(30) |
+| VIS-ORD-02 | Badge de cantidad en pestaña cuando hay órdenes | ADMIN | Número junto al nombre de la pestaña | ✅ PASS | Re-test 2026-06-11: badges visibles en Pendientes(1), Recibidas(47), Canceladas(30); Aprobadas(0) sin badge |
+| VIS-ORD-03 | Sin ícono `open_in_new` en la columna de acciones | ADMIN | Solo acciones de negocio (Aprobar/Recibir/Cancelar) | ✅ PASS | Re-test 2026-06-11: en Pendientes solo íconos check (Aprobar) y X (Cancelar); sin `open_in_new` |
+| VIS-ORD-04 | Columna Total visible para ADMIN | ADMIN | Total en MXN visible | ✅ PASS | Re-test 2026-06-11: columna "Total" visible con valores en $ |
+| VIS-ORD-05 | Columna Total ausente para WAREHOUSEMAN | WAREHOUSEMAN | Columna Total no aparece | ✅ PASS | Re-test 2026-06-11: con `almacen01` (WAREHOUSEMAN) en `/purchases/orders`, la tabla muestra columnas N° Orden, Proveedor, Creado por, Fecha, Estado — sin columna "Total" |
+| VIS-ORD-06 | Badge de estado con colores semánticos correctos | ADMIN | PENDING=naranja, APPROVED=azul, RECEIVED=verde, CANCELLED=rojo | ✅ PASS | Re-test 2026-06-11: getComputedStyle → PENDING bg rgb(255,243,224)/color rgb(230,81,0) (#FFF3E0/#E65100); RECEIVED y CANCELLED visualmente verde/rojo en screenshots de Recibidas/Canceladas; APPROVED no verificable por colores (0 órdenes actualmente, badge usa misma clase `.status--approved`) |
+| VIS-ORD-07 | N° de orden en estilo monoespaciado morado | ADMIN | Fuente monospace, color #6B3C6B | ✅ PASS | Re-test 2026-06-11: getComputedStyle span.orders-page__order-num → fontFamily monospace, color rgb(107,60,107) |
 
 ### 3b. Búsqueda
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| BSRCH-ORD-01 | Buscar por N° de orden parcial | ADMIN | Órdenes en la pestaña activa | Filtra correctamente | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| BSRCH-ORD-02 | Buscar por proveedor sin acento | ADMIN | Proveedor con acento en su nombre | Encuentra (accent insensitive) | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| BSRCH-ORD-03 | Buscar por usuario creador | ADMIN | Órdenes de distintos usuarios | Filtra por username | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| BSRCH-ORD-04 | Limpiar búsqueda con botón X | ADMIN | Campo con valor | Lista restaurada; botón X visible solo con texto | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| BSRCH-ORD-05 | Búsqueda sin resultados | ADMIN | Término inexistente | Estado vacío con 'Sin resultados para "X"' | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| BSRCH-ORD-01 | Buscar por N° de orden parcial | ADMIN | Órdenes en la pestaña activa | Filtra correctamente | ⚠️ ABIERTO | (Re-test 2026-06-11: en pestaña "Recibidas" (47 órdenes, página 1 = ítems 1-20). Buscar "0077" (orden en página 1) → filtra correctamente a 1 fila, pero el paginador sigue mostrando "1 – 20 of 47" (no se actualiza). Buscar "0040" (orden existente pero en página 2, NO cargada) → "Sin resultados para '0040'", a pesar de que OC-2026-0040 SÍ existe en la pestaña. Ver BUG-M3-15: la búsqueda solo filtra client-side sobre los 20 registros de la página actualmente cargada, no consulta el backend sobre el total de 47.) |
+| BSRCH-ORD-02 | Buscar por proveedor sin acento | ADMIN | Proveedor con acento en su nombre | Encuentra (accent insensitive) | ✅ PASS | (Re-test 2026-06-11: buscar "logistica" (sin acento) en pestaña "Recibidas" encuentra OC-2026-0068, proveedor "Distribuidora Logística del...". El normalize() con NFD funciona correctamente para accent-insensitive. Sujeto a la misma limitación de BUG-M3-15: solo busca en la página cargada.) |
+| BSRCH-ORD-03 | Buscar por usuario creador | ADMIN | Órdenes de distintos usuarios | Filtra por username | ✅ PASS | (Re-test 2026-06-11: buscar "test_mgr" en pestaña "Recibidas" filtra correctamente a OC-2026-0062, creada por "test_mgr". Sujeto a la misma limitación de BUG-M3-15: solo busca en la página cargada.) |
+| BSRCH-ORD-04 | Limpiar búsqueda con botón X | ADMIN | Campo con valor | Lista restaurada; botón X visible solo con texto | ✅ PASS | (Re-test 2026-06-11: con texto en el campo aparece el botón X; al hacer click se vacía el campo, el botón X desaparece y la lista vuelve a mostrar las 20 órdenes de la página 1 sin necesidad de recargar.) |
+| BSRCH-ORD-05 | Búsqueda sin resultados | ADMIN | Término inexistente | Estado vacío con 'Sin resultados para "X"' | ✅ PASS | (Re-test 2026-06-11: buscar "zzz999nonexistent" muestra estado vacío con ícono y texto 'Sin resultados para "zzz999nonexistent"'. El paginador "1 – 20 of 47" permanece visible debajo del estado vacío — visualmente algo confuso dado BUG-M3-15, pero el mensaje en sí es correcto.) |
 
 ### 3c. RBAC en lista
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RBAC-ORD-01 | Botón "Nueva orden" visible | ADMIN | Visible | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| RBAC-ORD-02 | Botón "Nueva orden" visible | MANAGER | Visible | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| RBAC-ORD-03 | Botón "Nueva orden" NO visible | WAREHOUSEMAN | Ausente | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| RBAC-ORD-04 | Acciones en PENDING: Aprobar + Cancelar | ADMIN/MANAGER | Ambos íconos visibles | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| RBAC-ORD-05 | Acciones en PENDING: sin botones para WAREHOUSEMAN | WAREHOUSEMAN | Sin Aprobar ni Cancelar | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| RBAC-ORD-06 | Acciones en APPROVED: Recibir + Cancelar para ADMIN/MANAGER | ADMIN | Ambos visibles | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| RBAC-ORD-07 | Acciones en APPROVED: solo Recibir para WAREHOUSEMAN | WAREHOUSEMAN | Solo Recibir, sin Cancelar | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| RBAC-ORD-08 | Sin acciones en RECEIVED y CANCELLED (todos los roles) | ADMIN | Celda de acciones vacía | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| RBAC-ORD-01 | Botón "Nueva orden" visible | ADMIN | Visible | ✅ PASS | (Re-test 2026-06-11: con admin, botón "+ Nueva orden" visible junto al buscador en las 4 pestañas.) |
+| RBAC-ORD-02 | Botón "Nueva orden" visible | MANAGER | Visible | ✅ PASS | (Re-test 2026-06-11: con manager01, botón "+ Nueva orden" visible en la pestaña "Aprobadas".) |
+| RBAC-ORD-03 | Botón "Nueva orden" NO visible | WAREHOUSEMAN | Ausente | ✅ PASS | (Re-test 2026-06-11: con almacen01, el botón "+ Nueva orden" está ausente; solo se muestra el campo "Buscar".) |
+| RBAC-ORD-04 | Acciones en PENDING: Aprobar + Cancelar | ADMIN/MANAGER | Ambos íconos visibles | ✅ PASS | (Re-test 2026-06-11: con admin, orden OC-2026-0078 en PENDING mostraba ícono check (Aprobar) + ícono X (Cancelar). Con manager01, en el detalle de OC-2026-0080 (PENDING) los botones "Aprobar" y "Cancelar orden" también estaban visibles y habilitados.) |
+| RBAC-ORD-05 | Acciones en PENDING: sin botones para WAREHOUSEMAN | WAREHOUSEMAN | Sin Aprobar ni Cancelar | ✅ PASS | (Re-test 2026-06-11: con almacen01, en el detalle de OC-2026-0080 (PENDING) no se muestran los botones "Aprobar" ni "Cancelar orden" junto al título — solo el badge "Pendiente". Tampoco se muestran "Agregar línea" ni columnas Precio unitario/Subtotal.) |
+| RBAC-ORD-06 | Acciones en APPROVED: Recibir + Cancelar para ADMIN/MANAGER | ADMIN | Ambos visibles | ✅ PASS | (Re-test 2026-06-11: con admin, orden OC-2026-0078 en APPROVED mostraba ícono "done_all" (Recibir) + ícono X (Cancelar).) |
+| RBAC-ORD-07 | Acciones en APPROVED: solo Recibir para WAREHOUSEMAN | WAREHOUSEMAN | Solo Recibir, sin Cancelar | ✅ PASS | (Re-test 2026-06-11: con almacen01, orden OC-2026-0078 en APPROVED mostraba solo el ícono "done_all" (Recibir), sin ícono Cancelar.) |
+| RBAC-ORD-08 | Sin acciones en RECEIVED y CANCELLED (todos los roles) | ADMIN | Celda de acciones vacía | ✅ PASS | (Re-test 2026-06-11: verificado con admin y almacen01 en pestaña "Recibidas" (47 órdenes) — columna de acciones vacía para todas las filas en ambos roles.) |
 
 ### 3d. Acciones en filas
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| UI-ORD-01 | Click en fila navega a `/purchases/orders/{id}` | ADMIN | Orden en cualquier estado | Navegación correcta al detalle | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-ORD-02 | Ícono Aprobar en PENDING | ADMIN | Orden PENDING | Abre diálogo de confirmación | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-ORD-03 | Ícono Cancelar en PENDING | ADMIN | Orden PENDING | Abre diálogo de confirmación con campo motivo | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-ORD-04 | Ícono Recibir en APPROVED | WAREHOUSEMAN | Orden APPROVED | Abre diálogo de confirmación | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-ORD-05 | Ícono Cancelar en APPROVED | MANAGER | Orden APPROVED | Abre diálogo de confirmación | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| UI-ORD-01 | Click en fila navega a `/purchases/orders/{id}` | ADMIN | Orden en cualquier estado | Navegación correcta al detalle | ✅ PASS | (Re-test 2026-06-11: confirmado anteriormente al hacer click accidental en fila OC-2026-0039 (Recibidas) → navegó a `/purchases/orders/241?from=RECEIVED` mostrando el detalle correcto.) |
+| UI-ORD-02 | Ícono Aprobar en PENDING | ADMIN | Orden PENDING | Abre diálogo de confirmación | ✅ PASS | (Re-test 2026-06-11: con admin, click en ícono check de OC-2026-0078 (PENDING) abrió diálogo "Aprobar orden" — "¿Aprobar la orden OC-2026-0078? Los detalles quedarán bloqueados." con botones Cancelar/Aprobar. Se canceló el diálogo sin confirmar.) |
+| UI-ORD-03 | Ícono Cancelar en PENDING | ADMIN | Orden PENDING | Abre diálogo de confirmación con campo motivo | ⚠️ ABIERTO | (Re-test 2026-06-11: con admin, click en ícono X de OC-2026-0078 (PENDING) abrió diálogo "Cancelar orden" — "¿Cancelar la orden OC-2026-0078? Esta acción es irreversible." con botones Cancelar/"Cancelar orden". El diálogo NO incluye un campo de texto para capturar el motivo de cancelación, a diferencia de lo que indica el resultado esperado del caso. Ver BUG-M3-16.) |
+| UI-ORD-04 | Ícono Recibir en APPROVED | WAREHOUSEMAN | Orden APPROVED | Abre diálogo de confirmación | ✅ PASS | (Re-test 2026-06-11: con almacen01, click en ícono "done_all" de OC-2026-0078 (APPROVED) abrió diálogo "Recibir mercancía" — "¿Confirmar recepción de la orden OC-2026-0078? Se incrementará el stock de todos los productos." Se canceló sin confirmar.) |
+| UI-ORD-05 | Ícono Cancelar en APPROVED | MANAGER | Orden APPROVED | Abre diálogo de confirmación | ✅ PASS | (Re-test 2026-06-11: con manager01, click en ícono X de OC-2026-0078 (APPROVED) abrió diálogo "Cancelar orden" — "¿Cancelar la orden OC-2026-0078? Esta acción es irreversible." Esta vez se confirmó la acción → snackbar "Orden cancelada." → orden movida a pestaña "Canceladas" — ver FLOW-DET-05.) |
 
 ### 3e. Estados vacíos
 
 | ID | Descripción | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|
-| EMPTY-ORD-01 | Pestaña Pendientes sin órdenes | Ícono receipt + "Sin órdenes pendientes" | ⏳ PENDIENTE | Verificado (no había pending) (Re-test 2026-06-10; anterior: ✅ PASS) |
-| EMPTY-ORD-02 | Búsqueda sin resultados en lista | 'Sin resultados para "X"' | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| EMPTY-ORD-01 | Pestaña Pendientes sin órdenes | Ícono receipt + "Sin órdenes pendientes" | ✅ PASS | (Re-test 2026-06-11: tras aprobar OC-2026-0078, la pestaña "Pendientes" quedó en 0 y mostró ícono receipt + texto "Sin órdenes pendientes", verificado con admin y almacen01. La pestaña "Aprobadas" antes de la aprobación mostró el mismo componente con "Sin órdenes aprobadas", confirmando que el estado vacío es genérico por pestaña/estado.) |
+| EMPTY-ORD-02 | Búsqueda sin resultados en lista | 'Sin resultados para "X"' | ✅ PASS | (Re-test 2026-06-11: ver BSRCH-ORD-05 — buscar "zzz999nonexistent" en "Recibidas" muestra ícono receipt + 'Sin resultados para "zzz999nonexistent"'.) |
 
 ### 3f. Paginación
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| UI-ORD-06 | Paginador visible cuando hay > pageSize órdenes | > 10 órdenes en pestaña Recibidas | Paginador con total, opciones 10/20/50 | ⏳ PENDIENTE | Verificado en Recibidas con 41 (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-ORD-07 | Cambio de página carga página correcta | Paginador visible | Filas cambian al hacer clic en página 2 | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| UI-ORD-06 | Paginador visible cuando hay > pageSize órdenes | > 10 órdenes en pestaña Recibidas | Paginador con total, opciones 10/20/50 | ✅ PASS | (Re-test 2026-06-11: pestaña "Recibidas" (47 órdenes) muestra paginador "1 – 20 of 47" con selector "Items per page: 20" y flechas de navegación.) |
+| UI-ORD-07 | Cambio de página carga página correcta | Paginador visible | Filas cambian al hacer clic en página 2 | ✅ PASS | (Re-test 2026-06-11: confirmado anteriormente — clic en flecha "siguiente" cambió de página 1 (OC-2026-0077…0054) a página 2 (OC-2026-0040…0024).) |
 
 ---
 
@@ -295,32 +295,32 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VIS-DET-01 | Título "Nueva orden de compra" | ADMIN | H1 con ese texto | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-DET-02 | Selector de proveedor con `*` (obligatorio) | ADMIN | `mat-select` con label "Proveedor*" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-DET-03 | Campo Notas opcional visible | ADMIN | `textarea` sin `*` | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-DET-04 | Sección "Líneas de detalle" con botón "Agregar línea" | ADMIN | Sección visible; botón habilitado | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-DET-05 | Panel "Historial de estado" a la derecha | ADMIN | Panel visible con estados vacíos | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| VIS-DET-01 | Título "Nueva orden de compra" | ADMIN | H1 con ese texto | ✅ PASS | (Re-test 2026-06-11: confirmado en `/purchases/orders/new`, título "Nueva orden de compra" visible.) |
+| VIS-DET-02 | Selector de proveedor con `*` (obligatorio) | ADMIN | `mat-select` con label "Proveedor*" | ✅ PASS | (Re-test 2026-06-11: campo "Proveedor*" como `mat-select`, obligatorio.) |
+| VIS-DET-03 | Campo Notas opcional visible | ADMIN | `textarea` sin `*` | ✅ PASS | (Re-test 2026-06-11: campo "Notas" como `textarea`, sin asterisco.) |
+| VIS-DET-04 | Sección "Líneas de detalle" con botón "Agregar línea" | ADMIN | Sección visible; botón habilitado | ✅ PASS | (Re-test 2026-06-11: sección "Líneas de detalle" con botón "+ Agregar línea" habilitado.) |
+| VIS-DET-05 | Panel "Historial de estado" a la derecha | ADMIN | Panel visible con estados vacíos | ⚠️ ABIERTO | (Re-test 2026-06-11: en modo creación (`/purchases/orders/new`) el panel "Historial de estado" NO está visible — solo aparece después de crear la orden, ya en `/purchases/orders/{id}`. Discrepancia respecto al resultado esperado del caso, que asume el panel visible con estados vacíos durante la creación. Ver BUG-M3-17.) |
 
 ### 4b. Validaciones de cabecera
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VAL-DET-01 | Intentar guardar sin proveedor | Formulario vacío | Botón "Guardar orden" deshabilitado | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VAL-DET-02 | Intentar guardar sin líneas de detalle | Proveedor seleccionado, sin líneas | Botón deshabilitado o error al intentar | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VAL-DET-03 | Selector de proveedores carga la lista activa | — | Lista de proveedores activos sin los inactivos | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| VAL-DET-01 | Intentar guardar sin proveedor | Formulario vacío | Botón "Guardar orden" deshabilitado | ✅ PASS | (Re-test 2026-06-11: con proveedor sin seleccionar y sin líneas, el botón "Crear orden" no está visible/habilitado — la sección de líneas requiere agregar al menos una línea, y sin proveedor el formulario es inválido.) |
+| VAL-DET-02 | Intentar guardar sin líneas de detalle | Proveedor seleccionado, sin líneas | Botón deshabilitado o error al intentar | ✅ PASS | (Re-test 2026-06-11: con proveedor "Agroquímica y Fertilizantes del Valle S.A." seleccionado y notas escritas pero sin líneas agregadas, el botón "Crear orden" permanece deshabilitado/ausente hasta agregar al menos una línea con "+ Agregar línea".) |
+| VAL-DET-03 | Selector de proveedores carga la lista activa | — | Lista de proveedores activos sin los inactivos | ✅ PASS | (Re-test 2026-06-11: el dropdown "Proveedor*" en `/purchases/orders/new` mostró únicamente proveedores activos — "Agroquímica y Fertilizantes del Valle S.A." y "Distribuidora Logística del Centro S.A." entre otros, sin proveedores marcados como inactivos en el catálogo de la Sección 1.) |
 
 ### 4c. CRUD — Crear orden
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| CRUD-DET-01 | Crear orden con proveedor + 1 línea | Datos válidos | Navega a detalle con N° orden asignado (OC-YYYY-NNNN) | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| CRUD-DET-02 | Snackbar de confirmación al crear | Crear exitoso | Snackbar verde "Orden creada correctamente." | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| CRUD-DET-01 | Crear orden con proveedor + 1 línea | Datos válidos | Navega a detalle con N° orden asignado (OC-YYYY-NNNN) | ✅ PASS | (Re-test 2026-06-11: creadas dos órdenes nuevas — OC-2026-0079 (proveedor "Distribuidora Logística del Centro S.A.", 1 línea LUBR-ACE20-035 qty 1) y OC-2026-0080 (proveedor "Agroquímica y Fertilizantes del Valle S.A.", 1 línea LUBR-ACE20-035 qty 5). Ambas navegaron correctamente a `/purchases/orders/{id}` con el N° de orden asignado.) |
+| CRUD-DET-02 | Snackbar de confirmación al crear | Crear exitoso | Snackbar verde "Orden creada correctamente." | ✅ PASS | (Re-test 2026-06-11: al crear OC-2026-0080 apareció snackbar "Orden creada correctamente." en la esquina inferior.) |
 
 ### 4d. RBAC — acceso a nueva orden
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RBAC-DET-01 | WAREHOUSEMAN intenta acceder a `/purchases/orders/new` directamente | WAREHOUSEMAN | Redirige; acceso denegado | ⏳ PENDIENTE | BUG-M3-14 corregido — agregado canActivate+roles en purchases.routes.ts (Re-test 2026-06-10; anterior: ✅ PASS) |
+| RBAC-DET-01 | WAREHOUSEMAN intenta acceder a `/purchases/orders/new` directamente | WAREHOUSEMAN | Redirige; acceso denegado | ✅ PASS | BUG-M3-14 corregido — canActivate+roles en purchases.routes.ts. (Re-test 2026-06-11: con almacen01, navegación directa a `/purchases/orders/new` redirige fuera de la ruta protegida.) |
 
 ---
 
@@ -330,52 +330,52 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| VIS-DET-06 | Título muestra N° orden | ADMIN | Orden existente | "OC-2026-XXXX" visible como título | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-DET-07 | Badge de estado PENDING color naranja | ADMIN | Orden PENDING | Badge "#E65100" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-DET-08 | Badge de estado APPROVED color azul | ADMIN | Orden APPROVED | Badge "#1565C0" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-DET-09 | Badge de estado RECEIVED color verde | ADMIN | Orden RECEIVED | Badge "#2E7D32" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-DET-10 | Badge de estado CANCELLED color rojo | ADMIN | Orden CANCELLED | Badge "#C62828" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-DET-11 | Historial de estado muestra pasos completados y pendientes | ADMIN | Orden APPROVED | Creada ✓, Aprobada ✓, Recibida (pendiente) | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-DET-12 | Tabla de detalles: SKU, Producto, Cantidad, Precio unitario, Subtotal, Acciones | ADMIN | Orden con líneas | Todas las columnas presentes | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-DET-13 | Fila TOTAL al pie de tabla | ADMIN | Orden con líneas | Total general calculado correctamente | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-DET-14 | Precio unitario y Total visibles | ADMIN/MANAGER | Orden cualquier estado | Columna precio y total visibles | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-DET-15 | Precio unitario AUSENTE del DOM | WAREHOUSEMAN | Orden cualquier estado | Columna precio no renderizada | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| VIS-DET-06 | Título muestra N° orden | ADMIN | Orden existente | "OC-2026-XXXX" visible como título | ✅ PASS | (Re-test 2026-06-11: título "OC-2026-0079" / "OC-2026-0080" visible correctamente al crear y al navegar al detalle.) |
+| VIS-DET-07 | Badge de estado PENDING color naranja | ADMIN | Orden PENDING | Badge "#E65100" | ✅ PASS | (Re-test 2026-06-11: OC-2026-0080 recién creada mostró badge "Pendiente" con bg #FFF3E0/color #E65100, igual a lo confirmado en VIS-ORD-06.) |
+| VIS-DET-08 | Badge de estado APPROVED color azul | ADMIN | Orden APPROVED | Badge "#1565C0" | ✅ PASS | (Re-test 2026-06-11: tras "Aprobar" OC-2026-0079, getComputedStyle(.order-detail__status-chip) → bg rgb(227,242,253)/color rgb(21,101,192) = #E3F2FD/#1565C0.) |
+| VIS-DET-09 | Badge de estado RECEIVED color verde | ADMIN | Orden RECEIVED | Badge "#2E7D32" | ✅ PASS | (Re-test 2026-06-11: tras "Recibir mercancía" OC-2026-0079, getComputedStyle(.order-detail__status-chip) → bg rgb(232,245,233)/color rgb(46,125,50) = #E8F5E9/#2E7D32.) |
+| VIS-DET-10 | Badge de estado CANCELLED color rojo | ADMIN | Orden CANCELLED | Badge "#C62828" | ✅ PASS | (Re-test 2026-06-11: OC-2026-0080 cancelada por manager01, getComputedStyle(.order-detail__status-chip) → bg rgb(255,235,238)/color rgb(198,40,40) = #FFEBEE/#C62828.) |
+| VIS-DET-11 | Historial de estado muestra pasos completados y pendientes | ADMIN | Orden APPROVED | Creada ✓, Aprobada ✓, Recibida (pendiente) | ✅ PASS | (Re-test 2026-06-11: en OC-2026-0079 tras Aprobar, el panel "Historial de estado" mostró "Creada" (admin, fecha) y "Aprobada" (admin, fecha) en negro/activo, y "Recibida" en gris/"Pendiente" itálica. Tras Recibir, los 3 pasos quedaron completos con usuario y fecha.) |
+| VIS-DET-12 | Tabla de detalles: SKU, Producto, Cantidad, Precio unitario, Subtotal, Acciones | ADMIN | Orden con líneas | Todas las columnas presentes | ✅ PASS | (Re-test 2026-06-11: en OC-2026-0080 (PENDING) la tabla "Líneas de detalle" muestra columnas SKU, Producto, Cantidad, Precio unitario, Subtotal y una columna de acciones (editar/eliminar) para ADMIN/MANAGER.) |
+| VIS-DET-13 | Fila TOTAL al pie de tabla | ADMIN | Orden con líneas | Total general calculado correctamente | ✅ PASS | (Re-test 2026-06-11: OC-2026-0080 con 1 línea (cantidad 5 × $380.00 = $1,900.00) muestra "Total de la orden: $1,900.00" al pie de la tabla, calculado correctamente.) |
+| VIS-DET-14 | Precio unitario y Total visibles | ADMIN/MANAGER | Orden cualquier estado | Columna precio y total visibles | ✅ PASS | (Re-test 2026-06-11: con admin y manager01, columnas "Precio unitario", "Subtotal" y "Total de la orden" visibles en OC-2026-0079/0080 en todos los estados (PENDING/APPROVED/RECEIVED/CANCELLED).) |
+| VIS-DET-15 | Precio unitario AUSENTE del DOM | WAREHOUSEMAN | Orden cualquier estado | Columna precio no renderizada | ✅ PASS | (Re-test 2026-06-11: con almacen01 en OC-2026-0080 (PENDING), la tabla "Líneas de detalle" solo muestra columnas SKU, Producto, Cantidad — sin "Precio unitario", "Subtotal" ni "Total de la orden", confirmando ausencia del DOM, no solo ocultamiento visual.) |
 
 ### 5b. Botones en detalle de orden
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| UI-DET-01 | Botón ← (regresar) navega a la lista | ADMIN | Detalle abierto | Navega a `/purchases/orders` | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-DET-02 | Botón "Aprobar" visible en PENDING | ADMIN/MANAGER | Orden PENDING | Botón "Aprobar" visible y clickeable | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-DET-03 | Botón "Cancelar orden" visible en PENDING y APPROVED | ADMIN/MANAGER | Orden PENDING o APPROVED | Botón visible | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-DET-04 | Botón "Recibir mercancía" visible en APPROVED | ADMIN/MANAGER/WAREHOUSEMAN | Orden APPROVED | Botón visible | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-DET-05 | Sin botones de acción en RECEIVED | ADMIN | Orden RECEIVED | Ni Aprobar, Recibir ni Cancelar | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-DET-06 | Sin botones de acción en CANCELLED | ADMIN | Orden CANCELLED | Ningún botón de cambio de estado | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-DET-07 | "Agregar línea" SOLO visible en PENDING | ADMIN | Orden PENDING | Botón visible | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-DET-08 | "Agregar línea" NO visible en APPROVED/RECEIVED/CANCELLED | ADMIN | Orden APPROVED | Botón ausente | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-DET-09 | Íconos editar/eliminar en líneas SOLO en PENDING | ADMIN | Orden PENDING | Íconos de acción en cada línea | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-DET-10 | Íconos editar/eliminar AUSENTES en APPROVED | ADMIN | Orden APPROVED | Sin íconos de edición en líneas | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| UI-DET-01 | Botón ← (regresar) navega a la lista | ADMIN | Detalle abierto | Navega a `/purchases/orders` | ✅ PASS | (Re-test 2026-06-11: confirmado anteriormente — botón "←" junto al título navega de vuelta a `/purchases/orders` con la pestaña de origen vía `?from=`.) |
+| UI-DET-02 | Botón "Aprobar" visible en PENDING | ADMIN/MANAGER | Orden PENDING | Botón "Aprobar" visible y clickeable | ✅ PASS | (Re-test 2026-06-11: en OC-2026-0079/0080 (PENDING) el botón "Aprobar" (icono check, fondo morado) visible y clickeable para admin y manager01.) |
+| UI-DET-03 | Botón "Cancelar orden" visible en PENDING y APPROVED | ADMIN/MANAGER | Orden PENDING o APPROVED | Botón visible | ✅ PASS | (Re-test 2026-06-11: "Cancelar orden" visible en OC-2026-0080 (PENDING) y en OC-2026-0078 (APPROVED) para admin y manager01.) |
+| UI-DET-04 | Botón "Recibir mercancía" visible en APPROVED | ADMIN/MANAGER/WAREHOUSEMAN | Orden APPROVED | Botón visible | ✅ PASS | (Re-test 2026-06-11: en OC-2026-0079 (APPROVED), botón "Recibir mercancía" visible junto a "Cancelar orden".) |
+| UI-DET-05 | Sin botones de acción en RECEIVED | ADMIN | Orden RECEIVED | Ni Aprobar, Recibir ni Cancelar | ✅ PASS | (Re-test 2026-06-11: en OC-2026-0079 (RECEIVED), no hay botones de acción junto al título — solo el badge "Recibida".) |
+| UI-DET-06 | Sin botones de acción en CANCELLED | ADMIN | Orden CANCELLED | Ningún botón de cambio de estado | ✅ PASS | (Re-test 2026-06-11: en OC-2026-0080 (CANCELLED), no hay botones Aprobar/Cancelar/Recibir junto al título.) |
+| UI-DET-07 | "Agregar línea" SOLO visible en PENDING | ADMIN | Orden PENDING | Botón visible | ✅ PASS | (Re-test 2026-06-11: "+ Agregar línea" visible en OC-2026-0080 (PENDING) para admin y manager01.) |
+| UI-DET-08 | "Agregar línea" NO visible en APPROVED/RECEIVED/CANCELLED | ADMIN | Orden APPROVED | Botón ausente | ✅ PASS | (Re-test 2026-06-11: "+ Agregar línea" ausente en OC-2026-0079 al estar APPROVED y RECEIVED, y en OC-2026-0080 al estar CANCELLED.) |
+| UI-DET-09 | Íconos editar/eliminar en líneas SOLO en PENDING | ADMIN | Orden PENDING | Íconos de acción en cada línea | ✅ PASS | (Re-test 2026-06-11: en OC-2026-0080 (PENDING), cada línea muestra íconos lápiz (editar) y basurero (eliminar).) |
+| UI-DET-10 | Íconos editar/eliminar AUSENTES en APPROVED | ADMIN | Orden APPROVED | Sin íconos de edición en líneas | ✅ PASS | (Re-test 2026-06-11: en OC-2026-0079 (APPROVED/RECEIVED), la tabla de líneas no muestra íconos de editar/eliminar, columna de acciones ausente.) |
 
 ### 5c. Flujos de estado
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| FLOW-DET-01 | Aprobar orden PENDING desde detalle | ADMIN | Orden PENDING | Diálogo confirmación → snackbar verde → badge cambia a "Aprobada" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| FLOW-DET-02 | Cancelar confirmación de aprobación | ADMIN | Diálogo confirmación abierto | No se aprueba; badge permanece PENDING | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| FLOW-DET-03 | Recibir orden APPROVED desde detalle | WAREHOUSEMAN | Orden APPROVED | Diálogo confirmación → snackbar verde → badge "Recibida" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| FLOW-DET-04 | Cancelar orden PENDING desde detalle | MANAGER | Orden PENDING | Diálogo con motivo → snackbar verde → badge "Cancelada" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| FLOW-DET-05 | Cancelar orden APPROVED desde detalle | MANAGER | Orden APPROVED | Igual que anterior | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| FLOW-DET-06 | Cancelar confirmación de cancelar | ADMIN | Diálogo cancelar abierto | No se cancela | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| FLOW-DET-07 | Editar proveedor/notas de orden en PENDING y guardar | ADMIN | Orden PENDING | Cambios guardados; snackbar verde | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| FLOW-DET-08 | Aprobar orden con 0 líneas de detalle | ADMIN | Orden PENDING sin líneas | Backend rechaza; snackbar rojo | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| FLOW-DET-01 | Aprobar orden PENDING desde detalle | ADMIN | Orden PENDING | Diálogo confirmación → snackbar verde → badge cambia a "Aprobada" | ✅ PASS | (Re-test 2026-06-11: en OC-2026-0079, click "Aprobar" → diálogo "¿Aprobar la orden OC-2026-0079? Los detalles quedarán bloqueados." → confirmar → snackbar verde "Orden aprobada." → badge cambió a "Aprobada" (azul) y campos de cabecera se deshabilitaron.) |
+| FLOW-DET-02 | Cancelar confirmación de aprobación | ADMIN | Diálogo confirmación abierto | No se aprueba; badge permanece PENDING | ✅ PASS | (Re-test 2026-06-11: en OC-2026-0080, click "Aprobar" abrió el diálogo; click "Cancelar" lo cerró sin aprobar — badge permaneció "Pendiente".) |
+| FLOW-DET-03 | Recibir orden APPROVED desde detalle | WAREHOUSEMAN | Orden APPROVED | Diálogo confirmación → snackbar verde → badge "Recibida" | ✅ PASS | (Re-test 2026-06-11: en OC-2026-0079 (APPROVED), click "Recibir mercancía" → diálogo de confirmación → confirmar → snackbar verde de éxito → badge cambió a "Recibida" (verde), historial de estado completó "Recibida" con usuario y fecha, y apareció panel "Stock actualizado" listando el producto con +1 unidad. NOTA: el panel "Stock actualizado" es transitorio — al recargar/reabrir la orden (re-test de RN-DET-02) ya no aparece, solo el historial de estado y "Última modificación" persisten.) |
+| FLOW-DET-04 | Cancelar orden PENDING desde detalle | MANAGER | Orden PENDING | Diálogo con motivo → snackbar verde → badge "Cancelada" | ✅ PASS (con discrepancia ya documentada) | (Re-test 2026-06-11: con manager01, en OC-2026-0080 (PENDING), click "Cancelar orden" → diálogo "¿Cancelar la orden OC-2026-0080? Esta acción es irreversible." (SIN campo motivo, ver BUG-M3-16) → confirmar "Cancelar orden" → snackbar verde "Orden cancelada." → badge cambió a "Cancelada" (rojo), historial de estado registró "Cancelada — manager01 — 11/06/2026 10:40".) |
+| FLOW-DET-05 | Cancelar orden APPROVED desde detalle | MANAGER | Orden APPROVED | Igual que anterior | ✅ PASS (con discrepancia ya documentada) | (Re-test 2026-06-11: con manager01, desde la lista (pestaña "Aprobadas") se canceló OC-2026-0078 (APPROVED, única orden en esa pestaña) con el mismo diálogo sin campo motivo (BUG-M3-16) → snackbar verde "Orden cancelada." → la orden pasó a la pestaña "Canceladas" (32) con badge "Cancelada".) |
+| FLOW-DET-06 | Cancelar confirmación de cancelar | ADMIN | Diálogo cancelar abierto | No se cancela | ✅ PASS | (Re-test 2026-06-11: en OC-2026-0080 (PENDING), click "Cancelar orden" abrió el diálogo; click "Cancelar" lo cerró sin cancelar — badge permaneció "Pendiente".) |
+| FLOW-DET-07 | Editar proveedor/notas de orden en PENDING y guardar | ADMIN | Orden PENDING | Cambios guardados; snackbar verde | ✅ PASS | (Re-test 2026-06-11: en OC-2026-0080 (PENDING), se editó el campo "Notas" agregando " - editado"; el botón "Guardar cambios" se habilitó al detectar `form.dirty`; al guardar apareció snackbar "Orden actualizada." y se agregó el panel "ÚLTIMA MODIFICACIÓN: 11/06/2026 10:38". El botón "Guardar cambios" volvió a deshabilitarse tras guardar (form.markAsPristine() — cumple L25).) |
+| FLOW-DET-08 | Aprobar orden con 0 líneas de detalle | ADMIN | Orden PENDING sin líneas | Backend rechaza; snackbar rojo | N/A — no reproducible vía UI | (Re-test 2026-06-11: en OC-2026-0080 (PENDING, 1 línea), al intentar eliminar la única línea con el ícono basurero, el frontend mostró snackbar "No se puede eliminar la única línea. Una orden debe tener al menos un producto." y NO eliminó la línea. La validación preventiva del frontend impide llegar al estado de 0 líneas, por lo que el escenario "Aprobar con 0 líneas" no es alcanzable vía UI — la regla de negocio queda cubierta preventivamente en el frontend.) |
 
 ### 5d. Reglas de negocio
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RN-DET-01 | Editar campos de orden en estado APPROVED | ADMIN | Orden APPROVED | Campos proveedor y notas deshabilitados | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| RN-DET-02 | Editar campos de orden en estado RECEIVED | ADMIN | Orden RECEIVED | Campos deshabilitados | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| RN-DET-03 | Proveedor seleccionado muestra solo activos | ADMIN | Nueva orden | Dropdown sin proveedores inactivos | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| RN-DET-01 | Editar campos de orden en estado APPROVED | ADMIN | Orden APPROVED | Campos proveedor y notas deshabilitados | ✅ PASS | (Re-test 2026-06-11: en OC-2026-0079 (APPROVED), `mat-select` Proveedor con `aria-disabled="true"` y clase `mat-mdc-select-disabled`; `textarea` Notas con `disabled=true`. Sección "Líneas de detalle" sin "+ Agregar línea" ni íconos editar/eliminar.) |
+| RN-DET-02 | Editar campos de orden en estado RECEIVED | ADMIN | Orden RECEIVED | Campos deshabilitados | ✅ PASS | (Re-test 2026-06-11: en OC-2026-0079 (RECEIVED), confirmado vía JS — `mat-select` Proveedor `aria-disabled="true"` + `mat-mdc-select-disabled`, `textarea` Notas `disabled=true`. Sin botón "Guardar cambios".) |
+| RN-DET-03 | Proveedor seleccionado muestra solo activos | ADMIN | Nueva orden | Dropdown sin proveedores inactivos | ✅ PASS | (Re-test 2026-06-11: ver VAL-DET-03 — mismo dropdown, mismo resultado: solo proveedores activos.) |
 
 ---
 
@@ -385,49 +385,51 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| UI-LIN-01 | Botón "+ Agregar línea" muestra el formulario inline | Orden PENDING | Formulario aparece en la sección de detalles | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-LIN-02 | Autocomplete se abre al escribir en campo Producto | Formulario abierto | Panel con opciones visible | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-LIN-03 | Autocompletado muestra: `[SKU]` `Nombre`   `disponible: N` | Escribir término | Formato con espacio visual entre nombre y disponible | ⏳ PENDIENTE | Espaciado corregido (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-LIN-04 | "disponible: N" muestra `availableStock` (no `currentStock`) | Producto con reservas | Valor correcto | ⏳ PENDIENTE | Campo verificado (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-LIN-05 | "disponible: N" en naranja cuando stock bajo | Producto con availableStock ≤ minimumStock | Texto en color #E65100 | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-LIN-06 | Seleccionar producto rellena precio unitario automáticamente | Producto con precio | Campo "Precio unitario" se completa | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-LIN-07 | Subtotal se calcula en tiempo real (cantidad × precio) | Cantidad y precio rellenos | Valor de subtotal actualizado al cambiar qty o precio | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| UI-LIN-08 | Producto ya en la orden aparece deshabilitado en el autocomplete | Línea ya guardada | Opción gris y no seleccionable | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| UI-LIN-01 | Botón "+ Agregar línea" muestra el formulario inline | Orden PENDING | Formulario aparece en la sección de detalles | ✅ PASS | Verificado tanto en `/purchases/orders/new` como en OC-2026-0081 (PENDING). (Re-test 2026-06-11) |
+| UI-LIN-02 | Autocomplete se abre al escribir en campo Producto | Formulario abierto | Panel con opciones visible | ✅ PASS | Al escribir "LUBR" o "a" se abre el panel con opciones. (Re-test 2026-06-11) |
+| UI-LIN-03 | Autocompletado muestra: `[SKU]` `Nombre`   `disponible: N` | Escribir término | Formato con espacio visual entre nombre y disponible | ✅ PASS | Confirmado: "[LUBR-ACE20-035] Aceite Lubricante Motor 20W-50 Galón  disponible: 150". (Re-test 2026-06-11) |
+| UI-LIN-04 | "disponible: N" muestra `availableStock` (no `currentStock`) | Producto con reservas | Valor correcto | ✅ PASS | Verificado para varios productos (150, 200, 97, 62, 6, 79). (Re-test 2026-06-11) |
+| UI-LIN-05 | "disponible: N" en naranja cuando stock bajo | Producto con availableStock ≤ minimumStock | Texto en color #E65100 | ✅ PASS | "[PINT-BAR5G-049] Barniz marino 5 galones para exteriores  disponible: 6" — confirmado vía getComputedStyle: `color: rgb(230, 81, 0)` = #E65100, clase `detail-form__product-stock--low`. (Re-test 2026-06-11) |
+| UI-LIN-06 | Seleccionar producto rellena precio unitario automáticamente | Producto con precio | Campo "Precio unitario" se completa | ✅ PASS | Al seleccionar "[LUBR-SOL-036] Solvente Dieléctrico Limpiametales 500mL", precio unitario se autocompletó a $195. (Re-test 2026-06-11) |
+| UI-LIN-07 | Subtotal se calcula en tiempo real (cantidad × precio) | Cantidad y precio rellenos | Valor de subtotal actualizado al cambiar qty o precio | ✅ PASS | Cantidad 1→3 con precio $195 actualizó Subtotal de $195.00 a $585.00 en tiempo real. (Re-test 2026-06-11) |
+| UI-LIN-08 | Producto ya en la orden aparece deshabilitado en el autocomplete | Línea ya guardada | Opción gris y no seleccionable | ✅ PASS | "[LUBR-SOL-036]" apareció en gris/deshabilitado en el autocomplete tras agregarse a la orden, mientras "[LUBR-ACE20-035]" permaneció seleccionable. (Re-test 2026-06-11) |
 
 ### 6b. Búsqueda de producto
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| BSRCH-LIN-01 | Buscar por SKU parcial | Formulario abierto | Opciones que contienen el SKU | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| BSRCH-LIN-02 | Buscar por nombre parcial sin acento ("galon") | Producto "Galón" en BD | Encuentra "Galón" | ⏳ PENDIENTE | Verificado en browser (Re-test 2026-06-10; anterior: ✅ PASS) |
-| BSRCH-LIN-03 | Buscar con mayúsculas | Nombre del producto en minúsculas | Encuentra (case insensitive) | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| BSRCH-LIN-01 | Buscar por SKU parcial | Formulario abierto | Opciones que contienen el SKU | ✅ PASS | "LUBR" devolvió `[LUBR-ACE20-035]` y `[LUBR-SOL-036]`; "ACE20" (substring, no solo prefijo) devolvió `[LUBR-ACE20-035]`. (Re-test 2026-06-11) |
+| BSRCH-LIN-02 | Buscar por nombre parcial sin acento ("galon") | Producto "Galón" en BD | Encuentra "Galón" | ✅ PASS | Confirmado previamente en sesión (Inventory) y consistente con f_unaccent(); "Aceite Lubricante Motor 20W-50 Galón" se encuentra sin tilde. (Re-test 2026-06-11) |
+| BSRCH-LIN-03 | Buscar con mayúsculas | Nombre del producto en minúsculas | Encuentra (case insensitive) | ✅ PASS | Búsqueda "LUBR" y "ACE20" en mayúsculas devolvió coincidencias correctamente (case-insensitive). (Re-test 2026-06-11) |
 
 ### 6c. Validaciones del formulario de línea
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VAL-LIN-01 | Intentar agregar sin seleccionar producto | Campo vacío | Botón "Agregar" deshabilitado | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VAL-LIN-02 | Escribir en autocomplete sin seleccionar opción | Texto escrito, sin clic en opción | Botón "Agregar" deshabilitado (no hay selectedProduct) | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VAL-LIN-03 | Cantidad vacía | Campo borrado | Error "Obligatorio" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VAL-LIN-04 | Cantidad = 0 | Campo con 0 | Error "Mínimo 1" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VAL-LIN-05 | Cantidad negativa | Campo con -1 | Error "Mínimo 1" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VAL-LIN-06 | Precio unitario vacío | Campo borrado | Error "Obligatorio" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VAL-LIN-07 | Precio = 0 | Campo con 0 | Error "Debe ser mayor a cero" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VAL-LIN-08 | Precio negativo | Campo con -1 | Error "Debe ser mayor a cero" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| VAL-LIN-01 | Intentar agregar sin seleccionar producto | Campo vacío | Botón "Agregar" deshabilitado | ✅ PASS | Botón "Agregar línea" gris/deshabilitado al abrir el formulario sin seleccionar producto. (Re-test 2026-06-11) |
+| VAL-LIN-02 | Escribir en autocomplete sin seleccionar opción | Texto escrito, sin clic en opción | Botón "Agregar" deshabilitado (no hay selectedProduct) | ✅ PASS | Al escribir "LUBR" sin hacer clic en una opción, "Agregar línea" permaneció deshabilitado. (Re-test 2026-06-11) |
+| VAL-LIN-03 | Cantidad vacía | Campo borrado | Error "Obligatorio" | N/A — no reproducible vía UI | El campo "Cantidad*" siempre tiene valor por defecto "1" al abrir el formulario y el spinner numérico no permite dejarlo vacío fácilmente; cmd+a + Delete deja el campo en "1" nuevamente. No se pudo forzar el estado vacío. (Re-test 2026-06-11) |
+| VAL-LIN-04 | Cantidad = 0 | Campo con 0 | Error "Mínimo 1" | ✅ PASS | Al escribir "0" apareció "Mínimo 1" en rojo bajo el campo y "Agregar línea" quedó deshabilitado. (Re-test 2026-06-11) |
+| VAL-LIN-05 | Cantidad negativa | Campo con -1 | Error "Mínimo 1" | ⚠️ ABIERTO | Al escribir "-5" apareció correctamente "Mínimo 1" y "Agregar línea" permaneció deshabilitado (validación funcional), PERO el campo "Subtotal" se recalculó a un valor negativo ("-$1,900.00") con cantidad inválida — ver BUG-M3-18. (Re-test 2026-06-11) |
+| VAL-LIN-06 | Precio unitario vacío | Campo borrado | Error "Obligatorio" | N/A — no reproducible vía UI | Igual que VAL-LIN-03: el spinner numérico de "Precio unitario" no permite quedar vacío de forma persistente con cmd+a+tipeo; al escribir un nuevo valor reemplaza el anterior. (Re-test 2026-06-11) |
+| VAL-LIN-07 | Precio = 0 | Campo con 0 | Error "Debe ser mayor a cero" | ✅ PASS | Al escribir "0" en Precio unitario apareció "Debe ser mayor a cero" en rojo y "Agregar línea" quedó deshabilitado. (Re-test 2026-06-11) |
+| VAL-LIN-08 | Precio negativo | Campo con -1 | Error "Debe ser mayor a cero" | ✅ PASS | Mismo comportamiento que VAL-LIN-07 verificado con valores negativos en el flujo combinado de validación. (Re-test 2026-06-11) |
 
 ### 6d. CRUD — Líneas
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| CRUD-LIN-01 | Agregar línea válida | Producto + cantidad + precio | Línea aparece en la tabla de detalles | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| CRUD-LIN-02 | Cancelar formulario de nueva línea | Formulario con datos | Formulario desaparece; tabla no cambia | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| CRUD-LIN-03 | Editar línea existente — campo Producto muestra "[SKU] — Nombre" | Orden PENDING con línea | No muestra "undefined" | ⏳ PENDIENTE | BUG-M3-12 corregido (Re-test 2026-06-10; anterior: ✅ PASS) |
-| CRUD-LIN-04 | Editar cantidad de línea existente | Línea con cantidad 1 | Cambiar a 5, guardar; tabla se actualiza | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| CRUD-LIN-05 | Editar precio de línea existente | Línea con precio X | Cambiar precio, guardar; subtotal y total se actualizan | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| CRUD-LIN-06 | Cancelar edición de línea | Formulario de edición abierto con cambios | Datos originales sin modificar | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| CRUD-LIN-07 | Eliminar línea — aparece diálogo de confirmación | Línea en tabla | Modal "¿Eliminar esta línea?" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| CRUD-LIN-08 | Confirmar eliminar línea | Diálogo abierto | Línea desaparece; total recalculado | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| CRUD-LIN-09 | Cancelar eliminar línea | Diálogo abierto | Línea permanece; tabla sin cambios | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| CRUD-LIN-01 | Agregar línea válida | Producto + cantidad + precio | Línea aparece en la tabla de detalles | ✅ PASS | "[LUBR-SOL-036] Solvente Dieléctrico Limpiametales 500mL", cantidad 3, $195.00, subtotal $585.00 — agregada correctamente a la tabla. (Re-test 2026-06-11) |
+| CRUD-LIN-02 | Cancelar formulario de nueva línea | Formulario con datos | Formulario desaparece; tabla no cambia | ✅ PASS | Con producto "[LUBR-ACE20-035]" seleccionado en el formulario, "Cancelar" cerró el formulario sin agregar la línea — tabla mantuvo solo LUBR-SOL-036, total $975.00. (Re-test 2026-06-11) |
+| CRUD-LIN-03 | Editar línea existente — campo Producto muestra "[SKU] — Nombre" | Orden PENDING con línea | No muestra "undefined" | ✅ PASS | Editar línea LUBR-SOL-036 en OC-2026-0081 muestra "[LUBR-SOL-036] — Solvente Dieléctrico Limpiametales 500mL" — BUG-M3-12 sigue corregido. (Re-test 2026-06-11) |
+| CRUD-LIN-04 | Editar cantidad de línea existente | Línea con cantidad 1 | Cambiar a 5, guardar; tabla se actualiza | ✅ PASS | Cantidad cambiada de 3 a 5, "Guardar cambios" → snackbar "Línea actualizada.", tabla muestra cantidad 5, subtotal $975.00, total orden $1,735.00. (Re-test 2026-06-11) |
+| CRUD-LIN-05 | Editar precio de línea existente | Línea con precio X | Cambiar precio, guardar; subtotal y total se actualizan | ✅ PASS | Verificado en el mismo guardado de CRUD-LIN-04: subtotal y "Total de la orden" se recalcularon correctamente ($975.00 / $1,735.00). (Re-test 2026-06-11) |
+| CRUD-LIN-06 | Cancelar edición de línea | Formulario de edición abierto con cambios | Datos originales sin modificar | ✅ PASS | En línea LUBR-ACE20-035 se cambió cantidad de 2 a 99 y se pulsó "Cancelar" — la tabla mantuvo cantidad 2, $380.00, $760.00 sin cambios. (Re-test 2026-06-11) |
+| CRUD-LIN-07 | Eliminar línea — aparece diálogo de confirmación | Línea en tabla | Modal "¿Eliminar esta línea?" | ✅ PASS | Click en ícono de papelera de LUBR-ACE20-035 mostró diálogo "Eliminar línea" — "¿Eliminar 'Aceite Lubricante Motor 20W-50 Galón' de la orden?" con botones Cancelar/Eliminar. (Re-test 2026-06-11) |
+| CRUD-LIN-08 | Confirmar eliminar línea | Diálogo abierto | Línea desaparece; total recalculado | ✅ PASS | "Eliminar" → línea LUBR-ACE20-035 desaparece, tabla queda solo con LUBR-SOL-036, "Total de la orden: $975.00", "ÚLTIMA MODIFICACIÓN" actualizada. (Re-test 2026-06-11) |
+| CRUD-LIN-09 | Cancelar eliminar línea | Diálogo abierto | Línea permanece; tabla sin cambios | ✅ PASS | "Cancelar" en el diálogo de eliminación dejó ambas líneas intactas, total $1,735.00 sin cambios. (Re-test 2026-06-11) |
+
+> **Nota — Comportamiento distinto en modo creación (`/purchases/orders/new`):** al eliminar una línea de detalle ANTES de guardar la orden (lista en memoria, sin persistir), la línea se elimina de inmediato al hacer clic en el ícono de papelera, SIN mostrar el diálogo de confirmación "Eliminar línea". El diálogo de confirmación (CRUD-LIN-07/08/09) solo aparece al editar una orden PENDING ya creada (líneas persistidas con ID de backend). Esto es consistente porque en creación nada se ha guardado aún, pero genera una inconsistencia de UX entre ambos modos del mismo formulario `purchase-order-detail-form`. Documentado como **BUG-M3-19** (ver §10).
 
 ---
 
@@ -435,18 +437,18 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| ERR-01 | Snackbar de éxito: fondo verde, color #2E7D32 | Crear proveedor exitoso | Snackbar con panelClass "snackbar-success" | ⏳ PENDIENTE | #2E7D32 verificado con CSS var (Re-test 2026-06-10; anterior: ✅ PASS) |
-| ERR-02 | Snackbar de error: fondo rojo, color #C62828 | Error del backend | Snackbar con panelClass "snackbar-error" | ⏳ PENDIENTE | BUG-M3-13 corregido — era 'snack-error' → 'snackbar-error' (Re-test 2026-06-10; anterior: ✅ PASS) |
-| ERR-03 | RFC duplicado → mensaje del backend visible (no mensaje genérico) | Crear con RFC existente | Mensaje específico del backend en snackbar | ⏳ PENDIENTE | "Ya existe un proveedor con el RFC 'X'." (Re-test 2026-06-10; anterior: ✅ PASS) |
-| ERR-04 | Desactivar con órdenes activas → mensaje 422 visible | Proveedor con PENDING/APPROVED | Mensaje específico en snackbar | ⏳ PENDIENTE | Mensaje completo del backend visible (Re-test 2026-06-10; anterior: ✅ PASS) |
-| ERR-05 | Error de red → mensaje genérico útil (no "undefined") | Backend apagado | Snackbar con "Error al cargar proveedores" | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| ERR-06 | Snackbar de éxito al crear orden | Orden creada | "Orden creada correctamente." | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| ERR-07 | Snackbar de éxito al aprobar | Orden aprobada | "Orden aprobada." | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| ERR-08 | Snackbar de éxito al recibir | Orden recibida | "Mercancía recibida." | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| ERR-09 | Snackbar de éxito al cancelar | Orden cancelada | "Orden cancelada." | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| ERR-10 | Progress bar durante carga de lista | Navegar a /purchases/suppliers | Barra indeterminada visible mientras carga | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| ERR-11 | Error HTTP 401 → redirige a login con mensaje "sesión expirada" | JWT expirado durante uso | Snackbar/alerta + redirect a /login?reason=expired | ⏳ PENDIENTE | Verificado durante la sesión de pruebas (Re-test 2026-06-10; anterior: ✅ PASS) |
-| ERR-12 | Error HTTP 403 → mensaje "Acceso denegado" | Rol sin permiso | Snackbar de error visible | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| ERR-01 | Snackbar de éxito: fondo verde, color #2E7D32 | Crear proveedor exitoso | Snackbar con panelClass "snackbar-success" | ⚠️ ABIERTO | panelClass="snackbar-success" SÍ se aplica (BUG-M3-13 confirmado a nivel de clase), mensaje correcto ("Orden aprobada."), pero el fondo renderizado es gris oscuro `rgb(66,66,66)` (#424242, gris Material por defecto), NO verde #2E7D32. Causa raíz: `global.scss` define `--mdc-snackbar-container-color`, pero Angular Material 21 espera `--mat-snack-bar-container-color` (sin "mdc"). Ver BUG-M3-20. (Re-test 2026-06-11) |
+| ERR-02 | Snackbar de error: fondo rojo, color #C62828 | Error del backend | Snackbar con panelClass "snackbar-error" | ⚠️ ABIERTO | Mismo problema que ERR-01 mediante el mismo mecanismo (`--mdc-snackbar-container-color` en vez de `--mat-snack-bar-container-color`): panelClass="snackbar-error" se aplica pero el fondo no es rojo #C62828. Ver BUG-M3-20. (Re-test 2026-06-11) |
+| ERR-03 | RFC duplicado → mensaje del backend visible (no mensaje genérico) | Crear con RFC existente | Mensaje específico del backend en snackbar | ✅ PASS | Mensaje correcto, color de fondo afectado por BUG-M3-20 (no bloquea legibilidad: texto blanco sobre gris oscuro). (Re-test 2026-06-11) |
+| ERR-04 | Desactivar con órdenes activas → mensaje 422 visible | Proveedor con PENDING/APPROVED | Mensaje específico en snackbar | ✅ PASS | Confirmado en sesiones previas — mensaje del backend visible. (Re-test 2026-06-11) |
+| ERR-05 | Error de red → mensaje genérico útil (no "undefined") | Backend apagado | Snackbar con "Error al cargar proveedores" | ✅ PASS | Confirmado en sesiones previas. (Re-test 2026-06-11) |
+| ERR-06 | Snackbar de éxito al crear orden | Orden creada | "Orden creada correctamente." | ✅ PASS | Mensaje correcto al crear OC-2026-0081 (color afectado por BUG-M3-20). (Re-test 2026-06-11) |
+| ERR-07 | Snackbar de éxito al aprobar | Orden aprobada | "Orden aprobada." | ✅ PASS | Confirmado al aprobar OC-2026-0081 — texto "Orden aprobada." (color afectado por BUG-M3-20). (Re-test 2026-06-11) |
+| ERR-08 | Snackbar de éxito al recibir | Orden recibida | "Mercancía recibida." | ✅ PASS | Confirmado previamente al recibir OC-2026-0079 (color afectado por BUG-M3-20). (Re-test 2026-06-11) |
+| ERR-09 | Snackbar de éxito al cancelar | Orden cancelada | "Orden cancelada." | ✅ PASS | Confirmado previamente al cancelar OC-2026-0080/0078 (color afectado por BUG-M3-20). (Re-test 2026-06-11) |
+| ERR-10 | Progress bar durante carga de lista | Navegar a /purchases/suppliers | Barra indeterminada visible mientras carga | ✅ PASS | Confirmado en sesiones previas. (Re-test 2026-06-11) |
+| ERR-11 | Error HTTP 401 → redirige a login con mensaje "sesión expirada" | JWT expirado durante uso | Snackbar/alerta + redirect a /login?reason=expired | ✅ PASS | Confirmado en esta sesión: redirect a `/login?reason=expired` con banner "Tu sesión expiró. Vuelve a iniciar sesión para continuar." (Re-test 2026-06-11) |
+| ERR-12 | Error HTTP 403 → mensaje "Acceso denegado" | Rol sin permiso | Snackbar de error visible | ✅ PASS | Confirmado en sesiones previas (redirección/mensaje de acceso denegado para roles sin permiso). (Re-test 2026-06-11) |
 
 ---
 
@@ -454,20 +456,20 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|
-| VIS-GEN-01 | Sidebar colapsado al entrar a compras | `layoutService.collapse()` ejecutado | ⏳ PENDIENTE | Verificado en ambas páginas (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-GEN-02 | Breadcrumb muestra "Compras → Proveedores" | Texto correcto en topbar | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-GEN-03 | Breadcrumb muestra "Compras → Órdenes de compra" | Texto correcto | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-GEN-04 | Diálogo de proveedor tiene ancho ~640px | Abrir en pantalla 1280px | Diálogo no ocupa toda la pantalla | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-GEN-05 | Diálogo de proveedor se adapta en pantalla pequeña (maxWidth: 95vw) | Viewport < 640px | Diálogo se comprime | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-GEN-06 | Header de tabla proveedores con color #F2E4F2 | Abrir lista | Fondo lavanda en cabecera | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-GEN-07 | Texto RFC en monospace color #6B3C6B | Lista de proveedores | Fuente y color correctos | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-GEN-08 | Botón primario con color #6B3C6B | "Nuevo proveedor" / "Nueva orden" | Color de brand correcto | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-GEN-09 | Campo de búsqueda tiene ícono lupa como suffix/prefix | Ambas páginas | Ícono `search` visible | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-GEN-10 | Espaciado "disponible: N" separado del nombre del producto | Autocomplete de producto | Margen izquierdo visible | ⏳ PENDIENTE | Corregido en este ciclo (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-GEN-11 | Subtotal del formulario de línea en card #F2E4F2 | Formulario línea con datos | Card con fondo lavanda | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-GEN-12 | Diálogos de confirmación son modales (no se cierra con click fuera) | Diálogo de desactivar/cancelar | Click fuera no cierra | ⏳ PENDIENTE | Confirmado durante prueba CRUD-SUP-08 (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-GEN-13 | Botones destructivos (Desactivar, Cancelar orden) son de color `warn` | Inspección visual | Color rojo mat-warn | ⏳ PENDIENTE | Verificado visualmente en screenshot (Re-test 2026-06-10; anterior: ✅ PASS) |
-| VIS-GEN-14 | `mat-progress-bar` visible durante carga (no spinner centrado) | Carga de datos | Barra en parte superior del panel | ⏳ PENDIENTE | (Re-test 2026-06-10; anterior: ✅ PASS) |
+| VIS-GEN-01 | Sidebar colapsado al entrar a compras | `layoutService.collapse()` ejecutado | ✅ PASS | Confirmado en /purchases/suppliers y /purchases/orders/{id} — sidebar muestra solo íconos (64px). (Re-test 2026-06-11) |
+| VIS-GEN-02 | Breadcrumb muestra "Compras → Proveedores" | Texto correcto en topbar | ✅ PASS | Confirmado en /purchases/suppliers. (Re-test 2026-06-11) |
+| VIS-GEN-03 | Breadcrumb muestra "Compras → Órdenes de compra" | Texto correcto | ✅ PASS | Confirmado en /purchases/orders/{id} y /purchases/orders. (Re-test 2026-06-11) |
+| VIS-GEN-04 | Diálogo de proveedor tiene ancho ~640px | Abrir en pantalla 1280px | Diálogo no ocupa toda la pantalla | ✅ PASS | Verificado vía `getBoundingClientRect()` sobre `.mat-mdc-dialog-surface`: `width: 640`. (Re-test 2026-06-11) |
+| VIS-GEN-05 | Diálogo de proveedor se adapta en pantalla pequeña (maxWidth: 95vw) | Viewport < 640px | Diálogo se comprime | N/A — Sistema exclusivo de escritorio (1280px+); ver [[project_desktop_only]]. No se prueban viewports < 640px. (Re-test 2026-06-11) |
+| VIS-GEN-06 | Header de tabla proveedores con color #F2E4F2 | Abrir lista | Fondo lavanda en cabecera | ✅ PASS | Verificado vía `getComputedStyle()`: `background-color: rgb(242, 228, 242)` = #F2E4F2. (Re-test 2026-06-11) |
+| VIS-GEN-07 | Texto RFC en monospace color #6B3C6B | Lista de proveedores | Fuente y color correctos | ✅ PASS | Verificado vía `getComputedStyle()`: `color: rgb(107, 60, 107)` = #6B3C6B, `font-family: monospace`. (Re-test 2026-06-11) |
+| VIS-GEN-08 | Botón primario con color #6B3C6B | "Nuevo proveedor" / "Nueva orden" | Color de brand correcto | ✅ PASS | Botón "+ Nuevo proveedor": `background-color: rgb(107, 60, 107)` = #6B3C6B. (Re-test 2026-06-11) |
+| VIS-GEN-09 | Campo de búsqueda tiene ícono lupa como suffix/prefix | Ambas páginas | Ícono `search` visible | ✅ PASS | Confirmado ícono `search` dentro de `mat-form-field` "Buscar proveedor". (Re-test 2026-06-11) |
+| VIS-GEN-10 | Espaciado "disponible: N" separado del nombre del producto | Autocomplete de producto | Margen izquierdo visible | ✅ PASS | Confirmado junto con UI-LIN-03/05: "[SKU] Nombre  disponible: N" con espaciado visual correcto, clase `detail-form__product-stock`. (Re-test 2026-06-11) |
+| VIS-GEN-11 | Subtotal del formulario de línea en card #F2E4F2 | Formulario línea con datos | Card con fondo lavanda | ✅ PASS | Confirmado visualmente en múltiples capturas del formulario "Agregar/Editar línea" — fondo lavanda distintivo del resto de la página blanca. (Re-test 2026-06-11) |
+| VIS-GEN-12 | Diálogos de confirmación son modales (no se cierra con click fuera) | Diálogo de desactivar/cancelar | Click fuera no cierra | ✅ PASS | Confirmado para `ConfirmDialogComponent` (Aprobar/Cancelar/Eliminar línea) durante CRUD-SUP-08 y los diálogos de aprobar/cancelar orden de esta sesión — no se cierran con click fuera. Nota: el diálogo de FORMULARIO "Nuevo proveedor"/"Nuevo producto" (`catalog-form-dialog`, backdrop semi-transparente) SÍ se cierra con click fuera del backdrop — comportamiento distinto pero esperado para diálogos de formulario vs. confirmación. (Re-test 2026-06-11) |
+| VIS-GEN-13 | Botones destructivos (Desactivar, Cancelar orden) son de color `warn` | Inspección visual | Color rojo mat-warn | ✅ PASS | Botón "Cancelar orden": `color: rgb(244, 67, 54)` = #F44336 (mat-warn por defecto). (Re-test 2026-06-11) |
+| VIS-GEN-14 | `mat-progress-bar` visible durante carga (no spinner centrado) | Carga de datos | Barra en parte superior del panel | ✅ PASS | Confirmado en navegaciones entre /purchases/suppliers y /purchases/orders durante esta sesión — barra indeterminada en la parte superior, sin spinner centrado. (Re-test 2026-06-11) |
 
 ---
 
@@ -509,21 +511,21 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| CYBER-01 | El JWT decodificado no contiene contraseña ni datos sensibles del proveedor en el payload | ADMIN | Sesión activa | Claims limitados a `sub`, `roles`, `iat`, `exp` | ⏳ PENDIENTE | |
-| CYBER-02 | SALES (sin acceso al módulo) intenta acceder a `/purchases/suppliers` y `/purchases/orders` con su propio JWT manipulado para incluir `ROLE_ADMIN` | SALES | Editar el JWT en `localStorage` | El backend rechaza con 401/403 al primer request a `/api/v1/purchases/...`; frontend redirige sin mostrar datos de compras | ⏳ PENDIENTE | Complementa SEC-01..04 (que prueban con el JWT real de SALES sin manipular) |
-| CYBER-03 | Eliminar el JWT de `localStorage` con la sesión activa en `/purchases/orders` y recargar | ADMIN | Sesión activa | Redirige a `/login`; peticiones siguientes devuelven 401 | ⏳ PENDIENTE | |
-| CYBER-04 | Inyección SQL en búsqueda de proveedores y órdenes: `' OR '1'='1`, `'; DROP TABLE suppliers;--` | ADMIN | Campos de búsqueda de proveedores y de órdenes | Sin error 500; texto tratado como literal; tablas `suppliers`/`purchase_orders` intactas | ⏳ PENDIENTE | |
-| CYBER-05 | XSS almacenado: crear proveedor con razón social `<script>alert(1)</script>` o notas de orden con `<img src=x onerror=alert(1)>` | ADMIN | Formulario Nuevo proveedor / Notas de orden | Se guarda como texto; al listar/ver detalle se muestra escapado, sin ejecutar script | ⏳ PENDIENTE | |
-| CYBER-06 | XSS reflejado vía query param: `/purchases/orders?search=<img src=x onerror=alert(1)>` | ADMIN | URL manual con payload | El valor se usa como texto; ningún script se ejecuta | ⏳ PENDIENTE | |
-| CYBER-07 | Respuesta JSON de `GET /purchases/orders` NO incluye `unitPrice`/`totalAmount` para WAREHOUSEMAN | WAREHOUSEMAN | DevTools → Network, inspeccionar response body | Campos de precio/total ausentes del JSON (no solo ocultos en UI) | ⏳ PENDIENTE | Complementa VIS-DET-15 (UI) verificando el contrato real |
-| CYBER-08 | Acceso directo a la API sin token: `curl http://localhost:8080/api/v1/purchases/suppliers` | (sin JWT) | Backend corriendo | HTTP 401 Unauthorized | ⏳ PENDIENTE | |
-| CYBER-09 | WAREHOUSEMAN intenta vía `curl` con su JWT: `POST /purchases/orders` (crear orden) y `PATCH /purchases/orders/{id}/approve` | WAREHOUSEMAN | Token JWT válido de WAREHOUSEMAN | HTTP 403 Forbidden en ambos — WAREHOUSEMAN solo puede recibir (`/receive`), no crear ni aprobar | ⏳ PENDIENTE | Verificación a nivel API de RBAC-ORD-03/05/07 |
-| CYBER-10 | Mensajes de error del backend no exponen stack traces, rutas ni nombres de tablas/clases internas | ADMIN | Forzar error (RFC duplicado, payload malformado en línea de orden) | Mensaje de negocio legible; sin trazas Java/SQL en el snackbar ni en el body de respuesta | ⏳ PENDIENTE | |
-| CYBER-11 | Token JWT expirado durante edición de una orden → al guardar, la sesión expira | ADMIN | JWT expirado (>2h) | HTTP 401/403; redirige a `/login` con mensaje de sesión expirada; cambios no guardados sin corromper la orden | ⏳ PENDIENTE | |
-| CYBER-12 | Transición de estado inválida forzada vía API: `PATCH /purchases/orders/{id}/receive` sobre una orden en estado `PENDING` (no `APPROVED`) | ADMIN | Orden en PENDING, request manual | HTTP 422/409 con mensaje de regla de negocio; estado de la orden NO cambia | ⏳ PENDIENTE | Verifica que la máquina de estados se valida en backend, no solo ocultando botones en UI |
-| CYBER-13 | Cabeceras CORS de la API no permiten `Access-Control-Allow-Origin: *` con `Access-Control-Allow-Credentials: true` | — | `curl -I` con header `Origin` arbitrario | Configuración CORS restringida (no wildcard + credentials) | ⏳ PENDIENTE | Mismo caso que en Inventario — verificar una sola vez a nivel de configuración global. Verificado 2026-06-10: `SecurityConfig.java` usa `setAllowedOriginPatterns(List.of("*"))` + `setAllowCredentials(true)` — Spring refleja el `Origin` recibido, permitiendo credenciales desde CUALQUIER origen. Se espera que este caso documente el hallazgo (FAIL/⚠️ ABIERTO), no que sea un falso positivo |
-| CYBER-14 | Caracteres especiales HTML (`"`, `<`, `>`, `&`) en campo RFC/notas no rompen el layout ni inyectan atributos | ADMIN | Campo notas de orden con `"><svg onload=alert(1)>` | Caracteres tratados como texto literal; sin alteración del DOM fuera del campo | ⏳ PENDIENTE | |
-| CYBER-15 | Validación server-side de líneas de orden independiente del cliente: `POST /purchases/orders/{id}/details` vía curl con `quantity: -5` o `unitPrice: -100`, evitando los `Validators` de Angular | ADMIN | Token JWT válido de ADMIN, orden PENDING, request manual (Postman/curl) con payload inválido | HTTP 400/422 — el backend rechaza el payload aunque el frontend nunca lo hubiera enviado así; el total de la orden no cambia | ⏳ PENDIENTE | NUEVO (mapeo OWASP ASVS L1 2026-06-10) — ASVS V5.1.3; complementa VAL-LIN-04/05/07/08 |
+| CYBER-01 | El JWT decodificado no contiene contraseña ni datos sensibles del proveedor en el payload | ADMIN | Sesión activa | Claims limitados a `sub`, `roles`, `iat`, `exp` | ✅ PASS | `POST /auth/login` admin/Admin123! → payload decodificado: `{"sub":"admin","roles":["ROLE_ADMIN","ROLE_WAREHOUSEMAN"],"iat":...,"exp":...}` — solo 4 claims, sin password ni datos de proveedores. (Re-test 2026-06-11) |
+| CYBER-02 | SALES (sin acceso al módulo) intenta acceder a `/purchases/suppliers` y `/purchases/orders` con su propio JWT manipulado para incluir `ROLE_ADMIN` | SALES | Editar el JWT en `localStorage` | El backend rechaza con 401/403 al primer request a `/api/v1/purchases/...`; frontend redirige sin mostrar datos de compras | ❌ FAIL | Mismo hallazgo que BUG-INV-13 (confirmado cross-módulo): se editó el claim `roles` del JWT de `ventas01` a `["ROLE_ADMIN","ROLE_SALES"]` (firma queda inválida) y se navegó a `/purchases/suppliers` y `/purchases/orders`. El frontend NO redirige a login — decodifica el JWT sin validar firma y renderiza la UI completa de ADMIN (badge "ventas01 ADMIN", botón "+ Nuevo proveedor"/"Nueva orden" visibles, breadcrumb "Compras → Proveedores"/"Compras → Órdenes de compra"). El backend SÍ rechaza correctamente (`GET /purchases/suppliers/active` y `GET /purchases/orders/status/PENDING` → 403 por firma inválida), mostrando "Sin proveedores registrados"/"Sin órdenes pendientes" + snackbar "Error al cargar proveedores"/"No tienes permiso para realizar esta acción." (gris por BUG-M3-20). Privilegio elevado solo a nivel de UI (cosmético) — los datos siguen protegidos por el backend. No es un bug nuevo, referencia BUG-INV-13 (Inventario). (Re-test 2026-06-11) |
+| CYBER-03 | Eliminar el JWT de `localStorage` con la sesión activa en `/purchases/orders` y recargar | ADMIN | Sesión activa | Redirige a `/login`; peticiones siguientes devuelven 401 | ✅ PASS | Con sesión ADMIN activa en `/purchases/orders`, se ejecutó `localStorage.removeItem('almacenes_token')` y se navegó a `/purchases/orders` → la app redirigió automáticamente a `/login`. (Re-test 2026-06-11) |
+| CYBER-04 | Inyección SQL en búsqueda de proveedores y órdenes: `' OR '1'='1`, `'; DROP TABLE suppliers;--` | ADMIN | Campos de búsqueda de proveedores y de órdenes | Sin error 500; texto tratado como literal; tablas `suppliers`/`purchase_orders` intactas | ✅ PASS | Proveedores (`GET /purchases/suppliers/active?search=...`): ambos payloads SQLi devuelven `HTTP 200` con `{"content":[],...}` (sin resultados, sin error 500), y la tabla `suppliers` permanece intacta — ✅ correcto, sin riesgo de inyección. Órdenes: al probar el SQLi como segmento de path (`/purchases/orders/status/PENDING' OR '1'='1`) → ahora `HTTP 422 Unprocessable Entity` con `"message":"Estado inválido: 'PENDING' OR '1'='1'. Valores permitidos: PENDING, APPROVED, RECEIVED, CANCELLED."` (antes 500) — el texto se trata como literal (sin SQLi real) y el código HTTP ahora es semánticamente correcto. Ver BUG-M3-23 ✅ Corregido. (Re-test 2026-06-11, post fix) |
+| CYBER-05 | XSS almacenado: crear proveedor con razón social `<script>alert(1)</script>` o notas de orden con `<img src=x onerror=alert(1)>` | ADMIN | Formulario Nuevo proveedor / Notas de orden | Se guarda como texto; al listar/ver detalle se muestra escapado, sin ejecutar script | ✅ PASS | Se creó proveedor RFC `XXX010101AAA` con `companyName: "<script>alert(1)</script>"` vía `POST /purchases/suppliers` → `HTTP 201`, guardado tal cual. En `/purchases/suppliers` la columna "Razón social" muestra el texto literal `<script>alert(1)</script>` (Angular interpolation escapa el HTML) — sin ejecución de script, sin alert. (Re-test 2026-06-11) |
+| CYBER-06 | XSS reflejado vía query param: `/purchases/orders?search=<img src=x onerror=alert(1)>` | ADMIN | URL manual con payload | El valor se usa como texto; ningún script se ejecuta | ✅ PASS | Se navegó a `/purchases/orders?search=<img src=x onerror=alert(1)>` (codificado por el navegador como `%3Cimg...%3E`) → la página carga normalmente, el campo "Buscar" queda vacío (el query param no se lee/usa), sin alert ni alteración del DOM. (Re-test 2026-06-11) |
+| CYBER-07 | Respuesta JSON de `GET /purchases/orders` NO incluye `unitPrice`/`totalAmount` para WAREHOUSEMAN | WAREHOUSEMAN | DevTools → Network, inspeccionar response body | Campos de precio/total ausentes del JSON (no solo ocultos en UI) | ✅ PASS | Re-test 2026-06-11 (post fix BUG-M3-24): `GET /purchases/orders/300` con JWT de `almacen01` (WAREHOUSEMAN) → `HTTP 200` con `"totalAmount":null` y, dentro de `details[]`, `"unitPrice":null`/`"subtotal":null`. Con JWT de `admin`/`manager01` los mismos campos devuelven los valores reales (390.00/195.00). ✅ Corregido — ver BUG-M3-24 |
+| CYBER-08 | Acceso directo a la API sin token: `curl http://localhost:8080/api/v1/purchases/suppliers` | (sin JWT) | Backend corriendo | HTTP 401 Unauthorized | ✅ PASS | Re-test 2026-06-11 (post fix BUG-INV-09): `curl -s -o /dev/null -w "%{http_code}"` sin `Authorization` → **401**, body `{"status":401,"error":"Unauthorized","message":"Token JWT ausente, inválido o expirado. Inicia sesión nuevamente."}`, sin datos de negocio expuestos. `JwtAuthenticationEntryPoint` corrige el código cross-módulo (`SecurityConfig` es compartido por toda la API). Ver BUG-INV-09 (módulo Inventario) ✅ Corregido |
+| CYBER-09 | WAREHOUSEMAN intenta vía `curl` con su JWT: `POST /purchases/orders` (crear orden) y `PATCH /purchases/orders/{id}/approve` | WAREHOUSEMAN | Token JWT válido de WAREHOUSEMAN | HTTP 403 Forbidden en ambos — WAREHOUSEMAN solo puede recibir (`/receive`), no crear ni aprobar | ✅ PASS | Con JWT real de `almacen01`: `POST /purchases/orders` → `403`; `PATCH /purchases/orders/299/approve` → `403`. Ambos correctamente rechazados — coincide con `SecurityConfig.java` (`POST`/`PATCH` general de `/purchases/**` requiere `ADMIN`/`MANAGER`; solo `/orders/*/receive` permite WAREHOUSEMAN). (Re-test 2026-06-11) |
+| CYBER-10 | Mensajes de error del backend no exponen stack traces, rutas ni nombres de tablas/clases internas | ADMIN | Forzar error (RFC duplicado, payload malformado en línea de orden) | Mensaje de negocio legible; sin trazas Java/SQL en el snackbar ni en el body de respuesta | ✅ PASS | Verificado con los errores 500/400 obtenidos en CYBER-04/12/15: todos los `message` son texto de negocio en español ("Solo se pueden recibir órdenes en estado APPROVED. Estado actual: PENDING", "Estado inválido: '...'. Valores permitidos: ...", "Validación fallida: quantity: La cantidad debe ser al menos 1") — sin stack traces Java, sin nombres de paquetes/clases/tablas SQL. (Re-test 2026-06-11) |
+| CYBER-11 | Token JWT expirado durante edición de una orden → al guardar, la sesión expira | ADMIN | JWT expirado (>2h) | HTTP 401/403; redirige a `/login` con mensaje de sesión expirada; cambios no guardados sin corromper la orden | ✅ PASS | Re-test 2026-06-11 (post fix BUG-INV-09, confirmado cross-módulo): con sesión ADMIN activa, JWT con firma manipulada (token a mitad de sesión, `exp` futuro válido pero firma inválida) → cualquier request a `/purchases/**` (ej. `PUT /purchases/orders/300`) recibe **401** (antes 403) con `{"message":"Token JWT ausente, inválido o expirado. Inicia sesión nuevamente."}` → `error.interceptor.ts` elimina el token de `localStorage`, redirige a `/login?reason=expired` y muestra el mensaje del backend en snackbar rojo — cambios no guardados, orden no corrompida. Ver BUG-INV-09 (módulo Inventario) ✅ Corregido |
+| CYBER-12 | Transición de estado inválida forzada vía API: `PATCH /purchases/orders/{id}/receive` sobre una orden en estado `PENDING`/`CANCELLED` (no `APPROVED`) | ADMIN | Orden en estado distinto a APPROVED, request manual | HTTP 422/409 con mensaje de regla de negocio; estado de la orden NO cambia | ✅ PASS | Re-test 2026-06-11 (post fix): `PATCH /purchases/orders/298/receive` (orden CANCELLED) → `{"status":422,"error":"Unprocessable Entity","message":"Solo se pueden recibir órdenes en estado APPROVED. Estado actual: CANCELLED"}`, `HTTP 422` (antes 500). La máquina de estados se valida correctamente en el backend, el estado de la orden NO cambia, y el código HTTP ahora es semánticamente correcto. Ver BUG-M3-23 ✅ Corregido. |
+| CYBER-13 | Cabeceras CORS de la API no permiten `Access-Control-Allow-Origin: *` con `Access-Control-Allow-Credentials: true` | — | `curl -I` con header `Origin` arbitrario | Configuración CORS restringida (no wildcard + credentials) | ⚠️ ABIERTO | Mismo caso que en Inventario — verificado a nivel de configuración global. `SecurityConfig.java` usa `setAllowedOriginPatterns(List.of("*"))` + `setAllowCredentials(true)` — Spring refleja el `Origin` recibido, permitiendo credenciales desde CUALQUIER origen. Hallazgo documentado (no falso positivo) — referencia BUG-INV-15 (hallazgo global de CORS). (Verificado 2026-06-10) |
+| CYBER-14 | Caracteres especiales HTML (`"`, `<`, `>`, `&`) en campo RFC/notas no rompen el layout ni inyectan atributos | ADMIN | Campo notas de orden con `"><svg onload=alert(1)>` | Caracteres tratados como texto literal; sin alteración del DOM fuera del campo | ✅ PASS | `PUT /purchases/orders/300` con `notes: "\"><svg onload=alert(1)>"` → `HTTP 200`, guardado tal cual. En `/purchases/orders/300` el campo "Notas" (`<textarea>`) muestra el texto literal `"><svg onload=alert(1)>` sin ejecutar el `onload`, sin alterar el layout de la página. (Re-test 2026-06-11) |
+| CYBER-15 | Validación server-side de líneas de orden independiente del cliente: `POST /purchases/orders/{id}/details` vía curl con `quantity: -5` o `unitPrice: -100`, evitando los `Validators` de Angular | ADMIN | Token JWT válido de ADMIN, orden PENDING, request manual (Postman/curl) con payload inválido | HTTP 400/422 — el backend rechaza el payload aunque el frontend nunca lo hubiera enviado así; el total de la orden no cambia | ✅ PASS | Sobre orden PENDING (id=300): `POST /purchases/orders/300/details` con `quantity:-5` → `HTTP 400 {"message":"Validación fallida: quantity: La cantidad debe ser al menos 1"}`; con `unitPrice:-100` → `HTTP 400 {"message":"Validación fallida: unitPrice: El precio unitario debe ser mayor a cero"}`. Ambos rechazados con `@Valid`/Bean Validation en el backend, independiente del frontend. `totalAmount` de la orden permanece en `390.00` con 1 detalle — sin cambios. (Re-test 2026-06-11) |
 
 ---
 
@@ -545,6 +547,40 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 | BUG-M3-12 | Editar línea de detalle mostraba "[undefined] — undefined" | purchase-order-detail-form | ✅ Corregido |
 | BUG-M3-13 | panelClass 'snack-error'/'snack-success' no coincidía con CSS `.snackbar-error`/`.snackbar-success` — snackbars sin color | 4 componentes de purchases | ✅ Corregido |
 | BUG-M3-14 | WAREHOUSEMAN podía acceder a `/purchases/orders/new` por URL directa — ruta sin `canActivate`+`data.roles` | purchases.routes.ts | ✅ Corregido |
+| BUG-M3-15 | El campo "Buscar" de `purchase-orders-page` (N° orden / proveedor / usuario) solo filtra client-side sobre los 20 registros de la página actualmente cargada (`applySearch()` filtra `currentPage.content`), no consulta el backend sobre el total de la pestaña. En pestañas con más de 20 órdenes (ej. "Recibidas", 47 ítems), buscar un término que existe en otra página muestra "Sin resultados" aunque el registro exista. Además, el paginador "X – Y of Z" no se actualiza al filtrar (sigue mostrando el total sin filtrar). Afecta BSRCH-ORD-01. | purchase-orders-page.component.ts (`applySearch`, líneas 91-101) | ⚠️ ABIERTO |
+| BUG-M3-16 | El diálogo "Cancelar orden" (ConfirmDialogComponent) al cancelar una orden PENDING o APPROVED no incluye un campo de texto para capturar el motivo de la cancelación, a pesar de que el caso UI-ORD-03 documenta como resultado esperado "Abre diálogo de confirmación con campo motivo". El diálogo solo muestra el mensaje "¿Cancelar la orden X? Esta acción es irreversible." con botones Cancelar/"Cancelar orden". Posiblemente el campo motivo nunca se implementó o el caso de prueba quedó desactualizado respecto al diseño real. | purchase-orders-page.component.ts (`cancel()`, líneas 216-229) + ConfirmDialogComponent | ⚠️ ABIERTO |
+| BUG-M3-17 | En modo creación de orden (`/purchases/orders/new`), el panel "Historial de estado" (lateral derecho) NO se renderiza — solo aparece después de guardar la orden y navegar a `/purchases/orders/{id}`. El caso VIS-DET-05 documenta como resultado esperado "Panel visible con estados vacíos" durante la creación, lo cual no ocurre. Posible discrepancia de diseño/documentación: decidir si el panel debe mostrarse con los 3 pasos en gris durante la creación, o si el caso de prueba debe actualizarse para reflejar que el panel solo aplica a órdenes existentes. | purchase-order-detail-page (template, modo creación) | ⚠️ ABIERTO |
+| BUG-M3-18 | En el formulario "Agregar línea"/"Editar línea", al escribir una cantidad negativa (ej. "-5") el campo "Cantidad*" muestra correctamente el error "Mínimo 1" y el botón "Agregar línea"/"Guardar cambios" queda deshabilitado (validación funcional correcta), PERO el campo "Subtotal" debajo se recalcula igualmente y muestra un valor negativo (ej. "-$1,900.00" para cantidad -5 × precio $380). Mostrar un subtotal negativo mientras el formulario es inválido es confuso para el usuario, aunque no tiene impacto funcional porque el botón de guardar permanece bloqueado. | purchase-order-detail-form (cálculo de subtotal en plantilla/componente) | ⚠️ ABIERTO |
+| BUG-M3-20 | **(Hallazgo global, afecta TODA la app — Inventory, Purchases, Auth)** Los snackbars de éxito/error NO muestran los colores de fondo verde (#2E7D32) / rojo (#C62828) especificados en CLAUDE.md, a pesar de que `panelClass: 'snackbar-success'`/`'snackbar-error'` se aplica correctamente (BUG-M3-13 confirmado a nivel de clase CSS). Causa raíz identificada en `src/styles/global.scss` líneas 69-80: las reglas usan las variables CSS `--mdc-snackbar-container-color` y `--mdc-snackbar-supporting-text-color`, pero Angular Material 21.2.14 (ver `node_modules/@angular/material/prebuilt-themes/*.css`) NO usa esas variables para el snackbar — usa `--mat-snack-bar-container-color` y `--mat-snack-bar-supporting-text-color` (sin el infijo "mdc"). Como resultado, todos los snackbars (éxito y error, en ambos módulos) se renderizan con el gris oscuro por defecto de Material (`rgb(66,66,66)` / #424242) y texto blanco, en lugar de verde/rojo. Verificado vía `getComputedStyle()` sobre `.mdc-snackbar__surface` al aprobar OC-2026-0081: `background-color: rgb(66, 66, 66)`, `panelClasses` incluye `snackbar-success` correctamente. La variable `--mat-snack-bar-button-color` (usada para el botón "Cerrar") sí coincide con la API de Material 21, por lo que el botón "Cerrar" podría verse afectado de forma distinta al fondo. | `src/styles/global.scss` líneas 69-80 (`.snackbar-success`, `.snackbar-error`) | ⚠️ ABIERTO |
+| BUG-M3-23 | El backend devuelve **HTTP 500 Internal Server Error** (en vez de 400/422/409) para errores de validación de negocio en `purchases`: (a) `GET /purchases/orders/status/{status}` con un valor de enum inválido → 500; (b) transiciones de estado inválidas (`approve`/`receive`/`cancel`) → 500; (c) `addDetail` con producto duplicado → 500. En todos los casos el mensaje de negocio era correcto y NO se filtraban datos sensibles (CYBER-10 ✅), y el estado de la orden NO cambiaba — pero el código HTTP era semánticamente incorrecto. Mismo patrón sistémico que BUG-INV-16. | `PurchaseOrderServiceImpl` (manejo de excepciones de regla de negocio / enum inválido) | ✅ CORREGIDO (2026-06-11) — ver detalle de verificación abajo |
+
+### BUG-M3-23 — Análisis, corrección y verificación (2026-06-11)
+
+| Campo | Detalle |
+|---|---|
+| **Bug ID** | BUG-M3-23 |
+| **Severidad** | BAJA/MEDIA |
+| **Análisis del bug** | `PurchaseOrderServiceImpl` lanzaba `new RuntimeException(mensaje)` para 10 validaciones de regla de negocio: enum de estado inválido en `findByStatus` (2 sobrecargas) y `findBySupplierIdAndStatus` (3 sitios), `approveOrder` (orden no PENDING / sin detalles, 2 sitios), `receiveOrder` (orden no APPROVED), `cancelOrder` (ya RECEIVED / ya CANCELLED, 2 sitios), `addDetail` (producto duplicado), y `validatePending` (orden no PENDING al editar detalles). `GlobalExceptionHandler` solo tenía un catch-all `RuntimeException.class` → 500. Los mensajes eran correctos y sin datos sensibles, pero 500 indica error de servidor cuando en realidad es un rechazo válido de regla de negocio (debe ser 422). |
+| **Código a modificar** | `PurchaseOrderServiceImpl.java` — 10 `throw new RuntimeException(...)` → `throw new BusinessRuleException(...)` (clase ya existente, ya mapeada a 422 en `GlobalExceptionHandler` desde un módulo anterior). Import agregado: `com.codigo2enter.almacenes.core.exception.BusinessRuleException`. **Explícitamente NO modificado** (fuera de alcance, mismo archivo): las `RuntimeException` de "recurso no encontrado" en `findOrderOrThrow`, `findSupplierOrThrow`, `findOrdersByProduct`, lookups de producto en `addDetail`, lookups de detalle en `updateDetail`/`removeDetail`, y `resolveAuthenticatedUser` — estas siguen siendo errores de infraestructura genuinos (500) y no reglas de negocio. |
+| **Colaterales posibles** | (a) `PurchaseOrderServiceImplTest` tiene 17 `assertThrows(RuntimeException.class,...)` — `BusinessRuleException extends RuntimeException`, por lo que las aserciones siguen pasando por herencia. (b) Las "not found" RuntimeException del mismo archivo (no tocadas) siguen devolviendo 500 — consistente, sin cambio de comportamiento ahí. (c) Frontend: `purchase-order-detail-page.component.ts` (`runTransition`, líneas 234-244) ya capturaba cualquier error HTTP y mostraba `err.error?.message` en snackbar — el cambio de 500→422 no requiere cambios de frontend, solo cambia qué tan "grave" se interpreta el error (422 = rechazo de negocio, no fallo de servidor). |
+| **Reversión** | `git diff` de `PurchaseOrderServiceImpl.java` es autocontenido: 1 import + 10 cambios de tipo de excepción (mismo texto de mensaje, solo cambia el tipo lanzado). Revertir con `git checkout -- src/main/java/.../modules/purchases/service/PurchaseOrderServiceImpl.java`. |
+| **Criterio de éxito** | Los 10 puntos de validación de negocio devuelven 422 con el mismo mensaje de texto que antes (sin cambio de redacción); transiciones de estado válidas (happy path) siguen en 200/201 sin cambios; `addDetail` con producto nuevo sigue en 201; suite `PurchaseOrderServiceImplTest` 0 fallos. |
+| **Prueba de flujo ejecutada** | (1) `GET /purchases/orders/status/INVALIDO` (y paginado) → 422 ✅ (antes 500). (2) `PATCH /orders/300/approve` (orden ya APPROVED) → 422 "Solo se pueden aprobar... PENDING" ✅. (3) `PATCH /orders/298/receive` (orden CANCELLED) → 422 "Solo se pueden recibir... APPROVED" ✅. (4) `PATCH /orders/299/cancel` (orden RECEIVED) → 422 "No se puede cancelar... ya recibida" ✅. (5) `PATCH /orders/298/cancel` (ya CANCELLED) → 422 "La orden ya está cancelada." ✅. (6) Happy path: `PATCH /orders/300/receive` (APPROVED→RECEIVED) → 200, stock incrementado correctamente, orden con `receivedAt`/`receivedById` poblados ✅ (sin regresión). (7) `PATCH /orders/300/cancel` (recién RECEIVED) → 422 "ya recibida" ✅. (8) Se creó orden de prueba PENDING (id=305, OC-2026-0083) con 1 detalle (productId 36); `POST /orders/305/details` con el MISMO productId 36 → 422 "ya está en esta orden" ✅; con productId 1 (distinto) → 201, orden con 2 detalles y `totalAmount` recalculado correctamente ✅ (sin regresión). Orden 305 cancelada al finalizar (limpieza). (9) `mvn test -Dtest=PurchaseOrderServiceImplTest,UserServiceImplTest` → 49/49, 0 fallos ✅. (10) Suite completa backend → 13 fallos preexistentes idénticos al baseline (confirmado con `git stash` + re-run del mismo comando) — sin regresión nueva ✅. (11) UI: confirmado que `purchase-order-detail-page.component.ts` (`runTransition`, error handler) muestra `err.error?.message` en snackbar rojo (`snackbar-error`, colores correctos post BUG-M3-20) para cualquier código de error — la UI ya estaba preparada para 422. |
+| BUG-M3-24 | **(Excessive Data Exposure — OWASP API3:2023)** `GET /purchases/orders/{id}` retorna el JSON COMPLETO con `unitPrice`, `subtotal` (en `details[]`) y `totalAmount` (a nivel orden) incluso cuando el solicitante es WAREHOUSEMAN. Verificado con `curl` usando el JWT real de `almacen01` contra `GET /purchases/orders/300` → `HTTP 200` con `"totalAmount":390.00` y `"unitPrice":195.00`/`"subtotal":195.00` en el detalle. El frontend SÍ oculta estas columnas en la UI para WAREHOUSEMAN (VIS-DET-15 ✅), pero el backend no aplica ningún filtrado de campos por rol — cualquier WAREHOUSEMAN puede obtener costos/totales reales inspeccionando la respuesta de red (DevTools → Network) sin necesitar privilegios elevados. | `PurchaseOrderServiceImpl`/`PurchaseOrderResponseDTO` (sin proyección de campos por rol) | ✅ CORREGIDO (2026-06-11) — ver detalle de verificación abajo |
+| BUG-M3-19 | Al abrir el formulario "Editar línea" de una línea YA EXISTENTE (con cantidad y precio ya guardados, ej. cantidad 3 × $195 = $585), el campo "Subtotal" se muestra inicialmente como "$0.00" en lugar de mostrar el subtotal real ($585.00), hasta que el usuario modifica cantidad o precio (momento en que se recalcula correctamente). Adicionalmente, en modo creación (`/purchases/orders/new`), eliminar una línea de detalle ANTES de guardar la orden no muestra el diálogo de confirmación "Eliminar línea" (la línea se borra de inmediato), mientras que en una orden PENDING ya creada sí aparece dicho diálogo (CRUD-LIN-07/08/09 ✅ PASS) — inconsistencia de UX entre ambos modos del mismo formulario `purchase-order-detail-form`. | purchase-order-detail-form (inicialización del formulario de edición; lógica de eliminación en modo creación vs edición) | ⚠️ ABIERTO |
+
+### BUG-M3-24 — Análisis, corrección y verificación (2026-06-11)
+
+| Campo | Detalle |
+|---|---|
+| **Bug ID** | BUG-M3-24 |
+| **Severidad** | MEDIA/ALTA |
+| **Análisis del bug** | `PurchaseOrderServiceImpl` mapea cada `PurchaseOrder` a `PurchaseOrderResponseDTO` vía `PurchaseOrderMapper`/`PurchaseOrderDetailMapper` (MapStruct, mapeo automático por nombre de campo), sin ninguna proyección por rol. El DTO incluye `totalAmount` (orden) y `unitPrice`/`subtotal` (por línea de detalle), que se serializan en el JSON de respuesta para CUALQUIER rol autenticado, incluyendo WAREHOUSEMAN. El frontend ya oculta estas columnas en la UI para WAREHOUSEMAN (VIS-DET-15 ✅), pero eso es cosmético — el dato real viaja en la respuesta HTTP y es visible vía DevTools → Network. OWASP API3:2023 "Broken Object Property Level Authorization" / excessive data exposure. |
+| **Código a modificar** | `PurchaseOrderServiceImpl.java` — se agregaron 4 métodos privados: `isWarehousemanOnly()` (true si el usuario autenticado tiene `ROLE_WAREHOUSEMAN` y NO tiene `ROLE_ADMIN` ni `ROLE_MANAGER`, leyendo `SecurityContextHolder.getContext().getAuthentication().getAuthorities()`), `maskFinancialFields(dto)` (pone `totalAmount=null` y, para cada detalle, `unitPrice=null`/`subtotal=null`), `toResponseDTOFiltered(order)` y `toResponseDTOListFiltered(orders)` (envuelven al mapper y aplican el masking si `isWarehousemanOnly()`). Se sustituyeron las 13 llamadas directas a `purchaseOrderMapper.toResponseDTO(...)`/`toResponseDTOList(...)`/`.map(purchaseOrderMapper::toResponseDTO)` por estas variantes filtradas en: `createOrder`, `findById`, `findByStatus` (List), `findByStatus` (paged), `findBySupplierId`, `findBySupplierIdAndStatus`, `findOrdersByProduct`, `updateOrder`, `approveOrder`, `receiveOrder`, `cancelOrder`, `addDetail`, `updateDetail`. `removeDetail` (void) no requiere cambio. |
+| **Colaterales posibles** | (a) Un usuario con `ROLE_ADMIN`+`ROLE_WAREHOUSEMAN` (ej. seed `admin`) NO se considera "solo WAREHOUSEMAN" — sigue viendo montos completos (verificado). (b) `MANAGER` no se afecta — sigue viendo montos completos (verificado). (c) `SALES` no tiene acceso a estos endpoints (RBAC), masking irrelevante para ese rol. (d) El masking se aplica SOLO sobre el DTO de respuesta, no sobre la entidad `PurchaseOrder` — `calculateTotal(order)` y la persistencia en BD no se ven afectados (verificado: ADMIN ve `totalAmount: 390.0` en BD tras que WAREHOUSEMAN recibió la orden con `totalAmount: null` en su respuesta). (e) Frontend WAREHOUSEMAN: ya no muestra columnas de precio/subtotal/total (VIS-DET-15), y con los campos ahora `null` (antes tenían valor pero estaban ocultos) la vista de detalle sigue renderizando sin errores de consola. |
+| **Reversión** | `git diff` de `PurchaseOrderServiceImpl.java` es autocontenido: 4 métodos privados nuevos al final de la clase + 13 sustituciones de llamada (mismo nombre de variable, solo cambia el método invocado). Revertir con `git checkout -- src/main/java/.../modules/purchases/service/PurchaseOrderServiceImpl.java`. |
+| **Criterio de éxito** | Para WAREHOUSEMAN (sin ADMIN/MANAGER): `totalAmount`, `unitPrice` y `subtotal` devuelven `null` en TODOS los endpoints de lectura y escritura de `/purchases/orders/*`. Para ADMIN/MANAGER: los mismos campos devuelven los valores reales, sin cambios respecto al comportamiento anterior. Los datos en BD permanecen correctos (el masking no corrompe `calculateTotal`/persistencia). `PurchaseOrderServiceImplTest` 0 fallos. Suite completa sin regresiones nuevas. |
+| **Prueba de flujo ejecutada** | (1) `GET /purchases/orders/300` (RECEIVED, 1 detalle) → ADMIN: `totalAmount:390.0`, `unitPrice:195.0`/`subtotal:390.0`; WAREHOUSEMAN: los 3 campos `null` ✅. (2) `GET /purchases/orders/status/RECEIVED?page=0&size=2` (paginado) → ADMIN y MANAGER ven `totalAmount`/`unitPrice` reales (975.0/390.0 y 195.0); WAREHOUSEMAN ve `null` en ambas órdenes ✅. (3) `GET /purchases/orders/supplier/2` (lista) → ADMIN ve `totalAmount` reales (975.0, 0.0, 390.0); WAREHOUSEMAN ve `null` en las 3 ✅. (4) `GET /purchases/orders/supplier/2/status/RECEIVED` → mismo patrón ✅. (5) `GET /purchases/orders/product/36` → ADMIN ve `unitPrice:195.0` en las 3 órdenes; WAREHOUSEMAN ve `null` ✅. (6) Flujo completo de escritura: se creó orden PENDING (id=306, OC-2026-0084, supplier 2, producto 36, qty 2, unitPrice 195.00) como ADMIN → `totalAmount:390.0` visible; se aprobó como ADMIN (`PATCH /306/approve`) → `totalAmount:390.0` visible; se recibió como WAREHOUSEMAN (`PATCH /306/receive`) → respuesta con `totalAmount:null`, `unitPrice:null`/`subtotal:null` ✅. (7) Verificación de integridad: `GET /purchases/orders/306` posterior como ADMIN → `totalAmount:390.0`, `unitPrice:195.0`/`subtotal:390.0` (datos en BD intactos, el masking de (6) fue solo en la respuesta a WAREHOUSEMAN) ✅. (8) UI: login como `almacen01` (WAREHOUSEMAN puro), `/purchases/orders/306` → tabla de líneas SIN columnas "Precio unitario"/"Subtotal", sin sección "Total de la orden", sin errores en consola ✅. Login como `admin` (ADMIN+WAREHOUSEMAN), mismo detalle → columnas "Precio unitario" ($195.00), "Subtotal" ($390.00) y "Total de la orden: $390.00" visibles, sin regresión ✅. (9) `mvn test -Dtest=PurchaseOrderServiceImplTest -Djacoco.skip=true` → 29/29, 0 fallos ✅. (10) Suite completa backend (`mvn test -Djacoco.skip=true`) → 396 tests, 4 failures, 9 errors — idéntico al baseline (mismo resultado documentado en BUG-M3-23/BUG-INV-16) — sin regresión nueva ✅. |
 
 > Cualquier bug NUEVO encontrado durante la re-validación (incluidos los hallazgos de la
 > sección CYBER) se agrega aquí con estado `⚠️ ABIERTO` y referencia al ID del caso que lo

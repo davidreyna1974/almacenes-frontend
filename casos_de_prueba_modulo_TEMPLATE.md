@@ -30,6 +30,29 @@
 
 ---
 
+## ⚠️ Lecciones MANDATORIAS (L29-L33) — aplicar desde el diseño inicial
+
+> Originadas en la revisión de bugs del módulo Inventario (2026-06-11/12). Ver detalle
+> completo en `memoria_tecnica_global_proyecto.md` §9. No son opcionales — su
+> cumplimiento se verifica en los casos marcados con `(L29)`..`(L33)` a lo largo de
+> este documento y en el checklist de cierre.
+
+- **L29** — Matriz de campos sensibles × roles documentada en la memoria técnica
+  (Sección 4) ANTES de implementar cualquier endpoint de lectura; tests de redacción
+  por rol escritos PRIMERO.
+- **L30** — 401 (no autenticado) vs 403 (sin permiso) explícitos; cualquier endpoint de
+  autenticación nuevo implementa rate limiting/lockout desde el primer commit.
+- **L31** — Todo `MatDialog.open(...)` con formulario usa `disableClose: true` por
+  defecto; toda lista con filtros resetea el paginador a la página 0 de forma
+  centralizada.
+- **L32** — Headers de tabla usan el mixin/placeholder SCSS compartido
+  (`%catalog-table-header` o equivalente) — no se copian manualmente los estilos.
+- **L33** — `forkJoin` con fuentes dependientes del rol usa `catchError` por
+  observable; datos de prueba de seguridad se prefijan (`[QA]`/`TEST_`) y se limpian
+  antes de cerrar el módulo.
+
+---
+
 ## Resumen de cobertura
 
 | Categoría | Total casos | PASS | FAIL | PENDIENTE |
@@ -101,14 +124,19 @@
 
 ### 1c. RBAC en lista (RBAC)
 
+> ⚠️ **L29 — obligatorio**: antes de codificar, documentar en la Sección 4 de la memoria
+> técnica la matriz de campos sensibles × roles para el DTO de esta pantalla (ver
+> formato en `memoria_tecnica_global_proyecto.md` L29). Los casos RBAC-[P]-03/04 deben
+> cubrir CADA campo de esa matriz, no solo uno representativo.
+
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
 | RBAC-[P]-01 | Botón "[Nuevo X]" visible | [ROL_ESCRITURA] | Visible | ⏳ PENDIENTE | |
 | RBAC-[P]-02 | Botón "[Nuevo X]" NO visible | [ROL_SOLO_LECTURA] | Ausente del DOM (no solo oculto) | ⏳ PENDIENTE | |
-| RBAC-[P]-03 | Columna de datos sensibles ([precio/costo/...]) visible | [ROL_CON_ACCESO] | Columna visible | ⏳ PENDIENTE | |
-| RBAC-[P]-04 | Columna de datos sensibles AUSENTE del DOM | [ROL_SIN_ACCESO] | Columna no renderizada | ⏳ PENDIENTE | |
+| RBAC-[P]-03 | Columna de datos sensibles ([precio/costo/...]) visible (L29) | [ROL_CON_ACCESO] | Columna visible con valor real | ⏳ PENDIENTE | |
+| RBAC-[P]-04 | Columna de datos sensibles AUSENTE del DOM (L29) | [ROL_SIN_ACCESO] | Columna no renderizada o valor `null` | ⏳ PENDIENTE | |
 | RBAC-[P]-05 | Íconos de acción en fila visibles según rol | [ROL_ESCRITURA] | Íconos correctos para el rol | ⏳ PENDIENTE | |
-| RBAC-[P]-[N] | [Agregar casos RBAC específicos del módulo] | | | ⏳ PENDIENTE | |
+| RBAC-[P]-[N] | [Un caso por cada campo de la matriz L29, por cada rol] | | | ⏳ PENDIENTE | |
 
 ### 1d. Botones e íconos de acción en tabla (UI)
 
@@ -139,6 +167,7 @@
 |---|---|---|---|---|---|
 | UI-[P]-PAG-01 | Paginador visible cuando hay > pageSize registros | [N] registros en BD | Paginador con total, opciones 10/20/50 | ⏳ PENDIENTE | |
 | UI-[P]-PAG-02 | Cambio de página carga la página correcta | Paginador visible | Filas cambian al ir a página 2 | ⏳ PENDIENTE | |
+| UI-[P]-PAG-03 | Cambiar filtro/búsqueda estando en página > 0 resetea a página 0 (L31) | En página 2+, cambiar filtro o término de búsqueda | Paginador regresa a página 0; resultados del filtro visibles desde la primera página | ⏳ PENDIENTE | |
 
 ---
 
@@ -146,12 +175,19 @@
 
 ### 2a. Apertura y visual (UI / VIS)
 
+> ⚠️ **L31 — obligatorio**: si `[nombre-componente]` es un `MatDialog`, debe abrirse con
+> `disableClose: true` por defecto. UI-[F]-05 verifica esto. Si el diálogo es
+> puramente informativo (sin formulario) y se decide permitir cierre por
+> backdrop/ESC, documentar la excepción en la memoria técnica del módulo y marcar
+> UI-[F]-05 como `N/A` con la justificación.
+
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
 | UI-[F]-01 | Click en [fila/botón] abre [diálogo/página] | [ROL] | Lista cargada | [Diálogo/página] abre con datos del registro | ⏳ PENDIENTE | |
 | UI-[F]-02 | Botón "Nuevo" abre formulario vacío | [ROL_ESCRITURA] | — | Todos los campos vacíos; sin datos precargados | ⏳ PENDIENTE | |
 | UI-[F]-03 | Botón Cancelar cierra sin guardar | [ROL] | Formulario con cambios | Cierra; lista/estado no cambia | ⏳ PENDIENTE | |
 | UI-[F]-04 | Campos muestran label visible (no solo placeholder) | [ROL] | Formulario abierto | Labels siempre visibles | ⏳ PENDIENTE | |
+| UI-[F]-05 | Click en backdrop/ESC con el diálogo abierto y cambios sin guardar (L31) | [ROL] | Diálogo abierto, `disableClose: true`, con cambios | Diálogo permanece abierto; cambios no se pierden | ⏳ PENDIENTE | |
 | VIS-[F]-01 | Campos obligatorios tienen `*` (Angular Material lo genera; nunca doble `**`) | [ROL] | Formulario abierto | Solo un `*` por campo obligatorio | ⏳ PENDIENTE | |
 
 ### 2b. RBAC en formulario (RBAC)
@@ -212,6 +248,19 @@
 | CRUD-[F]-08 | Confirmar eliminación/desactivación | Registro sin dependencias activas | Snackbar verde; registro desaparece/cambia estado | ⏳ PENDIENTE | |
 | CRUD-[F]-09 | Intentar eliminar registro con dependencias activas | Registro con hijos activos | Snackbar rojo con mensaje del backend (422) | ⏳ PENDIENTE | |
 | CRUD-[F]-10 | Intentar eliminar el último elemento de colección requerida | Solo 1 elemento en colección | Snackbar error "No se puede eliminar..."; sin llamada al API | ⏳ PENDIENTE | |
+
+### 2g. Carga de datos combinados por rol — `forkJoin` (RBAC / ERR)
+
+> ⚠️ **L33 — obligatorio**: aplica SOLO si `[nombre-componente]` carga datos de
+> MÚLTIPLES fuentes en paralelo (`forkJoin` o similar) y alguna de esas fuentes tiene
+> restricciones RBAC distintas de las demás (ej. catálogo A accesible para todos los
+> roles, catálogo B solo para algunos). Si no aplica, marcar como `N/A`.
+
+| ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
+|---|---|---|---|---|---|---|
+| RBAC-[F]-FJ-01 | Abrir el formulario con un rol que NO tiene acceso a una de las fuentes combinadas | [ROL_SIN_ACCESO_A_FUENTE_B] | Backend responde 403/404 para la fuente B | El formulario carga normalmente con la fuente A; la fuente B se omite o muestra vacío — SIN error global ni formulario en blanco | ⏳ PENDIENTE | Verificar `catchError` por observable (L33) |
+| RBAC-[F]-FJ-02 | Abrir el formulario con un rol que SÍ tiene acceso a ambas fuentes | [ROL_CON_ACCESO_COMPLETO] | — | Ambas fuentes cargan correctamente | ⏳ PENDIENTE | |
+| RBAC-[F]-FJ-[N] | [Repetir RBAC-[F]-FJ-01 para cada combinación de fuentes con RBAC distinto] | | | | ⏳ PENDIENTE | |
 
 ---
 
@@ -278,7 +327,7 @@
 | VIS-GEN-04 | Botones destructivos con color `warn` (rojo) | "Eliminar/Cancelar/Desactivar" en rojo | ⏳ PENDIENTE | |
 | VIS-GEN-05 | Diálogos de confirmación son modales (click fuera no cierra) | Click backdrop no cierra el diálogo | ⏳ PENDIENTE | |
 | VIS-GEN-06 | Campo de búsqueda tiene ícono lupa | Ícono `search` visible | ⏳ PENDIENTE | |
-| VIS-GEN-07 | Header de tabla con color `#F2E4F2` / `#6B3C6B` | Fondo lavanda, texto morado | ⏳ PENDIENTE | |
+| VIS-GEN-07 | Header de tabla con color `#F2E4F2` / `#6B3C6B`, vía mixin SCSS compartido (L32) | Fondo lavanda, texto morado; el `.scss` del componente usa `@include`/`@extend` del mixin compartido, no la regla copiada manualmente | ⏳ PENDIENTE | |
 | VIS-GEN-[N] | [Agregar casos visuales generales del módulo] | | ⏳ PENDIENTE | |
 
 ---
@@ -304,4 +353,20 @@ Antes de declarar el módulo **done**, verificar que se cumplen las 4 condicione
 [ ] 2. ng test --no-watch → 0 fallos; cobertura ≥ 70% statements
 [ ] 3. Prueba browser completada con CADA ROL que tiene acceso al módulo
 [ ] 4. Memoria técnica §10 actualizada con resultado final
+```
+
+### Checklist adicional — Lecciones L29-L33 (mandatorio)
+
+```
+[ ] L29 — Matriz de campos sensibles × roles documentada en la Sección 4 de la memoria
+    técnica del módulo, con tests de redacción por rol para cada campo afectado
+[ ] L30 — Endpoints de autenticación nuevos (si aplica) implementan rate limiting/
+    lockout; CYBER-02 y CYBER-19 (cuando aplique) ejecutados con resultado PASS
+[ ] L31 — Todos los MatDialog con formulario usan disableClose: true (o excepción
+    documentada); todas las listas con filtro resetean el paginador a página 0
+[ ] L32 — Todos los headers de tabla usan el mixin SCSS compartido (sin reglas
+    .mat-mdc-header-cell duplicadas manualmente)
+[ ] L33 — Todo forkJoin con fuentes RBAC-dependientes usa catchError por observable
+    (sección 2g en PASS o N/A); no quedan registros activos con datos de prueba de
+    seguridad sin prefijo [QA]/TEST_ o sin desactivar
 ```
