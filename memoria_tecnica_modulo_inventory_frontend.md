@@ -778,9 +778,11 @@ configuraciones de módulo, usar tests separados (`it()`) dentro de un `describe
 **Causa raíz**: el backend no aplica normalización Unicode (accent-insensitive) en la búsqueda por
 nombre/SKU. La consulta JPA usa `LIKE '%galon%'` que es case-insensitive pero no accent-insensitive.
 
-**Estado**: ⚠️ ABIERTO — requiere fix en backend (`ProductServiceImpl` o configuración de base de datos).
+**Estado**: ✅ RESUELTO — re-verificado en browser 2026-06-10: búsqueda "galon" devuelve 3 resultados
+incluyendo productos con "Galón" en el nombre. El fix `f_unaccent()` (PostgreSQL, query nativa en el
+repositorio) está desplegado y funcionando. Ver §7 de `memoria_tecnica_global_proyecto.md`.
 
-**Workaround**: el usuario debe escribir el acento correcto para encontrar el producto.
+**Workaround**: ya no aplica.
 
 ---
 
@@ -794,6 +796,319 @@ sticky (low-stock) heredan el color de fondo por otro mecanismo. Las tablas no-s
 
 **Estado**: ⚠️ ABIERTO — corrección cosmética pendiente en `products-page.component.scss` y
 `categories-page.component.scss`.
+
+---
+
+### BUG-INV-08 (VAL-PDET-14/15): Concordancia de género en mensajes de error de Categoría/Proveedor
+
+**Síntoma**: al dejar vacío el campo "Categoría*" en el formulario "Nuevo producto" y hacer blur,
+el mensaje de error muestra "La categoría **es obligatorio**." (debería ser "obligatoria",
+concordancia femenina con "la categoría"). El campo "Proveedor*" sí muestra correctamente
+"El proveedor es obligatorio." (masculino, correcto).
+
+**Causa raíz**: en `product-form.component.html`, el `<mat-error>` del campo `categoryId`
+probablemente reutiliza un texto genérico "es obligatorio" sin ajustar el género gramatical.
+
+**Estado**: ⚠️ ABIERTO — bug cosmético/textual, no afecta la funcionalidad de la validación
+(el campo sigue siendo requerido y bloquea el submit correctamente).
+
+**Severidad**: baja (solo texto visible al usuario).
+
+---
+
+### BUG-INV-09 (CRUD-PDET-01): JWT expirado produce 403 Forbidden en vez de 401, y el frontend no muestra "sesión expirada"
+
+**Síntoma**: con sesión ADMIN ("admin", chip "ADMIN" visible en topbar), al completar el
+formulario "Nuevo producto" con todos los datos válidos (SKU=QA-CRUD-001,
+Nombre="Producto QA CRUD-PDET-01", Precio=$100, Costo unitario=$60, Stock inicial=10,
+Stock mínimo=2, Categoría="Herramientas Manuales", Proveedor="Ferretera Industrial del
+Norte S.A. de C.V.", Descripción completa) y pulsar "Crear producto", aparece un snackbar
+ROJO: "No tienes permiso para realizar esta acción." El producto NO se crea (no quedan
+datos huérfanos en la base de datos).
+
+**Verificación de red**: con `read_network_requests` se confirmó:
+- `OPTIONS /api/v1/inventory/products` → 200 (preflight CORS correcto)
+- `POST /api/v1/inventory/products` → **403 Forbidden**
+
+Al repetir la prueba en modo edición (abrir "HMAN-DES-013", modificar la Descripción y
+pulsar "Guardar cambios"), el snackbar fue distinto ("Error al guardar el producto.") y
+`read_network_requests` mostró:
+- `PUT /api/v1/inventory/products/13` → **403 Forbidden**
+- `GET /api/v1/inventory/products/13/movements?page=0&size=10` → **403 Forbidden**
+  (esta última es una simple lectura, normalmente permitida para los 4 roles)
+
+Que un **GET de lectura** también devuelva 403 para ADMIN era la pista clave: descarta
+un problema de reglas `hasAnyRole` específicas de escritura.
+
+**Investigación de causa raíz (read-only, sin modificar código — restricción del usuario)**:
+1. `ProductController.createProduct` no tiene `@PreAuthorize` ni anotación de seguridad
+   a nivel de método; tampoco existe `@PreAuthorize`/`@Secured`/`@RolesAllowed` en todo
+   el módulo `inventory` del backend.
+2. `SecurityConfig.java` líneas 107-124: las reglas `hasAnyRole(...)` para GET, POST,
+   PUT y DELETE de `/api/v1/inventory/**` están en el orden correcto y deberían permitir
+   ADMIN tanto en lectura como en escritura.
+3. Consulta directa a la BD (`almacen_db`) confirma que "admin" tiene `ROLE_ADMIN` y
+   `ROLE_WAREHOUSEMAN` (con prefijo `ROLE_` correcto), y `JwtAuthenticationFilter` los
+   mapea correctamente a `SimpleGrantedAuthority`.
+4. **Causa raíz encontrada**: se decodificó el JWT activo en `localStorage`
+   (`almacenes_token`) con `atob()` sobre el payload (sin exponer el token completo).
+   El claim `exp` estaba en el **pasado** (`secondsRemaining: -928`, es decir, el token
+   expiró ~15 minutos antes de esta prueba). La sesión llevaba activa más de las 2 horas
+   documentadas en `CLAUDE.md` ("JWT expira en: 2 horas").
+5. Con el token expirado, `jwtUtils.validateToken(token)` devuelve `false` →
+   `JwtAuthenticationFilter` NO establece autenticación → la petición llega como
+   **anónima** al `SecurityFilterChain`.
+6. `SecurityConfig` no define un `AuthenticationEntryPoint` personalizado para
+   peticiones no autenticadas. Por defecto, Spring Security trata al usuario anónimo
+   como "autenticado con `ROLE_ANONYMOUS`" — al no cumplir `hasAnyRole(...)` /
+   `authenticated()`, el `AccessDeniedHandler` por defecto responde **403 Forbidden**,
+   no 401. Esto explica por qué TODAS las peticiones (lectura y escritura) devuelven 403
+   una vez expirado el token.
+7. En el frontend, `error.interceptor.ts` solo intercepta **401** para mostrar
+   "Tu sesión ha expirado. Vuelve a iniciar sesión." y redirigir a `/login`. Como el
+   backend devuelve 403 (no 401) para token expirado, el interceptor trata la respuesta
+   como un error de permisos normal y muestra mensajes genéricos
+   ("No tienes permiso para realizar esta acción." / "Error al guardar el producto.").
+
+**Conclusión**: **NO es un bug de RBAC**. `SecurityConfig`, los roles asignados a
+"admin" y el mapeo de `JwtAuthenticationFilter` son correctos. El bug real es de doble
+naturaleza:
+   - Backend: un JWT expirado produce 403 en vez de 401 (falta `AuthenticationEntryPoint`
+     que distinga "no autenticado" de "autenticado sin permiso").
+   - Frontend: `error.interceptor.ts` no contempla el caso 403-por-token-expirado y
+     muestra mensajes engañosos en vez de "sesión expirada".
+
+**Impacto**: durante una sesión larga (>2h), CUALQUIER usuario (de cualquier rol) ve
+mensajes de error de permisos confusos e incorrectos en lugar de ser redirigido a
+re-autenticarse. Esto puede hacer pensar erróneamente que hay un bug de RBAC cuando en
+realidad solo hace falta volver a iniciar sesión.
+
+**Estado**: ⚠️ ABIERTO — **CRÍTICO** (UX/seguridad — mensaje de error engañoso).
+NO corregido — pendiente de autorización explícita del usuario, según la restricción
+vigente de esta sesión.
+
+**Severidad**: alta (no bloquea funcionalidad per se — basta con re-login — pero genera
+diagnósticos erróneos y mala UX en sesiones largas).
+
+**Próximo paso de re-validación**: re-login para obtener un JWT fresco y re-ejecutar
+CRUD-PDET-01..05 y los casos VAL/UI pendientes que requieren guardar, para confirmar que
+con un token válido estas operaciones SÍ funcionan correctamente para ADMIN.
+
+**Re-validación completada (2026-06-10)**: tras re-login (`admin`/`Admin123!`, JWT
+fresco), se re-ejecutaron CRUD-PDET-01..05, VAL-PDET-08/09 y UI-PDET-01/03 — **todos
+✅ PASS**:
+- CRUD-PDET-01: `POST /api/v1/inventory/products` → **201** (producto QA-CRUD-001 creado)
+- CRUD-PDET-02: `PUT /api/v1/inventory/products/854` → **200** (nombre editado, snackbar
+  "Producto actualizado correctamente.")
+- VAL-PDET-09: `PUT /api/v1/inventory/products/854` con SKU duplicado "ELEC-PRO-043" →
+  **409**, snackbar rojo "El SKU 'ELEC-PRO-043' ya está en uso por otro producto."
+- VAL-PDET-08: tras guardar, al reabrir el diálogo "Guardar cambios" está deshabilitado
+  (form pristine); se activa solo con `form.dirty`
+- UI-PDET-01/03: se registraron 6 movimientos de Entrada vía "Registrar movimiento";
+  Kardex muestra tabla con Fecha/Tipo/Cantidad/Motivo/Usuario; con `Items per page=5`
+  pagina correctamente "1-5 of 6" → "6-6 of 6"
+- CRUD-PDET-03/04/05: flujo de desactivación (abrir confirmación, cancelar sin cambios,
+  confirmar → "Producto desactivado.") funciona correctamente para ADMIN
+
+Esto **confirma definitivamente** que `SecurityConfig` y los permisos de ADMIN son
+correctos para todas las operaciones CRUD de Productos. El bug remanente (403 en vez de
+401 para JWT expirado + frontend sin detección de "sesión expirada") permanece
+⚠️ ABIERTO, sin corregir, pendiente de autorización del usuario.
+
+---
+
+### BUG-INV-10 (UI-PROD-PAG-03): cambiar "Items per page" no vuelve a la página 0
+
+**Síntoma**: En la página de Productos, estando en la página 2 del listado ("21-40 of
+108", `pageSize=20`), al cambiar el selector "Items per page" a 10, la tabla muestra
+correctamente 10 filas pero el rango queda en "21-30 of 108" en lugar de volver a
+"1-10 of 108" (página 0).
+
+**Causa raíz**: comportamiento por defecto de `mat-paginator` de Angular Material —
+al cambiar `pageSize`, recalcula `pageIndex = floor(primerÍndiceVisible / nuevoPageSize)`
+para mantener aproximadamente el mismo primer elemento visible, en lugar de resetear a
+0. `onPageChange()` en `products-page.component.ts` simplemente toma el `pageIndex` que
+emite el propio `PageEvent` de `mat-paginator`:
+
+```typescript
+onPageChange(event: PageEvent): void {
+  this.currentPage = event.pageIndex;
+  this.pageSize    = event.pageSize;
+  this.searchTrigger$.next();
+}
+```
+
+Este es el comportamiento estándar de Angular Material en toda la aplicación (no es
+exclusivo de Productos) — el caso de prueba `UI-PROD-PAG-03` (agregado en el gap
+analysis 2026-06-10) documentó como esperado un reseteo a página 0 que no coincide con
+el comportamiento real de `mat-paginator`.
+
+**Estado**: ⚠️ ABIERTO — severidad baja (UX menor; los datos mostrados son correctos y
+consistentes con el rango indicado, no hay pérdida de información). NO corregido —
+pendiente de autorización explícita del usuario, según la restricción vigente de esta
+sesión. Si se autoriza, la corrección típica sería forzar `this.currentPage = 0` dentro
+de un handler dedicado para el evento de cambio de `pageSize` (distinguible en
+`PageEvent` comparando `event.pageSize !== this.pageSize` antes de reasignar
+`currentPage`).
+
+**Próximo paso de re-validación**: ninguno — el hallazgo es reproducible de forma
+determinista en cualquier página del módulo que use `mat-paginator` con más de
+`pageSize` elementos.
+
+---
+
+### BUG-INV-11 (CYBER-07): `unitCost` expuesto en el JSON de respuesta para WAREHOUSEMAN/SALES
+
+**Síntoma**: aunque la columna "Costo unit." está correctamente oculta en la UI para
+los roles WAREHOUSEMAN y SALES (RBAC-PROD-07/08, VIS-LST-04, RBAC-PDET-09 — todos
+✅ PASS), el campo `unitCost` SÍ viaja en el cuerpo JSON de la respuesta del backend
+para ambos roles, con su valor real:
+
+- `GET /inventory/products?page=0&size=5` con JWT de `almacen01` (WAREHOUSEMAN) y de
+  `ventas01` (SALES) → `content[0].unitCost = 180`
+- `GET /inventory/products/low-stock?page=0&size=5` con los mismos JWT →
+  `content[0].unitCost = 7800`
+
+**Causa raíz**: el backend serializa el DTO completo de `Product` (incluyendo
+`unitCost`) sin filtrar por rol — el ocultamiento es exclusivamente del lado del
+frontend (`displayedColumns` condicional en `products-page.component.ts` y
+`product-detail-dialog.component`). Cualquier usuario WAREHOUSEMAN o SALES puede ver
+el costo unitario real de cada producto inspeccionando la pestaña Network del
+navegador (DevTools), sin necesidad de privilegios adicionales.
+
+**Verificado mediante**: `fetch()` directo desde la consola del navegador con el JWT
+de la sesión activa (`almacenes_token` en `localStorage`), y un JWT de `ventas01`
+obtenido vía `POST /api/v1/auth/login`.
+
+**Estado**: ❌ FAIL — severidad ALTA (exposición de datos financieros sensibles a
+roles no autorizados, contradice explícitamente el checklist de cierre de CLAUDE.md:
+*"Datos sensibles (unitCost, costos, márgenes, precios): Visibles SOLO para roles
+autorizados; Ausentes del DOM para roles no autorizados (no solo display:none)"*).
+NO corregido — pendiente de autorización explícita del usuario, según la restricción
+vigente de esta sesión. Si se autoriza, la corrección típica sería: (a) crear un DTO
+de respuesta diferenciado por rol en el backend (`ProductResponseDTO` sin `unitCost`
+para WAREHOUSEMAN/SALES), o (b) que el `ProductController`/`ProductServiceImpl`
+omita el campo `unitCost` en la serialización cuando el usuario autenticado no tenga
+`ROLE_ADMIN` ni `ROLE_MANAGER`. Aplica también a `ProductDetailDialogComponent`
+(GET por id) y a cualquier otro endpoint que devuelva `ProductResponseDTO` completo.
+
+**Próximo paso de re-validación**: una vez corregido, repetir CYBER-07 para
+`GET /inventory/products`, `GET /inventory/products/{id}`, y
+`GET /inventory/products/low-stock` con JWT de WAREHOUSEMAN y SALES — `unitCost` debe
+estar ausente del JSON (no solo `null`/`0`).
+
+---
+
+### BUG-INV-12 (SEC-04): `GET /purchases/suppliers/active` → 403 para SALES rompe el `forkJoin` de filtros en Productos
+
+**Síntoma**: al iniciar sesión como `ventas01` (SALES) y navegar a
+`/inventory/products`, aparece un snackbar rojo "No tienes permiso para realizar esta
+acción." al cargar la página, y los filtros desplegables "Categoría" y "Proveedor"
+quedan completamente vacíos (solo muestran la opción "Todas"/"Todos"), aunque la
+tabla de productos sí se carga correctamente con sus 108 registros.
+
+**Causa raíz**: `ProductsPageComponent.ngOnInit()` (líneas 139-148) carga categorías
+y proveedores en un único `forkJoin`:
+
+```typescript
+forkJoin({
+  cats: this.categoryService.getActive('', 0, 200),
+  sups: this.productService.getActiveSuppliers(),
+}).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+  next: ({ cats, sups }) => {
+    this.categories = cats.content;
+    this.suppliers  = sups.content;
+    this.cdr.detectChanges();
+  }
+});
+```
+
+`getActiveSuppliers()` llama a `GET /api/v1/purchases/suppliers/active`. Este
+endpoint responde **403 Forbidden** para el rol SALES (verificado: mismo endpoint con
+JWT de `manager01` → 200; con JWT de `ventas01` → 403). Por semántica de RxJS,
+`forkJoin` emite error completo si CUALQUIERA de sus observables internos falla — el
+`subscribe` no tiene callback `error`, así que `next` nunca se ejecuta y
+`this.categories`/`this.suppliers` permanecen como arrays vacíos (`[]`) para SALES.
+Adicionalmente, el error 403 es interceptado por `error.interceptor.ts`, que muestra
+el snackbar genérico "No tienes permiso para realizar esta acción." sin que el
+usuario haya intentado ninguna acción de escritura.
+
+**Verificado mediante**: `read_network_requests` en la pestaña del navegador tras
+login como `ventas01` y navegación a `/inventory/products` — `GET
+/api/v1/purchases/suppliers/active` → **403**; inspección visual de los `mat-select`
+"Categoría" y "Proveedor" (ambos solo con la opción por defecto "Todas"/"Todos").
+
+**Estado**: ⚠️ ABIERTO — severidad MEDIA (los filtros de búsqueda por categoría y por
+proveedor quedan inutilizables para el rol SALES, y se muestra un mensaje de error
+confuso al cargar una pantalla de solo lectura). NO corregido — pendiente de
+autorización explícita del usuario. Si se autoriza, posibles correcciones: (a) en el
+backend, permitir `ROLE_SALES` en `GET /purchases/suppliers/active` (es un endpoint
+de solo lectura usado para un filtro, análogo a `categories/active`); y/o (b) en el
+frontend, separar el `forkJoin` en dos suscripciones independientes con
+`catchError` por observable, para que un fallo en `suppliers` no impida poblar
+`categories` (y viceversa).
+
+**Próximo paso de re-validación**: una vez corregido, repetir SEC-04 con `ventas01` —
+no debe aparecer snackbar de error al cargar `/inventory/products`, y los filtros
+"Categoría" y "Proveedor" deben mostrar las opciones reales. Verificar también si
+`/inventory/categories` y `/inventory/low-stock` (RBAC-LST-*) presentan el mismo
+patrón para SALES (ambos también podrían depender de `suppliers/active` u otros
+endpoints de `purchases`).
+
+---
+
+### BUG-INV-13 (CYBER-02): JWT manipulado en `localStorage` desbloquea la UI de ADMIN sin que el backend otorgue acceso real
+
+**Síntoma**: con sesión activa de `ventas01` (SALES), se modificó el payload del JWT
+en `localStorage` (`roles: ["ROLE_SALES"]` → `roles: ["ROLE_ADMIN"]`, agregando
+también `role: "ROLE_ADMIN"`), preservando header y firma originales (firma ahora
+inválida para el nuevo payload). Al recargar `/inventory/products`:
+
+- El **backend rechaza correctamente**: `GET /inventory/products?page=0&size=20` →
+  **403 Forbidden** (firma inválida → usuario anónimo, mismo mecanismo que BUG-INV-09).
+- El **frontend NO redirige a `/login`**. En su lugar, decodifica el JWT alterado
+  client-side (sin validar firma) para determinar el rol a renderizar, y muestra:
+  - Topbar: badge de rol "ADMIN" (en vez de "SALES")
+  - Sidebar: ítems adicionales "Compras" (carrito) y "Gestión de usuarios" (persona),
+    que `ventas01` no debería ver
+  - Página de Productos: botón "+ Nuevo producto" visible (oculto normalmente para SALES)
+  - Panel de datos: "Sin datos" + snackbar rojo "Error al cargar productos." (porque
+    la petición real al backend fue rechazada con 403)
+
+**Causa raíz**: `AuthService`/`AuthGuard` y los componentes de layout
+(sidebar/topbar/products-page) determinan el rol del usuario decodificando el JWT de
+`localStorage` (`atob` sobre el payload) SIN verificar la firma — la verificación de
+firma ocurre solo en el backend. Cualquier usuario puede editar
+`localStorage.almacenes_token` desde DevTools y obtener una UI que muestra elementos
+de un rol superior, aunque las llamadas HTTP reales sigan protegidas por el backend
+(403). Esto está relacionado con BUG-INV-09: al no existir un
+`AuthenticationEntryPoint` para 401 ni un manejo en `error.interceptor.ts` que
+detecte "token inválido/sesión corrupta" y fuerce logout + redirect a `/login`, el
+frontend queda en un estado inconsistente (UI de un rol, datos de ningún rol).
+
+**Verificado mediante**: `javascript_tool` — decodificación, alteración (`roles` y
+`role` → `ROLE_ADMIN`) y reescritura de `almacenes_token` en `localStorage`;
+`navigate` a `/inventory/products`; captura de pantalla (badge "ADMIN", sidebar con
+"Compras"/"Gestión de usuarios", botón "+ Nuevo producto", "Sin datos" +
+"Error al cargar productos."); `read_network_requests` confirmando
+`GET /inventory/products` → 403.
+
+**Estado**: ✅ NO REPRODUCIBLE (re-test 2026-06-12). La corrección de **BUG-INV-09**
+(2026-06-11 — `JwtAuthenticationEntryPoint` + `JwtAccessDeniedHandler` en
+`SecurityConfig`) cambió la respuesta del backend para un JWT con firma inválida:
+ahora responde **401** (antes 403, vía usuario anónimo). El `error.interceptor.ts`
+ya manejaba 401 desde antes (limpia `localStorage`, redirige a
+`/login?reason=expired`, snackbar "Tu sesión ha expirado..."). Re-test: login
+`ventas01` (SALES), se alteró `roles`/`role` del JWT a `ROLE_ADMIN` (firma inválida)
+y se navegó a `/inventory/products`. `GET /inventory/products`,
+`/inventory/categories/active` y `/purchases/suppliers/active` → **401** (x2,
+consistente). La app redirigió de inmediato a `/login?reason=expired` con banner y
+snackbar de sesión expirada — screenshot inmediato (sin esperar) confirma que NO se
+renderiza ningún elemento de UI de ADMIN (sin badge "ADMIN", sin sidebar de
+"Compras"/"Gestión de usuarios", sin botón "+ Nuevo producto"). No se requirió
+ningún cambio de código — corregido como efecto colateral de BUG-INV-09. Detalle
+completo en `casos_de_prueba_modulo_inventario.md` — "BUG-INV-13 — Verificación
+(2026-06-12) — NO REPRODUCIBLE".
 
 ---
 
@@ -889,8 +1204,14 @@ sticky (low-stock) heredan el color de fondo por otro mecanismo. Las tablas no-s
 | Cobertura statements total: 89.32% (movement-dialog 81.3%, product-form 82.6%, product-detail 92.0%) | ✓ | `ng test --code-coverage` — 2026-06-09 |
 | **Verificación browser completa del documento de casos de prueba — 2026-06-09** | | |
 | 150 de 162 casos ✅ PASS; 2 ❌ FAIL; 10 N/A — 0 PENDIENTE | ✓ | Playwright MCP — 2026-06-09 |
-| BUG-INV-06 (BSRCH-PROD-03): backend no normaliza acentos — "galon" no encuentra "Galón" | ⚠️ ABIERTO | Verificado con API call + búsqueda en browser |
+| BUG-INV-06 (BSRCH-PROD-03): backend no normaliza acentos — "galon" no encuentra "Galón" | ✅ RESUELTO | Re-test 2026-06-10: búsqueda "galon" → 3 resultados con "Galón" |
 | BUG-INV-07 (VIS-GEN-06): headers de tabla no-sticky sin colores de marca (#F2E4F2 / #6B3C6B) | ⚠️ ABIERTO | Verificado con getComputedStyle en productos y categorías |
+| BUG-INV-08 (VAL-PDET-14/15): "La categoría es obligatorio." — error de concordancia de género | ⚠️ ABIERTO | Re-test 2026-06-10: blur en Categoría* en formulario "Nuevo producto" |
+| BUG-INV-09 (CRUD-PDET-01): JWT expirado → 403 (no 401) en POST/PUT/GET; frontend no detecta "sesión expirada" | ⚠️ ABIERTO — CRÍTICO | Re-test 2026-06-10 con JWT fresco: CRUD-PDET-01..05, VAL-PDET-08/09, UI-PDET-01/03 → todos ✅ PASS. Confirma que SecurityConfig y permisos ADMIN son correctos; el 403 original fue exclusivamente por JWT expirado. Bug de "403 en vez de 401 + frontend sin detección de sesión expirada" sigue ⚠️ ABIERTO, sin corregir, pendiente de autorización |
+| BUG-INV-10 (UI-PROD-PAG-03): cambiar "Items per page" no vuelve a página 0 | ⚠️ ABIERTO | Re-test 2026-06-10: estando en página 2 ("21-40 of 108", size=20), cambiar "Items per page" a 10 muestra "21-30 of 108" en vez de "1-10 of 108" — comportamiento por defecto de mat-paginator (pageIndex = floor(primerÍndice/nuevoSize)), severidad baja, sin corregir, pendiente de autorización |
+| BUG-INV-11 (CYBER-07): `unitCost` expuesto en JSON de respuesta para WAREHOUSEMAN/SALES | ❌ FAIL — ALTA | Re-test 2026-06-10: `GET /inventory/products` y `GET /inventory/products/low-stock` devuelven `unitCost` con valor real (180, 7800) para JWT de `almacen01` (WAREHOUSEMAN) y `ventas01` (SALES), aunque la columna está oculta en la UI. Ocultamiento solo en frontend, no en backend. Sin corregir, pendiente de autorización |
+| BUG-INV-12 (SEC-04): `GET /purchases/suppliers/active` → 403 para SALES rompe `forkJoin` de filtros en Productos | ⚠️ ABIERTO — MEDIA | Re-test 2026-06-10: login `ventas01`, navegar a `/inventory/products` → snackbar rojo "No tienes permiso para realizar esta acción." al cargar; filtros "Categoría" y "Proveedor" vacíos (solo "Todas"/"Todos"). `GET /purchases/suppliers/active` → 403 con JWT de `ventas01` (200 con `manager01`). Sin corregir, pendiente de autorización |
+| BUG-INV-13 (CYBER-02): JWT manipulado en localStorage desbloquea UI de ADMIN sin acceso real del backend | ✅ NO REPRODUCIBLE (2026-06-12) | Re-test 2026-06-12: corregido como efecto colateral de BUG-INV-09 — el backend ahora responde 401 (no 403) para JWT con firma inválida, y `error.interceptor.ts` ya manejaba 401 (limpia sesión, redirige a `/login?reason=expired`). Sin flash de UI de ADMIN, sin cambios de código |
 | VAL-PDET-09: SKU duplicado → snackbar "Ya existe un producto con el SKU 'ELEC-PRO-043'." (409) | ✓ | Browser — 2026-06-09 |
 | Todos los filtros de productos verificados: por categoría, estado, proveedor | ✓ | Browser ADMIN — 2026-06-09 |
 | MovementDialog: VIS-MOV-01/02, UI-MOV-01, VAL-MOV-05, RN-MOV-01/02 — todos PASS | ✓ | Browser ADMIN — 2026-06-09 |

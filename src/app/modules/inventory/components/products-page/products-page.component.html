@@ -33,16 +33,18 @@
         </mat-select>
       </mat-form-field>
 
-      <!-- Filtro: Proveedor -->
-      <mat-form-field appearance="outline" class="filter-field filter-field--supplier">
-        <mat-label>Proveedor</mat-label>
-        <mat-select [formControl]="supplierFilter">
-          <mat-option [value]="null">Todos</mat-option>
-          @for (sup of suppliers; track sup.id) {
-            <mat-option [value]="sup.id">{{ sup.name }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
+      <!-- Filtro: Proveedor (BUG-INV-12: oculto para SALES, sin acceso a /purchases/**) -->
+      @if (canViewSupplierFilter()) {
+        <mat-form-field appearance="outline" class="filter-field filter-field--supplier">
+          <mat-label>Proveedor</mat-label>
+          <mat-select [formControl]="supplierFilter">
+            <mat-option [value]="null">Todos</mat-option>
+            @for (sup of suppliers; track sup.id) {
+              <mat-option [value]="sup.id">{{ sup.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
 
       <!-- Limpiar filtros -->
       @if (activeFilterCount > 0) {

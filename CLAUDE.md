@@ -343,6 +343,42 @@ verificaciones. No basta con que el código compile y los tests unitarios pasen.
 
 ---
 
+## ⚠️ Lecciones mandatorias L29-L33 (revisión de bugs 2026-06-11/12, todos los módulos)
+
+> Origen: revisión completa de bugs del módulo Inventory (BUG-INV-07/09/10/11/12/13/14/17/18).
+> Detalle completo en `memoria_tecnica_global_proyecto.md` §9 (L29-L33). Estas reglas son
+> **mandatorias desde el diseño inicial** de cualquier módulo nuevo (Sales en adelante) —
+> no son correcciones retroactivas opcionales. El `casos_de_prueba_modulo_TEMPLATE.md`
+> incluye los casos de prueba correspondientes (`(L29)`..`(L33)`) y un checklist de
+> cierre adicional.
+
+- **L29 — Matriz de campos sensibles × roles**: antes de implementar cualquier endpoint
+  de lectura, documentar en la Sección 4 de la memoria técnica del módulo qué campos son
+  sensibles (precios, costos, márgenes, límites de crédito, descuentos, etc.) y qué valor
+  reciben por rol (valor real vs `null`/redactado). Escribir el test de redacción por rol
+  ANTES de implementar el campo. Aplicar la redacción de forma centralizada (función
+  `redactXxx(dto, role)`) en TODOS los endpoints de lectura que devuelvan ese DTO.
+- **L30 — 401 vs 403 + rate limiting de login**: cualquier módulo con autenticación nueva
+  debe usar `JwtAuthenticationEntryPoint`/`JwtAccessDeniedHandler` (ya implementados
+  globalmente — no revertir) y, si agrega un endpoint de autenticación (login,
+  recuperación de contraseña, etc.), implementar rate limiting/lockout (patrón
+  `LoginAttemptService`) desde el primer commit.
+- **L31 — Diálogos y paginador**: todo `MatDialog.open(...)` con formulario usa
+  `disableClose: true` por defecto (excepción documentada si es informativo); toda lista
+  con filtros/búsqueda resetea el paginador a la página 0 en el punto centralizado donde
+  se aplica el filtro.
+- **L32 — Mixin SCSS de headers de tabla**: el estilo `.mat-mdc-header-cell { font-weight:
+  600; color: #6B3C6B; background: #F2E4F2; }` se define UNA vez en un mixin/placeholder
+  compartido (`src/styles/_mixins.scss` o equivalente) y se incluye (`@include`/`@extend`)
+  en cada `.catalog-table` — nunca se copia manualmente.
+- **L33 — `forkJoin` y datos de prueba**: cualquier `forkJoin` que combine fuentes con
+  RBAC distinto envuelve cada observable dependiente de rol con `catchError(() => of(...))`
+  para que un 403/404 en una fuente no rompa las demás. Datos creados durante pruebas de
+  seguridad se prefijan (`[QA] `/`TEST_`) y se desactivan/eliminan antes de cerrar el
+  módulo.
+
+---
+
 ## Identidad visual y paleta de colores
 
 ### Nombre del sistema
@@ -574,6 +610,10 @@ this.form = this.fb.group({
 - Todos los métodos retornan `Observable<T>` — nunca suscribirse dentro del servicio.
 - El interceptor JWT agrega el header automáticamente — los servicios no manejan tokens.
 - El interceptor de errores maneja 401 (redirigir a login) y 403 (mostrar mensaje de acceso denegado).
+- **(L33)** Si un componente combina múltiples llamadas con `forkJoin` y alguna fuente
+  tiene restricciones RBAC distintas de las demás (ej. catálogo solo para ciertos
+  roles), envolver esa llamada con `catchError(() => of(<valor por defecto seguro>))`.
+  Un 403/404 en una fuente nunca debe romper el `forkJoin` completo.
 
 ```typescript
 // Patrón estándar de servicio
@@ -610,6 +650,10 @@ interface PageResponse<T> {
 
 El componente de tabla usa `mat-paginator` de Angular Material vinculado a estos campos.
 
+**(L31)** Toda lista con filtros/búsqueda debe resetear el paginador a la página 0
+(`paginator.firstPage()` o `pageIndex = 0` + recarga) en el mismo punto donde se aplica
+el filtro — implementarlo una sola vez, no repetirlo por componente.
+
 ### Gestión de suscripciones
 
 Usar `takeUntilDestroyed()` (Angular 16+) para evitar memory leaks.
@@ -636,6 +680,11 @@ Preferir el **async pipe** en templates sobre suscripciones manuales cuando sea 
 - Las rutas se configuran con `data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER'] }`.
 - Si el token expira (2h), el interceptor de errores detecta 401 y redirige a login
   mostrando mensaje "Tu sesión ha expirado. Vuelve a iniciar sesión."
+- **(L30)** Un JWT con firma inválida/manipulada también debe producir 401 (no 403) en
+  el backend — el interceptor de errores ya cubre este caso globalmente. Cualquier
+  endpoint de autenticación nuevo (login, recuperación de contraseña, etc.) debe
+  implementar rate limiting/lockout desde el primer commit (patrón
+  `LoginAttemptService`).
 
 ### Variables de entorno
 
@@ -674,6 +723,10 @@ En producción, la URL viene de la configuración del servidor o de un archivo
   En tablas: skeleton loading (filas grises animadas) en lugar de spinner centrado.
 - **Confirmación de acciones destructivas**: `MatDialog` con el patrón confirm-dialog
   antes de desactivar, cancelar órdenes, o cualquier acción irreversible.
+- **(L31)** Todo `MatDialog.open(...)` que contenga un formulario o pueda generar cambios
+  de estado se abre con `disableClose: true` por defecto — opt-out, no opt-in. Solo los
+  diálogos puramente informativos (sin formulario) pueden omitir esto, documentando la
+  excepción en la memoria técnica del módulo.
 - **Estado vacío**: componente `EmptyStateComponent` con ícono, título y descripción
   cuando una lista no tiene resultados. Diferente mensaje para "sin datos" vs "sin resultados de búsqueda".
 
@@ -686,6 +739,8 @@ En producción, la URL viene de la configuración del servidor o de un archivo
 - Ordenamiento por defecto: `createdAt DESC` para listas de órdenes; `name ASC` para catálogos.
 - **Truncado de celdas**: nunca aplicar `display: block` sobre un `<td>`. Usar un `<div>` wrapper interno con la clase de truncado. (L21)
 - **Contenedor de tabla**: toda página de listado debe tener `padding: var(--space-3)`, `gap: var(--space-2)` en `.catalog-page` y `border-radius: 8px; border: 1px solid var(--color-divider); background: #fff` en `__table-wrapper`. Verificar consistencia entre todas las páginas del módulo. (L22)
+- **Headers de tabla**: el estilo `.mat-mdc-header-cell { font-weight: 600; color: #6B3C6B; background: #F2E4F2; }` se define en un mixin/placeholder SCSS compartido y se incluye (`@include`/`@extend`) en cada `.catalog-table` — nunca se copia manualmente en el `.scss` de cada componente. (L32 — BUG-INV-07)
+- **Reset de paginador**: toda lista con filtros/búsqueda debe resetear el paginador a la página 0 al cambiar el filtro, en el mismo punto donde se aplica. (L31 — BUG-INV-10)
 - **Botones de acción en filas clickeables**: cuando `mat-row` tiene `(click)="viewDetail(row)"`, TODOS los botones de acción dentro de la fila DEBEN incluir `$event.stopPropagation()` al inicio de su handler: `(click)="$event.stopPropagation(); acción(row)"`. Sin esto, el click burbujea al `mat-row`, navega al detalle y destruye el componente antes de que `afterClosed()` pueda ejecutarse. (L27 — BUG-M3-22)
 
 ### Navegación lista ↔ detalle con tabs
@@ -746,6 +801,12 @@ El sidebar y las rutas se adaptan al rol del usuario extraído del JWT.
 
 Las rutas protegidas por rol usan `AuthGuard`. Si el usuario intenta acceder
 a una ruta no autorizada, se redirige a su pantalla de inicio con mensaje de acceso denegado.
+
+**(L29)** Además de rutas y elementos de UI, cada DTO con campos sensibles (precios,
+costos, márgenes, límites de crédito, descuentos, etc.) debe tener su propia matriz de
+visibilidad por rol documentada en la Sección 4 de la memoria técnica del módulo, con
+redacción aplicada por el backend (no solo ocultada en el frontend) — ver
+`memoria_tecnica_global_proyecto.md` L29.
 
 ---
 
