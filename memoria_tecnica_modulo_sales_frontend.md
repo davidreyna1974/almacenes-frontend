@@ -718,8 +718,48 @@ gap temporal en §8 hasta que el backend redacte.
 
 ## 7. Ejecución de tests y resultados
 
-_Pendiente — se documenta en FASE 1-6 conforme se implementan modelos, servicios
-y componentes._
+### FASE 1 — Modelos, servicios y rutas (sin UI)
+
+**Servicios (2026-06-13):**
+```
+ng test --no-watch --include='**/sales/services/*.spec.ts'
+→ 3 archivos, 23 specs, 0 fallos
+```
+- `client.service.spec.ts` — 6 specs (getActive con/sin search, getById, create,
+  update, deactivate 204)
+- `sale-order.service.spec.ts` — 11 specs (create, getById, getByStatus paginado,
+  getByClientId, getByProductId, update, approve/deliver/cancel PATCH sin body,
+  addDetail/updateDetail/removeDetail)
+- `reservation.service.spec.ts` — 6 specs (getSummary, getProducts, getProductById,
+  getClients, getClientById)
+
+**Regresión completa (2026-06-13):**
+```
+ng test --no-watch
+→ 22 archivos de test, 238 specs, 0 fallos
+```
+Incluye módulos 0-3 (auth, layout, shared, inventory, purchases) sin regresiones,
+más los 23 specs nuevos de Sales (servicios). Las páginas placeholder de Sales
+(`ClientsPageComponent`, `SaleOrdersPageComponent`, `SaleOrderDetailPageComponent`,
+`ReservationsPageComponent`) no tienen specs propios todavía — se implementan en
+FASE 2-5 junto con su lógica real.
+
+**Rutas y navegación (FASE 1, sin prueba de navegador todavía):**
+- `sales.routes.ts` creado con gate de seguridad (Propuesta C): `orders/new`
+  restringido a `ROLE_ADMIN`/`ROLE_MANAGER`/`ROLE_SALES` (WAREHOUSEMAN no crea
+  órdenes), registrado ANTES de `orders/:id`.
+- `app.routes.ts`: `loadChildren` de `sales.routes` con
+  `data.roles: ['ROLE_ADMIN','ROLE_MANAGER','ROLE_WAREHOUSEMAN','ROLE_SALES']`.
+- Sidebar: "Ventas" convertido de ítem plano a grupo con 3 hijos (Clientes,
+  Órdenes de venta, Reservas), visibles para los 4 roles (todos tienen acceso
+  de lectura a `/sales/**` según RBAC backend).
+- Topbar: 5 entradas de breadcrumb agregadas (`/sales/clients`, `/sales/orders/new`,
+  `/sales/orders/`, `/sales/orders`, `/sales/reservations`), con el orden cuidado
+  para que `/sales/orders/123` resuelva a "Ventas → Detalle de orden" y no a
+  "Ventas → Órdenes de venta" (matching por `startsWith`).
+- La prueba browser del caso SEC (WAREHOUSEMAN → `/sales/orders/new` redirige) se
+  ejecuta en FASE 3-4 cuando `SaleOrdersPageComponent` exponga el botón "Nueva
+  orden" y exista contenido real que verificar.
 
 ---
 

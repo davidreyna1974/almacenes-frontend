@@ -47,8 +47,18 @@ const ALL_NAV_ITEMS: NavItem[] = [
         roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN'] },
     ]
   },
-  { label: 'Ventas',   icon: 'point_of_sale',   route: '/sales',
-    roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'] },
+  {
+    label: 'Ventas', icon: 'point_of_sale',
+    roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'],
+    children: [
+      { label: 'Clientes',        icon: 'groups',         route: '/sales/clients',
+        roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'] },
+      { label: 'Órdenes de venta', icon: 'receipt_long',  route: '/sales/orders',
+        roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'] },
+      { label: 'Reservas',         icon: 'bookmark',      route: '/sales/reservations',
+        roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'] },
+    ]
+  },
   { label: 'Reportes', icon: 'bar_chart',        route: '/reports',
     roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'] },
   { label: 'Usuarios', icon: 'manage_accounts',  route: '/admin/users',
