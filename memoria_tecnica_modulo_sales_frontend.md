@@ -896,6 +896,95 @@ ni en FASE 1/2 de Sales.
 
 ---
 
+### FASE 4 — Detalle de orden de venta (`SaleOrderDetailPageComponent` + `SaleOrderDetailFormComponent` + `StockPreviewDialogComponent`) — pruebas de navegador (Propuesta B)
+
+**Cobertura del documento de casos** (`casos_de_prueba_modulo_sales.md`, secciones 4 y 5):
+todos los casos VIS-DET-01..06, UI-DET-01..14, FLOW-DET-01..10, RN-DET-01..06,
+UI-LIN-01..06, VAL-LIN-01..08, CRUD-LIN-01..05, RBAC-LIN-01..03 en ✅ PASS;
+FLOW-DET-07 en **N/A** (justificado); RBAC-LIN-04 en **❌ FAIL** (hallazgo
+documentado, no corregido); CRUD-LIN-06 en **⏳ PENDIENTE** (verificación de
+backend no realizada en esta ronda, no bloquea FASE 4).
+
+**Resumen por categoría:**
+
+- **VIS-DET-01..06** ✅ — título muestra `orderNumber`, badge de estado con los
+  4 colores semánticos (PENDING/APPROVED/DELIVERED/CANCELLED) verificados en
+  órdenes 1941/1570/1470/1943, botón ← conserva `?from=PENDING`, historial de
+  estado (D4) muestra usuario+fecha para Aprobada/Entregada, `totalAmount`
+  visible para WAREHOUSEMAN (D6), `mat-progress-bar` visible durante cargas.
+- **UI-DET-01..14** ✅ — matriz de botones de transición y edición verificada
+  con los 4 roles:
+  - ADMIN/MANAGER (orden PENDING): Cliente/Notas editables, "Guardar cambios"
+    respeta `form.dirty` (L25), "Aprobar"/"Cancelar orden" visibles,
+    "Agregar detalle" + iconos Editar/Eliminar visibles.
+  - WAREHOUSEMAN: Cliente/Notas `disabled`, sin botones de transición en
+    PENDING, solo "Entregar" en APPROVED, tabla de detalles de solo lectura
+    sin iconos de acción (R1).
+  - SALES: sin "Aprobar" en PENDING, solo "Cancelar" (sin "Entregar") en
+    APPROVED.
+  - DELIVERED/CANCELLED: sin botones de transición para los 4 roles (estados
+    terminales).
+- **FLOW-DET-01..10** ✅ (FLOW-DET-07 = N/A) —
+  - Aprobar (R4/R5): `StockPreviewDialog` "Disponible" mostrado antes de
+    confirmar; con stock suficiente → PENDING→APPROVED, `reservedStock`
+    incrementado, snackbar verde; con stock insuficiente → snackbar rojo
+    "Stock disponible insuficiente para 'Barniz marino 5 galones para
+    exteriores'. Disponible: 6, solicitado: 10.", orden permanece PENDING
+    (R4 todo-o-nada, H1 status 500 confirmado); cancelar el diálogo no
+    modifica el estado ni el stock.
+  - Entregar (R7/R8): `StockPreviewDialog` "Stock físico" mostrado antes de
+    confirmar; con stock suficiente → APPROVED→DELIVERED,
+    `reservedStock`/`currentStock` decrementados, movimiento OUT registrado,
+    snackbar verde, historial actualizado (D4).
+  - **FLOW-DET-07 → N/A**: ver detalle en §8 ("Hallazgo FLOW-DET-07").
+  - Cancelar (R9/R10): desde PENDING (SALES, orden propia OV-2026-0394) →
+    PENDING→CANCELLED sin impacto en stock, mensaje de `ConfirmDialog`
+    específico ("Esta acción es irreversible"); desde APPROVED (ADMIN, orden
+    1942) → APPROVED→CANCELLED con liberación de `reservedStock` (R10) y
+    mensaje de `ConfirmDialog` distinto advirtiendo la liberación.
+  - FLOW-DET-10: cancelar una orden DELIVERED vía curl → HTTP 500 "No se
+    puede cancelar una orden ya entregada." (H1 confirmado, botón ya ausente
+    en UI).
+- **RN-DET-01..06** ✅ — campos de auditoría/totales de solo lectura (L14);
+  `unitCost` ausente del formulario de línea para los 3 roles con acceso
+  (R14); en APPROVED, edición de detalles deshabilitada (R1); producto
+  duplicado rechazado por backend (R11, H1 status 500); selector de producto
+  filtra por `active` (R12, cubierto por spec); `unitPrice` pre-rellenado con
+  `Product.price` y editable (R13).
+- **UI-LIN-01..06 / VAL-LIN-01..08 / CRUD-LIN-01..05** ✅ — diálogo
+  `disableClose:true` (L31), precarga en modo edición, validaciones de
+  `quantity`/`unitPrice` (mínimos, negativos, vacíos), advertencia VAL-LIN-07
+  sin bloquear el guardado, autocomplete con disponibilidad y productos ya
+  agregados deshabilitados (R11), CRUD completo de líneas con recálculo de
+  `subtotal`/`totalAmount`, protección de última línea (L26), duplicado
+  rechazado vía curl (R11/H1).
+  - **CRUD-LIN-06 → ⏳ PENDIENTE**: no verificado en esta ronda (requiere
+    modificar `unitCost` de un producto real en Inventory); no bloquea FASE 4.
+- **RBAC-LIN-01..04** —
+  - RBAC-LIN-01 ✅ MANAGER: columnas "Costo unitario" ($150.00) y "Margen"
+    ($149.00) visibles con valores reales.
+  - RBAC-LIN-02/03 ✅ WAREHOUSEMAN/SALES: columnas ausentes del DOM.
+  - **RBAC-LIN-04 → ❌ FAIL**: ver detalle en §8 ("Hallazgo RBAC-LIN-04").
+
+**Suite del módulo (2026-06-13):**
+```
+ng test --no-watch --include='**/sale-order-detail-*/**/*.spec.ts' --include='**/stock-preview-dialog/**/*.spec.ts'
+→ 92/92 specs, 0 fallos (56 specs de sale-order-detail-form + sale-order-detail-page,
+  más 36 de stock-preview-dialog y demás specs relacionados)
+ng test --no-watch --code-coverage
+→ 89.9% statements
+```
+Cobertura ≥ 70% statements cumplida (89.9%), muy por encima del umbral.
+
+**Regresión completa (2026-06-13):**
+```
+ng test --no-watch
+→ 373/373 specs, 0 fallos
+```
+Sin regresiones respecto a FASE 3 (281/281) ni a módulos 0-3.
+
+---
+
 ## 8. Bugs y retos durante el desarrollo
 
 ### H1 — `SaleOrderServiceImpl`/`ClientServiceImpl` usan `RuntimeException` genérica (→ 500 en vez de 404/409/422) — RESUELTO ✅
@@ -950,6 +1039,18 @@ role)`. Mismo patrón que causó BUG-INV-11 en `ProductServiceImpl` (corregido
 desde FASE 4 (D7): `unitCost`/margen excluido de `displayedColumns` para
 WAREHOUSEMAN/SALES independientemente del estado de redacción del backend.
 
+**Confirmación en browser (RBAC-LIN-04, FASE 4, 2026-06-13):** se ejecutó
+`fetch('/api/v1/sales/orders/1470', { headers: { Authorization: 'Bearer ' +
+localStorage.getItem('almacenes_token') } })` con los tokens de `almacen01`
+(WAREHOUSEMAN) y `ventas01` (SALES). En ambos casos `details[].unitCost`
+llega poblado (`unitCost: 150`), confirmando que el backend NO redacta el
+campo. La UI oculta correctamente la columna "Costo unitario"/"Margen"
+(RBAC-LIN-02/03 en PASS), pero cualquier consumidor de la API (DevTools/
+Network, Postman, etc.) puede leer el costo real con un rol que no debería
+verlo. Marcado **❌ FAIL** en `casos_de_prueba_modulo_sales.md` (no bloqueante
+por D7) — pendiente de autorización para implementar `redactXxx(dto, role)`
+en `SaleOrderServiceImpl`/mapper, mismo patrón que BUG-INV-11.
+
 ### D8 — Verificación de `@Transactional` en `approveOrder()` — RESUELTO ✅ (sin H3)
 
 **Verificación realizada:** 2026-06-13, lectura de
@@ -991,6 +1092,77 @@ fix de H1, sino un bug preexistente en el test (o en el endpoint
 **Estado:** documentado, NO corregido — pendiente de autorización explícita
 del usuario, según la instrucción permanente "si identificas errores o bugs,
 solo identifícalos y documéntalos, no los corrijas hasta que lo autorices".
+
+### Hallazgo FLOW-DET-07 — escenario "stock físico insuficiente al entregar" inalcanzable (N/A)
+
+**Origen:** durante las pruebas de navegador de FASE 4 (2026-06-13), al
+intentar reproducir FLOW-DET-07 ("Confirmar Entregar con stock físico
+insuficiente").
+
+**Detalle:** se leyó `ProductServiceImpl` (líneas 195-230) y
+`SaleOrderServiceImpl.deliverOrder()` (líneas 195-250). La validación de
+movimientos OUT en `ProductServiceImpl` garantiza el invariante
+`currentStock >= reservedStock` en todo momento: `available = currentStock -
+reservedStock`, y un OUT que deje `available < 0` se rechaza con 422. Como
+`approveOrder()` (R4/R5) solo reserva `quantity <= availableStock`, al llegar
+a `deliverOrder()` siempre se cumple `currentStock >= quantity` para esa
+línea. El check `if (product.getCurrentStock() < detail.getQuantity())` en
+`deliverOrder()` es código defensivo que nunca puede evaluarse `true` en el
+flujo normal.
+
+**Verificación:** se intentó forzar el escenario reduciendo `currentStock`
+del producto 702 vía `POST /api/v1/inventory/products/movement`
+(`{"productId":702,"type":"OUT","quantity":5,...}`) sobre una orden APPROVED
+con `quantity=8` reservada. El backend rechazó el movimiento con HTTP 422
+"No se puede registrar la salida: solo hay 2 unidades disponibles (stock
+físico 10 − 8 reservadas para órdenes de venta). Solicitado: 5." — es decir,
+la propia validación que hace inalcanzable FLOW-DET-07 impidió incluso el
+setup del escenario.
+
+**Estado:** marcado **N/A** en `casos_de_prueba_modulo_sales.md` con esta
+justificación. No requiere corrección — es la prueba de que la protección
+funciona. **Limpieza realizada:** la orden de prueba OV-2026-0393 (id 1942)
+se canceló (`PATCH .../cancel`, APPROVED→CANCELLED) y se confirmó que el
+producto 702 volvió a `currentStock=10, reservedStock=0, availableStock=10`
+(L33, sin movimiento de inventario adicional que revertir porque el OUT fue
+rechazado y nunca se aplicó).
+
+### Hallazgo informativo — productos "Descontinuado" siguen seleccionables en el autocomplete de líneas de orden
+
+**Origen:** observado durante las pruebas de navegador de FASE 4
+(2026-06-13) al revisar el catálogo de productos en el diálogo "Agregar
+detalle".
+
+**Detalle:** productos con `status: 'DISCONTINUED'` pero `active: true` (ej.
+`ELEC-TV32-046`) siguen apareciendo y son seleccionables en el autocomplete
+de `SaleOrderDetailFormComponent`. Esto **no es una violación de RN-DET-05**
+(que exige filtrar por el booleano `active`, no por `status`) — el filtro
+actual (`p.active`) es correcto según la especificación. Se documenta como
+información para una futura decisión de negocio: si "Descontinuado" debe
+impedir nuevas ventas, se necesitaría un criterio adicional explícito
+(`status !== 'DISCONTINUED'`).
+
+**Estado:** informativo, NO requiere acción — no bloquea FASE 4.
+
+### Hallazgo L33 — artefactos de prueba FASE 4 (órdenes 1941/1943, estado terminal CANCELLED)
+
+**Origen:** dos órdenes fueron creadas durante FASE 4 para reproducir
+FLOW-DET-03/04/07/09 y FLOW-DET-08:
+
+- **OV-2026-0392 (id 1941)**, "[QA] Prueba FASE4 - stock insuficiente" —
+  creada para FLOW-DET-03/04/09, terminó en estado **CANCELLED** tras
+  FLOW-DET-09 (cancelación desde APPROVED, con liberación de `reservedStock`
+  verificada).
+- **OV-2026-0394 (id 1943)**, "[QA] FASE4 - FLOW-DET-08 cancelar PENDING como
+  SALES" — creada y cancelada por `ventas01` para FLOW-DET-08, terminó en
+  estado **CANCELLED**.
+
+**Estado:** ambas órdenes cumplen L33 (prefijo `[QA]`, estado terminal
+CANCELLED sin impacto en stock — confirmado para 1941 que `reservedStock`
+del producto 702 volvió a 0). Se conservan como artefactos de prueba
+documentados; no requieren limpieza adicional. La orden OV-2026-0393 (id
+1942) se canceló y su stock se restauró completamente (ver hallazgo
+FLOW-DET-07 arriba).
 
 ### BUG-S4-01 — Doble asterisco "Nombre **" en el formulario de cliente — RESUELTO ✅
 

@@ -1,0 +1,45 @@
+<div class="stock-preview">
+  <h2 mat-dialog-title>{{ data.title }}</h2>
+
+  <mat-dialog-content>
+    <p class="stock-preview__message">{{ data.message }}</p>
+
+    <table class="stock-preview__table">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th class="stock-preview__num">Cantidad</th>
+          <th class="stock-preview__num">{{ data.availableLabel }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of data.items; track item.productSku) {
+          <tr [class.stock-preview__row--insufficient]="item.quantity > item.available">
+            <td>
+              <span class="stock-preview__sku">[{{ item.productSku }}]</span>
+              {{ item.productName }}
+            </td>
+            <td class="stock-preview__num">{{ item.quantity }}</td>
+            <td class="stock-preview__num">{{ item.available }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    @if (hasInsufficient) {
+      <p class="stock-preview__warning">
+        <mat-icon>warning</mat-icon>
+        Una o más líneas no tienen stock suficiente. La operación puede ser rechazada por el servidor.
+      </p>
+    }
+
+    @if (data.warningNote) {
+      <p class="stock-preview__note">{{ data.warningNote }}</p>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="cancel()">{{ data.cancelLabel ?? 'Cancelar' }}</button>
+    <button mat-raised-button color="primary" (click)="confirm()">{{ data.confirmLabel ?? 'Confirmar' }}</button>
+  </mat-dialog-actions>
+</div>

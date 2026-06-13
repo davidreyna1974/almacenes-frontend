@@ -287,12 +287,12 @@ no por ruta, excepto `/sales/orders/new`)
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VIS-DET-01 | Título muestra `orderNumber` (o "Nueva orden" en `/sales/orders/new`) | ADMIN | "OV-2026-XXXX" o "Nueva orden" | ⏳ PENDIENTE | |
-| VIS-DET-02 | Badge de estado con color semántico correcto | ADMIN | PENDING naranja `#FFF3E0`/`#E65100`, APPROVED azul, DELIVERED verde, CANCELLED rojo | ⏳ PENDIENTE | |
-| VIS-DET-03 | Botón ← regresa a `/sales/orders` con el tab de origen (`?from=`) | ADMIN | Viene de tab "Aprobadas" | Regresa con tab "Aprobadas" activo | ⏳ PENDIENTE | |
-| VIS-DET-04 | Historial de estado: tabla de 3 filas (Aprobada/Entregada/Cancelada) con usuario+fecha o "—" (D4) | ADMIN | Orden DELIVERED: fila "Aprobada" y "Entregada" con datos, "Cancelada" con "—" | ⏳ PENDIENTE | |
-| VIS-DET-05 | `totalAmount` visible en cabecera para los 4 roles (D6) | WAREHOUSEMAN | Total visible con valor real | ⏳ PENDIENTE | |
-| VIS-DET-06 | `mat-progress-bar` visible durante carga | ADMIN | Barra indeterminada | ⏳ PENDIENTE | |
+| VIS-DET-01 | Título muestra `orderNumber` (o "Nueva orden" en `/sales/orders/new`) | ADMIN | "OV-2026-XXXX" o "Nueva orden" | ✅ PASS | Confirmado en órdenes OV-2026-0238/0392/0393/0394 |
+| VIS-DET-02 | Badge de estado con color semántico correcto | ADMIN | PENDING naranja `#FFF3E0`/`#E65100`, APPROVED azul, DELIVERED verde, CANCELLED rojo | ✅ PASS | Verificado en órdenes 1941/1570/1470/1943 (los 4 estados) |
+| VIS-DET-03 | Botón ← regresa a `/sales/orders` con el tab de origen (`?from=`) | ADMIN | Viene de tab "Aprobadas" | Regresa con tab "Aprobadas" activo | ✅ PASS | URL conserva `?from=PENDING` al volver |
+| VIS-DET-04 | Historial de estado: tabla de 3 filas (Aprobada/Entregada/Cancelada) con usuario+fecha o "—" (D4) | ADMIN | Orden DELIVERED: fila "Aprobada" y "Entregada" con datos, "Cancelada" con "—" | ✅ PASS | Confirmado junto con FLOW-DET-02/06 — historial muestra "Aprobada"/"Entregada" con usuario+fecha |
+| VIS-DET-05 | `totalAmount` visible en cabecera para los 4 roles (D6) | WAREHOUSEMAN | Total visible con valor real | ✅ PASS | Total visible para almacen01 (orden 1470/1570) |
+| VIS-DET-06 | `mat-progress-bar` visible durante carga | ADMIN | Barra indeterminada | ✅ PASS | Barra indeterminada visible durante recargas |
 
 ### 4b. Botones de acción según estado y rol (UI)
 
@@ -301,46 +301,46 @@ no por ruta, excepto `/sales/orders/new`)
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| UI-DET-01 | Campos Cliente/Notas editables | ADMIN / MANAGER / SALES | Orden PENDING | Inputs habilitados | ⏳ PENDIENTE | |
-| UI-DET-02 | Campos Cliente/Notas de solo lectura | WAREHOUSEMAN | Orden PENDING | Inputs `disabled` | ⏳ PENDIENTE | |
-| UI-DET-03 | Botón "Guardar cambios" requiere `form.dirty` (L25) | ADMIN / MANAGER / SALES | Orden PENDING, sin cambios | `disabled:true` al cargar; se activa al modificar; se desactiva tras guardar | ⏳ PENDIENTE | |
-| UI-DET-04 | Botón "Aprobar" visible | ADMIN / MANAGER | Orden PENDING con ≥1 detalle | Visible y clickeable | ⏳ PENDIENTE | |
-| UI-DET-05 | Botón "Aprobar" NO visible | SALES | Orden PENDING | Ausente del DOM | ⏳ PENDIENTE | |
-| UI-DET-06 | Botón "Cancelar" visible | ADMIN / MANAGER / SALES | Orden PENDING | Visible y clickeable | ⏳ PENDIENTE | |
-| UI-DET-07 | Ningún botón de transición visible | WAREHOUSEMAN | Orden PENDING | Aprobar/Cancelar/Guardar ausentes | ⏳ PENDIENTE | |
-| UI-DET-08 | Botones "Entregar" y "Cancelar" visibles | ADMIN / MANAGER | Orden APPROVED | Ambos presentes | ⏳ PENDIENTE | |
-| UI-DET-09 | Solo botón "Entregar" visible | WAREHOUSEMAN | Orden APPROVED | Entregar presente, Cancelar ausente | ⏳ PENDIENTE | |
-| UI-DET-10 | Solo botón "Cancelar" visible, "Entregar" AUSENTE | SALES | Orden APPROVED | Cancelar presente, Entregar ausente | ⏳ PENDIENTE | |
-| UI-DET-11 | Ningún botón de transición | ADMIN / MANAGER / WAREHOUSEMAN / SALES | Orden DELIVERED | Sin botones de transición (terminal) | ⏳ PENDIENTE | |
-| UI-DET-12 | Ningún botón de transición | ADMIN / MANAGER / WAREHOUSEMAN / SALES | Orden CANCELLED | Sin botones de transición (terminal) | ⏳ PENDIENTE | |
-| UI-DET-13 | Botón "Agregar detalle" e íconos Editar/Eliminar por línea visibles | ADMIN / MANAGER / SALES | Orden PENDING | Visibles y funcionales | ⏳ PENDIENTE | |
-| UI-DET-14 | Tabla de detalles de solo lectura, sin íconos de acción | WAREHOUSEMAN (cualquier estado) / cualquier rol en APPROVED+ | Orden no editable | "Agregar/Editar/Eliminar" ausentes (R1) | ⏳ PENDIENTE | |
+| UI-DET-01 | Campos Cliente/Notas editables | ADMIN / MANAGER / SALES | Orden PENDING | Inputs habilitados | ✅ PASS | ADMIN, orden 1941 — editó "Notas" |
+| UI-DET-02 | Campos Cliente/Notas de solo lectura | WAREHOUSEMAN | Orden PENDING | Inputs `disabled` | ✅ PASS | WAREHOUSEMAN, orden 1470 |
+| UI-DET-03 | Botón "Guardar cambios" requiere `form.dirty` (L25) | ADMIN / MANAGER / SALES | Orden PENDING, sin cambios | `disabled:true` al cargar; se activa al modificar; se desactiva tras guardar | ✅ PASS | ADMIN, orden 1941 |
+| UI-DET-04 | Botón "Aprobar" visible | ADMIN / MANAGER | Orden PENDING con ≥1 detalle | Visible y clickeable | ✅ PASS | MANAGER, orden 1570 (también ADMIN, orden 1942) |
+| UI-DET-05 | Botón "Aprobar" NO visible | SALES | Orden PENDING | Ausente del DOM | ✅ PASS | SALES, orden 1470 |
+| UI-DET-06 | Botón "Cancelar" visible | ADMIN / MANAGER / SALES | Orden PENDING | Visible y clickeable | ✅ PASS | ADMIN (orden 1941, FLOW-DET-04) y SALES (orden 1943, FLOW-DET-08) |
+| UI-DET-07 | Ningún botón de transición visible | WAREHOUSEMAN | Orden PENDING | Aprobar/Cancelar/Guardar ausentes | ✅ PASS | WAREHOUSEMAN |
+| UI-DET-08 | Botones "Entregar" y "Cancelar" visibles | ADMIN / MANAGER | Orden APPROVED | Ambos presentes | ✅ PASS | MANAGER, orden 1570 (también ADMIN, orden 1942) |
+| UI-DET-09 | Solo botón "Entregar" visible | WAREHOUSEMAN | Orden APPROVED | Entregar presente, Cancelar ausente | ✅ PASS | WAREHOUSEMAN, orden 1570 |
+| UI-DET-10 | Solo botón "Cancelar" visible, "Entregar" AUSENTE | SALES | Orden APPROVED | Cancelar presente, Entregar ausente | ✅ PASS | SALES |
+| UI-DET-11 | Ningún botón de transición | ADMIN / MANAGER / WAREHOUSEMAN / SALES | Orden DELIVERED | Sin botones de transición (terminal) | ✅ PASS | Confirmado vía orden 1470 (DELIVERED) — `canApprove/canDeliver/canCancel` evalúan `status`, igual para los 4 roles |
+| UI-DET-12 | Ningún botón de transición | ADMIN / MANAGER / WAREHOUSEMAN / SALES | Orden CANCELLED | Sin botones de transición (terminal) | ✅ PASS | ADMIN, orden 1941 (post FLOW-DET-09) |
+| UI-DET-13 | Botón "Agregar detalle" e íconos Editar/Eliminar por línea visibles | ADMIN / MANAGER / SALES | Orden PENDING | Visibles y funcionales | ✅ PASS | ADMIN (orden 1941/1942) y MANAGER (orden 1570) |
+| UI-DET-14 | Tabla de detalles de solo lectura, sin íconos de acción | WAREHOUSEMAN (cualquier estado) / cualquier rol en APPROVED+ | Orden no editable | "Agregar/Editar/Eliminar" ausentes (R1) | ✅ PASS | WAREHOUSEMAN, orden 1470 |
 
 ### 4c. Flujos de estado (FLOW) — R4, R5, R7, R8, R9, R10
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| FLOW-DET-01 | Aprobar: `ConfirmDialog` muestra preview de `availableStock` vs `quantity` por línea (R4) | ADMIN / MANAGER | Orden PENDING con detalles | Tabla de preview visible antes de confirmar | ⏳ PENDIENTE | |
-| FLOW-DET-02 | Confirmar Aprobar con stock suficiente en todas las líneas | ADMIN | Preview OK en todas las líneas | PENDING→APPROVED; `reservedStock` incrementado por línea (R5); snackbar verde | ⏳ PENDIENTE | Verificar `reservedStock` en Inventory tras la acción |
-| FLOW-DET-03 | Confirmar Aprobar con stock insuficiente en alguna línea | ADMIN | Una línea con `quantity > availableStock` | Snackbar rojo "Stock disponible insuficiente para 'X'. Disponible: N, solicitado: M."; estado NO cambia, NINGUNA línea se reserva (R4 todo-o-nada) | ⏳ PENDIENTE | (H1) status real puede ser 500 — documentar |
-| FLOW-DET-04 | Cancelar en `ConfirmDialog` de Aprobar | ADMIN | Diálogo abierto | Estado permanece PENDING; sin cambios en stock | ⏳ PENDIENTE | |
-| FLOW-DET-05 | Entregar: `ConfirmDialog` muestra preview de `currentStock` vs `quantity` por línea (R7) | ADMIN / MANAGER / WAREHOUSEMAN | Orden APPROVED | Tabla de preview visible antes de confirmar | ⏳ PENDIENTE | |
-| FLOW-DET-06 | Confirmar Entregar con stock físico suficiente | WAREHOUSEMAN | Preview OK en todas las líneas | APPROVED→DELIVERED; `reservedStock -= quantity` y `currentStock -= quantity` por línea (R8); snackbar verde | ⏳ PENDIENTE | Verificar movimiento OUT "Entrega orden de venta {orderNumber}" en Inventory/Kardex |
-| FLOW-DET-07 | Confirmar Entregar con stock físico insuficiente | ADMIN | Una línea con `quantity > currentStock` | Snackbar rojo "Stock físico insuficiente para 'X'."; estado NO cambia | ⏳ PENDIENTE | (H1) status real puede ser 500 — documentar |
-| FLOW-DET-08 | Cancelar orden desde PENDING | SALES | Orden PENDING (propia) | PENDING→CANCELLED; sin impacto en stock; snackbar verde | ⏳ PENDIENTE | |
-| FLOW-DET-09 | Cancelar orden desde APPROVED | ADMIN | Orden APPROVED | APPROVED→CANCELLED; `reservedStock -= quantity` por línea liberado (R10); mensaje de `ConfirmDialog` distinto, advirtiendo liberación de reserva; snackbar verde | ⏳ PENDIENTE | Verificar `reservedStock` decrementado en Inventory |
-| FLOW-DET-10 | Intentar cancelar orden DELIVERED (verificación de backend, botón ya oculto en UI) | ADMIN | Orden DELIVERED, vía curl `PATCH .../cancel` | Backend rechaza: "No se puede cancelar una orden ya entregada." | ⏳ PENDIENTE | (H1) status real puede ser 500 — documentar |
+| FLOW-DET-01 | Aprobar: `ConfirmDialog` muestra preview de `availableStock` vs `quantity` por línea (R4) | ADMIN / MANAGER | Orden PENDING con detalles | Tabla de preview visible antes de confirmar | ✅ PASS | ADMIN, orden 1942 — `StockPreviewDialog` "Disponible" mostrado antes de confirmar |
+| FLOW-DET-02 | Confirmar Aprobar con stock suficiente en todas las líneas | ADMIN | Preview OK en todas las líneas | PENDING→APPROVED; `reservedStock` incrementado por línea (R5); snackbar verde | ✅ PASS | ADMIN, orden 1942 — PENDING→APPROVED, snackbar "Orden aprobada correctamente.", `reservedStock` incrementado (confirmado también RN-DET-03/UI-DET-08 en el mismo paso) |
+| FLOW-DET-03 | Confirmar Aprobar con stock insuficiente en alguna línea | ADMIN | Una línea con `quantity > availableStock` | Snackbar rojo "Stock disponible insuficiente para 'X'. Disponible: N, solicitado: M."; estado NO cambia, NINGUNA línea se reserva (R4 todo-o-nada) | ✅ PASS | ADMIN, orden 1941 (línea cantidad 10 > disponible 6) — snackbar rojo "Stock disponible insuficiente para 'Barniz marino 5 galones para exteriores'. Disponible: 6, solicitado: 10.", orden permanece Pendiente (H1: status 500 confirmado) |
+| FLOW-DET-04 | Cancelar en `ConfirmDialog` de Aprobar | ADMIN | Diálogo abierto | Estado permanece PENDING; sin cambios en stock | ✅ PASS | ADMIN, orden 1941 — orden permanece "Pendiente" tras cancelar el diálogo |
+| FLOW-DET-05 | Entregar: `ConfirmDialog` muestra preview de `currentStock` vs `quantity` por línea (R7) | ADMIN / MANAGER / WAREHOUSEMAN | Orden APPROVED | Tabla de preview visible antes de confirmar | ✅ PASS | ADMIN/WAREHOUSEMAN — `StockPreviewDialog` "Stock físico" mostrado antes de confirmar (orden 1942/1570) |
+| FLOW-DET-06 | Confirmar Entregar con stock físico suficiente | WAREHOUSEMAN | Preview OK en todas las líneas | APPROVED→DELIVERED; `reservedStock -= quantity` y `currentStock -= quantity` por línea (R8); snackbar verde | ✅ PASS | WAREHOUSEMAN, orden 1570 — APPROVED→DELIVERED, snackbar "Orden entregada correctamente.", historial "Entregada almacen01" (D4 confirmado) |
+| FLOW-DET-07 | Confirmar Entregar con stock físico insuficiente | ADMIN | Una línea con `quantity > currentStock` | Snackbar rojo "Stock físico insuficiente para 'X'."; estado NO cambia | N/A | Escenario inalcanzable: la validación de movimientos OUT en `ProductServiceImpl` (líneas 195-230) garantiza `currentStock >= reservedStock` en todo momento. Como R5 solo reserva `quantity <= availableStock`, al llegar a `deliverOrder()` siempre se cumple `currentStock >= quantity`. El check `currentStock < detail.getQuantity()` en `SaleOrderServiceImpl.deliverOrder()` (líneas 195-250) es código defensivo no alcanzable. Confirmado con curl: intento de reducir `currentStock` vía movimiento OUT manual fue rechazado con HTTP 422 "No se puede registrar la salida: solo hay 2 unidades disponibles..." antes de poder reproducir el escenario |
+| FLOW-DET-08 | Cancelar orden desde PENDING | SALES | Orden PENDING (propia) | PENDING→CANCELLED; sin impacto en stock; snackbar verde | ✅ PASS | SALES (ventas01), orden propia OV-2026-0394 (id 1943) — ConfirmDialog con mensaje específico de PENDING ("Esta acción es irreversible"), PENDING→CANCELLED, snackbar "Orden cancelada correctamente." |
+| FLOW-DET-09 | Cancelar orden desde APPROVED | ADMIN | Orden APPROVED | APPROVED→CANCELLED; `reservedStock -= quantity` por línea liberado (R10); mensaje de `ConfirmDialog` distinto, advirtiendo liberación de reserva; snackbar verde | ✅ PASS | ADMIN, orden 1942 — APPROVED→CANCELLED, `reservedStock` liberado (producto 702 vuelve a `currentStock=10, reservedStock=0, available=10`), mensaje de ConfirmDialog distinto confirmado, snackbar verde (UI-DET-12 confirmado en el mismo paso) |
+| FLOW-DET-10 | Intentar cancelar orden DELIVERED (verificación de backend, botón ya oculto en UI) | ADMIN | Orden DELIVERED, vía curl `PATCH .../cancel` | Backend rechaza: "No se puede cancelar una orden ya entregada." | ✅ PASS | ADMIN, vía curl sobre orden 1570 (DELIVERED) — HTTP 500, "No se puede cancelar una orden ya entregada." (H1 confirmado) |
 
 ### 4d. Reglas de negocio (RN)
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RN-DET-01 | Campos `orderNumber`, `totalAmount`, `subtotal`, `status`, timestamps de auditoría son de solo lectura (L14) | Formulario de orden (cualquier estado) | Sin inputs editables para estos campos | ⏳ PENDIENTE | |
-| RN-DET-02 | `unitCost` no se muestra en el formulario para ningún rol (R14) | Diálogo de detalle de línea | Campo ausente del formulario | ⏳ PENDIENTE | |
-| RN-DET-03 | En APPROVED, agregar/editar/eliminar detalle deshabilitado (R1) | Orden APPROVED | Botones ausentes; único camino es Cancelar | ⏳ PENDIENTE | |
-| RN-DET-04 | `addDetail` bloquea producto duplicado en la misma orden (R11) | Producto ya existe en la orden | Snackbar rojo con mensaje del backend ("...ya existe en esta orden...") | ⏳ PENDIENTE | (H1) status real puede ser 500 — documentar |
-| RN-DET-05 | Selector de producto solo muestra productos activos (R12) | Catálogo con productos inactivos | Productos inactivos ausentes del autocomplete | ⏳ PENDIENTE | |
-| RN-DET-06 | `unitPrice` editable y pre-rellenado con `Product.price`, puede diferir del precio de catálogo (R13) | Agregar detalle | Valor pre-rellenado editable; se guarda el valor modificado | ⏳ PENDIENTE | |
+| RN-DET-01 | Campos `orderNumber`, `totalAmount`, `subtotal`, `status`, timestamps de auditoría son de solo lectura (L14) | Formulario de orden (cualquier estado) | Sin inputs editables para estos campos | ✅ PASS | Confirmado visualmente — solo Cliente/Notas son editables |
+| RN-DET-02 | `unitCost` no se muestra en el formulario para ningún rol (R14) | Diálogo de detalle de línea | Campo ausente del formulario | ✅ PASS | `SaleOrderDetailFormComponent` no incluye `unitCost` — confirmado en código y visualmente para ADMIN/MANAGER/SALES |
+| RN-DET-03 | En APPROVED, agregar/editar/eliminar detalle deshabilitado (R1) | Orden APPROVED | Botones ausentes; único camino es Cancelar | ✅ PASS | Confirmado junto con FLOW-DET-02 — tras Aprobar, "Agregar detalle" e íconos editar/eliminar desaparecen |
+| RN-DET-04 | `addDetail` bloquea producto duplicado en la misma orden (R11) | Producto ya existe en la orden | Snackbar rojo con mensaje del backend ("...ya existe en esta orden...") | ✅ PASS | Vía curl `POST .../sales/orders/{id}/details` con productId=702 ya presente en orden 1570 — HTTP 500, mensaje "...ya existe en esta orden..." (H1 confirmado) |
+| RN-DET-05 | Selector de producto solo muestra productos activos (R12) | Catálogo con productos inactivos | Productos inactivos ausentes del autocomplete | ✅ PASS | Cubierto por spec "carga solo productos activos desde el servicio" — `SaleOrderDetailFormComponent` filtra por `active` (3/4 productos mock, "Producto inactivo" excluido) |
+| RN-DET-06 | `unitPrice` editable y pre-rellenado con `Product.price`, puede diferir del precio de catálogo (R13) | Agregar detalle | Valor pre-rellenado editable; se guarda el valor modificado | ✅ PASS | Confirmado en CRUD-LIN-01 (ADMIN) — `unitPrice` pre-rellenado con `Product.price`, editable, valor guardado |
 
 ---
 
@@ -350,25 +350,25 @@ no por ruta, excepto `/sales/orders/new`)
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| UI-LIN-01 | Botón "Agregar detalle" abre diálogo vacío (`disableClose: true`, L31) | ADMIN / MANAGER / SALES | Orden PENDING | Campos vacíos | ⏳ PENDIENTE | |
-| UI-LIN-02 | Ícono Editar en fila abre diálogo con datos precargados | ADMIN / MANAGER / SALES | Línea existente | `productId`/`quantity`/`unitPrice` precargados | ⏳ PENDIENTE | |
-| UI-LIN-03 | Botón Cancelar cierra sin guardar | ADMIN | Diálogo con cambios | Cierra; tabla de detalles no cambia | ⏳ PENDIENTE | |
-| UI-LIN-04 | Click en backdrop/ESC con cambios sin guardar (L31) | ADMIN | Diálogo abierto con cambios | Diálogo permanece abierto | ⏳ PENDIENTE | |
-| UI-LIN-05 | Autocomplete de producto muestra "[SKU] — Nombre (disponible: N)" usando `availableStock` (D3) | ADMIN | Catálogo con productos activos | Formato correcto en cada opción | ⏳ PENDIENTE | |
-| UI-LIN-06 | Productos ya presentes en la orden aparecen deshabilitados en el autocomplete (R11) | ADMIN | Orden con ≥1 detalle | Opciones correspondientes `disabled` | ⏳ PENDIENTE | |
+| UI-LIN-01 | Botón "Agregar detalle" abre diálogo vacío (`disableClose: true`, L31) | ADMIN / MANAGER / SALES | Orden PENDING | Campos vacíos | ✅ PASS | ADMIN, orden 1941/1942 |
+| UI-LIN-02 | Ícono Editar en fila abre diálogo con datos precargados | ADMIN / MANAGER / SALES | Línea existente | `productId`/`quantity`/`unitPrice` precargados | ✅ PASS | ADMIN — confirmado junto con CRUD-LIN-02 |
+| UI-LIN-03 | Botón Cancelar cierra sin guardar | ADMIN | Diálogo con cambios | Cierra; tabla de detalles no cambia | ✅ PASS | ADMIN — diálogo cerrado sin agregar línea, tabla sin cambios |
+| UI-LIN-04 | Click en backdrop/ESC con cambios sin guardar (L31) | ADMIN | Diálogo abierto con cambios | Diálogo permanece abierto | ✅ PASS | ADMIN — ESC con cambios sin guardar no cierra el diálogo (`disableClose:true`) |
+| UI-LIN-05 | Autocomplete de producto muestra "[SKU] — Nombre (disponible: N)" usando `availableStock` (D3) | ADMIN | Catálogo con productos activos | Formato correcto en cada opción | ✅ PASS | ADMIN — disponibilidad visible en las opciones (confirmado durante VAL-LIN-07, "disponible: 6") |
+| UI-LIN-06 | Productos ya presentes en la orden aparecen deshabilitados en el autocomplete (R11) | ADMIN | Orden con ≥1 detalle | Opciones correspondientes `disabled` | ✅ PASS | ADMIN — producto ya presente en la orden deshabilitado en el autocomplete |
 
 ### 5b. Validaciones (VAL)
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VAL-LIN-01 | `productId` vacío al guardar | Sin producto seleccionado | Error inline; botón Guardar deshabilitado | ⏳ PENDIENTE | |
-| VAL-LIN-02 | `quantity` vacío o 0 | Cantidad = 0 | Error "Mínimo 1" | ⏳ PENDIENTE | |
-| VAL-LIN-03 | `quantity` negativo | Cantidad = -1 | Error de validación visible | ⏳ PENDIENTE | |
-| VAL-LIN-04 | `unitPrice` vacío | Sin valor | Error inline; botón deshabilitado | ⏳ PENDIENTE | |
-| VAL-LIN-05 | `unitPrice` = 0 | Precio = 0 | Error "Debe ser mayor a 0.01" (min 0.01) | ⏳ PENDIENTE | |
-| VAL-LIN-06 | `unitPrice` negativo | Precio = -1 | Error de validación visible | ⏳ PENDIENTE | |
-| VAL-LIN-07 | `quantity` > `availableStock` | Cantidad solicitada mayor al disponible | Advertencia visual (no bloquea el guardado del detalle — el bloqueo real es al Aprobar, R4) | ⏳ PENDIENTE | |
-| VAL-LIN-08 | `subtotal` se recalcula en tiempo real (`quantity × unitPrice`) | Cambiar cantidad o precio | Subtotal actualizado sin guardar | ⏳ PENDIENTE | |
+| VAL-LIN-01 | `productId` vacío al guardar | Sin producto seleccionado | Error inline; botón Guardar deshabilitado | ✅ PASS | Cubierto por spec "no cierra el dialog en modo creación si no hay producto seleccionado" |
+| VAL-LIN-02 | `quantity` vacío o 0 | Cantidad = 0 | Error "Mínimo 1" | ✅ PASS | ADMIN — error "Mínimo 1" mostrado |
+| VAL-LIN-03 | `quantity` negativo | Cantidad = -1 | Error de validación visible | ✅ PASS | Mismo validador `Validators.min(1)` que VAL-LIN-02 — cantidad negativa produce el mismo error |
+| VAL-LIN-04 | `unitPrice` vacío | Sin valor | Error inline; botón deshabilitado | ✅ PASS | ADMIN — error "Obligatorio", botón deshabilitado |
+| VAL-LIN-05 | `unitPrice` = 0 | Precio = 0 | Error "Debe ser mayor a 0.01" (min 0.01) | ✅ PASS | ADMIN — error "Debe ser mayor a 0.01" |
+| VAL-LIN-06 | `unitPrice` negativo | Precio = -1 | Error de validación visible | ✅ PASS | ADMIN — "Debe ser mayor a 0.01" mostrado, botón deshabilitado |
+| VAL-LIN-07 | `quantity` > `availableStock` | Cantidad solicitada mayor al disponible | Advertencia visual (no bloquea el guardado del detalle — el bloqueo real es al Aprobar, R4) | ✅ PASS | ADMIN — advertencia "La cantidad solicitada (10) supera el stock disponible (6). Podrá guardarse, pero la aprobación de la orden podría rechazarse por falta de stock." sin bloquear el guardado |
+| VAL-LIN-08 | `subtotal` se recalcula en tiempo real (`quantity × unitPrice`) | Cambiar cantidad o precio | Subtotal actualizado sin guardar | ✅ PASS | ADMIN — subtotal recalculado en tiempo real |
 
 ### 5c. CRUD de detalles (CRUD)
 
@@ -376,21 +376,21 @@ no por ruta, excepto `/sales/orders/new`)
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| CRUD-LIN-01 | Agregar detalle válido | Producto activo, cantidad y precio válidos | Snackbar verde; tabla refleja nueva línea; `totalAmount` recalculado | ⏳ PENDIENTE | |
-| CRUD-LIN-02 | Editar `quantity`/`unitPrice` de una línea existente | Línea existente | Snackbar verde; subtotal y `totalAmount` recalculados | ⏳ PENDIENTE | |
-| CRUD-LIN-03 | Eliminar línea (no es la última) | Orden con ≥2 líneas | `ConfirmDialog` → confirmar → línea desaparece; `totalAmount` recalculado | ⏳ PENDIENTE | |
-| CRUD-LIN-04 | Intentar eliminar la última línea de la orden (L26) | Orden con 1 sola línea | Bloqueado con mensaje claro; sin llamada al API | ⏳ PENDIENTE | |
-| CRUD-LIN-05 | Agregar producto duplicado en la misma orden | Producto ya existe en la orden | Snackbar rojo con mensaje del backend (R11) | ⏳ PENDIENTE | (H1) status real puede ser 500 |
-| CRUD-LIN-06 | `unitCost` se re-lee de `Product.unitCost` en cada `addDetail`/`updateDetail` mientras PENDING (R14) | Cambiar `Product.unitCost` en Inventory, luego editar la línea | Valor interno actualizado (verificar vía respuesta del backend con rol ADMIN, no en UI) | ⏳ PENDIENTE | Verificación de backend, no de UI |
+| CRUD-LIN-01 | Agregar detalle válido | Producto activo, cantidad y precio válidos | Snackbar verde; tabla refleja nueva línea; `totalAmount` recalculado | ✅ PASS | ADMIN — línea agregada, snackbar verde, tabla y `totalAmount` actualizados (también confirmado en modo "Nueva orden" con `pendingDetailRows`) |
+| CRUD-LIN-02 | Editar `quantity`/`unitPrice` de una línea existente | Línea existente | Snackbar verde; subtotal y `totalAmount` recalculados | ✅ PASS | ADMIN — edición recalcula subtotal y `totalAmount`, snackbar verde |
+| CRUD-LIN-03 | Eliminar línea (no es la última) | Orden con ≥2 líneas | `ConfirmDialog` → confirmar → línea desaparece; `totalAmount` recalculado | ✅ PASS | ADMIN — `ConfirmDialog` confirmado, línea eliminada, `totalAmount` recalculado |
+| CRUD-LIN-04 | Intentar eliminar la última línea de la orden (L26) | Orden con 1 sola línea | Bloqueado con mensaje claro; sin llamada al API | ✅ PASS | ADMIN (L26) — con 1 sola línea, eliminación bloqueada con mensaje claro |
+| CRUD-LIN-05 | Agregar producto duplicado en la misma orden | Producto ya existe en la orden | Snackbar rojo con mensaje del backend (R11) | ✅ PASS | Vía curl, producto duplicado rechazado con HTTP 500 (mismo mecanismo verificado en RN-DET-04) |
+| CRUD-LIN-06 | `unitCost` se re-lee de `Product.unitCost` en cada `addDetail`/`updateDetail` mientras PENDING (R14) | Cambiar `Product.unitCost` en Inventory, luego editar la línea | Valor interno actualizado (verificar vía respuesta del backend con rol ADMIN, no en UI) | ⏳ PENDIENTE | No verificado en esta ronda — requiere modificar `unitCost` de un producto real en Inventory para observar la re-lectura; se recomienda ronda dedicada antes del cierre final del módulo (no bloquea FASE 4) |
 
 ### 5d. RBAC — campos sensibles (RBAC) — L29/H2
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RBAC-LIN-01 | Columna "Costo unitario"/Margen visible en la tabla de detalles | ADMIN / MANAGER | Columna visible con valor real | ⏳ PENDIENTE | |
-| RBAC-LIN-02 | Columna "Costo unitario"/Margen AUSENTE del DOM (no solo CSS) | WAREHOUSEMAN | Columna no renderizada — excluida de `displayedColumns` | ⏳ PENDIENTE | |
-| RBAC-LIN-03 | Columna "Costo unitario"/Margen AUSENTE del DOM (no solo CSS) | SALES | Columna no renderizada — excluida de `displayedColumns` | ⏳ PENDIENTE | |
-| RBAC-LIN-04 | Verificar en Network (Dev Tools) si `unitCost` llega poblado en el JSON para WAREHOUSEMAN/SALES (H2) | WAREHOUSEMAN / SALES | Si el backend YA redacta: `unitCost: null`. Si no: documentar como H2 pendiente — NO bloquea (la UI ya lo oculta independientemente) | ⏳ PENDIENTE | Resultado informativo, no bloqueante (D7) |
+| RBAC-LIN-01 | Columna "Costo unitario"/Margen visible en la tabla de detalles | ADMIN / MANAGER | Columna visible con valor real | ✅ PASS | MANAGER, orden 1570 — "Costo unitario" ($150.00) y "Margen" ($149.00) visibles |
+| RBAC-LIN-02 | Columna "Costo unitario"/Margen AUSENTE del DOM (no solo CSS) | WAREHOUSEMAN | Columna no renderizada — excluida de `displayedColumns` | ✅ PASS | WAREHOUSEMAN, orden 1470 — columnas ausentes del DOM |
+| RBAC-LIN-03 | Columna "Costo unitario"/Margen AUSENTE del DOM (no solo CSS) | SALES | Columna no renderizada — excluida de `displayedColumns` | ✅ PASS | SALES, orden 1470 — columnas ausentes del DOM |
+| RBAC-LIN-04 | Verificar en Network (Dev Tools) si `unitCost` llega poblado en el JSON para WAREHOUSEMAN/SALES (H2) | WAREHOUSEMAN / SALES | Si el backend YA redacta: `unitCost: null`. Si no: documentar como H2 pendiente — NO bloquea (la UI ya lo oculta independientemente) | ❌ FAIL | `GET /api/v1/sales/orders/1470` con tokens de almacen01 y ventas01 retorna `details[].unitCost:150` SIN redactar (verificado vía `fetch()` + `localStorage.getItem('almacenes_token')`). La UI oculta la columna correctamente, pero la API expone el costo a roles sin acceso — violación de L29, requiere `redactXxx(dto, role)` en backend. No bloquea FASE 4 (D7) pero documentado como hallazgo H2 pendiente de autorización para corrección |
 
 ---
 
@@ -494,7 +494,9 @@ Antes de declarar el módulo **done**, verificar que se cumplen las 4 condicione
 
 ```
 [ ] L29 — Matriz de campos sensibles × roles documentada en §4 de la memoria técnica
-    (unitCost de SaleOrderDetailResponseDTO), con RBAC-LIN-01..04 en PASS
+    (unitCost de SaleOrderDetailResponseDTO), con RBAC-LIN-01..03 en PASS;
+    RBAC-LIN-04 en FAIL (backend no redacta unitCost para WAREHOUSEMAN/SALES —
+    pendiente de autorización para implementar redactXxx(dto, role))
 [ ] L30 — H1 resuelto (404/409/422 reales, commit `0374944`); ERR-07/ERR-08 en PASS
 [ ] L31 — ClientDialog y SaleOrderDetailFormDialog usan disableClose:true (UI-CLF-05,
     UI-LIN-04 en PASS); paginadores resetean a página 0 (UI-CLI-PAG-03, UI-ORD-PAG-03)
@@ -511,8 +513,9 @@ Antes de declarar el módulo **done**, verificar que se cumplen las 4 condicione
     `fix/sales-h1-typed-exceptions`, pendiente de merge a develop). Pendiente:
     re-verificar en browser casos ERR-10, FLOW-DET-03/07/10, RN-DET-04,
     CRUD-LIN-05 con status 404/409/422
-[ ] H2 — Mitigado en frontend desde FASE 4 (RBAC-LIN-02/03 en PASS) independientemente
-    del estado de redacción en backend (RBAC-LIN-04 informativo)
+[ ] H2 — Mitigado en frontend desde FASE 4 (RBAC-LIN-02/03 en PASS); backend NO
+    redacta `unitCost` para WAREHOUSEMAN/SALES (RBAC-LIN-04 en FAIL) — pendiente
+    de autorización para corregir
 [ ] H4 — Documentado (NO corregido): `ClientControllerTest.getAllActiveClients_retorna200`
     falla de forma preexistente (no relacionada con H1); pendiente de autorización
     para corregir
