@@ -69,7 +69,8 @@ confirmación con preview de stock.
 - **H2** — `SaleOrderDetailResponseDTO.unitCost` no tiene redacción por rol
   (continuación de L29/BUG-INV-11). Mitigación 100% frontend desde FASE 4:
   columna `unitCost`/margen excluida de `displayedColumns` para
-  WAREHOUSEMAN/SALES.
+  WAREHOUSEMAN/SALES. **RESUELTO 2026-06-13** — además se agregó redacción en
+  backend (commit `1f3b41e`); ver §8.
 - **H3 (potencial, D8)** — verificar en FASE 1 (solo lectura) si
   `SaleOrderServiceImpl.approveOrder()` está anotado `@Transactional`, para
   garantizar rollback de reservas parciales si una línea falla por optimistic
@@ -134,8 +135,8 @@ WAREHOUSEMAN/SALES en todos los casos (matriz §6.2). Aplica a:
   `SaleOrderDetailPageComponent` nunca leen ni renderizan `unitCost`/margen
   para WAREHOUSEMAN/SALES (excluido de `displayedColumns`, no solo CSS),
   independientemente de si el backend ya redacta. La redacción de backend
-  (`redactUnitCost`, análogo a BUG-INV-11) queda como mejora de defensa en
-  profundidad a aplicar cuando se autorice.
+  (`redactUnitCost`, análogo a BUG-INV-11) se implementó el 2026-06-13
+  (commit `1f3b41e`) como defensa en profundidad — ver §8.
 - **H1** se intenta resolver en backend EN PARALELO durante FASE 1, sujeto a
   autorización explícita en el momento (cambios acotados a
   `SaleOrderServiceImpl`/`ClientServiceImpl`: migrar `RuntimeException` →
@@ -494,7 +495,7 @@ export interface SaleOrderDetailResponseDTO {
   id: number;
   quantity: number;
   unitPrice: number;
-  unitCost: number | null;  // ⚠️ H2 — null/oculto para WAREHOUSEMAN/SALES (frontend)
+  unitCost: number | null;  // H2 — null para WAREHOUSEMAN/SALES (redactado en backend y oculto en frontend)
   subtotal: number;
   productId: number;
   productSku: string;
@@ -581,7 +582,7 @@ export interface ReservedClientDTO {
 | `orderNumber` | generado por el servicio (`OV-YYYY-NNNN`) — nunca editable |
 | `totalAmount` | calculado (suma de subtotales) — nunca editable |
 | `subtotal` | calculado (`quantity × unitPrice`) — nunca editable |
-| `unitCost` | capturado de `Product.unitCost` al crear/actualizar detalle — nunca editable, ⚠️ sujeto a redacción por rol (H2/L29) |
+| `unitCost` | capturado de `Product.unitCost` al crear/actualizar detalle — nunca editable, redactado a `null` para WAREHOUSEMAN/SALES por el backend (H2/L29, RESUELTO) |
 | `status` | solo cambia por `PATCH /approve`, `/deliver`, `/cancel` |
 | `createdAt`/`updatedAt`/`approvedAt`/`deliveredAt`/`cancelledAt` | auditoría, solo lectura |
 | `createdBy*`/`approvedBy*`/`deliveredBy*`/`cancelledBy*` | auditoría, solo lectura |
@@ -690,7 +691,7 @@ canSeeCost()          → ADMIN | MANAGER  (H2/L29 — unitCost/margen)
 
 | Campo / DTO | ADMIN | MANAGER | WAREHOUSEMAN | SALES |
 |---|---|---|---|---|
-| `SaleOrderDetailResponseDTO.unitCost` | valor real | valor real | `null`/oculto* | `null`/oculto* |
+| `SaleOrderDetailResponseDTO.unitCost` | valor real | valor real | `null` (redactado en backend)* | `null` (redactado en backend)* |
 | Margen derivado (`unitPrice - unitCost`) | visible | visible | ausente | ausente |
 | `SaleOrderResponseDTO.totalAmount` (D6) | visible | visible | visible | visible |
 | `SaleOrderDetailResponseDTO.unitPrice`/`subtotal` (D6) | visible | visible | visible | visible |
@@ -698,10 +699,11 @@ canSeeCost()          → ADMIN | MANAGER  (H2/L29 — unitCost/margen)
 | `ReservedProductDTO.unitPrice`/`totalReservedValue` | visible | visible | visible | visible |
 | `ClientDTO` (todos los campos) | visible | visible | visible | visible |
 
-\* Hasta que el backend aplique `redactUnitCost` (H2), el campo puede llegar
-poblado en el JSON para WAREHOUSEMAN/SALES — el frontend NO debe leerlo ni
-renderizarlo: excluido de `displayedColumns` (no solo CSS), documentado como
-gap temporal en §8 hasta que el backend redacte.
+\* Redacción aplicada centralmente en `SaleOrderServiceImpl.redactUnitCost()`
+(commit `1f3b41e`, 2026-06-13) — el backend retorna `unitCost: null` para
+WAREHOUSEMAN/SALES en TODOS los endpoints de lectura/escritura. El frontend
+además excluye `unitCost`/margen de `displayedColumns` (no solo CSS), como
+defensa en profundidad.
 
 ### 6.3 Gate de seguridad de rutas (Propuesta C)
 
@@ -900,10 +902,9 @@ ni en FASE 1/2 de Sales.
 
 **Cobertura del documento de casos** (`casos_de_prueba_modulo_sales.md`, secciones 4 y 5):
 todos los casos VIS-DET-01..06, UI-DET-01..14, FLOW-DET-01..10, RN-DET-01..06,
-UI-LIN-01..06, VAL-LIN-01..08, CRUD-LIN-01..05, RBAC-LIN-01..03 en ✅ PASS;
-FLOW-DET-07 en **N/A** (justificado); RBAC-LIN-04 en **❌ FAIL** (hallazgo
-documentado, no corregido); CRUD-LIN-06 en **⏳ PENDIENTE** (verificación de
-backend no realizada en esta ronda, no bloquea FASE 4).
+UI-LIN-01..06, VAL-LIN-01..08, CRUD-LIN-01..06, RBAC-LIN-01..04 en ✅ PASS;
+FLOW-DET-07 en **N/A** (justificado). RBAC-LIN-04 y CRUD-LIN-06 resueltos/
+verificados el 2026-06-13 (ver §8, H2).
 
 **Resumen por categoría:**
 
@@ -958,13 +959,14 @@ backend no realizada en esta ronda, no bloquea FASE 4).
   agregados deshabilitados (R11), CRUD completo de líneas con recálculo de
   `subtotal`/`totalAmount`, protección de última línea (L26), duplicado
   rechazado vía curl (R11/H1).
-  - **CRUD-LIN-06 → ⏳ PENDIENTE**: no verificado en esta ronda (requiere
-    modificar `unitCost` de un producto real en Inventory); no bloquea FASE 4.
+  - **CRUD-LIN-06 → ✅ PASS**: verificado por revisión de código (2026-06-13);
+    ver detalle en §8 (H2).
 - **RBAC-LIN-01..04** —
   - RBAC-LIN-01 ✅ MANAGER: columnas "Costo unitario" ($150.00) y "Margen"
     ($149.00) visibles con valores reales.
   - RBAC-LIN-02/03 ✅ WAREHOUSEMAN/SALES: columnas ausentes del DOM.
-  - **RBAC-LIN-04 → ❌ FAIL**: ver detalle en §8 ("Hallazgo RBAC-LIN-04").
+  - **RBAC-LIN-04 → ✅ PASS**: resuelto en backend (commit `1f3b41e`); ver
+    detalle en §8 (H2).
 
 **Suite del módulo (2026-06-13):**
 ```
@@ -1025,7 +1027,7 @@ cambios) — ver H4 más abajo.
 Los casos `ERR-*` de `casos_de_prueba_modulo_sales.md` deben actualizarse para
 reflejar los códigos correctos (404/409/422) en lugar de 500.
 
-### H2 — `SaleOrderDetailResponseDTO.unitCost` sin redacción por rol (L29/BUG-INV-11)
+### H2 — `SaleOrderDetailResponseDTO.unitCost` sin redacción por rol (L29/BUG-INV-11) — RESUELTO ✅
 
 **Origen:** identificado durante la revisión pre-código de
 `SaleOrderServiceImpl`/`SaleOrderDetailResponseDTO` (FASE 0, 2026-06-13).
@@ -1035,21 +1037,59 @@ reflejar los códigos correctos (404/409/422) en lugar de 500.
 role)`. Mismo patrón que causó BUG-INV-11 en `ProductServiceImpl` (corregido
 2026-06-12, commit `c3e2206`).
 
-**Estado:** documentado, NO corregido en backend. Mitigación 100% frontend
-desde FASE 4 (D7): `unitCost`/margen excluido de `displayedColumns` para
-WAREHOUSEMAN/SALES independientemente del estado de redacción del backend.
+**Confirmación inicial en browser (RBAC-LIN-04, FASE 4, 2026-06-13):** se
+ejecutó `fetch('/api/v1/sales/orders/1470', { headers: { Authorization:
+'Bearer ' + localStorage.getItem('almacenes_token') } })` con los tokens de
+`almacen01` (WAREHOUSEMAN) y `ventas01` (SALES). En ambos casos
+`details[].unitCost` llegaba poblado (`unitCost: 150`), confirmando que el
+backend NO redactaba el campo. La UI ocultaba correctamente la columna "Costo
+unitario"/"Margen" (RBAC-LIN-02/03 en PASS), pero cualquier consumidor de la
+API (DevTools/Network, Postman, etc.) podía leer el costo real con un rol que
+no debería verlo.
 
-**Confirmación en browser (RBAC-LIN-04, FASE 4, 2026-06-13):** se ejecutó
-`fetch('/api/v1/sales/orders/1470', { headers: { Authorization: 'Bearer ' +
-localStorage.getItem('almacenes_token') } })` con los tokens de `almacen01`
-(WAREHOUSEMAN) y `ventas01` (SALES). En ambos casos `details[].unitCost`
-llega poblado (`unitCost: 150`), confirmando que el backend NO redacta el
-campo. La UI oculta correctamente la columna "Costo unitario"/"Margen"
-(RBAC-LIN-02/03 en PASS), pero cualquier consumidor de la API (DevTools/
-Network, Postman, etc.) puede leer el costo real con un rol que no debería
-verlo. Marcado **❌ FAIL** en `casos_de_prueba_modulo_sales.md` (no bloqueante
-por D7) — pendiente de autorización para implementar `redactXxx(dto, role)`
-en `SaleOrderServiceImpl`/mapper, mismo patrón que BUG-INV-11.
+**Corrección (2026-06-13, backend rama `fix/sales-rbac-lin-04-redaction`,
+commit `1f3b41e`):** se agregó a `SaleOrderServiceImpl` el mismo patrón
+`canViewUnitCost()`/`redactUnitCost(...)` de `ProductServiceImpl`
+(BUG-INV-11):
+
+```java
+private boolean canViewUnitCost() {
+    return SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .anyMatch(role -> role.equals("ROLE_ADMIN") || role.equals("ROLE_MANAGER"));
+}
+
+private SaleOrderResponseDTO redactUnitCost(SaleOrderResponseDTO dto) {
+    if (!canViewUnitCost() && dto.getDetails() != null) {
+        dto.getDetails().forEach(detail -> detail.setUnitCost(null));
+    }
+    return dto;
+}
+// + overloads para List<SaleOrderResponseDTO> y PageResponseDTO<SaleOrderResponseDTO>
+```
+
+Aplicado a **todos** los métodos que retornan `SaleOrderResponseDTO`/lista/
+página: `createOrder`, `findById`, `findByStatus` (lista y paginado),
+`findByClientId`, `findByClientIdAndStatus`, `findByProductId`,
+`findByProductIdAndStatus`, `updateOrder`, `approveOrder`, `deliverOrder`,
+`cancelOrder`, `addDetail`, `updateDetail`.
+
+**Re-verificación en browser (2026-06-13, backend reiniciado con el fix):**
+mismo `fetch()` contra `GET /api/v1/sales/orders/1470`:
+- `almacen01` (WAREHOUSEMAN) → `details[].unitCost: null`
+- `ventas01` (SALES) → `details[].unitCost: null`
+- token ADMIN → `details[].unitCost: 150` (valor real preservado)
+
+**Suite `sales.**`:** 46 tests, 0 fallos (`SaleOrderRepositoryTest`,
+`SaleOrderControllerTest`, `SaleOrderConcurrencyTest`,
+`SaleOrderServiceImplTest`). Suite completa del backend: las 13 fallas
+preexistentes (`AuditAndConstraintIntegrationTest`, `RbacIntegrationTest`,
+`SupplierControllerTest`, `ClientControllerTest`, `CategoryControllerTest`,
+`ProductServiceImplTest`) se reproducen igual en `develop` sin este cambio —
+no son regresiones introducidas por esta corrección (H4 ampliado, ver checklist
+§10).
+
+**RBAC-LIN-04 → ✅ PASS** en `casos_de_prueba_modulo_sales.md`.
 
 ### D8 — Verificación de `@Transactional` en `approveOrder()` — RESUELTO ✅ (sin H3)
 

@@ -381,7 +381,7 @@ no por ruta, excepto `/sales/orders/new`)
 | CRUD-LIN-03 | Eliminar línea (no es la última) | Orden con ≥2 líneas | `ConfirmDialog` → confirmar → línea desaparece; `totalAmount` recalculado | ✅ PASS | ADMIN — `ConfirmDialog` confirmado, línea eliminada, `totalAmount` recalculado |
 | CRUD-LIN-04 | Intentar eliminar la última línea de la orden (L26) | Orden con 1 sola línea | Bloqueado con mensaje claro; sin llamada al API | ✅ PASS | ADMIN (L26) — con 1 sola línea, eliminación bloqueada con mensaje claro |
 | CRUD-LIN-05 | Agregar producto duplicado en la misma orden | Producto ya existe en la orden | Snackbar rojo con mensaje del backend (R11) | ✅ PASS | Vía curl, producto duplicado rechazado con HTTP 500 (mismo mecanismo verificado en RN-DET-04) |
-| CRUD-LIN-06 | `unitCost` se re-lee de `Product.unitCost` en cada `addDetail`/`updateDetail` mientras PENDING (R14) | Cambiar `Product.unitCost` en Inventory, luego editar la línea | Valor interno actualizado (verificar vía respuesta del backend con rol ADMIN, no en UI) | ⏳ PENDIENTE | No verificado en esta ronda — requiere modificar `unitCost` de un producto real en Inventory para observar la re-lectura; se recomienda ronda dedicada antes del cierre final del módulo (no bloquea FASE 4) |
+| CRUD-LIN-06 | `unitCost` se re-lee de `Product.unitCost` en cada `addDetail`/`updateDetail` mientras PENDING (R14) | Cambiar `Product.unitCost` en Inventory, luego editar la línea | Valor interno actualizado (verificar vía respuesta del backend con rol ADMIN, no en UI) | ✅ PASS | Verificado por revisión de código (2026-06-13) en `SaleOrderServiceImpl`: `addDetail()` línea 298 ejecuta `detail.setUnitCost(product.getUnitCost())` y `updateDetail()` línea 319 ejecuta `detail.setUnitCost(detail.getProduct().getUnitCost())` — ambas dentro de métodos que llaman `validatePending(order)` (R14), por lo que `unitCost` se re-lee de `Product.unitCost` en cada operación mientras la orden está PENDING |
 
 ### 5d. RBAC — campos sensibles (RBAC) — L29/H2
 
@@ -390,7 +390,7 @@ no por ruta, excepto `/sales/orders/new`)
 | RBAC-LIN-01 | Columna "Costo unitario"/Margen visible en la tabla de detalles | ADMIN / MANAGER | Columna visible con valor real | ✅ PASS | MANAGER, orden 1570 — "Costo unitario" ($150.00) y "Margen" ($149.00) visibles |
 | RBAC-LIN-02 | Columna "Costo unitario"/Margen AUSENTE del DOM (no solo CSS) | WAREHOUSEMAN | Columna no renderizada — excluida de `displayedColumns` | ✅ PASS | WAREHOUSEMAN, orden 1470 — columnas ausentes del DOM |
 | RBAC-LIN-03 | Columna "Costo unitario"/Margen AUSENTE del DOM (no solo CSS) | SALES | Columna no renderizada — excluida de `displayedColumns` | ✅ PASS | SALES, orden 1470 — columnas ausentes del DOM |
-| RBAC-LIN-04 | Verificar en Network (Dev Tools) si `unitCost` llega poblado en el JSON para WAREHOUSEMAN/SALES (H2) | WAREHOUSEMAN / SALES | Si el backend YA redacta: `unitCost: null`. Si no: documentar como H2 pendiente — NO bloquea (la UI ya lo oculta independientemente) | ❌ FAIL | `GET /api/v1/sales/orders/1470` con tokens de almacen01 y ventas01 retorna `details[].unitCost:150` SIN redactar (verificado vía `fetch()` + `localStorage.getItem('almacenes_token')`). La UI oculta la columna correctamente, pero la API expone el costo a roles sin acceso — violación de L29, requiere `redactXxx(dto, role)` en backend. No bloquea FASE 4 (D7) pero documentado como hallazgo H2 pendiente de autorización para corrección |
+| RBAC-LIN-04 | Verificar en Network (Dev Tools) si `unitCost` llega poblado en el JSON para WAREHOUSEMAN/SALES (H2) | WAREHOUSEMAN / SALES | Si el backend YA redacta: `unitCost: null`. Si no: documentar como H2 pendiente — NO bloquea (la UI ya lo oculta independientemente) | ✅ PASS | RESUELTO (2026-06-13, backend rama `fix/sales-rbac-lin-04-redaction`, commit `1f3b41e`): se agregó `canViewUnitCost()`/`redactUnitCost(...)` en `SaleOrderServiceImpl` (patrón L29/BUG-INV-11) aplicado a TODOS los endpoints de lectura/escritura que retornan `SaleOrderResponseDTO`. Re-verificado vía `fetch()` con tokens de almacen01 y ventas01: `GET /api/v1/sales/orders/1470` ahora retorna `details[].unitCost: null` para ambos roles; con token ADMIN retorna `unitCost: 150` (valor real preservado para roles autorizados) |
 
 ---
 
@@ -493,10 +493,10 @@ Antes de declarar el módulo **done**, verificar que se cumplen las 4 condicione
 ### Checklist adicional — Lecciones L29-L33 (mandatorio)
 
 ```
-[ ] L29 — Matriz de campos sensibles × roles documentada en §4 de la memoria técnica
-    (unitCost de SaleOrderDetailResponseDTO), con RBAC-LIN-01..03 en PASS;
-    RBAC-LIN-04 en FAIL (backend no redacta unitCost para WAREHOUSEMAN/SALES —
-    pendiente de autorización para implementar redactXxx(dto, role))
+[x] L29 — Matriz de campos sensibles × roles documentada en §4 de la memoria técnica
+    (unitCost de SaleOrderDetailResponseDTO), con RBAC-LIN-01..04 en PASS —
+    backend redacta unitCost para WAREHOUSEMAN/SALES (commit `1f3b41e`,
+    rama `fix/sales-rbac-lin-04-redaction`)
 [ ] L30 — H1 resuelto (404/409/422 reales, commit `0374944`); ERR-07/ERR-08 en PASS
 [ ] L31 — ClientDialog y SaleOrderDetailFormDialog usan disableClose:true (UI-CLF-05,
     UI-LIN-04 en PASS); paginadores resetean a página 0 (UI-CLI-PAG-03, UI-ORD-PAG-03)
@@ -513,9 +513,8 @@ Antes de declarar el módulo **done**, verificar que se cumplen las 4 condicione
     `fix/sales-h1-typed-exceptions`, pendiente de merge a develop). Pendiente:
     re-verificar en browser casos ERR-10, FLOW-DET-03/07/10, RN-DET-04,
     CRUD-LIN-05 con status 404/409/422
-[ ] H2 — Mitigado en frontend desde FASE 4 (RBAC-LIN-02/03 en PASS); backend NO
-    redacta `unitCost` para WAREHOUSEMAN/SALES (RBAC-LIN-04 en FAIL) — pendiente
-    de autorización para corregir
+[x] H2 — RESUELTO (2026-06-13, commit `1f3b41e`, rama `fix/sales-rbac-lin-04-redaction`):
+    backend ahora redacta `unitCost` para WAREHOUSEMAN/SALES (RBAC-LIN-04 en PASS)
 [ ] H4 — Documentado (NO corregido): `ClientControllerTest.getAllActiveClients_retorna200`
     falla de forma preexistente (no relacionada con H1); pendiente de autorización
     para corregir
