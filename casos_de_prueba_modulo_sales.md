@@ -443,7 +443,7 @@ no por ruta, excepto `/sales/orders/new`)
 | ERR-07 | Error HTTP 401 → redirige a login con mensaje "sesión expirada" | JWT expirado durante uso | Redirect a `/login` con mensaje | ⏳ PENDIENTE | |
 | ERR-08 | Error HTTP 403 → mensaje "Acceso denegado" | Rol sin permiso intenta operación (ej. SALES → approve vía curl) | Snackbar de error visible si se expone en UI | ⏳ PENDIENTE | |
 | ERR-09 | Optimistic Locking: "Stock modificado concurrentemente. Intente nuevamente." visible en snackbar rojo; permite reintentar sin perder datos del formulario | Dos aprobaciones concurrentes sobre el mismo producto (difícil de simular manualmente — documentar si no se puede reproducir) | Mensaje visible; formulario conserva los datos para reintentar | ⏳ PENDIENTE | Caso de difícil reproducción manual — marcar `N/A` con justificación si no se puede simular |
-| ERR-10 | Errores de negocio de Sales (stock insuficiente, transición inválida, producto duplicado, no encontrado) muestran el mensaje del backend correctamente AUNQUE el status real sea 500 (H1) | Cualquier regla R1-R14 violada | Mensaje de negocio correcto en snackbar rojo, independientemente del status code real | ⏳ PENDIENTE | Documentar el status code real observado (500 vs 422/404 esperado) — referencia H1 |
+| ERR-10 | Errores de negocio de Sales (stock insuficiente, transición inválida, producto duplicado, no encontrado) muestran el mensaje del backend correctamente con el status HTTP correcto (404/409/422 — H1 resuelto) | Cualquier regla R1-R14 violada | Mensaje de negocio correcto en snackbar rojo; status 404 (no encontrado), 409 (duplicado/optimistic locking), 422 (regla de negocio) | ⏳ PENDIENTE | H1 resuelto (commit `0374944`, rama `fix/sales-h1-typed-exceptions`) — verificar en browser que cada status produce el snackbar correcto |
 
 ---
 
@@ -495,7 +495,7 @@ Antes de declarar el módulo **done**, verificar que se cumplen las 4 condicione
 ```
 [ ] L29 — Matriz de campos sensibles × roles documentada en §4 de la memoria técnica
     (unitCost de SaleOrderDetailResponseDTO), con RBAC-LIN-01..04 en PASS
-[ ] L30 — H1 documentado (404/422 esperados vs 500 real); ERR-07/ERR-08 en PASS
+[ ] L30 — H1 resuelto (404/409/422 reales, commit `0374944`); ERR-07/ERR-08 en PASS
 [ ] L31 — ClientDialog y SaleOrderDetailFormDialog usan disableClose:true (UI-CLF-05,
     UI-LIN-04 en PASS); paginadores resetean a página 0 (UI-CLI-PAG-03, UI-ORD-PAG-03)
 [ ] L32 — Headers de tabla de Clientes/Órdenes/Detalles/Reservas usan el mixin
@@ -507,10 +507,14 @@ Antes de declarar el módulo **done**, verificar que se cumplen las 4 condicione
 ### Checklist adicional — Hallazgos pre-código (D7/D8)
 
 ```
-[ ] H1 — Resuelto en backend durante FASE 1 (con autorización) y casos ERR-10,
-    FLOW-DET-03/07/10, RN-DET-04, CRUD-LIN-05 re-verificados con status 404/409/422;
-    O documentado como pendiente formal si no se autorizó
+[x] H1 — Resuelto en backend (2026-06-13, commit `0374944`, rama
+    `fix/sales-h1-typed-exceptions`, pendiente de merge a develop). Pendiente:
+    re-verificar en browser casos ERR-10, FLOW-DET-03/07/10, RN-DET-04,
+    CRUD-LIN-05 con status 404/409/422
 [ ] H2 — Mitigado en frontend desde FASE 4 (RBAC-LIN-02/03 en PASS) independientemente
     del estado de redacción en backend (RBAC-LIN-04 informativo)
+[ ] H4 — Documentado (NO corregido): `ClientControllerTest.getAllActiveClients_retorna200`
+    falla de forma preexistente (no relacionada con H1); pendiente de autorización
+    para corregir
 [ ] H3 (D8) — @Transactional verificado en approveOrder(); documentado si no está presente
 ```

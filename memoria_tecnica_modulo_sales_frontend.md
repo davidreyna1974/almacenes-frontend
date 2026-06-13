@@ -765,20 +765,43 @@ FASE 2-5 junto con su lógica real.
 
 ## 8. Bugs y retos durante el desarrollo
 
-### H1 — `SaleOrderServiceImpl`/`ClientServiceImpl` usan `RuntimeException` genérica (→ 500 en vez de 404/409/422)
+### H1 — `SaleOrderServiceImpl`/`ClientServiceImpl` usan `RuntimeException` genérica (→ 500 en vez de 404/409/422) — RESUELTO ✅
 
 **Origen:** identificado durante la revisión pre-código de `GlobalExceptionHandler`
 y `SaleOrderServiceImpl` (FASE 0, 2026-06-13).
 
 **Detalle:** ver tabla "Formato de error del backend" en §4. Incluye el caso de
 `ObjectOptimisticLockingFailureException` enmascarado en `approveOrder()`
-(debería responder 409, responde 500). El mensaje de negocio llega correctamente
+(debería responder 409, respondía 500). El mensaje de negocio llega correctamente
 en `err.error?.message` en todos los casos — el frontend no se bloquea (L9).
 
-**Estado:** documentado, NO corregido. Posible fix en backend durante FASE 1
-sujeto a autorización explícita (D7). Si no se autoriza, los casos `ERR-*` de
-`casos_de_prueba_modulo_sales.md` documentan el código real (500) con nota
-"pendiente backend".
+**Estado:** **corregido en backend** (2026-06-13, autorizado por el usuario),
+rama `fix/sales-h1-typed-exceptions` (commit `0374944`), pendiente de merge a
+`develop`. Cambios:
+- `ResourceNotFoundException` (404) para entidades no encontradas (orden,
+  cliente, producto, detalle).
+- `DuplicateResourceException` (409) para RFC/email duplicados al
+  crear/actualizar cliente, y para producto duplicado en `addDetail`.
+- `BusinessRuleException` (422) para transiciones de estado inválidas, stock
+  insuficiente (disponible y físico), producto inactivo, estado inválido en
+  `parseStatus`, y cliente con órdenes activas al desactivar.
+- `approveOrder()`: se eliminó el `catch` que envolvía
+  `ObjectOptimisticLockingFailureException` en un `RuntimeException` genérico;
+  ahora propaga sin envolver y `GlobalExceptionHandler.handleOptimisticLocking()`
+  la convierte en 409 con el mismo mensaje ("Stock modificado concurrentemente.
+  Intente nuevamente.").
+- `resolveAuthenticatedUser()` conserva `RuntimeException` (error de
+  infraestructura, no de negocio) — consistente con el comentario de
+  `GlobalExceptionHandler`.
+
+**Tests:** `SaleOrderConcurrencyTest` actualizado para esperar 409/422 en lugar
+de 500 en los rechazos de `approveOrder()`. Suite `sales.**`: 75 tests, 74 pass
+— la 1 falla restante (`ClientControllerTest.getAllActiveClients_retorna200`)
+es **preexistente y no relacionada** (falla igual en `develop` sin estos
+cambios) — ver H4 más abajo.
+
+Los casos `ERR-*` de `casos_de_prueba_modulo_sales.md` deben actualizarse para
+reflejar los códigos correctos (404/409/422) en lugar de 500.
 
 ### H2 — `SaleOrderDetailResponseDTO.unitCost` sin redacción por rol (L29/BUG-INV-11)
 
@@ -802,23 +825,39 @@ WAREHOUSEMAN/SALES independientemente del estado de redacción del backend.
 - La clase está anotada `@Transactional` a nivel de clase (línea 35).
   `approveOrder()` (línea 159) no sobreescribe con `readOnly`, por lo que se
   ejecuta dentro de una transacción de escritura completa.
-- En la FASE 2 (líneas 187-196), si `productRepository.saveAndFlush(product)`
-  lanza `ObjectOptimisticLockingFailureException` para la línea N, el método
-  la captura y relanza como `RuntimeException("Stock modificado
-  concurrentemente. Intente nuevamente.")` (esto es H1 — código HTTP 500 en
-  vez de 409, ver arriba).
-- Esa `RuntimeException` (no checked) propaga fuera del método
-  `@Transactional` → el proxy de Spring marca la transacción
-  `rollback-only` por el comportamiento por defecto de `@Transactional`
-  (rollback ante cualquier `RuntimeException`). Aunque
-  `saveAndFlush()` ya ejecutó los `UPDATE` físicos en la BD para las líneas
-  1..N-1, el `ROLLBACK` al finalizar la transacción revierte esos cambios —
-  **no quedan reservas parciales/inconsistentes**.
+- En la FASE 2, si `productRepository.saveAndFlush(product)` lanza
+  `ObjectOptimisticLockingFailureException` para la línea N, ya no se captura
+  ni se reenvuelve (H1 resuelto): propaga directamente como
+  `ObjectOptimisticLockingFailureException` (no checked).
+- Esa excepción propaga fuera del método `@Transactional` → el proxy de
+  Spring marca la transacción `rollback-only` por el comportamiento por
+  defecto de `@Transactional` (rollback ante cualquier `RuntimeException`).
+  Aunque `saveAndFlush()` ya ejecutó los `UPDATE` físicos en la BD para las
+  líneas 1..N-1, el `ROLLBACK` al finalizar la transacción revierte esos
+  cambios — **no quedan reservas parciales/inconsistentes**. Luego,
+  `GlobalExceptionHandler.handleOptimisticLocking()` la convierte en 409 con
+  el mensaje "Stock modificado concurrentemente. Intente nuevamente."
 
 **Conclusión:** la garantía de "todo o nada" en `approveOrder()` (R4/R5) es
-correcta a nivel de transacción. **No se genera H3** — el único hallazgo
-pendiente relacionado es H1 (código HTTP 500 en vez de 409 para el mensaje de
-"Stock modificado concurrentemente"), que no afecta la integridad de los datos.
+correcta a nivel de transacción. **No se genera H3.** H1 (código HTTP 500 en
+vez de 409 para el mensaje de "Stock modificado concurrentemente") fue
+**resuelto** (ver arriba) — el código HTTP ahora es correcto y la integridad
+de los datos siempre estuvo garantizada.
+
+### H4 — `ClientControllerTest.getAllActiveClients_retorna200` falla (preexistente, NO relacionada con Sales/H1)
+
+**Origen:** detectado al ejecutar la suite `sales.**` tras el fix de H1
+(2026-06-13). Error: `No value at JSON path "$.content[0].name"`.
+
+**Detalle:** se verificó con `git stash` que la falla ocurre de forma
+idéntica en `develop` sin ninguno de los cambios de H1 — mismo test, mismo
+mensaje de error, 6 tests / 1 falla. Por lo tanto **no es una regresión** del
+fix de H1, sino un bug preexistente en el test (o en el endpoint
+`GET /api/v1/sales/clients/active`) no relacionado con esta tarea.
+
+**Estado:** documentado, NO corregido — pendiente de autorización explícita
+del usuario, según la instrucción permanente "si identificas errores o bugs,
+solo identifícalos y documéntalos, no los corrijas hasta que lo autorices".
 
 ---
 
