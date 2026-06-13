@@ -1,0 +1,94 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="client-form">
+
+  <h3 class="client-form__title">
+    @if (isEdit) {
+      {{ canWrite ? 'Editar cliente' : 'Ver cliente' }}
+    } @else {
+      Nuevo cliente
+    }
+  </h3>
+
+  <div class="client-form__grid">
+    <mat-form-field appearance="outline" class="client-form__field--half">
+      <mat-label>Nombre *</mat-label>
+      <input matInput formControlName="name" maxlength="150" autocomplete="off">
+      @if (form.get('name')?.hasError('required') && form.get('name')?.touched) {
+        <mat-error>El nombre es obligatorio.</mat-error>
+      }
+      @if (form.get('name')?.hasError('maxlength')) {
+        <mat-error>Máximo 150 caracteres.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="client-form__field--half">
+      <mat-label>RFC</mat-label>
+      <input matInput formControlName="rfc" maxlength="13" autocomplete="off">
+      @if (form.get('rfc')?.hasError('maxlength')) {
+        <mat-error>Máximo 13 caracteres.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="client-form__field--half">
+      <mat-label>Nombre de contacto</mat-label>
+      <input matInput formControlName="contactName" maxlength="100" autocomplete="off">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="client-form__field--half">
+      <mat-label>Teléfono</mat-label>
+      <input matInput formControlName="phone" maxlength="20" autocomplete="off">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="client-form__field--half">
+      <mat-label>Correo electrónico</mat-label>
+      <input matInput formControlName="email" type="email" maxlength="100" autocomplete="off">
+      @if (form.get('email')?.hasError('email')) {
+        <mat-error>Formato de correo inválido.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="client-form__field--full">
+      <mat-label>Dirección</mat-label>
+      <textarea matInput formControlName="address" rows="2"></textarea>
+    </mat-form-field>
+  </div>
+
+  @if (isEdit && item) {
+    <div class="client-form__audit">
+      <span class="client-form__audit-item">
+        <mat-icon>person</mat-icon>
+        Creado por {{ item.createdByUsername ?? '—' }}
+      </span>
+      @if (item.updatedByUsername) {
+        <span class="client-form__audit-item">
+          <mat-icon>edit</mat-icon>
+          Actualizado por {{ item.updatedByUsername }}
+        </span>
+      }
+    </div>
+  }
+
+  <div class="client-form__actions">
+    @if (isEdit && canDeactivate && item?.active) {
+      <button type="button" mat-stroked-button color="warn"
+              (click)="deactivate.emit()" [disabled]="saving">
+        Desactivar
+      </button>
+    }
+    <div class="client-form__actions-right">
+      <button type="button" mat-stroked-button (click)="cancel.emit()" [disabled]="saving">
+        Cancelar
+      </button>
+      @if (canWrite) {
+        <button type="submit" mat-flat-button color="primary"
+                [disabled]="form.invalid || (isEdit && !form.dirty) || saving">
+          @if (saving) {
+            <mat-spinner diameter="18" />
+          } @else {
+            {{ isEdit ? 'Guardar cambios' : 'Crear cliente' }}
+          }
+        </button>
+      }
+    </div>
+  </div>
+
+</form>

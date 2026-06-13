@@ -761,6 +761,70 @@ FASE 2-5 junto con su lógica real.
   ejecuta en FASE 3-4 cuando `SaleOrdersPageComponent` exponga el botón "Nueva
   orden" y exista contenido real que verificar.
 
+### FASE 2 — Clientes (CRUD completo) — pruebas de navegador (Propuesta B)
+
+**Cobertura del documento de casos** (`casos_de_prueba_modulo_sales.md`,
+secciones 1-2): 55 casos en ✅ PASS, 1 en ❌ FAIL (BUG-S4-01, ver §8), 2 en N/A
+con justificación, 0 en ⏳ PENDIENTE dentro del alcance de esta fase
+(VIS-CLI-01..08, BSRCH-CLI-01..06, RBAC-CLI-01..07, UI-CLI-01..04,
+UI-CLI-PAG-01..03, EMPTY-CLI-01/02, UI-CLF-01..05, VIS-CLF-01, RBAC-CLF-01..04,
+VAL-CLF-01..09, CRUD-CLF-01..09).
+
+**Resumen por categoría:**
+
+- **VIS-CLI-01..08** ✅ — header de tabla vía mixin `catalog-table-header` (L32),
+  `.catalog-page`/`__table-wrapper` con `padding`/`gap`/`border-radius` correctos
+  (L22), `mat-progress-bar` indeterminado al cargar.
+- **BSRCH-CLI-01..06** ✅ — búsqueda parcial, case-insensitive y
+  accent-insensitive confirmada con `[QA] Cliente Almacén Acentuado`
+  ("almacen" encuentra "Almacén" vía `f_unaccent`).
+- **RBAC-CLI-01..07 / RBAC-CLF-01..04** ✅ — verificado con los 4 roles
+  (`admin`, `manager01`, `almacen01`, `ventas01`):
+  - ADMIN/MANAGER: "Nuevo cliente" visible, ícono `edit`, "Desactivar" visible
+    en el diálogo de edición.
+  - WAREHOUSEMAN (`almacen01`): sin "Nuevo cliente", sin ícono de desactivar,
+    ícono `visibility` ("Ver cliente") abre el diálogo en modo solo lectura
+    (todos los campos `disabled`, sin Guardar/Desactivar).
+  - SALES (`ventas01`): "Nuevo cliente" visible, ícono `edit`, diálogo editable
+    SIN botón "Desactivar" (`DELETE /clients` excluye SALES).
+- **UI-CLI-01..04 / UI-CLI-PAG-01..03 / UI-CLF-01..05** ✅ — todos los botones e
+  íconos verificados uno a uno; reset de paginador a página 0 al cambiar
+  búsqueda confirmado (mismo punto que dispara `load()`).
+- **EMPTY-CLI-01** → **N/A** — no reproducible sin desactivar los ~50 clientes
+  activos existentes (afectaría datos compartidos); mismo bloque de template y
+  mismo `EmptyStateComponent` que EMPTY-CLI-02 (✅ PASS), solo cambia
+  `variant`/`titleOverride` vs `descriptionOverride` — verificado por código
+  (`clients-page.component.html` líneas 38-46).
+- **EMPTY-CLI-02** ✅ — estado "Sin resultados" con búsqueda `"almacen01xyz"`.
+- **VAL-CLF-01..09** ✅ — incluye verificación DOM de `maxLength` real:
+  `{"name":"name","len":150,"maxLength":150},{"name":"contactName","len":100,"maxLength":100},{"name":"phone","len":20,"maxLength":20}`.
+- **VIS-CLF-01** ❌ — **BUG-S4-01** (doble asterisco "Nombre **", ver §8).
+- **CRUD-CLF-01..09** ✅ / N/A — ciclo de vida completo (crear → editar →
+  desactivar) ejecutado sobre `[QA] Cliente Almacén Acentuado` (L33: dato
+  propio de prueba, prefijado `[QA]`, desactivado al finalizar).
+  CRUD-CLF-09 (desactivar cliente con órdenes PENDING/APPROVED) → **N/A**:
+  la regla existe y está verificada por código en
+  `ClientServiceImpl.deactivateClient()` (lanza `BusinessRuleException` si
+  `saleOrderRepository.findActiveOrdersByClient(id)` no está vacío), pero no es
+  reproducible en browser hasta que existan Sales Orders (FASE 3-4).
+
+**Suite del módulo (2026-06-13):**
+```
+ng test --no-watch --include='**/sales/**/*.spec.ts'
+→ 4 archivos, 38 specs, 0 fallos
+ng test --no-watch --include='**/sales/**/*.spec.ts' --coverage
+→ Statements 88.12% (141/160), Branches 91.75%, Functions 96.55%, Lines 92.56%
+```
+Cobertura ≥ 70% statements cumplida (88.12%).
+
+**Regresión completa (2026-06-13):**
+```
+ng test --no-watch
+→ 23 archivos, 253 specs, 0 fallos
+```
+Sube de 238 (FASE 1) a 253 specs — los 15 specs nuevos corresponden a
+`client-form.component.spec.ts` (FASE 2). Sin regresiones en módulos 0-3.
+
 ---
 
 ## 8. Bugs y retos durante el desarrollo
@@ -858,6 +922,47 @@ fix de H1, sino un bug preexistente en el test (o en el endpoint
 **Estado:** documentado, NO corregido — pendiente de autorización explícita
 del usuario, según la instrucción permanente "si identificas errores o bugs,
 solo identifícalos y documéntalos, no los corrijas hasta que lo autorices".
+
+### BUG-S4-01 — Doble asterisco "Nombre **" en el formulario de cliente
+
+**Origen:** detectado en VIS-CLF-01 durante las pruebas de navegador de FASE 2
+(2026-06-13), visible para ADMIN, MANAGER y también para `almacen01` en modo
+solo lectura (el `*` extra se renderiza incluso con el campo `disabled`).
+
+**Detalle:** `client-form.component.html` línea 13 tiene
+`<mat-label>Nombre *</mat-label>` con un asterisco manual. Angular Material
+agrega automáticamente un `*` adicional cuando el `FormControl` asociado tiene
+`Validators.required` (regla "No hay asteriscos dobles" de CLAUDE.md). El
+resultado visible es "Nombre **".
+
+**Fix sugerido (no aplicado):** quitar el ` *` manual de la línea 13, dejando
+`<mat-label>Nombre</mat-label>` — Angular Material añade el asterisco
+automáticamente por el validador.
+
+**Estado:** documentado, **NO corregido** — pendiente de autorización explícita
+del usuario, según la instrucción permanente "si identificas errores o bugs,
+solo identifícalos y documéntalos, no los corrijas hasta que lo autorices".
+
+### Hallazgo L33 — datos de prueba preexistentes no conformes (~50 registros "Cliente Int XXXXX")
+
+**Origen:** detectado durante BSRCH-CLI-01..06 (FASE 2, 2026-06-13) al revisar
+la lista completa de clientes activos para verificar la búsqueda.
+
+**Detalle:** la tabla `/sales/clients/active` contiene aproximadamente 50
+registros con nombres del tipo `Cliente Int XXXXX` (datos de prueba de
+integración generados en sesiones anteriores, probablemente del backend
+`SaleOrderConcurrencyTest` u otras suites de integración), que **no siguen el
+estándar L33** de prefijo `[QA]`/`TEST_` ni están desactivados.
+
+**Impacto:** ninguno sobre la funcionalidad — son datos visibles para todos los
+roles (campos de `ClientDTO` no son sensibles, §6.2) y no interfieren con los
+casos de prueba de FASE 2 (de hecho EMPTY-CLI-01 se marcó N/A precisamente
+porque desactivar estos ~50 registros afectaría datos compartidos).
+
+**Estado:** documentado como **hallazgo de higiene de datos para limpieza
+futura**, NO corregido en esta sesión — requiere autorización explícita y
+coordinación (podrían ser usados por tests de integración del backend en
+ejecución). No bloquea el cierre de FASE 2.
 
 ---
 

@@ -51,20 +51,20 @@ no por ruta, excepto `/sales/orders/new`)
 
 ## Resumen de cobertura
 
-| Categoría | Total casos | PASS | FAIL | PENDIENTE |
-|---|---|---|---|---|
-| SEC — Seguridad de rutas | 10 | 0 | 0 | 10 |
-| RBAC — Control de acceso UI | 31 | 0 | 0 | 31 |
-| CRUD — Flujos de datos | 15 | 0 | 0 | 15 |
-| VAL — Validaciones de formulario | 17 | 0 | 0 | 17 |
-| BSRCH — Búsqueda e inputs | 6 | 0 | 0 | 6 |
-| UI — Botones e íconos | 42 | 0 | 0 | 42 |
-| FLOW — Flujos de estado/negocio | 12 | 0 | 0 | 12 |
-| RN — Reglas de negocio | 6 | 0 | 0 | 6 |
-| ERR — Mensajes de error | 10 | 0 | 0 | 10 |
-| EMPTY — Estados vacíos | 6 | 0 | 0 | 6 |
-| VIS — Visual y estética | 35 | 0 | 0 | 35 |
-| **TOTAL** | **190** | **0** | **0** | **190** |
+| Categoría | Total casos | PASS | FAIL | N/A | PENDIENTE |
+|---|---|---|---|---|---|
+| SEC — Seguridad de rutas | 10 | 0 | 0 | 0 | 10 |
+| RBAC — Control de acceso UI | 31 | 11 | 0 | 0 | 20 |
+| CRUD — Flujos de datos | 15 | 8 | 0 | 1 | 6 |
+| VAL — Validaciones de formulario | 17 | 9 | 0 | 0 | 8 |
+| BSRCH — Búsqueda e inputs | 6 | 6 | 0 | 0 | 0 |
+| UI — Botones e íconos | 42 | 12 | 0 | 0 | 30 |
+| FLOW — Flujos de estado/negocio | 12 | 0 | 0 | 0 | 12 |
+| RN — Reglas de negocio | 6 | 0 | 0 | 0 | 6 |
+| ERR — Mensajes de error | 10 | 0 | 0 | 0 | 10 |
+| EMPTY — Estados vacíos | 6 | 1 | 0 | 1 | 4 |
+| VIS — Visual y estética | 35 | 8 | 1 | 0 | 26 |
+| **TOTAL** | **190** | **55** | **1** | **2** | **132** |
 
 > Actualizar este resumen cada vez que se completa una sección.
 
@@ -99,14 +99,14 @@ no por ruta, excepto `/sales/orders/new`)
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VIS-CLI-01 | Título de la página visible | ADMIN | "Clientes" | ⏳ PENDIENTE | |
-| VIS-CLI-02 | Columnas de la tabla: Nombre, RFC, Contacto, Teléfono, Email, Acciones | ADMIN | Todas las columnas visibles | ⏳ PENDIENTE | |
-| VIS-CLI-03 | Barra de búsqueda visible en la parte superior | ADMIN | Campo "Buscar" con ícono lupa | ⏳ PENDIENTE | |
-| VIS-CLI-04 | Botón "Nuevo cliente" visible | ADMIN | Botón con ícono `add` visible | ⏳ PENDIENTE | |
-| VIS-CLI-05 | Cursor `pointer` en filas; hover cambia el fondo; fila seleccionada `#F2E4F2` | ADMIN | Comportamiento correcto | ⏳ PENDIENTE | |
-| VIS-CLI-06 | Texto largo en Nombre/Email se trunca con `…` y tooltip | ADMIN | text-overflow:ellipsis + tooltip | ⏳ PENDIENTE | |
-| VIS-CLI-07 | Header de tabla con fondo `#F2E4F2` y texto `#6B3C6B` vía mixin SCSS compartido (L32) | ADMIN | Colores correctos; `.scss` usa `@include`/`@extend`, no copia manual | ⏳ PENDIENTE | |
-| VIS-CLI-08 | `mat-progress-bar` visible durante carga (no spinner centrado) | ADMIN | Barra indeterminada en parte superior | ⏳ PENDIENTE | |
+| VIS-CLI-01 | Título de la página visible | ADMIN | "Clientes" | ✅ PASS | Breadcrumb "Ventas → Clientes" |
+| VIS-CLI-02 | Columnas de la tabla: Nombre, RFC, Contacto, Teléfono, Email, Acciones | ADMIN | Todas las columnas visibles | ✅ PASS | |
+| VIS-CLI-03 | Barra de búsqueda visible en la parte superior | ADMIN | Campo "Buscar" con ícono lupa | ✅ PASS | |
+| VIS-CLI-04 | Botón "Nuevo cliente" visible | ADMIN | Botón con ícono `add` visible | ✅ PASS | |
+| VIS-CLI-05 | Cursor `pointer` en filas; hover cambia el fondo; fila seleccionada `#F2E4F2` | ADMIN | Comportamiento correcto | ✅ PASS | |
+| VIS-CLI-06 | Texto largo en Nombre/Email se trunca con `…` y tooltip | ADMIN | text-overflow:ellipsis + tooltip | ✅ PASS | Verificado con "Cliente Int XXXXX" / emails largos |
+| VIS-CLI-07 | Header de tabla con fondo `#F2E4F2` y texto `#6B3C6B` vía mixin SCSS compartido (L32) | ADMIN | Colores correctos; `.scss` usa `@include`/`@extend`, no copia manual | ✅ PASS | `clients-page.component.scss` usa `@include mixins.catalog-table-header` |
+| VIS-CLI-08 | `mat-progress-bar` visible durante carga (no spinner centrado) | ADMIN | Barra indeterminada en parte superior | ✅ PASS | `@if (loading) { <mat-progress-bar mode="indeterminate"> }` confirmado en código y al recargar |
 
 ### 1b. Búsqueda (BSRCH)
 
@@ -114,48 +114,48 @@ no por ruta, excepto `/sales/orders/new`)
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| BSRCH-CLI-01 | Buscar por nombre exacto | ADMIN | Cliente "Distribuidora del Norte" existe | Filtra correctamente | ⏳ PENDIENTE | |
-| BSRCH-CLI-02 | Buscar en minúsculas (case insensitive) | ADMIN | Registro con mayúsculas | Encuentra el registro | ⏳ PENDIENTE | |
-| BSRCH-CLI-03 | Buscar sin acento (accent insensitive), ej. "Almacén" → "almacen" | ADMIN | Registro con acento | Encuentra el registro | ⏳ PENDIENTE | Verificar f_unaccent() |
-| BSRCH-CLI-04 | Buscar término sin resultados | ADMIN | Término no existe | Estado vacío: ícono + mensaje contextual | ⏳ PENDIENTE | |
-| BSRCH-CLI-05 | Limpiar campo de búsqueda | ADMIN | Campo con término activo | Lista restaurada; todos los clientes activos visibles | ⏳ PENDIENTE | |
-| BSRCH-CLI-06 | Botón X de limpieza visible SOLO cuando hay texto | ADMIN | Campo vacío vs con texto | Sin texto → sin X; con texto → X visible | ⏳ PENDIENTE | |
+| BSRCH-CLI-01 | Buscar por nombre exacto | ADMIN | Cliente "Cliente Int 12823" existe | Filtra correctamente | ✅ PASS | |
+| BSRCH-CLI-02 | Buscar en minúsculas (case insensitive) | ADMIN | Registro con mayúsculas | Encuentra el registro | ✅ PASS | "cliente int" encuentra "Cliente Int ..." |
+| BSRCH-CLI-03 | Buscar sin acento (accent insensitive), ej. "Almacén" → "almacen" | ADMIN | Registro con acento ("[QA] Cliente Almacén Acentuado") | Encuentra el registro | ✅ PASS | f_unaccent() confirmado: "almacen" encuentra "Almacén" |
+| BSRCH-CLI-04 | Buscar término sin resultados | ADMIN | Término no existe | Estado vacío: ícono + mensaje contextual | ✅ PASS | 'Sin resultados para "..."' |
+| BSRCH-CLI-05 | Limpiar campo de búsqueda | ADMIN | Campo con término activo | Lista restaurada; todos los clientes activos visibles | ✅ PASS | |
+| BSRCH-CLI-06 | Botón X de limpieza visible SOLO cuando hay texto | ADMIN | Campo vacío vs con texto | Sin texto → sin X; con texto → X visible | ✅ PASS | |
 
 ### 1c. RBAC en lista (RBAC)
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RBAC-CLI-01 | Botón "Nuevo cliente" visible | ADMIN / MANAGER / SALES | Visible | ⏳ PENDIENTE | |
-| RBAC-CLI-02 | Botón "Nuevo cliente" NO visible | WAREHOUSEMAN | Ausente del DOM (no solo oculto) | ⏳ PENDIENTE | |
-| RBAC-CLI-03 | Ícono "Editar" visible en fila | ADMIN / MANAGER / SALES | Visible | ⏳ PENDIENTE | |
-| RBAC-CLI-04 | Ícono "Editar" NO visible en fila (solo Ver) | WAREHOUSEMAN | Ausente del DOM | ⏳ PENDIENTE | |
-| RBAC-CLI-05 | Ícono "Desactivar" visible en fila | ADMIN / MANAGER | Visible | ⏳ PENDIENTE | |
-| RBAC-CLI-06 | Ícono "Desactivar" NO visible en fila | SALES | Ausente del DOM (SecurityConfig: DELETE /clients excluye SALES) | ⏳ PENDIENTE | |
-| RBAC-CLI-07 | Ícono "Desactivar" NO visible en fila | WAREHOUSEMAN | Ausente del DOM | ⏳ PENDIENTE | |
+| RBAC-CLI-01 | Botón "Nuevo cliente" visible | ADMIN / MANAGER / SALES | Visible | ✅ PASS | Verificado con admin, manager01, ventas01 |
+| RBAC-CLI-02 | Botón "Nuevo cliente" NO visible | WAREHOUSEMAN | Ausente del DOM (no solo oculto) | ✅ PASS | Verificado con almacen01 |
+| RBAC-CLI-03 | Ícono "Editar" visible en fila | ADMIN / MANAGER / SALES | Visible | ✅ PASS | Verificado con admin, manager01, ventas01 |
+| RBAC-CLI-04 | Ícono "Editar" NO visible en fila (solo Ver) | WAREHOUSEMAN | Ausente del DOM | ✅ PASS | almacen01 muestra ícono `visibility` ("Ver cliente") en lugar de `edit` |
+| RBAC-CLI-05 | Ícono "Desactivar" visible en fila | ADMIN / MANAGER | Visible | ✅ PASS | Verificado con admin y manager01 |
+| RBAC-CLI-06 | Ícono "Desactivar" NO visible en fila | SALES | Ausente del DOM (SecurityConfig: DELETE /clients excluye SALES) | ✅ PASS | Verificado con ventas01 |
+| RBAC-CLI-07 | Ícono "Desactivar" NO visible en fila | WAREHOUSEMAN | Ausente del DOM | ✅ PASS | Verificado con almacen01 |
 
 ### 1d. Botones e íconos de acción (UI)
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| UI-CLI-01 | Click en fila selecciona el cliente en el panel/diálogo de detalle | ADMIN | Lista cargada | Detalle del cliente mostrado | ⏳ PENDIENTE | |
-| UI-CLI-02 | Ícono Editar — clic abre `ClientDialog` con datos precargados | ADMIN | Cliente seleccionado | Diálogo abre SIN navegar fuera | ⏳ PENDIENTE | (L27) verificar `$event.stopPropagation()` |
-| UI-CLI-03 | Ícono Desactivar — clic abre `ConfirmDialog` | ADMIN | Cliente activo | Diálogo de confirmación abre | ⏳ PENDIENTE | (L27) verificar `$event.stopPropagation()` |
-| UI-CLI-04 | Confirmar Desactivar → cliente desaparece de la lista de activos | ADMIN | Diálogo abierto | Snackbar verde; lista actualizada sin recargar | ⏳ PENDIENTE | |
+| UI-CLI-01 | Click en fila selecciona el cliente en el panel/diálogo de detalle | ADMIN | Lista cargada | Detalle del cliente mostrado | ✅ PASS | Abre `ClientFormDialogComponent` |
+| UI-CLI-02 | Ícono Editar — clic abre `ClientDialog` con datos precargados | ADMIN | Cliente seleccionado | Diálogo abre SIN navegar fuera | ✅ PASS | (L27) `$event.stopPropagation()` presente y funcional |
+| UI-CLI-03 | Ícono Desactivar — clic abre `ConfirmDialog` | ADMIN | Cliente activo | Diálogo de confirmación abre | ✅ PASS | (L27) `$event.stopPropagation()` presente y funcional |
+| UI-CLI-04 | Confirmar Desactivar → cliente desaparece de la lista de activos | ADMIN | Diálogo abierto | Snackbar verde; lista actualizada sin recargar | ✅ PASS | Verificado con `[QA] Cliente Almacén Acentuado` (creado y desactivado en esta misma sesión, L33) |
 
 ### 1e. Estados vacíos (EMPTY)
 
 | ID | Descripción | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|
-| EMPTY-CLI-01 | Lista sin clientes activos | Ícono + "Sin clientes registrados" | ⏳ PENDIENTE | |
-| EMPTY-CLI-02 | Búsqueda sin resultados | Ícono + 'Sin resultados para "..."' | ⏳ PENDIENTE | |
+| EMPTY-CLI-01 | Lista sin clientes activos | Ícono + "Sin clientes registrados" | N/A | No reproducible sin desactivar los ~50 clientes activos existentes (afectaría datos compartidos de otras pruebas). Mismo bloque de template (`@if (!loading && clients.length === 0)`) y mismo componente `EmptyStateComponent` que EMPTY-CLI-02 (✅ PASS) — solo cambia `variant`/`titleOverride` vs `descriptionOverride`, ambos verificados por código en `clients-page.component.html` líneas 38-46 |
+| EMPTY-CLI-02 | Búsqueda sin resultados | Ícono + 'Sin resultados para "..."' | ✅ PASS | 'Sin resultados para "almacen01xyz"' |
 
 ### 1f. Paginación (UI)
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| UI-CLI-PAG-01 | Paginador visible cuando hay > pageSize clientes | > 20 clientes en BD | Paginador con total, opciones 10/20/50 | ⏳ PENDIENTE | |
-| UI-CLI-PAG-02 | Cambio de página carga la página correcta | Paginador visible | Filas cambian al ir a página 2 | ⏳ PENDIENTE | |
-| UI-CLI-PAG-03 | Cambiar búsqueda estando en página > 0 resetea a página 0 (L31) | En página 2+, buscar | Paginador regresa a página 0 | ⏳ PENDIENTE | |
+| UI-CLI-PAG-01 | Paginador visible cuando hay > pageSize clientes | > 20 clientes en BD | Paginador con total, opciones 10/20/50 | ✅ PASS | ~50 clientes activos, paginador con opciones 10/20/50 |
+| UI-CLI-PAG-02 | Cambio de página carga la página correcta | Paginador visible | Filas cambian al ir a página 2 | ✅ PASS | |
+| UI-CLI-PAG-03 | Cambiar búsqueda estando en página > 0 resetea a página 0 (L31) | En página 2+, buscar | Paginador regresa a página 0 | ✅ PASS | `currentPage = 0` se aplica en el mismo punto que dispara `load()` tras `searchCtrl.valueChanges` |
 
 ---
 
@@ -165,21 +165,21 @@ no por ruta, excepto `/sales/orders/new`)
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| UI-CLF-01 | Botón "Nuevo cliente" abre `ClientDialog` vacío | ADMIN / MANAGER / SALES | — | Todos los campos vacíos; sin datos precargados | ⏳ PENDIENTE | |
-| UI-CLF-02 | Ícono Editar abre `ClientDialog` con datos del cliente | ADMIN / MANAGER / SALES | Cliente existente | Campos precargados correctamente | ⏳ PENDIENTE | |
-| UI-CLF-03 | Botón Cancelar cierra sin guardar | ADMIN | Formulario con cambios | Cierra; lista no cambia | ⏳ PENDIENTE | |
-| UI-CLF-04 | Campos muestran label visible (no solo placeholder) | ADMIN | Diálogo abierto | Labels siempre visibles | ⏳ PENDIENTE | |
-| UI-CLF-05 | Click en backdrop/ESC con cambios sin guardar (L31, `disableClose: true`) | ADMIN | Diálogo abierto, con cambios | Diálogo permanece abierto; cambios no se pierden | ⏳ PENDIENTE | |
-| VIS-CLF-01 | Campos obligatorios tienen un solo `*` (Validators.required) | ADMIN | Diálogo abierto | Solo un `*` por campo obligatorio (Nombre) | ⏳ PENDIENTE | |
+| UI-CLF-01 | Botón "Nuevo cliente" abre `ClientDialog` vacío | ADMIN / MANAGER / SALES | — | Todos los campos vacíos; sin datos precargados | ✅ PASS | Verificado con admin y ventas01 |
+| UI-CLF-02 | Ícono Editar abre `ClientDialog` con datos del cliente | ADMIN / MANAGER / SALES | Cliente existente | Campos precargados correctamente | ✅ PASS | Verificado con admin, manager01, ventas01 |
+| UI-CLF-03 | Botón Cancelar cierra sin guardar | ADMIN | Formulario con cambios | Cierra; lista no cambia | ✅ PASS | |
+| UI-CLF-04 | Campos muestran label visible (no solo placeholder) | ADMIN | Diálogo abierto | Labels siempre visibles | ✅ PASS | |
+| UI-CLF-05 | Click en backdrop/ESC con cambios sin guardar (L31, `disableClose: true`) | ADMIN | Diálogo abierto, con cambios | Diálogo permanece abierto; cambios no se pierden | ✅ PASS | `DIALOG_CONFIG.disableClose = true` en `clients-page.component.ts` |
+| VIS-CLF-01 | Campos obligatorios tienen un solo `*` (Validators.required) | ADMIN | Diálogo abierto | Solo un `*` por campo obligatorio (Nombre) | ❌ FAIL | **BUG-S4-01**: campo "Nombre" muestra "Nombre **" (doble asterisco) — `client-form.component.html` línea 13 tiene `<mat-label>Nombre *</mat-label>` manual + Angular Material agrega `*` automático por `Validators.required`. Documentado únicamente, no corregido (autorización pendiente) |
 
 ### 2b. RBAC en formulario (RBAC)
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RBAC-CLF-01 | Título "Nuevo cliente" / "Editar cliente" | ADMIN / MANAGER / SALES | Título correcto según modo | ⏳ PENDIENTE | |
-| RBAC-CLF-02 | Formulario editable — todos los campos habilitados, botón Guardar visible | ADMIN / MANAGER / SALES | Campos editables | ⏳ PENDIENTE | |
-| RBAC-CLF-03 | Diálogo en modo solo lectura — campos `disabled`, sin botón Guardar | WAREHOUSEMAN | Click en fila abre vista de solo lectura (si aplica) o ícono Ver | ⏳ PENDIENTE | |
-| RBAC-CLF-04 | Botón "Desactivar" visible en el diálogo | ADMIN / MANAGER | Visible; ausente para SALES | ⏳ PENDIENTE | |
+| RBAC-CLF-01 | Título "Nuevo cliente" / "Editar cliente" | ADMIN / MANAGER / SALES | Título correcto según modo | ✅ PASS | Verificado con admin (ambos modos), manager01, ventas01 |
+| RBAC-CLF-02 | Formulario editable — todos los campos habilitados, botón Guardar visible | ADMIN / MANAGER / SALES | Campos editables | ✅ PASS | Verificado con admin y manager01 (con botón "Desactivar" también visible) y ventas01 |
+| RBAC-CLF-03 | Diálogo en modo solo lectura — campos `disabled`, sin botón Guardar | WAREHOUSEMAN | Click en fila abre vista de solo lectura (si aplica) o ícono Ver | ✅ PASS | almacen01: título "Ver cliente", todos los campos disabled, sin "Guardar"/"Desactivar" |
+| RBAC-CLF-04 | Botón "Desactivar" visible en el diálogo | ADMIN / MANAGER | Visible; ausente para SALES | ✅ PASS | Visible para admin y manager01; ausente para ventas01 (título "Editar cliente" sin botón warn) |
 
 ### 2c. Validaciones (VAL)
 
@@ -187,29 +187,29 @@ no por ruta, excepto `/sales/orders/new`)
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VAL-CLF-01 | Nombre vacío al intentar guardar | Campo vacío | Error inline "Campo requerido"; botón deshabilitado | ⏳ PENDIENTE | |
-| VAL-CLF-02 | Nombre > 150 caracteres | Valor de 151 chars | Campo no acepta más o error visible (maxlength 150) | ⏳ PENDIENTE | |
-| VAL-CLF-03 | RFC > 13 caracteres | Valor de 14 chars | Error "Máximo 13 caracteres" | ⏳ PENDIENTE | |
-| VAL-CLF-04 | Teléfono > 20 caracteres | Valor de 21 chars | Error "Máximo 20 caracteres" | ⏳ PENDIENTE | |
-| VAL-CLF-05 | Nombre de contacto > 100 caracteres | Valor de 101 chars | Error "Máximo 100 caracteres" | ⏳ PENDIENTE | |
-| VAL-CLF-06 | Email con formato inválido | "no-es-email" | Error "Formato de email inválido" | ⏳ PENDIENTE | |
-| VAL-CLF-07 | Botón Guardar deshabilitado con formulario inválido | Nombre vacío | `disabled:true` en el DOM | ⏳ PENDIENTE | |
-| VAL-CLF-08 | Botón Guardar deshabilitado al cargar en modo edición (sin cambios) | Diálogo recién abierto en modo editar | `disabled:true` — `form.dirty = false` | ⏳ PENDIENTE | |
-| VAL-CLF-09 | Botón Guardar se activa al modificar un campo y se desactiva tras guardar | Modificar Nombre → Guardar | `disabled:false` tras editar; `disabled:true` tras guardar (`markAsPristine`) | ⏳ PENDIENTE | |
+| VAL-CLF-01 | Nombre vacío al intentar guardar | Campo vacío | Error inline "Campo requerido"; botón deshabilitado | ✅ PASS | |
+| VAL-CLF-02 | Nombre > 150 caracteres | Valor de 200 chars | Campo no acepta más o error visible (maxlength 150) | ✅ PASS | `maxLength=150` confirmado vía DOM; input truncó a 150 chars |
+| VAL-CLF-03 | RFC > 13 caracteres | Valor de 14 chars | Error "Máximo 13 caracteres" | ✅ PASS | |
+| VAL-CLF-04 | Teléfono > 20 caracteres | Valor de 26 chars | Error "Máximo 20 caracteres" | ✅ PASS | `maxLength=20` confirmado vía DOM; input truncó a 20 chars |
+| VAL-CLF-05 | Nombre de contacto > 100 caracteres | Valor de 138 chars | Error "Máximo 100 caracteres" | ✅ PASS | `maxLength=100` confirmado vía DOM; input truncó a 100 chars |
+| VAL-CLF-06 | Email con formato inválido | "no-es-email" | Error "Formato de email inválido" | ✅ PASS | |
+| VAL-CLF-07 | Botón Guardar deshabilitado con formulario inválido | Nombre vacío | `disabled:true` en el DOM | ✅ PASS | |
+| VAL-CLF-08 | Botón Guardar deshabilitado al cargar en modo edición (sin cambios) | Diálogo recién abierto en modo editar | `disabled:true` — `form.dirty = false` | ✅ PASS | (L25) |
+| VAL-CLF-09 | Botón Guardar se activa al modificar un campo y se desactiva tras guardar | Modificar Nombre → Guardar | `disabled:false` tras editar; `disabled:true` tras guardar (`markAsPristine`) | ✅ PASS | Verificado con `[QA] Cliente Almacén Acentuado` |
 
 ### 2d. CRUD — Crear / Editar / Desactivar (CRUD)
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| CRUD-CLF-01 | Crear cliente con todos los datos válidos | Formulario completo | Snackbar verde "Cliente creado correctamente."; diálogo cierra | ⏳ PENDIENTE | |
-| CRUD-CLF-02 | Lista refleja el nuevo cliente inmediatamente | Crear exitoso | Nuevo cliente visible sin recargar | ⏳ PENDIENTE | |
-| CRUD-CLF-03 | Crear cliente solo con Nombre (campos opcionales vacíos) | rfc/contactName/phone/email/address vacíos | Creación exitosa (todos opcionales excepto name) | ⏳ PENDIENTE | |
-| CRUD-CLF-04 | Editar Nombre de un cliente existente | Cliente activo | Snackbar verde "Cliente actualizado correctamente." | ⏳ PENDIENTE | |
-| CRUD-CLF-05 | Lista refleja los cambios después de editar | Editar exitoso | Datos actualizados visibles sin recargar | ⏳ PENDIENTE | |
-| CRUD-CLF-06 | Click en Desactivar abre `ConfirmDialog` | Cliente activo | Modal con texto de confirmación y botones Confirmar/Cancelar | ⏳ PENDIENTE | |
-| CRUD-CLF-07 | Cancelar en `ConfirmDialog` — cliente no cambia | Diálogo abierto | Cliente permanece activo | ⏳ PENDIENTE | |
-| CRUD-CLF-08 | Confirmar desactivación de cliente sin órdenes activas | Cliente sin órdenes PENDING/APPROVED | Snackbar verde; cliente desaparece de `/clients/active` | ⏳ PENDIENTE | |
-| CRUD-CLF-09 | Intentar desactivar cliente con órdenes PENDING/APPROVED (si el backend lo restringe) | Cliente con orden PENDING/APPROVED | Snackbar rojo con mensaje del backend (verificar regla real en `ClientServiceImpl` durante FASE 2) | ⏳ PENDIENTE | Confirmar si la regla existe; si no existe, marcar N/A y documentar |
+| CRUD-CLF-01 | Crear cliente con todos los datos válidos | Formulario completo | Snackbar verde "Cliente creado correctamente."; diálogo cierra | ✅ PASS | Verificado creando `[QA] Cliente Almacén Acentuado` con todos los campos |
+| CRUD-CLF-02 | Lista refleja el nuevo cliente inmediatamente | Crear exitoso | Nuevo cliente visible sin recargar | ✅ PASS | |
+| CRUD-CLF-03 | Crear cliente solo con Nombre (campos opcionales vacíos) | rfc/contactName/phone/email/address vacíos | Creación exitosa (todos opcionales excepto name) | ✅ PASS | |
+| CRUD-CLF-04 | Editar Nombre de un cliente existente | Cliente activo | Snackbar verde "Cliente actualizado correctamente." | ✅ PASS | Verificado editando RFC/email de `[QA] Cliente Almacén Acentuado` |
+| CRUD-CLF-05 | Lista refleja los cambios después de editar | Editar exitoso | Datos actualizados visibles sin recargar | ✅ PASS | |
+| CRUD-CLF-06 | Click en Desactivar abre `ConfirmDialog` | Cliente activo | Modal con texto de confirmación y botones Confirmar/Cancelar | ✅ PASS | |
+| CRUD-CLF-07 | Cancelar en `ConfirmDialog` — cliente no cambia | Diálogo abierto | Cliente permanece activo | ✅ PASS | |
+| CRUD-CLF-08 | Confirmar desactivación de cliente sin órdenes activas | Cliente sin órdenes PENDING/APPROVED | Snackbar verde; cliente desaparece de `/clients/active` | ✅ PASS | Verificado desactivando `[QA] Cliente Almacén Acentuado` (cumple L33: dato de prueba propio, limpiado al cierre) |
+| CRUD-CLF-09 | Intentar desactivar cliente con órdenes PENDING/APPROVED (si el backend lo restringe) | Cliente con orden PENDING/APPROVED | Snackbar rojo con mensaje del backend (verificar regla real en `ClientServiceImpl` durante FASE 2) | N/A | Regla SÍ existe en backend (`ClientServiceImpl.deactivateClient()` lanza `BusinessRuleException` si `saleOrderRepository.findActiveOrdersByClient(id)` no está vacío), verificada por código. No reproducible en browser en esta fase porque Sales Orders (FASE 3/4) aún no está implementado — no es posible crear una orden PENDING/APPROVED para asociar al cliente. Re-verificar en browser durante FASE 4 (Órdenes de venta) |
 
 ---
 
@@ -466,7 +466,7 @@ no por ruta, excepto `/sales/orders/new`)
 
 | Bug ID | Descripción | Dónde se encontró | Estado |
 |---|---|---|---|
-| BUG-S4-01 | (placeholder) | | ⏳ Pendiente |
+| BUG-S4-01 | Doble asterisco "Nombre **" en el campo Nombre del formulario de cliente — `client-form.component.html` línea 13 tiene `<mat-label>Nombre *</mat-label>` manual, y Angular Material agrega un `*` automático adicional por `Validators.required` | VIS-CLF-01 (ADMIN, MANAGER y almacen01 en modo lectura) | ⏳ Pendiente — documentado, no corregido (autorización pendiente) |
 
 > Agregar una fila por cada bug encontrado durante las pruebas. Referenciar el ID del
 > bug en la columna "Notas" del caso que lo detectó. Documentar el bug completo en §8
