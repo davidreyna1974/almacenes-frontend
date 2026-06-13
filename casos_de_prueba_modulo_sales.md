@@ -63,8 +63,8 @@ no por ruta, excepto `/sales/orders/new`)
 | RN — Reglas de negocio | 6 | 0 | 0 | 0 | 6 |
 | ERR — Mensajes de error | 10 | 0 | 0 | 0 | 10 |
 | EMPTY — Estados vacíos | 6 | 1 | 0 | 1 | 4 |
-| VIS — Visual y estética | 35 | 8 | 1 | 0 | 26 |
-| **TOTAL** | **190** | **55** | **1** | **2** | **132** |
+| VIS — Visual y estética | 35 | 9 | 0 | 0 | 26 |
+| **TOTAL** | **190** | **56** | **0** | **2** | **132** |
 
 > Actualizar este resumen cada vez que se completa una sección.
 
@@ -170,7 +170,7 @@ no por ruta, excepto `/sales/orders/new`)
 | UI-CLF-03 | Botón Cancelar cierra sin guardar | ADMIN | Formulario con cambios | Cierra; lista no cambia | ✅ PASS | |
 | UI-CLF-04 | Campos muestran label visible (no solo placeholder) | ADMIN | Diálogo abierto | Labels siempre visibles | ✅ PASS | |
 | UI-CLF-05 | Click en backdrop/ESC con cambios sin guardar (L31, `disableClose: true`) | ADMIN | Diálogo abierto, con cambios | Diálogo permanece abierto; cambios no se pierden | ✅ PASS | `DIALOG_CONFIG.disableClose = true` en `clients-page.component.ts` |
-| VIS-CLF-01 | Campos obligatorios tienen un solo `*` (Validators.required) | ADMIN | Diálogo abierto | Solo un `*` por campo obligatorio (Nombre) | ❌ FAIL | **BUG-S4-01**: campo "Nombre" muestra "Nombre **" (doble asterisco) — `client-form.component.html` línea 13 tiene `<mat-label>Nombre *</mat-label>` manual + Angular Material agrega `*` automático por `Validators.required`. Documentado únicamente, no corregido (autorización pendiente) |
+| VIS-CLF-01 | Campos obligatorios tienen un solo `*` (Validators.required) | ADMIN | Diálogo abierto | Solo un `*` por campo obligatorio (Nombre) | ✅ PASS | **BUG-S4-01 corregido** (2026-06-13): se quitó el `*` manual de `<mat-label>Nombre *</mat-label>` en `client-form.component.html` línea 13 — ahora solo aparece el `*` automático de Angular Material por `Validators.required`. Verificado en browser: "Nombre*" (un solo asterisco) |
 
 ### 2b. RBAC en formulario (RBAC)
 
@@ -466,7 +466,7 @@ no por ruta, excepto `/sales/orders/new`)
 
 | Bug ID | Descripción | Dónde se encontró | Estado |
 |---|---|---|---|
-| BUG-S4-01 | Doble asterisco "Nombre **" en el campo Nombre del formulario de cliente — `client-form.component.html` línea 13 tiene `<mat-label>Nombre *</mat-label>` manual, y Angular Material agrega un `*` automático adicional por `Validators.required` | VIS-CLF-01 (ADMIN, MANAGER y almacen01 en modo lectura) | ⏳ Pendiente — documentado, no corregido (autorización pendiente) |
+| BUG-S4-01 | Doble asterisco "Nombre **" en el campo Nombre del formulario de cliente — `client-form.component.html` línea 13 tenía `<mat-label>Nombre *</mat-label>` manual, y Angular Material agrega un `*` automático adicional por `Validators.required` | VIS-CLF-01 (ADMIN, MANAGER y almacen01 en modo lectura) | ✅ Corregido (2026-06-13) — se quitó el `*` manual; verificado en browser |
 
 > Agregar una fila por cada bug encontrado durante las pruebas. Referenciar el ID del
 > bug en la columna "Notas" del caso que lo detectó. Documentar el bug completo en §8

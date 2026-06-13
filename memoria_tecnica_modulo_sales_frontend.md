@@ -764,8 +764,9 @@ FASE 2-5 junto con su lógica real.
 ### FASE 2 — Clientes (CRUD completo) — pruebas de navegador (Propuesta B)
 
 **Cobertura del documento de casos** (`casos_de_prueba_modulo_sales.md`,
-secciones 1-2): 55 casos en ✅ PASS, 1 en ❌ FAIL (BUG-S4-01, ver §8), 2 en N/A
-con justificación, 0 en ⏳ PENDIENTE dentro del alcance de esta fase
+secciones 1-2): 56 casos en ✅ PASS (incluye VIS-CLF-01 tras la corrección de
+BUG-S4-01, ver §8), 2 en N/A con justificación, 0 en ❌ FAIL, 0 en
+⏳ PENDIENTE dentro del alcance de esta fase
 (VIS-CLI-01..08, BSRCH-CLI-01..06, RBAC-CLI-01..07, UI-CLI-01..04,
 UI-CLI-PAG-01..03, EMPTY-CLI-01/02, UI-CLF-01..05, VIS-CLF-01, RBAC-CLF-01..04,
 VAL-CLF-01..09, CRUD-CLF-01..09).
@@ -798,7 +799,7 @@ VAL-CLF-01..09, CRUD-CLF-01..09).
 - **EMPTY-CLI-02** ✅ — estado "Sin resultados" con búsqueda `"almacen01xyz"`.
 - **VAL-CLF-01..09** ✅ — incluye verificación DOM de `maxLength` real:
   `{"name":"name","len":150,"maxLength":150},{"name":"contactName","len":100,"maxLength":100},{"name":"phone","len":20,"maxLength":20}`.
-- **VIS-CLF-01** ❌ — **BUG-S4-01** (doble asterisco "Nombre **", ver §8).
+- **VIS-CLF-01** ✅ — **BUG-S4-01** (doble asterisco "Nombre **") corregido, ver §8.
 - **CRUD-CLF-01..09** ✅ / N/A — ciclo de vida completo (crear → editar →
   desactivar) ejecutado sobre `[QA] Cliente Almacén Acentuado` (L33: dato
   propio de prueba, prefijado `[QA]`, desactivado al finalizar).
@@ -923,25 +924,24 @@ fix de H1, sino un bug preexistente en el test (o en el endpoint
 del usuario, según la instrucción permanente "si identificas errores o bugs,
 solo identifícalos y documéntalos, no los corrijas hasta que lo autorices".
 
-### BUG-S4-01 — Doble asterisco "Nombre **" en el formulario de cliente
+### BUG-S4-01 — Doble asterisco "Nombre **" en el formulario de cliente — RESUELTO ✅
 
 **Origen:** detectado en VIS-CLF-01 durante las pruebas de navegador de FASE 2
 (2026-06-13), visible para ADMIN, MANAGER y también para `almacen01` en modo
 solo lectura (el `*` extra se renderiza incluso con el campo `disabled`).
 
-**Detalle:** `client-form.component.html` línea 13 tiene
+**Detalle:** `client-form.component.html` línea 13 tenía
 `<mat-label>Nombre *</mat-label>` con un asterisco manual. Angular Material
 agrega automáticamente un `*` adicional cuando el `FormControl` asociado tiene
 `Validators.required` (regla "No hay asteriscos dobles" de CLAUDE.md). El
-resultado visible es "Nombre **".
+resultado visible era "Nombre **".
 
-**Fix sugerido (no aplicado):** quitar el ` *` manual de la línea 13, dejando
-`<mat-label>Nombre</mat-label>` — Angular Material añade el asterisco
-automáticamente por el validador.
-
-**Estado:** documentado, **NO corregido** — pendiente de autorización explícita
-del usuario, según la instrucción permanente "si identificas errores o bugs,
-solo identifícalos y documéntalos, no los corrijas hasta que lo autorices".
+**Fix aplicado (2026-06-13, autorizado por el usuario):** se quitó el ` *`
+manual de la línea 13, dejando `<mat-label>Nombre</mat-label>` — Angular
+Material añade el asterisco automáticamente por el validador. Verificado en
+browser: el campo ahora muestra "Nombre*" (un solo asterisco). Suite del
+módulo re-ejecutada: 38 specs, 0 fallos (sin impacto en tests, el cambio es
+solo de texto del label).
 
 ### Hallazgo L33 — datos de prueba preexistentes no conformes (~50 registros "Cliente Int XXXXX")
 

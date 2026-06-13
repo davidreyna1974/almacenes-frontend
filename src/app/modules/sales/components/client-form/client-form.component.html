@@ -10,7 +10,7 @@
 
   <div class="client-form__grid">
     <mat-form-field appearance="outline" class="client-form__field--half">
-      <mat-label>Nombre *</mat-label>
+      <mat-label>Nombre</mat-label>
       <input matInput formControlName="name" maxlength="150" autocomplete="off">
       @if (form.get('name')?.hasError('required') && form.get('name')?.touched) {
         <mat-error>El nombre es obligatorio.</mat-error>
