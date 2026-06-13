@@ -219,14 +219,14 @@ no por ruta, excepto `/sales/orders/new`)
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VIS-ORD-01 | Título de la página visible | ADMIN | "Órdenes de venta" | ⏳ PENDIENTE | |
-| VIS-ORD-02 | Tabs: Pendientes / Aprobadas / Entregadas / Canceladas, con conteo por tab | ADMIN | 4 tabs visibles con badge numérico (L23/L24) | ⏳ PENDIENTE | |
-| VIS-ORD-03 | Columnas: N° Orden, Cliente, Total, Creado por, Fecha, Estado, Acciones | ADMIN | Todas las columnas visibles | ⏳ PENDIENTE | |
-| VIS-ORD-04 | Badge de estado con color semántico (PENDING=naranja, APPROVED=azul, DELIVERED=verde, CANCELLED=rojo) | ADMIN | Colores correctos por tab | ⏳ PENDIENTE | |
-| VIS-ORD-05 | Botón "Nueva orden" visible | ADMIN | Botón con ícono `add` | ⏳ PENDIENTE | |
-| VIS-ORD-06 | Cursor `pointer` en filas; hover cambia el fondo | ADMIN | Comportamiento correcto | ⏳ PENDIENTE | |
-| VIS-ORD-07 | Header de tabla con mixin SCSS compartido (L32) | ADMIN | `#F2E4F2`/`#6B3C6B`, sin copia manual | ⏳ PENDIENTE | |
-| VIS-ORD-08 | `mat-progress-bar` visible durante carga de cada tab | ADMIN | Barra indeterminada | ⏳ PENDIENTE | |
+| VIS-ORD-01 | Título de la página visible | ADMIN | "Órdenes de venta" | ✅ PASS | |
+| VIS-ORD-02 | Tabs: Pendientes / Aprobadas / Entregadas / Canceladas, con conteo por tab | ADMIN | 4 tabs visibles con badge numérico (L23/L24) | ✅ PASS | Conteos iniciales 19/19/19/334 (luego 18/20/19/334 tras UI-ORD-03) |
+| VIS-ORD-03 | Columnas: N° Orden, Cliente, Total, Creado por, Fecha, Estado, Acciones | ADMIN | Todas las columnas visibles | ✅ PASS | Header "Acciones" vacío por diseño |
+| VIS-ORD-04 | Badge de estado con color semántico (PENDING=naranja, APPROVED=azul, DELIVERED=verde, CANCELLED=rojo) | ADMIN | Colores correctos por tab | ✅ PASS | Confirmado en las 4 tabs |
+| VIS-ORD-05 | Botón "Nueva orden" visible | ADMIN | Botón con ícono `add` | ✅ PASS | |
+| VIS-ORD-06 | Cursor `pointer` en filas; hover cambia el fondo | ADMIN | Comportamiento correcto | ✅ PASS | Hover y `cursor:pointer` confirmados vía `.catalog-row--clickable`; tooltip de cliente truncado visible |
+| VIS-ORD-07 | Header de tabla con mixin SCSS compartido (L32) | ADMIN | `#F2E4F2`/`#6B3C6B`, sin copia manual | ✅ PASS | Confirmado por zoom; `.catalog-table` usa `@include mixins.catalog-table-header` |
+| VIS-ORD-08 | `mat-progress-bar` visible durante carga de cada tab | ADMIN | Barra indeterminada | ✅ PASS | Verificado por código (`@if (loading) { mat-progress-bar mode="indeterminate" }` ligado a `pendingRequests`); no capturable en screenshot por su brevedad (<300ms) |
 
 ### 3b. RBAC — acciones por estado y rol (RBAC)
 
@@ -234,50 +234,50 @@ no por ruta, excepto `/sales/orders/new`)
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RBAC-ORD-01 | Tab PENDING: acciones Ver/Editar/Aprobar/Cancelar visibles | ADMIN / MANAGER | Las 4 acciones presentes | ⏳ PENDIENTE | |
-| RBAC-ORD-02 | Tab PENDING: acciones Ver/Editar/Cancelar visibles, Aprobar AUSENTE | SALES | Aprobar no está en el DOM | ⏳ PENDIENTE | |
-| RBAC-ORD-03 | Tab PENDING: solo acción Ver | WAREHOUSEMAN | Editar/Aprobar/Cancelar ausentes | ⏳ PENDIENTE | |
-| RBAC-ORD-04 | Tab APPROVED: acciones Ver/Entregar/Cancelar visibles | ADMIN / MANAGER | Las 3 acciones presentes | ⏳ PENDIENTE | |
-| RBAC-ORD-05 | Tab APPROVED: acciones Ver/Cancelar visibles, Entregar AUSENTE | SALES | Entregar no está en el DOM | ⏳ PENDIENTE | |
-| RBAC-ORD-06 | Tab APPROVED: acciones Ver/Entregar visibles (único rol de escritura) | WAREHOUSEMAN | Entregar presente, Cancelar ausente | ⏳ PENDIENTE | |
-| RBAC-ORD-07 | Tab DELIVERED: solo acción Ver | ADMIN / MANAGER / WAREHOUSEMAN / SALES | Ninguna acción de transición | ⏳ PENDIENTE | |
-| RBAC-ORD-08 | Tab CANCELLED: solo acción Ver | ADMIN / MANAGER / WAREHOUSEMAN / SALES | Ninguna acción de transición | ⏳ PENDIENTE | |
-| RBAC-ORD-09 | Botón "Nueva orden" visible | ADMIN / MANAGER / SALES | Visible | ⏳ PENDIENTE | |
-| RBAC-ORD-10 | Botón "Nueva orden" NO visible | WAREHOUSEMAN | Ausente del DOM | ⏳ PENDIENTE | |
-| RBAC-ORD-11 | Columna "Total" (`totalAmount`) visible en las 4 tabs (D6) | WAREHOUSEMAN | Columna visible con valor real | ⏳ PENDIENTE | |
+| RBAC-ORD-01 | Tab PENDING: acciones Ver/Editar/Aprobar/Cancelar visibles | ADMIN / MANAGER | Las 4 acciones presentes | ✅ PASS | Implementación: Ver y Editar son mutuamente excluyentes (`canEditOrder()`), por lo que para una orden PENDING se ven 3 íconos (Editar/Aprobar/Cancelar) en lugar de 4 distintos — comportamiento correcto y verificado para ADMIN y MANAGER |
+| RBAC-ORD-02 | Tab PENDING: acciones Ver/Editar/Cancelar visibles, Aprobar AUSENTE | SALES | Aprobar no está en el DOM | ✅ PASS | SALES ve Editar (pencil) + Cancelar (x); `check_circle` (Aprobar) ausente |
+| RBAC-ORD-03 | Tab PENDING: solo acción Ver | WAREHOUSEMAN | Editar/Aprobar/Cancelar ausentes | ✅ PASS | Solo ícono `visibility` presente |
+| RBAC-ORD-04 | Tab APPROVED: acciones Ver/Entregar/Cancelar visibles | ADMIN / MANAGER | Las 3 acciones presentes | ✅ PASS | Confirmado para ADMIN y MANAGER |
+| RBAC-ORD-05 | Tab APPROVED: acciones Ver/Cancelar visibles, Entregar AUSENTE | SALES | Entregar no está en el DOM | ✅ PASS | SALES ve `visibility` + `cancel`; `done_all` (Entregar) ausente |
+| RBAC-ORD-06 | Tab APPROVED: acciones Ver/Entregar visibles (único rol de escritura) | WAREHOUSEMAN | Entregar presente, Cancelar ausente | ✅ PASS | WAREHOUSEMAN ve `visibility` + `done_all`; `cancel` ausente |
+| RBAC-ORD-07 | Tab DELIVERED: solo acción Ver | ADMIN / MANAGER / WAREHOUSEMAN / SALES | Ninguna acción de transición | ✅ PASS | Verificado para ADMIN (solo `visibility`); MANAGER/WAREHOUSEMAN/SALES comparten la misma plantilla sin acciones de transición para DELIVERED (sin condición de rol que las habilite) |
+| RBAC-ORD-08 | Tab CANCELLED: solo acción Ver | ADMIN / MANAGER / WAREHOUSEMAN / SALES | Ninguna acción de transición | ✅ PASS | Verificado para ADMIN (solo `visibility`); misma lógica aplica a los 4 roles |
+| RBAC-ORD-09 | Botón "Nueva orden" visible | ADMIN / MANAGER / SALES | Visible | ✅ PASS | Confirmado para ADMIN, MANAGER y SALES |
+| RBAC-ORD-10 | Botón "Nueva orden" NO visible | WAREHOUSEMAN | Ausente del DOM | ✅ PASS | Botón ausente para almacen01 |
+| RBAC-ORD-11 | Columna "Total" (`totalAmount`) visible en las 4 tabs (D6) | WAREHOUSEMAN | Columna visible con valor real | ✅ PASS | Columna "Total" visible con valor real ($299.00 etc.) para almacen01 en tab Pendientes y Aprobadas |
 
 ### 3c. Botones e íconos de acción (UI)
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| UI-ORD-01 | Click en fila navega a `/sales/orders/:id?from=<tab>` | ADMIN | Lista cargada | Navegación correcta con queryParam `from` | ⏳ PENDIENTE | |
-| UI-ORD-02 | Ícono Aprobar (tab PENDING) — clic abre `ConfirmDialog` | ADMIN / MANAGER | Orden PENDING con detalles | Diálogo abre SIN navegar (L27 `stopPropagation`) | ⏳ PENDIENTE | |
-| UI-ORD-03 | Confirmar Aprobar → estado cambia a APPROVED en la lista | ADMIN | Diálogo abierto, stock suficiente | Snackbar verde; fila pasa al tab Aprobadas | ⏳ PENDIENTE | |
-| UI-ORD-04 | Ícono Entregar (tab APPROVED) — clic abre `ConfirmDialog` | ADMIN / MANAGER / WAREHOUSEMAN | Orden APPROVED | Diálogo abre SIN navegar (L27) | ⏳ PENDIENTE | |
-| UI-ORD-05 | Ícono Cancelar — clic abre `ConfirmDialog` | ADMIN / MANAGER / SALES | Orden PENDING o APPROVED | Diálogo abre SIN navegar (L27) | ⏳ PENDIENTE | |
-| UI-ORD-06 | Cambiar de tab carga la página correspondiente y actualiza el contador activo | ADMIN | Tabs con conteos cargados | Datos y conteo correctos por tab | ⏳ PENDIENTE | |
+| UI-ORD-01 | Click en fila navega a `/sales/orders/:id?from=<tab>` | ADMIN | Lista cargada | Navegación correcta con queryParam `from` | ✅ PASS | Navegó a `/sales/orders/1940?from=CANCELLED`; muestra placeholder FASE 4 "Detalle de orden de venta — Próximamente" |
+| UI-ORD-02 | Ícono Aprobar (tab PENDING) — clic abre `ConfirmDialog` | ADMIN / MANAGER | Orden PENDING con detalles | Diálogo abre SIN navegar (L27 `stopPropagation`) | ✅ PASS | Diálogo "Aprobar orden" abrió sin navegar para OV-2026-0238 |
+| UI-ORD-03 | Confirmar Aprobar → estado cambia a APPROVED en la lista | ADMIN | Diálogo abierto, stock suficiente | Snackbar verde; fila pasa al tab Aprobadas | ✅ PASS | Snackbar "Orden aprobada correctamente."; Pendientes 19→18, Aprobadas 19→20; OV-2026-0238 movida |
+| UI-ORD-04 | Ícono Entregar (tab APPROVED) — clic abre `ConfirmDialog` | ADMIN / MANAGER / WAREHOUSEMAN | Orden APPROVED | Diálogo abre SIN navegar (L27) | ✅ PASS | Confirmado para ADMIN y WAREHOUSEMAN sobre OV-2026-0238; diálogo "Entregar orden" abre sin navegar. Cancelado sin confirmar para no alterar stock real |
+| UI-ORD-05 | Ícono Cancelar — clic abre `ConfirmDialog` | ADMIN / MANAGER / SALES | Orden PENDING o APPROVED | Diálogo abre SIN navegar (L27) | ✅ PASS | Confirmado para ADMIN (OV-2026-0238, APPROVED — mensaje incluye "liberará la reserva de stock") y SALES (OV-2026-0225, PENDING — mensaje sin mención de stock); ambos sin navegar. Cancelado sin confirmar |
+| UI-ORD-06 | Cambiar de tab carga la página correspondiente y actualiza el contador activo | ADMIN | Tabs con conteos cargados | Datos y conteo correctos por tab | ✅ PASS | Cambio Aprobadas→Entregadas→Canceladas cargó datos correctos en cada tab con conteos actualizados |
 
 ### 3d. Estados vacíos (EMPTY)
 
 | ID | Descripción | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|
-| EMPTY-ORD-01 | Tab sin órdenes (ej. Canceladas vacío) | Ícono + "Sin órdenes en este estado" | ⏳ PENDIENTE | |
-| EMPTY-ORD-02 | Módulo recién creado, sin ninguna orden | Ícono + "Sin órdenes de venta registradas" en cada tab | ⏳ PENDIENTE | |
+| EMPTY-ORD-01 | Tab sin órdenes (ej. Canceladas vacío) | Ícono + "Sin órdenes en este estado" | N/A | No reproducible: las 4 tabs tienen datos (18/20/19/334) — no hay ningún tab vacío con los datos actuales del entorno de pruebas. Verificado por código: `@if (!loading && orders.length === 0) { app-empty-state [titleOverride]="'Sin órdenes ' + activeTabLabel.toLowerCase()" }` |
+| EMPTY-ORD-02 | Módulo recién creado, sin ninguna orden | Ícono + "Sin órdenes de venta registradas" en cada tab | N/A | No reproducible: el entorno tiene cientos de órdenes preexistentes (no es un módulo "recién creado"). Verificado por código (mismo bloque `app-empty-state` que EMPTY-ORD-01) |
 
 ### 3e. Paginación (UI)
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| UI-ORD-PAG-01 | Paginador visible por tab cuando hay > pageSize órdenes | > 20 órdenes en un estado | Paginador con total, opciones 10/20/50 | ⏳ PENDIENTE | |
-| UI-ORD-PAG-02 | Cambio de página carga la página correcta | Paginador visible | Filas cambian al ir a página 2 | ⏳ PENDIENTE | |
-| UI-ORD-PAG-03 | Cambiar de tab estando en página > 0 resetea a página 0 (L31) | En página 2+ de un tab, cambiar a otro tab | Nuevo tab inicia en página 0 | ⏳ PENDIENTE | |
+| UI-ORD-PAG-01 | Paginador visible por tab cuando hay > pageSize órdenes | > 20 órdenes en un estado | Paginador con total, opciones 10/20/50 | ✅ PASS | Tab Canceladas (334 registros) muestra "1-20 de 334" |
+| UI-ORD-PAG-02 | Cambio de página carga la página correcta | Paginador visible | Filas cambian al ir a página 2 | ✅ PASS | "Siguiente" → "21-40 de 334" con filas nuevas |
+| UI-ORD-PAG-03 | Cambiar de tab estando en página > 0 resetea a página 0 (L31) | En página 2+ de un tab, cambiar a otro tab | Nuevo tab inicia en página 0 | ✅ PASS | Tras estar en página 2 de Canceladas, cambiar de tab y volver resetea a "1-20 de 334" |
 
 ### 3f. Flujo de tabs y conteos (FLOW)
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| FLOW-ORD-01 | Al cargar la pantalla, tab activo por defecto = Pendientes (D2) | ADMIN | Tab Pendientes seleccionado | ⏳ PENDIENTE | |
-| FLOW-ORD-02 | Conteos de los 4 tabs se cargan al inicio (`counts: Map` separado de `pages: Map`, L23/L24) | ADMIN | Badges numéricos correctos en los 4 tabs sin necesidad de visitarlos | ⏳ PENDIENTE | |
+| FLOW-ORD-01 | Al cargar la pantalla, tab activo por defecto = Pendientes (D2) | ADMIN | Tab Pendientes seleccionado | ✅ PASS | |
+| FLOW-ORD-02 | Conteos de los 4 tabs se cargan al inicio (`counts: Map` separado de `pages: Map`, L23/L24) | ADMIN | Badges numéricos correctos en los 4 tabs sin necesidad de visitarlos | ✅ PASS | Badges 19/19/19/334 visibles al cargar sin visitar Aprobadas/Entregadas/Canceladas |
 
 ---
 

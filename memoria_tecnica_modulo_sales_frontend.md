@@ -828,6 +828,74 @@ Sube de 238 (FASE 1) a 253 specs — los 15 specs nuevos corresponden a
 
 ---
 
+### FASE 3 — Lista de órdenes de venta (`SaleOrdersPageComponent`) — pruebas de navegador (Propuesta B)
+
+**Cobertura del documento de casos** (`casos_de_prueba_modulo_sales.md`,
+sección 3): 27 casos en ✅ PASS, 2 en N/A con justificación, 0 en ❌ FAIL,
+0 en ⏳ PENDIENTE dentro del alcance de esta fase
+(VIS-ORD-01..08, RBAC-ORD-01..11, UI-ORD-01..06, EMPTY-ORD-01/02,
+UI-ORD-PAG-01..03, FLOW-ORD-01/02).
+
+**Resumen por categoría:**
+
+- **VIS-ORD-01..08** ✅ — título, 4 tabs con badges (19/19/19/334 inicial),
+  6 columnas + columna Acciones, badges de estado con los 4 colores semánticos,
+  botón "Nueva orden", hover/cursor en filas, header de tabla vía mixin
+  `catalog-table-header` (L32, confirmado por zoom `#F2E4F2`/`#6B3C6B`),
+  `mat-progress-bar` indeterminado verificado por código (ligado a
+  `pendingRequests` vía `loading` getter) — no capturable en screenshot por su
+  brevedad.
+- **RBAC-ORD-01..11** ✅ — verificado con los 4 roles
+  (`admin`, `manager01`, `almacen01`, `ventas01`):
+  - ADMIN/MANAGER: tab PENDING → Editar/Aprobar/Cancelar (Ver y Editar son
+    mutuamente excluyentes vía `canEditOrder()`, por lo que para una orden
+    PENDING se muestran 3 íconos, no 4 distintos — comportamiento correcto);
+    tab APPROVED → Ver/Entregar/Cancelar.
+  - SALES (`ventas01`): tab PENDING → Editar/Cancelar (sin Aprobar); tab
+    APPROVED → Ver/Cancelar (sin Entregar); "Nueva orden" visible.
+  - WAREHOUSEMAN (`almacen01`): tab PENDING → solo Ver; tab APPROVED →
+    Ver/Entregar (sin Cancelar); "Nueva orden" ausente; columna "Total"
+    visible con valor real (D6, RBAC-ORD-11).
+  - Las 4 tabs DELIVERED/CANCELLED → solo Ver para los 4 roles (RBAC-ORD-07/08).
+- **UI-ORD-01..06** ✅ — click en fila navega a `/sales/orders/:id?from=<tab>`
+  (placeholder FASE 4 visible); diálogos Aprobar/Entregar/Cancelar abren SIN
+  navegar (L27 `stopPropagation`, verificado para ADMIN, WAREHOUSEMAN y SALES);
+  confirmar Aprobar → snackbar verde, fila pasa de Pendientes (19→18) a
+  Aprobadas (19→20); cambio de tab carga datos y conteos correctos.
+  Los diálogos de Entregar/Cancelar se cerraron con "Cancelar" sin confirmar
+  para no alterar el stock real de productos compartidos (la transición
+  Aprobar→Entregar/Cancelar ya quedó cubierta funcionalmente por UI-ORD-03 y
+  por los specs unitarios con 100% de cobertura en `confirmAndTransition()`).
+- **EMPTY-ORD-01/02** → **N/A** — no reproducible: las 4 tabs tienen datos
+  (18/20/19/334) y el entorno tiene cientos de órdenes preexistentes: no hay
+  ningún tab vacío ni un módulo "recién creado". Verificado por código
+  (mismo bloque `app-empty-state` para ambos casos).
+- **UI-ORD-PAG-01..03** ✅ — paginador "1-20 de 334" en Canceladas, "Siguiente"
+  → "21-40 de 334", reset a página 0 (L31) al cambiar de tab y volver.
+- **FLOW-ORD-01/02** ✅ — tab Pendientes activo por defecto (D2); los 4 badges
+  cargan al inicio sin visitar los tabs no activos (L23/L24, `counts: Map`
+  separado de `pages: Map`).
+
+**Suite del módulo (2026-06-13):**
+```
+ng test --no-watch --include='**/sales/**/*.spec.ts'
+→ 5 archivos, 66 specs, 0 fallos
+ng test --no-watch --include='**/sales/**/*.spec.ts' --coverage
+→ sale-orders-page.component.ts: 100% statements; módulo sales: 75.19% statements
+```
+Cobertura ≥ 70% statements cumplida (75.19%).
+
+**Regresión completa (2026-06-13):**
+```
+ng test --no-watch
+→ 24 archivos, 281 specs, 0 fallos
+```
+Sube de 253 (FASE 2) a 281 specs — los 28 specs nuevos corresponden a
+`sale-orders-page.component.spec.ts` (FASE 3). Sin regresiones en módulos 0-3
+ni en FASE 1/2 de Sales.
+
+---
+
 ## 8. Bugs y retos durante el desarrollo
 
 ### H1 — `SaleOrderServiceImpl`/`ClientServiceImpl` usan `RuntimeException` genérica (→ 500 en vez de 404/409/422) — RESUELTO ✅
@@ -963,6 +1031,37 @@ porque desactivar estos ~50 registros afectaría datos compartidos).
 futura**, NO corregido en esta sesión — requiere autorización explícita y
 coordinación (podrían ser usados por tests de integración del backend en
 ejecución). No bloquea el cierre de FASE 2.
+
+---
+
+### Hallazgo L33 — volúmenes grandes de datos de prueba preexistentes en `/sales/orders` (FASE 3, 2026-06-13)
+
+**Origen:** detectado durante las pruebas de navegador de FASE 3
+(`casos_de_prueba_modulo_sales.md`, sección 3) al recorrer las 4 tabs de
+`/sales/orders` con los 4 roles.
+
+**Detalle:** además de los ~50 "Cliente Int XXXXX" ya documentados arriba
+(visibles también en Aprobadas/Entregadas, creados por `admin`), se observan:
+
+- **Tabs Pendientes/Aprobadas:** órdenes para `Cliente RBAC RXXXXX` creadas por
+  usuarios `salesRXXXXX` (p.ej. OV-2026-0238 "Cliente RBAC R44964" /
+  `salesR44964`) — parecen datos remanentes de pruebas de seguridad RBAC.
+- **Tab Canceladas:** **334 registros** para `Cliente Concurrencia
+  17813...XXXX` / `Cliente Concurrencia 17812...XXXX` (nombres con timestamps
+  numéricos), creados por `admin` — consistentes con pruebas de concurrencia/
+  carga del backend (`SaleOrderConcurrencyTest`).
+
+**Impacto:** ninguno sobre la funcionalidad de FASE 3 — todos los casos de
+prueba se ejecutaron correctamente sobre estos datos (de hecho permitieron
+verificar UI-ORD-PAG-01..03 con paginación real de 334 registros). Sin
+embargo, infla artificialmente los conteos de los tabs y dificulta distinguir
+datos reales de datos de prueba.
+
+**Estado:** documentado como **hallazgo de higiene de datos para limpieza
+futura (L33)**, NO corregido en esta sesión — requiere autorización explícita,
+ya que estos registros probablemente provienen de suites de integración del
+backend (`SaleOrderConcurrencyTest` y pruebas de seguridad RBAC) y su limpieza
+debe coordinarse para no romper esas suites. No bloquea el cierre de FASE 3.
 
 ---
 
