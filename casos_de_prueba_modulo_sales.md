@@ -400,33 +400,33 @@ no por ruta, excepto `/sales/orders/new`)
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VIS-RES-01 | Título "Reservas de stock" | ADMIN | Visible | ⏳ PENDIENTE | |
-| VIS-RES-02 | 4 tarjetas de resumen: productos con reservas, unidades reservadas, valor reservado, órdenes APPROVED (`ReservationSummaryDTO`) | ADMIN | Las 4 tarjetas con valores correctos | ⏳ PENDIENTE | |
-| VIS-RES-03 | Tabla "Por producto" expandible (`GET /reservations/products`) | ADMIN | Fila expandible muestra `ReservedProductOrderDTO` | ⏳ PENDIENTE | |
-| VIS-RES-04 | Tabla "Por cliente" expandible (`GET /reservations/clients`) | ADMIN | Fila expandible muestra `ReservedClientOrderDTO` | ⏳ PENDIENTE | |
-| VIS-RES-05 | `mat-progress-bar` visible durante carga | ADMIN | Barra indeterminada | ⏳ PENDIENTE | |
+| VIS-RES-01 | Título "Reservas de stock" | ADMIN | Visible | ✅ PASS | |
+| VIS-RES-02 | 4 tarjetas de resumen: productos con reservas, unidades reservadas, valor reservado, órdenes APPROVED (`ReservationSummaryDTO`) | ADMIN | Las 4 tarjetas con valores correctos | ✅ PASS | 44 / 155 / $570,798.00 / 20 — coincide con `GET /reservations/summary` |
+| VIS-RES-03 | Tabla "Por producto" expandible (`GET /reservations/products`) | ADMIN | Fila expandible muestra `ReservedProductOrderDTO` | ✅ PASS | Verificado con SKU-SO-12823 → orden OV-2026-0183 |
+| VIS-RES-04 | Tabla "Por cliente" expandible (`GET /reservations/clients`) | ADMIN | Fila expandible muestra `ReservedClientOrderDTO` | ✅ PASS | Verificado con "Cliente Int 38661" → orden OV-2026-0092 |
+| VIS-RES-05 | `mat-progress-bar` visible durante carga | ADMIN | Barra indeterminada | ✅ PASS | `@if (loading)` — verificado en código y en recarga de página |
 
 ### 6b. RBAC y navegación (RBAC)
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RBAC-RES-01 | Dashboard completo visible, incluyendo `totalReservedValue`/`unitPrice` (precio de venta, no costo — sección 6.2) | ADMIN / MANAGER / WAREHOUSEMAN / SALES | Visible para los 4 roles sin diferencias | ⏳ PENDIENTE | |
-| RBAC-RES-02 | Click en `orderNumber` (dentro de una fila expandida) navega a `/sales/orders/:id?from=reservations` | ADMIN | Fila expandida | Navegación correcta | ⏳ PENDIENTE | |
+| RBAC-RES-01 | Dashboard completo visible, incluyendo `totalReservedValue`/`unitPrice` (precio de venta, no costo — sección 6.2) | ADMIN / MANAGER / WAREHOUSEMAN / SALES | Visible para los 4 roles sin diferencias | ✅ PASS | Verificado en browser con admin, manager01, almacen01, ventas01 — mismo dashboard sin redacciones |
+| RBAC-RES-02 | Click en `orderNumber` (dentro de una fila expandida) navega a `/sales/orders/:id?from=reservations` | ADMIN | Fila expandida | Navegación correcta | ✅ PASS | Click en OV-2026-0183 → `/sales/orders/1492?from=reservations`, carga detalle correctamente |
 
 ### 6c. `forkJoin` y RBAC (L33)
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| RBAC-RES-FJ-01 | `forkJoin` de `summary` + `products` + `clients` carga correctamente para los 4 roles (todos accesibles según SecurityConfig) | ADMIN / MANAGER / WAREHOUSEMAN / SALES | — | Las 3 secciones cargan sin error | ⏳ PENDIENTE | |
-| RBAC-RES-FJ-02 | Si una fuente responde 404/500 aislado, `catchError` devuelve un valor por defecto vacío y el dashboard no se rompe completamente | Cualquier rol | Simular fallo de una fuente (si es posible en entorno de prueba) | Las otras 2 secciones cargan; la sección fallida muestra estado vacío, sin error global | ⏳ PENDIENTE | |
-| RBAC-RES-FJ-03 | Datos de prueba (`[QA] `/`TEST_`) usados durante pruebas de seguridad se limpian antes de cerrar el módulo | — | Tras completar todas las pruebas | Sin clientes/órdenes de prueba activos en BD | ⏳ PENDIENTE | Verificar al cierre (FASE 6) |
+| RBAC-RES-FJ-01 | `forkJoin` de `summary` + `products` + `clients` carga correctamente para los 4 roles (todos accesibles según SecurityConfig) | ADMIN / MANAGER / WAREHOUSEMAN / SALES | — | Las 3 secciones cargan sin error | ✅ PASS | Sin errores de consola en los 4 roles |
+| RBAC-RES-FJ-02 | Si una fuente responde 404/500 aislado, `catchError` devuelve un valor por defecto vacío y el dashboard no se rompe completamente | Cualquier rol | Simular fallo de una fuente (si es posible en entorno de prueba) | Las otras 2 secciones cargan; la sección fallida muestra estado vacío, sin error global | ✅ PASS | Verificado con specs unitarios (3 casos: summary/products/clients con error aislado) |
+| RBAC-RES-FJ-03 | Datos de prueba (`[QA] `/`TEST_`) usados durante pruebas de seguridad se limpian antes de cerrar el módulo | — | Tras completar todas las pruebas | Sin clientes/órdenes de prueba activos en BD | ⏳ PENDIENTE | Verificar al cierre (FASE 6) — se detectaron ~20 "Producto Integración NNNNN" / "Cliente Int NNNNN" de suites de integración del backend, sin prefijo `[QA]`/`TEST_` (ver memoria técnica §8) |
 
 ### 6d. Estados vacíos (EMPTY)
 
 | ID | Descripción | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|
-| EMPTY-RES-01 | Sin productos con reservas activas | EmptyState "Sin reservas activas" en sección "Por producto" | ⏳ PENDIENTE | |
-| EMPTY-RES-02 | Sin clientes con reservas activas | EmptyState en sección "Por cliente" | ⏳ PENDIENTE | |
+| EMPTY-RES-01 | Sin productos con reservas activas | EmptyState "Sin reservas activas" en sección "Por producto" | ✅ PASS | Verificado vía spec unitario (`products: []` → `app-empty-state` con `titleOverride="Sin reservas activas"`); patrón reutilizado de `EmptyStateComponent` ya validado en browser en otros módulos |
+| EMPTY-RES-02 | Sin clientes con reservas activas | EmptyState en sección "Por cliente" | ✅ PASS | Verificado vía spec unitario (`clients: []` → `app-empty-state`); mismo patrón que EMPTY-RES-01 |
 
 ---
 

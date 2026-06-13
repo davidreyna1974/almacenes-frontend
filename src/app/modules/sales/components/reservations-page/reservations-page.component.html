@@ -1,0 +1,216 @@
+<div class="catalog-page">
+
+  <!-- Encabezado -->
+  <div class="catalog-page__toolbar">
+    <h2 class="catalog-page__title">Reservas de stock</h2>
+  </div>
+
+  <!-- Progress bar de carga -->
+  @if (loading) {
+    <mat-progress-bar mode="indeterminate" class="catalog-page__progress" />
+  }
+
+  <!-- Tarjetas resumen -->
+  <div class="reservations-summary">
+    <div class="summary-card">
+      <mat-icon class="summary-card__icon">inventory_2</mat-icon>
+      <div class="summary-card__body">
+        <span class="summary-card__value">{{ summary.totalProductsWithReservations }}</span>
+        <span class="summary-card__label">Productos con reservas</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <mat-icon class="summary-card__icon">inventory</mat-icon>
+      <div class="summary-card__body">
+        <span class="summary-card__value">{{ summary.totalReservedUnits }}</span>
+        <span class="summary-card__label">Unidades reservadas</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <mat-icon class="summary-card__icon">payments</mat-icon>
+      <div class="summary-card__body">
+        <span class="summary-card__value">{{ summary.totalReservedValue | currency:'MXN':'symbol-narrow':'1.2-2' }}</span>
+        <span class="summary-card__label">Valor reservado</span>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <mat-icon class="summary-card__icon">check_circle</mat-icon>
+      <div class="summary-card__body">
+        <span class="summary-card__value">{{ summary.totalApprovedOrders }}</span>
+        <span class="summary-card__label">Órdenes aprobadas</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sección: Por producto -->
+  <h3 class="reservations-section__title">Por producto</h3>
+  @if (!loading && products.length === 0) {
+    <div class="catalog-page__empty">
+      <app-empty-state variant="empty" titleOverride="Sin reservas activas"
+        descriptionOverride="No hay productos con stock reservado en este momento." />
+    </div>
+  } @else if (!loading) {
+    <div class="catalog-page__table-wrapper">
+      <table mat-table [dataSource]="products" class="catalog-table" multiTemplateDataRows>
+
+        <ng-container matColumnDef="productSku">
+          <th mat-header-cell *matHeaderCellDef>SKU</th>
+          <td mat-cell *matCellDef="let row" class="cell-mono">{{ row.productSku }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="productName">
+          <th mat-header-cell *matHeaderCellDef>Producto</th>
+          <td mat-cell *matCellDef="let row" class="cell-truncate cell-name"
+              [matTooltip]="row.productName" matTooltipShowDelay="300">
+            {{ row.productName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalReservedQty">
+          <th mat-header-cell *matHeaderCellDef class="cell-num-header">Cantidad reservada</th>
+          <td mat-cell *matCellDef="let row" class="cell-num">{{ row.totalReservedQty }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="unitPrice">
+          <th mat-header-cell *matHeaderCellDef class="cell-num-header">Precio unitario</th>
+          <td mat-cell *matCellDef="let row" class="cell-num">
+            {{ row.unitPrice | currency:'MXN':'symbol-narrow':'1.2-2' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalReservedValue">
+          <th mat-header-cell *matHeaderCellDef class="cell-num-header">Valor reservado</th>
+          <td mat-cell *matCellDef="let row" class="cell-num">
+            {{ row.totalReservedValue | currency:'MXN':'symbol-narrow':'1.2-2' }}
+          </td>
+        </ng-container>
+
+        <!-- Fila expandida con el detalle de órdenes -->
+        <ng-container matColumnDef="expandedDetail">
+          <td mat-cell *matCellDef="let row" [attr.colspan]="productColumns.length"
+              class="detail-cell">
+            <div class="detail-row" [@detailExpand]="row.productId === expandedProductId ? 'expanded' : 'collapsed'">
+              <table class="detail-table">
+                <thead>
+                  <tr>
+                    <th>N° Orden</th>
+                    <th>Cliente</th>
+                    <th class="cell-num-header">Cantidad</th>
+                    <th class="cell-num-header">Subtotal</th>
+                    <th>Aprobada</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (order of row.orders; track order.orderId) {
+                    <tr>
+                      <td>
+                        <button mat-button color="primary" class="order-link"
+                                (click)="$event.stopPropagation(); goToOrder(order.orderId)"
+                                matTooltip="Ver orden" matTooltipShowDelay="300">
+                          {{ order.orderNumber }}
+                        </button>
+                      </td>
+                      <td>{{ order.clientName }}</td>
+                      <td class="cell-num">{{ order.quantity }}</td>
+                      <td class="cell-num">{{ order.subtotal | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+                      <td>{{ order.approvedAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="productColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: productColumns;"
+            class="catalog-row catalog-row--clickable"
+            (click)="toggleProduct(row)">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']"
+            class="detail-row-container"></tr>
+      </table>
+    </div>
+  }
+
+  <!-- Sección: Por cliente -->
+  <h3 class="reservations-section__title">Por cliente</h3>
+  @if (!loading && clients.length === 0) {
+    <div class="catalog-page__empty">
+      <app-empty-state variant="empty" titleOverride="Sin reservas activas"
+        descriptionOverride="No hay clientes con órdenes que mantengan stock reservado." />
+    </div>
+  } @else if (!loading) {
+    <div class="catalog-page__table-wrapper">
+      <table mat-table [dataSource]="clients" class="catalog-table" multiTemplateDataRows>
+
+        <ng-container matColumnDef="clientName">
+          <th mat-header-cell *matHeaderCellDef>Cliente</th>
+          <td mat-cell *matCellDef="let row" class="cell-truncate cell-name"
+              [matTooltip]="row.clientName" matTooltipShowDelay="300">
+            {{ row.clientName }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalReservedOrders">
+          <th mat-header-cell *matHeaderCellDef class="cell-num-header">Órdenes reservadas</th>
+          <td mat-cell *matCellDef="let row" class="cell-num">{{ row.totalReservedOrders }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalReservedValue">
+          <th mat-header-cell *matHeaderCellDef class="cell-num-header">Valor reservado</th>
+          <td mat-cell *matCellDef="let row" class="cell-num">
+            {{ row.totalReservedValue | currency:'MXN':'symbol-narrow':'1.2-2' }}
+          </td>
+        </ng-container>
+
+        <!-- Fila expandida con el detalle de órdenes -->
+        <ng-container matColumnDef="expandedDetail">
+          <td mat-cell *matCellDef="let row" [attr.colspan]="clientColumns.length"
+              class="detail-cell">
+            <div class="detail-row" [@detailExpand]="row.clientId === expandedClientId ? 'expanded' : 'collapsed'">
+              <table class="detail-table">
+                <thead>
+                  <tr>
+                    <th>N° Orden</th>
+                    <th class="cell-num-header">Total</th>
+                    <th class="cell-num-header">Ítems</th>
+                    <th>Aprobada</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (order of row.orders; track order.orderId) {
+                    <tr>
+                      <td>
+                        <button mat-button color="primary" class="order-link"
+                                (click)="$event.stopPropagation(); goToOrder(order.orderId)"
+                                matTooltip="Ver orden" matTooltipShowDelay="300">
+                          {{ order.orderNumber }}
+                        </button>
+                      </td>
+                      <td class="cell-num">{{ order.totalAmount | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+                      <td class="cell-num">{{ order.totalItems }}</td>
+                      <td>{{ order.approvedAt | date:'dd/MM/yyyy HH:mm' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="clientColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: clientColumns;"
+            class="catalog-row catalog-row--clickable"
+            (click)="toggleClient(row)">
+        </tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']"
+            class="detail-row-container"></tr>
+      </table>
+    </div>
+  }
+
+</div>

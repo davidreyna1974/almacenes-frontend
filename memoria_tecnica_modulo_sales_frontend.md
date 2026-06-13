@@ -987,6 +987,93 @@ Sin regresiones respecto a FASE 3 (281/281) ni a módulos 0-3.
 
 ---
 
+### FASE 5 — Reservas de stock (`ReservationsPageComponent`) — pruebas de navegador (Propuesta B)
+
+**Cobertura del documento de casos** (`casos_de_prueba_modulo_sales.md`, sección 6):
+VIS-RES-01..05, RBAC-RES-01..02, RBAC-RES-FJ-01..02, EMPTY-RES-01..02 en ✅ PASS.
+RBAC-RES-FJ-03 en ⏳ PENDIENTE — verificación de limpieza de datos de prueba,
+diferida a FASE 6 (ver hallazgo en §8).
+
+**Diseño e implementación:**
+
+- Componente smart standalone, `OnInit` + `OnPush`, sigue el patrón
+  `.catalog-page` / `__table-wrapper` (L22) y el mixin `catalog-table-header`
+  (L32) ya usados en `SaleOrdersPageComponent`.
+- 4 tarjetas de resumen (`reservations-summary` / `summary-card`) alimentadas
+  por `ReservationSummaryDTO` (`totalProductsWithReservations`,
+  `totalReservedUnits`, `totalReservedValue`, `totalApprovedOrders`).
+- Dos `mat-table` con `multiTemplateDataRows` y animación `detailExpand`
+  (`trigger`/`state`/`transition` de `@angular/animations`) — primer uso de
+  este patrón en el proyecto. Cada fila principal (`toggleProduct`/
+  `toggleClient`) alterna `expandedProductId`/`expandedClientId`; la fila de
+  detalle renderiza una tabla HTML simple con `ReservedProductOrderDTO` /
+  `ReservedClientOrderDTO`.
+- Botón `orderNumber` dentro de la fila expandida usa `$event.stopPropagation()`
+  (L27) y navega con `goToOrder()` → `/sales/orders/:id?from=reservations`.
+- `forkJoin({ summary, products, clients })` con `catchError` por fuente (L33)
+  — cada fuente cae a un valor seguro (`EMPTY_SUMMARY`, `[]`, `[]`) si responde
+  error, sin romper las otras secciones.
+- Estados vacíos reutilizan `EmptyStateComponent` con `titleOverride`/
+  `descriptionOverride` específicos para "Por producto" y "Por cliente".
+- `layoutService.collapse()` colapsa el sidebar al entrar, igual que
+  `SaleOrdersPageComponent`.
+
+**Resumen de pruebas de navegador (2026-06-13):**
+
+- **VIS-RES-01..05** ✅ — título "Reservas de stock" visible; las 4 tarjetas
+  muestran 44 / 155 / $570,798.00 / 20, coincidiendo con
+  `GET /sales/reservations/summary`; tabla "Por producto" expandida para
+  SKU-SO-12823 muestra la orden OV-2026-0183 (Cliente Int 12823, cantidad 2,
+  subtotal $1,600.00, aprobada 07/06/2026 03:50); tabla "Por cliente"
+  expandida para "Cliente Int 38661" muestra la orden OV-2026-0092 ($1,600.00,
+  1 ítem, aprobada 07/06/2026 03:13); `mat-progress-bar` indeterminada visible
+  durante la carga inicial (`@if (loading)`).
+- **RBAC-RES-01** ✅ — verificado en browser con JWT real de `admin`
+  (ROLE_ADMIN), `manager01` (ROLE_MANAGER), `almacen01` (ROLE_WAREHOUSEMAN) y
+  `ventas01` (ROLE_SALES): los 4 roles ven el dashboard completo e idéntico,
+  sin redacciones — coincide con `SecurityConfig` (`GET /api/v1/sales/**` →
+  los 4 roles) y con la matriz §6.2 (campos son precio de venta, no costo).
+- **RBAC-RES-02** ✅ — click en "OV-2026-0183" (fila expandida de
+  SKU-SO-12823) navega a `/sales/orders/1492?from=reservations` y carga
+  correctamente el detalle de la orden.
+- **RBAC-RES-FJ-01** ✅ — sin errores de consola en ninguno de los 4 roles;
+  las 3 secciones (resumen, por producto, por cliente) cargan con datos
+  reales del backend.
+- **RBAC-RES-FJ-02** ✅ — verificado mediante specs unitarios (3 casos:
+  `getSummary`/`getProducts`/`getClients` con error aislado vía
+  `throwError` + `catchError`); cada fuente cae a su valor por defecto sin
+  afectar las otras dos. No se simuló en backend real porque forzar un
+  404/500 aislado en un solo endpoint del dashboard requeriría apagar
+  selectivamente parte de la API.
+- **EMPTY-RES-01 / EMPTY-RES-02** ✅ — verificados mediante specs unitarios
+  (`products: []` / `clients: []` → `app-empty-state` con
+  `titleOverride="Sin reservas activas"`); el patrón `EmptyStateComponent` ya
+  está validado visualmente en otros módulos (Inventory, Purchases, Sales
+  FASE 2/3).
+- **RBAC-RES-FJ-03** ⏳ PENDIENTE — se detectaron ~20 productos
+  "Producto Integración NNNNN" (SKU `SKU-SO-NNNNN`) y ~20 clientes
+  "Cliente Int NNNNN" con reservas activas, originados por suites de
+  integración del backend (`SaleOrderConcurrencyIT` y similares). No siguen
+  el prefijo `[QA]`/`TEST_` de L33. Diferido a FASE 6 — requiere coordinar con
+  el cierre de las suites de integración del backend antes de limpiar la BD.
+
+**Suite del módulo (2026-06-13):**
+```
+ng test --no-watch --include='**/reservations-page.component.spec.ts'
+→ 10/10 specs, 0 fallos
+ng test --no-watch --coverage --include='**/reservations-page.component.spec.ts'
+→ 95.73% statements (reservations-page)
+```
+
+**Regresión completa (2026-06-13):**
+```
+ng test --no-watch
+→ 383/383 specs, 0 fallos
+```
+Sin regresiones respecto a FASE 4 (373/373) ni a módulos 0-3.
+
+---
+
 ## 8. Bugs y retos durante el desarrollo
 
 ### H1 — `SaleOrderServiceImpl`/`ClientServiceImpl` usan `RuntimeException` genérica (→ 500 en vez de 404/409/422) — RESUELTO ✅
@@ -1243,6 +1330,15 @@ porque desactivar estos ~50 registros afectaría datos compartidos).
 futura**, NO corregido en esta sesión — requiere autorización explícita y
 coordinación (podrían ser usados por tests de integración del backend en
 ejecución). No bloquea el cierre de FASE 2.
+
+**Actualización FASE 5 (2026-06-13):** los mismos registros "Cliente Int
+XXXXX" aparecen en `GET /sales/reservations/clients` (RBAC-RES-FJ-03), y sus
+órdenes asociadas (OV-2026-XXXX, productos "Producto Integración NNNNN" /
+SKU `SKU-SO-NNNNN`) aparecen en `GET /sales/reservations/products` — ~20
+productos y ~20 clientes con reservas activas. Es el mismo hallazgo de
+higiene de datos, ahora visible también desde el dashboard de reservas.
+RBAC-RES-FJ-03 queda ⏳ PENDIENTE hasta que se resuelva esta limpieza en
+FASE 6.
 
 ---
 
