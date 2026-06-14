@@ -11,16 +11,20 @@ import { MatIconModule } from '@angular/material/icon';
 })
 export class EmptyStateComponent {
   @Input() variant: 'empty' | 'no-results' = 'empty';
+  @Input() titleOverride?: string;
+  @Input() descriptionOverride?: string;
 
   get icon(): string {
     return this.variant === 'no-results' ? 'search_off' : 'inventory_2';
   }
 
   get title(): string {
+    if (this.titleOverride) return this.titleOverride;
     return this.variant === 'no-results' ? 'Sin resultados' : 'Sin datos';
   }
 
   get description(): string {
+    if (this.descriptionOverride) return this.descriptionOverride;
     return this.variant === 'no-results'
       ? 'Ningún registro coincide con los filtros aplicados.'
       : 'Aún no hay registros. Crea el primero con el botón +';

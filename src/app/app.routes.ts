@@ -22,6 +22,13 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./modules/purchases/purchases.routes').then(m => m.PURCHASES_ROUTES)
       },
+      {
+        path: 'sales',
+        canActivate: [authGuard],
+        data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'] },
+        loadChildren: () =>
+          import('./modules/sales/sales.routes').then(m => m.SALES_ROUTES)
+      },
     ]
   },
   { path: '**', redirectTo: '' }

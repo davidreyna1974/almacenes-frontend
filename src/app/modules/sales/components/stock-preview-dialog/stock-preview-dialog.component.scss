@@ -1,0 +1,60 @@
+.stock-preview {
+  &__message {
+    font-size: 14px;
+    margin: 0 0 8px 0;
+  }
+
+  &__table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 8px 0;
+
+    th, td {
+      padding: 6px 8px;
+      font-size: 13px;
+      text-align: left;
+      border-bottom: 1px solid var(--color-divider);
+    }
+
+    th {
+      font-weight: 600;
+      color: #6B3C6B;
+      background: #F2E4F2;
+    }
+  }
+
+  &__num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__sku {
+    font-family: monospace;
+    font-size: 12px;
+    color: #6B3C6B;
+    font-weight: 500;
+    margin-right: 4px;
+  }
+
+  &__row--insufficient {
+    background: #FFEBEE;
+    color: #C62828;
+  }
+
+  &__warning {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: #C62828;
+    font-size: 13px;
+    margin-top: 8px;
+
+    mat-icon { font-size: 18px; width: 18px; height: 18px; }
+  }
+
+  &__note {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-top: 8px;
+  }
+}

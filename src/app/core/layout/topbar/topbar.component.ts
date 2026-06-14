@@ -17,7 +17,11 @@ const BREADCRUMB_MAP: { path: string; label: string }[] = [
   { path: '/purchases/suppliers',  label: 'Compras → Proveedores'        },
   { path: '/purchases/orders/new', label: 'Compras → Nueva orden'        },
   { path: '/purchases/orders',     label: 'Compras → Órdenes de compra'  },
-  { path: '/sales',                label: 'Ventas'                  },
+  { path: '/sales/clients',        label: 'Ventas → Clientes'            },
+  { path: '/sales/orders/new',     label: 'Ventas → Nueva orden'         },
+  { path: '/sales/orders/',        label: 'Ventas → Detalle de orden'    },
+  { path: '/sales/orders',         label: 'Ventas → Órdenes de venta'    },
+  { path: '/sales/reservations',   label: 'Ventas → Reservas de stock'   },
   { path: '/reports',              label: 'Reportes'                },
   { path: '/admin/users',          label: 'Usuarios'                },
 ];

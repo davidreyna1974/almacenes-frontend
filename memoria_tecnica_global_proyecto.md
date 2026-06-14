@@ -638,10 +638,10 @@ JWT_SECRET=...       # mínimo 64 caracteres hex (openssl rand -hex 32)
 | Módulo 1: Auth + RBAC | ✓ Completo | 43 specs, 0 fallos | AuthService, JWT interceptor, error interceptor, authGuard, LoginComponent, filtrado sidebar por rol |
 | Módulo 2: Inventory | ✓ Completo | 94 specs, 0 fallos (+46 nuevos en M2 + 5 adicionales post-fix: stock-badge getter availableStock ×2, tooltip con reservedStock ×3) + 15/15 browser + 4 roles RBAC + 17+16 seguridad backend | Mergeado a develop. RBAC 4 roles verificado en browser y backend. HTTP 404/409/422 corregidos. Tests RBAC con Spring Security activo escritos. Business logic gaps cerrados: availableStock en MovementDialog, currentStock inmutable en PUT, unitCost por rol, doble asterisco AM eliminado. |
 | Módulo 3: Purchases | ✓ Completo | 143 specs, 0 fallos (32 nuevos) + 155/155 casos browser PASS + validación post-cierre | Mergeado a develop. 155 casos browser PASS. BUG-M3-13 a BUG-M3-22 corregidos en validación post-cierre: desalineación tabla, consistencia visual card, contadores de tabs lazy, mapa counts separado, navegación lista↔detalle con preservación de tab, botón Guardar inactivo hasta dirty, guardia última línea, event bubbling en botones de fila clickeable. Lecciones L21-L27 documentadas. Propuestas A–D en CLAUDE.md. App = solo escritorio 1280px+. |
-| Módulo 4: Sales | ⬜ Pendiente | | |
+| Módulo 4: Sales | ✓ Completo | 383 specs, 0 fallos (89.84% statements) + casos browser ✅ PASS (4 roles) | Propuesta D cerrada 2026-06-13. H1 (404/409/422), H2 (redacción unitCost L29) y H3/D8 (@Transactional en approveOrder) resueltos/verificados. H4 documentado (preexistente, no relacionado, pendiente autorización). Limpieza de datos de prueba sin prefijo (19 clientes + 19 productos "Integración", 19 órdenes canceladas) — RBAC-RES-FJ-03. ERR-09 (Optimistic Locking) verificado vía `SaleOrderConcurrencyTest` (3/3, automatizado). |
 | Módulo 5: Reports | ⬜ Pendiente | | |
 
-**Suite total frontend (Módulos 0-3)**: 143 specs — 0 fallos
+**Suite total frontend (Módulos 0-4)**: 383 specs — 0 fallos
 
 ---
 
@@ -1409,8 +1409,8 @@ limpia sistemáticamente.
 | ~~Módulo 1: Auth + RBAC~~ | ✓ Completo | Módulo 0 |
 | ~~Módulo 2: Inventory~~ | ✓ Completo | Módulo 1 |
 | Módulo 3: Purchases | ✓ Completo | Módulo 2 |
-| Módulo 4: Sales | ⬜ Siguiente | Módulo 3 |
-| Módulo 5: Reports | ⬜ Pendiente | Módulo 4 |
+| Módulo 4: Sales | ✓ Completo | Módulo 3 |
+| Módulo 5: Reports | ⬜ Siguiente | Módulo 4 |
 
 ### Módulos de negocio futuros (ambas capas)
 
