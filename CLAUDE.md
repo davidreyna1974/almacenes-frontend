@@ -343,10 +343,12 @@ verificaciones. No basta con que el código compile y los tests unitarios pasen.
 
 ---
 
-## ⚠️ Lecciones mandatorias L29-L33 (revisión de bugs 2026-06-11/12, todos los módulos)
+## ⚠️ Lecciones mandatorias L29-L35 (revisión de bugs 2026-06-11/12 y homologación 2026-06-14, todos los módulos)
 
-> Origen: revisión completa de bugs del módulo Inventory (BUG-INV-07/09/10/11/12/13/14/17/18).
-> Detalle completo en `memoria_tecnica_global_proyecto.md` §9 (L29-L33). Estas reglas son
+> Origen L29-L33: revisión completa de bugs del módulo Inventory (BUG-INV-07/09/10/11/12/13/14/17/18).
+> Origen L34-L35: homologación Clientes↔Proveedores y verificación RBAC completa (2026-06-14).
+> Detalle completo en `memoria_tecnica_global_proyecto.md` §9 (L29-L33) y §5 (L35 — usuarios QA).
+> Estas reglas son
 > **mandatorias desde el diseño inicial** de cualquier módulo nuevo (Sales en adelante) —
 > no son correcciones retroactivas opcionales. El `casos_de_prueba_modulo_TEMPLATE.md`
 > incluye los casos de prueba correspondientes (`(L29)`..`(L33)`) y un checklist de
@@ -376,6 +378,20 @@ verificaciones. No basta con que el código compile y los tests unitarios pasen.
   para que un 403/404 en una fuente no rompa las demás. Datos creados durante pruebas de
   seguridad se prefijan (`[QA] `/`TEST_`) y se desactivan/eliminan antes de cerrar el
   módulo.
+- **L34 — Patrón de acciones en tablas (master-detail, sin columna de íconos)**: ver
+  sección "Tablas" más abajo. El click en el renglón abre "Editar X"/"Ver X" según rol;
+  "Desactivar" vive dentro del formulario. No crear columnas `actions` con íconos
+  editar/ver/desactivar redundantes — si ya existen (deuda heredada), homologarlas a este
+  patrón (origen: BUG-M5-01, homologación `Clientes` ↔ `Proveedores`, 2026-06-14).
+- **L35 — Usuarios QA permanentes para pruebas RBAC**: no crear usuarios de prueba
+  efímeros con contraseñas aleatorias para verificar los 4 roles en browser. Usar/mantener
+  los usuarios QA documentados en `memoria_tecnica_global_proyecto.md` §5
+  (`qa_manager`/`QaManager123!`, `qa_sales`/`QaSales123!`, `qa_warehouse`/`QaWarehouse123!`,
+  además de `admin`/`Admin123!`). Si no existen, crearlos vía `POST /api/v1/auth/users`
+  (JWT de `admin`) y documentar las credenciales antes de iniciar la verificación —
+  ⚠️ el ítem "Usuarios" del sidebar (`/admin/users`) no tiene ruta funcional en
+  `app.routes.ts` (pendiente de implementar), así que la gestión de usuarios por UI no
+  está disponible.
 
 ---
 
@@ -735,7 +751,15 @@ En producción, la URL viene de la configuración del servidor o de un archivo
 - Usar `MatTable` con `MatSort`, `MatPaginator` y barra de búsqueda.
 - Columnas con texto largo usan truncado con `text-overflow: ellipsis` + tooltip con el valor completo.
 - La fila seleccionada se resalta con fondo `#F2E4F2`.
-- Columna de acciones (editar, ver, desactivar) siempre a la derecha, íconos con tooltip.
+- **Patrón estándar de acciones (L34)**: NO usar una columna `matColumnDef="actions"` con
+  íconos editar/ver/desactivar. El click en cualquier parte del `mat-row`
+  (`(click)="onRowClick(row)" class="catalog-row--clickable"`) abre el diálogo de
+  detalle/edición (`ADMIN`/`MANAGER`/rol con escritura → "Editar X" con campos habilitados;
+  rol solo lectura → "Ver X" con campos `disabled` y único botón "Cancelar"). El botón
+  "Desactivar" vive DENTRO de ese formulario (visible solo si `canDeactivate() && item.active`),
+  no en la tabla. Ver `SupplierFormComponent`/`ClientFormComponent` como referencia. Una
+  columna de acciones solo se justifica para acciones que no tengan sentido dentro del
+  diálogo de detalle (ej. "Reordenar", "Duplicar") — documentar la excepción si se usa.
 - Ordenamiento por defecto: `createdAt DESC` para listas de órdenes; `name ASC` para catálogos.
 - **Truncado de celdas**: nunca aplicar `display: block` sobre un `<td>`. Usar un `<div>` wrapper interno con la clase de truncado. (L21)
 - **Contenedor de tabla**: toda página de listado debe tener `padding: var(--space-3)`, `gap: var(--space-2)` en `.catalog-page` y `border-radius: 8px; border: 1px solid var(--color-divider); background: #fff` en `__table-wrapper`. Verificar consistencia entre todas las páginas del módulo. (L22)
