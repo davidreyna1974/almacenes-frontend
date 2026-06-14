@@ -805,11 +805,15 @@ VAL-CLF-01..09, CRUD-CLF-01..09).
 - **CRUD-CLF-01..09** ✅ / N/A — ciclo de vida completo (crear → editar →
   desactivar) ejecutado sobre `[QA] Cliente Almacén Acentuado` (L33: dato
   propio de prueba, prefijado `[QA]`, desactivado al finalizar).
-  CRUD-CLF-09 (desactivar cliente con órdenes PENDING/APPROVED) → **N/A**:
-  la regla existe y está verificada por código en
+  CRUD-CLF-09 (desactivar cliente con órdenes PENDING/APPROVED) → **N/A** en
+  esta fase: la regla existe y está verificada por código en
   `ClientServiceImpl.deactivateClient()` (lanza `BusinessRuleException` si
   `saleOrderRepository.findActiveOrdersByClient(id)` no está vacío), pero no es
   reproducible en browser hasta que existan Sales Orders (FASE 3-4).
+  **Actualización (cierre FASE 6, 2026-06-13):** re-verificado en browser con
+  "Cliente RBAC R70934" (id 878, orden OV-2026-0199 PENDING) — snackbar rojo
+  "El cliente tiene órdenes de venta activas (PENDING o APPROVED) y no puede
+  desactivarse."; cliente permanece activo. Estado final → ✅ PASS.
 
 **Suite del módulo (2026-06-13):**
 ```
@@ -991,8 +995,9 @@ Sin regresiones respecto a FASE 3 (281/281) ni a módulos 0-3.
 
 **Cobertura del documento de casos** (`casos_de_prueba_modulo_sales.md`, sección 6):
 VIS-RES-01..05, RBAC-RES-01..02, RBAC-RES-FJ-01..02, EMPTY-RES-01..02 en ✅ PASS.
-RBAC-RES-FJ-03 en ⏳ PENDIENTE — verificación de limpieza de datos de prueba,
-diferida a FASE 6 (ver hallazgo en §8).
+RBAC-RES-FJ-03 diferida a FASE 6 (ver hallazgo en §8) — completada y en
+✅ PASS durante el cierre de FASE 6 (limpieza de 19 clientes + 19 productos +
+19 órdenes de prueba).
 
 **Diseño e implementación:**
 
@@ -1093,8 +1098,8 @@ y `SaleOrderServiceImpl` (FASE 0, 2026-06-13).
 en `err.error?.message` en todos los casos — el frontend no se bloquea (L9).
 
 **Estado:** **corregido en backend** (2026-06-13, autorizado por el usuario),
-rama `fix/sales-h1-typed-exceptions` (commit `0374944`), pendiente de merge a
-`develop`. Cambios:
+rama `fix/sales-h1-typed-exceptions` (commit `0374944`), mergeada a `develop`.
+Cambios:
 - `ResourceNotFoundException` (404) para entidades no encontradas (orden,
   cliente, producto, detalle).
 - `DuplicateResourceException` (409) para RFC/email duplicados al
@@ -1506,6 +1511,21 @@ con referencia a archivos/componentes concretos:
 produce 409 ("...concurrentemente...") o 422 ("...insuficiente..."), que
 `reservedStock` nunca supera `currentStock` bajo contención, y que la orden
 perdedora permanece en `PENDING` (reintentable sin pérdida de datos).
+
+### Addendum — Auditoría final de cierre (2026-06-13)
+
+Tras declarar FASE 6/Propuesta D completa, se realizó una auditoría final de
+gaps pendientes. Se encontró un único caso con verificación diferida no
+cerrada: **CRUD-CLF-09** (desactivar cliente con órdenes PENDING/APPROVED),
+marcado N/A en FASE 2 con nota explícita "re-verificar en FASE 4" — nunca
+re-ejecutado. Re-verificado en browser con "Cliente RBAC R70934" (id 878,
+orden OV-2026-0199 PENDING): snackbar rojo con el mensaje del backend, cliente
+permanece activo. Actualizado a ✅ PASS (ver §2 de
+`casos_de_prueba_modulo_sales.md`). También se corrigieron dos checkboxes L31/L32
+en `casos_de_prueba_modulo_sales.md` §10 que quedaron sin marcar por
+inconsistencia (las evidencias ya estaban en ✅ PASS), y se actualizó la
+referencia a H1 (rama ya mergeada a `develop`, no "pendiente de merge"). No se
+encontraron otros hallazgos, bugs o inconsistencias adicionales.
 
 ### Conclusión
 
