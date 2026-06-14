@@ -1563,10 +1563,48 @@ inconsistencia (las evidencias ya estaban en ✅ PASS), y se actualizó la
 referencia a H1 (rama ya mergeada a `develop`, no "pendiente de merge"). No se
 encontraron otros hallazgos, bugs o inconsistencias adicionales.
 
+### Addendum — Homologación pantalla de Clientes con Proveedores (2026-06-14)
+
+**Origen:** el usuario detectó que `SuppliersPageComponent` (Módulo 3) no
+muestra columna de acciones por renglón — el click en el renglón abre el
+diálogo de edición, y el botón "Desactivar" vive dentro del propio diálogo.
+`ClientsPageComponent` tenía ambos: click en renglón **y** una columna
+"Acciones" con íconos editar/desactivar redundantes. Se solicitó homologar
+Clientes con el patrón de Proveedores.
+
+**Cambio aplicado:**
+- `clients-page.component.html`: se eliminó la columna `matColumnDef="actions"`
+  (íconos editar/desactivar/visibility por renglón).
+- `clients-page.component.ts`: `displayedColumns` ya no incluye `'actions'`;
+  se eliminó el método `onDeactivateClick()` (lógica duplicada — el mismo
+  flujo de confirmación + `clientService.deactivate()` ya existe en
+  `ClientFormDialogComponent.onDeactivate()`, invocado desde el botón
+  "Desactivar" del formulario); se eliminaron los imports no usados
+  (`ConfirmDialogComponent`, `ConfirmDialogData`, `switchMap`).
+- `clients-page.component.scss`: se eliminó la regla `.cell-actions` (sin uso).
+
+**Sin cambios en `ClientFormComponent`/`ClientFormDialogComponent`** — el
+botón "Desactivar" (visible si `canDeactivate && item.active`, RBAC-CLF-04 ya
+en PASS) ya cubría el caso; solo se eliminó el punto de entrada redundante en
+la tabla.
+
+**Verificación:**
+- `ng test --no-watch`: 383/383, 0 fallos (sin specs de `ClientsPageComponent`
+  preexistentes que requirieran actualización).
+- `tsc --noEmit`: sin errores.
+- Browser (admin, `/sales/clients`): la tabla ya no muestra columna de
+  acciones; click en cualquier renglón abre "Editar cliente" con los campos
+  precargados y el botón "Desactivar" visible — comportamiento idéntico a
+  `/purchases/suppliers`.
+
+UI-CLF-02 actualizado en `casos_de_prueba_modulo_sales.md` (✅ PASS).
+
 ### Conclusión
 
 El módulo **Sales (Frontend) — FASE 6 — se declara DONE** el 2026-06-13. Las 4
 condiciones de Propuesta D, las lecciones L29-L33 y los hallazgos H1-H4 (los 4
 resueltos y verificados — H4 corregido en backend commit `cca468b`, suite
 completa 405/405 0 fallos) están verificados y documentados en
-`casos_de_prueba_modulo_sales.md` y en este documento.
+`casos_de_prueba_modulo_sales.md` y en este documento. La homologación
+Clientes↔Proveedores (2026-06-14, ver addendum anterior) es un ajuste de UX
+post-cierre que no reabre ninguna condición de Propuesta D.
