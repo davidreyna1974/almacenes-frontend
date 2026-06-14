@@ -12,7 +12,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { filter, debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { filter, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { ClientService } from '../../services/client.service';
 import { ClientDTO } from '../../models/client.model';
@@ -21,7 +21,6 @@ import { AuthService } from '../../../../core/auth/auth.service';
 import { LayoutService } from '../../../../core/layout/layout.service';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
 import { ClientFormDialogComponent, ClientDialogData } from '../client-form-dialog/client-form-dialog.component';
-import { ConfirmDialogComponent, ConfirmDialogData } from '../../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 const DIALOG_CONFIG = {
   width:         '640px',
@@ -62,7 +61,7 @@ export class ClientsPageComponent implements OnInit {
   private destroyRef    = inject(DestroyRef);
   private cdr           = inject(ChangeDetectorRef);
 
-  displayedColumns = ['name', 'rfc', 'contactName', 'phone', 'email', 'actions'];
+  displayedColumns = ['name', 'rfc', 'contactName', 'phone', 'email'];
 
   searchCtrl = new FormControl('');
 
@@ -137,31 +136,5 @@ export class ClientsPageComponent implements OnInit {
 
   onRowClick(item: ClientDTO): void {
     this.openDetail(item);
-  }
-
-  onDeactivateClick(item: ClientDTO): void {
-    const confirmData: ConfirmDialogData = {
-      title:        'Desactivar cliente',
-      message:      `¿Deseas desactivar al cliente "${item.name}"? No podrá usarse en nuevas órdenes de venta.`,
-      confirmLabel: 'Desactivar',
-      dangerous:    true,
-    };
-    this.dialog.open(ConfirmDialogComponent, { data: confirmData, width: '420px', disableClose: true })
-      .afterClosed()
-      .pipe(
-        filter(r => r === true),
-        switchMap(() => this.clientService.deactivate(item.id!)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: () => {
-          this.snackBar.open('Cliente desactivado.', 'Cerrar', { duration: 3000, panelClass: ['snackbar-success'] });
-          this.load();
-        },
-        error: (err) => {
-          const msg = err.error?.message || 'No se pudo desactivar el cliente.';
-          this.snackBar.open(msg, 'Cerrar', { duration: 4000, panelClass: ['snackbar-error'] });
-        }
-      });
   }
 }
