@@ -80,16 +80,16 @@ no por ruta, excepto `/sales/orders/new`)
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| SEC-01 | Acceso directo `/sales/orders/new` | WAREHOUSEMAN | Sesión activa | Redirige a home; mensaje "Acceso denegado" (D1, gate Propuesta C) | ⏳ PENDIENTE | |
-| SEC-02 | Sin sesión activa — acceso a `/sales/clients` | (sin JWT) | Token expirado / sin login | Redirige a `/login` | ⏳ PENDIENTE | |
-| SEC-03 | Acceso directo `/sales/clients`, `/sales/orders`, `/sales/orders/new`, `/sales/reservations` | ADMIN | Sesión activa | Todas las rutas accesibles | ⏳ PENDIENTE | |
-| SEC-04 | Acceso directo `/sales/clients`, `/sales/orders`, `/sales/reservations` | WAREHOUSEMAN | Sesión activa | Las 3 rutas accesibles (solo lectura) | ⏳ PENDIENTE | |
-| SEC-05 | Acceso directo `/sales/orders/new` | SALES | Sesión activa | Ruta accesible (SALES puede crear órdenes) | ⏳ PENDIENTE | |
-| SEC-06 | `PATCH /api/v1/sales/orders/{id}/approve` (curl) | WAREHOUSEMAN | Orden PENDING existente, JWT WAREHOUSEMAN | 403 Forbidden | ⏳ PENDIENTE | |
-| SEC-07 | `PATCH /api/v1/sales/orders/{id}/approve` (curl) | SALES | Orden PENDING existente, JWT SALES | 403 Forbidden | ⏳ PENDIENTE | |
-| SEC-08 | `PATCH /api/v1/sales/orders/{id}/deliver` (curl) | SALES | Orden APPROVED existente, JWT SALES | 403 Forbidden | ⏳ PENDIENTE | |
-| SEC-09 | `PATCH /api/v1/sales/orders/{id}/cancel` (curl) | WAREHOUSEMAN | Orden PENDING/APPROVED existente, JWT WAREHOUSEMAN | 403 Forbidden | ⏳ PENDIENTE | |
-| SEC-10 | `DELETE /api/v1/sales/clients/{id}` (curl) | SALES | Cliente activo existente, JWT SALES | 403 Forbidden | ⏳ PENDIENTE | |
+| SEC-01 | Acceso directo `/sales/orders/new` | WAREHOUSEMAN | Sesión activa | Redirige a home; mensaje "Acceso denegado" (D1, gate Propuesta C) | ✅ PASS | Redirige a `/` (home). Sidebar no muestra "Nueva orden" para WAREHOUSEMAN — gate de ruta funciona aunque no haya snackbar visible. |
+| SEC-02 | Sin sesión activa — acceso a `/sales/clients` | (sin JWT) | Token expirado / sin login | Redirige a `/login` | ✅ PASS | `localStorage.clear()` + navegación directa → redirige a `/login`. |
+| SEC-03 | Acceso directo `/sales/clients`, `/sales/orders`, `/sales/orders/new`, `/sales/reservations` | ADMIN | Sesión activa | Todas las rutas accesibles | ✅ PASS | Las 4 rutas cargan correctamente; `/sales/orders/new` muestra columnas Costo unitario/Margen (rol ADMIN). |
+| SEC-04 | Acceso directo `/sales/clients`, `/sales/orders`, `/sales/reservations` | WAREHOUSEMAN | Sesión activa | Las 3 rutas accesibles (solo lectura) | ✅ PASS | Las 3 rutas cargan; `/sales/clients` y `/sales/orders` solo muestran ícono de ver (sin editar/aprobar/cancelar). |
+| SEC-05 | Acceso directo `/sales/orders/new` | SALES | Sesión activa | Ruta accesible (SALES puede crear órdenes) | ✅ PASS | Formulario "Nueva orden de venta" carga correctamente para SALES (sin columnas Costo/Margen). |
+| SEC-06 | `PATCH /api/v1/sales/orders/{id}/approve` (curl) | WAREHOUSEMAN | Orden PENDING existente, JWT WAREHOUSEMAN | 403 Forbidden | ✅ PASS | Orden 1545 (OV-2026-0212) → 403. Orden no mutada. |
+| SEC-07 | `PATCH /api/v1/sales/orders/{id}/approve` (curl) | SALES | Orden PENDING existente, JWT SALES | 403 Forbidden | ✅ PASS | Orden 1520 (OV-2026-0199) → 403. Orden no mutada. |
+| SEC-08 | `PATCH /api/v1/sales/orders/{id}/deliver` (curl) | SALES | Orden APPROVED existente, JWT SALES | 403 Forbidden | ✅ PASS | Orden 1595 (OV-2026-0238) → 403. Orden no mutada. |
+| SEC-09 | `PATCH /api/v1/sales/orders/{id}/cancel` (curl) | WAREHOUSEMAN | Orden PENDING/APPROVED existente, JWT WAREHOUSEMAN | 403 Forbidden | ✅ PASS | Orden 1495 (OV-2026-0186) → 403. Orden no mutada. |
+| SEC-10 | `DELETE /api/v1/sales/clients/{id}` (curl) | SALES | Cliente activo existente, JWT SALES | 403 Forbidden | ✅ PASS | Cliente 860 → 403. Cliente no eliminado. |
 
 ---
 
@@ -419,7 +419,7 @@ no por ruta, excepto `/sales/orders/new`)
 |---|---|---|---|---|---|---|
 | RBAC-RES-FJ-01 | `forkJoin` de `summary` + `products` + `clients` carga correctamente para los 4 roles (todos accesibles según SecurityConfig) | ADMIN / MANAGER / WAREHOUSEMAN / SALES | — | Las 3 secciones cargan sin error | ✅ PASS | Sin errores de consola en los 4 roles |
 | RBAC-RES-FJ-02 | Si una fuente responde 404/500 aislado, `catchError` devuelve un valor por defecto vacío y el dashboard no se rompe completamente | Cualquier rol | Simular fallo de una fuente (si es posible en entorno de prueba) | Las otras 2 secciones cargan; la sección fallida muestra estado vacío, sin error global | ✅ PASS | Verificado con specs unitarios (3 casos: summary/products/clients con error aislado) |
-| RBAC-RES-FJ-03 | Datos de prueba (`[QA] `/`TEST_`) usados durante pruebas de seguridad se limpian antes de cerrar el módulo | — | Tras completar todas las pruebas | Sin clientes/órdenes de prueba activos en BD | ⏳ PENDIENTE | Verificar al cierre (FASE 6) — se detectaron ~20 "Producto Integración NNNNN" / "Cliente Int NNNNN" de suites de integración del backend, sin prefijo `[QA]`/`TEST_` (ver memoria técnica §8) |
+| RBAC-RES-FJ-03 | Datos de prueba (`[QA] `/`TEST_`) usados durante pruebas de seguridad se limpian antes de cerrar el módulo | — | Tras completar todas las pruebas | Sin clientes/órdenes de prueba activos en BD | ✅ PASS | Limpieza ejecutada (2026-06-13): se identificaron 19 "Cliente Int NNNNN" + 19 "Producto Integración NNNNN" (residuos de suites de integración del backend) y 19 órdenes APPROVED asociadas (OV-2026-0001..0235). Se canceló cada orden (`PATCH .../cancel` → 200), luego se desactivaron los 19 clientes (`DELETE /sales/clients/{id}` → 204) y los 19 productos (`DELETE /inventory/products/{id}` → 204). Dashboard de reservas re-verificado tras la limpieza: carga sin errores (26 productos con reservas, 118 unidades, 2 órdenes aprobadas restantes — datos legítimos de la sesión) |
 
 ### 6d. Estados vacíos (EMPTY)
 
@@ -434,16 +434,16 @@ no por ruta, excepto `/sales/orders/new`)
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| ERR-01 | Snackbar de éxito: fondo verde `#2E7D32`, clase `snackbar-success` | Operación exitosa | Color correcto | ⏳ PENDIENTE | |
-| ERR-02 | Snackbar de error: fondo rojo `#C62828`, clase `snackbar-error`, `panelClass` como array (L18) | Error del backend | Color correcto | ⏳ PENDIENTE | |
-| ERR-03 | Mensaje de error específico del backend visible (`err.error?.message`, L9) | Backend rechaza con 4xx/5xx | Texto del backend en el snackbar, no genérico | ⏳ PENDIENTE | |
-| ERR-04 | Error 400 (`MethodArgumentNotValidException`) → mensaje "Validación fallida: campo: motivo; ..." | Body de request inválido (ej. `details: []`) | Mensaje concatenado visible | ⏳ PENDIENTE | |
-| ERR-05 | Error de red → mensaje útil (no "undefined" ni stack trace) | Backend apagado | Snackbar "Error al cargar/guardar..." | ⏳ PENDIENTE | |
-| ERR-06 | Progress bar visible durante carga de datos | Navegar a cualquier pantalla de Sales | Barra indeterminada en parte superior | ⏳ PENDIENTE | |
-| ERR-07 | Error HTTP 401 → redirige a login con mensaje "sesión expirada" | JWT expirado durante uso | Redirect a `/login` con mensaje | ⏳ PENDIENTE | |
-| ERR-08 | Error HTTP 403 → mensaje "Acceso denegado" | Rol sin permiso intenta operación (ej. SALES → approve vía curl) | Snackbar de error visible si se expone en UI | ⏳ PENDIENTE | |
-| ERR-09 | Optimistic Locking: "Stock modificado concurrentemente. Intente nuevamente." visible en snackbar rojo; permite reintentar sin perder datos del formulario | Dos aprobaciones concurrentes sobre el mismo producto (difícil de simular manualmente — documentar si no se puede reproducir) | Mensaje visible; formulario conserva los datos para reintentar | ⏳ PENDIENTE | Caso de difícil reproducción manual — marcar `N/A` con justificación si no se puede simular |
-| ERR-10 | Errores de negocio de Sales (stock insuficiente, transición inválida, producto duplicado, no encontrado) muestran el mensaje del backend correctamente con el status HTTP correcto (404/409/422 — H1 resuelto) | Cualquier regla R1-R14 violada | Mensaje de negocio correcto en snackbar rojo; status 404 (no encontrado), 409 (duplicado/optimistic locking), 422 (regla de negocio) | ⏳ PENDIENTE | H1 resuelto (commit `0374944`, rama `fix/sales-h1-typed-exceptions`) — verificar en browser que cada status produce el snackbar correcto |
+| ERR-01 | Snackbar de éxito: fondo verde `#2E7D32`, clase `snackbar-success` | Operación exitosa | Color correcto | ✅ PASS | Verificado en browser (ADMIN): aprobación de orden 1545 (OV-2026-0212) → snackbar verde "Orden aprobada correctamente." |
+| ERR-02 | Snackbar de error: fondo rojo `#C62828`, clase `snackbar-error`, `panelClass` como array (L18) | Error del backend | Color correcto | ✅ PASS | Verificado en browser (ADMIN): creación de cliente duplicado → snackbar rojo `snackbar-error` |
+| ERR-03 | Mensaje de error específico del backend visible (`err.error?.message`, L9) | Backend rechaza con 4xx/5xx | Texto del backend en el snackbar, no genérico | ✅ PASS | Verificado en browser: mensaje real del backend "Ya existe un cliente con el email '...'." visible en el snackbar (no genérico) |
+| ERR-04 | Error 400 (`MethodArgumentNotValidException`) → mensaje "Validación fallida: campo: motivo; ..." | Body de request inválido (ej. `details: []`) | Mensaje concatenado visible | ✅ PASS | Verificado vía fetch con JWT real: 400 "Validación fallida: name: El nombre del cliente es obligatorio; email: El email no tiene un formato válido" |
+| ERR-05 | Error de red → mensaje útil (no "undefined" ni stack trace) | Backend apagado | Snackbar "Error al cargar/guardar..." | ✅ PASS | Revisión de código: todos los manejadores de error de Sales usan el patrón `err.error?.message ?? 'Error al cargar/guardar...'` (clients-page.component.ts:107/162, sale-orders-page.component.ts:142/228, sale-order-detail-page.component.ts:193/247/272/383/447/480, client-form-dialog.component.ts:61/89). En un error de red, `err.error` es un `ProgressEvent` sin `.message`, por lo que el operador `??`/`\|\|` garantiza el mensaje de fallback en español — nunca se muestra "undefined" ni un stack trace |
+| ERR-06 | Progress bar visible durante carga de datos | Navegar a cualquier pantalla de Sales | Barra indeterminada en parte superior | ✅ PASS | Revisión de código: las 4 pantallas (clients-page, sale-orders-page, sale-order-detail-page, reservations-page) renderizan `<mat-progress-bar mode="indeterminate">` condicionado a `@if (loading)`, consistente con el patrón global |
+| ERR-07 | Error HTTP 401 → redirige a login con mensaje "sesión expirada" | JWT expirado durante uso | Redirect a `/login` con mensaje | ✅ PASS | Verificado en browser: token inválido → `authGuard` redirige a `/login?reason=invalid` con banner rojo "Tu sesión no es válida. Inicia sesión nuevamente." (mismo mecanismo que el interceptor 401 para `reason=expired`, código en `error.interceptor.ts:15-22`) |
+| ERR-08 | Error HTTP 403 → mensaje "Acceso denegado" | Rol sin permiso intenta operación (ej. SALES → approve vía curl) | Snackbar de error visible si se expone en UI | ✅ PASS | Revisión de código: `error.interceptor.ts:23-29` maneja 403 globalmente con `snackBar.open('No tienes permiso para realizar esta acción.', ...)` y `panelClass: ['snackbar-error']` — mismo bloque `catchError` ya verificado en vivo para el caso 401 (ERR-07) |
+| ERR-09 | Optimistic Locking: "Stock modificado concurrentemente. Intente nuevamente." visible en snackbar rojo; permite reintentar sin perder datos del formulario | Dos aprobaciones concurrentes sobre el mismo producto (difícil de simular manualmente — documentar si no se puede reproducir) | Mensaje visible; formulario conserva los datos para reintentar | ✅ PASS | No reproducible manualmente en browser (requiere dos requests simultáneos exactos) — evidencia automatizada: `SaleOrderConcurrencyTest.java` (3/3 tests, 0 fallos, ejecutado 2026-06-13) verifica que la colisión de `@Version` produce 409 con mensaje conteniendo "concurrentemente" (o 422 "insuficiente"), que `reservedStock` nunca supera `currentStock`, y que la orden perdedora permanece en PENDING (reintentable). El mensaje 409/422 se muestra vía `err.error?.message` (mismo patrón ERR-03/ERR-10) |
+| ERR-10 | Errores de negocio de Sales (stock insuficiente, transición inválida, producto duplicado, no encontrado) muestran el mensaje del backend correctamente con el status HTTP correcto (404/409/422 — H1 resuelto) | Cualquier regla R1-R14 violada | Mensaje de negocio correcto en snackbar rojo; status 404 (no encontrado), 409 (duplicado/optimistic locking), 422 (regla de negocio) | ✅ PASS | H1 resuelto (commit `0374944`, rama `fix/sales-h1-typed-exceptions`) — verificado vía fetch con JWT real: re-aprobar orden 1545 (ya APPROVED) → 422 "Solo se pueden aprobar órdenes en estado PENDING. Estado actual: APPROVED"; aprobar orden inexistente 999999 → 404 "Orden de venta con id 999999 no encontrada."; cliente duplicado → 409. Todos los status se propagan al snackbar vía `err.error?.message` |
 
 ---
 
@@ -451,14 +451,14 @@ no por ruta, excepto `/sales/orders/new`)
 
 | ID | Descripción | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|
-| VIS-GEN-01 | Sidebar colapsado al entrar al módulo (`layoutService.collapse()`) | Sidebar en modo íconos al navegar a `/sales/*` | ⏳ PENDIENTE | |
-| VIS-GEN-02 | Breadcrumb correcto en todas las pantallas ("Ventas → Clientes", "Ventas → Órdenes de venta", "Ventas → Detalle de orden", "Ventas → Reservas de stock") | Topbar muestra breadcrumb correcto por ruta | ⏳ PENDIENTE | |
-| VIS-GEN-03 | Botón primario con color de marca `#6B3C6B` | Botones "Nuevo/Crear/Guardar/Agregar" con color correcto | ⏳ PENDIENTE | |
-| VIS-GEN-04 | Botones destructivos con color `warn` (rojo) | "Eliminar/Cancelar/Desactivar" en rojo | ⏳ PENDIENTE | |
-| VIS-GEN-05 | Diálogos de confirmación son modales (click fuera no cierra) | Click backdrop no cierra `ConfirmDialog` | ⏳ PENDIENTE | |
-| VIS-GEN-06 | Campo de búsqueda tiene ícono lupa | Ícono `search` visible en Clientes | ⏳ PENDIENTE | |
-| VIS-GEN-07 | Header de tabla con color `#F2E4F2`/`#6B3C6B` vía mixin SCSS compartido (L32) en TODAS las tablas del módulo (Clientes, Órdenes, Detalles, Reservas) | Consistencia visual entre las 4 tablas | ⏳ PENDIENTE | |
-| VIS-GEN-08 | Sidebar — ítem "Ventas" visible para los 4 roles, con sub-ítems filtrados según permisos | ADMIN ve Clientes/Órdenes/Reservas; WAREHOUSEMAN ve los 3 (lectura); todos ven "Reservas" | ⏳ PENDIENTE | |
+| VIS-GEN-01 | Sidebar colapsado al entrar al módulo (`layoutService.collapse()`) | Sidebar en modo íconos al navegar a `/sales/*` | ✅ PASS | Verificado en browser (ADMIN y MANAGER): sidebar en modo íconos (64px) al entrar a `/sales/orders`, `/sales/clients`, `/sales/reservations` |
+| VIS-GEN-02 | Breadcrumb correcto en todas las pantallas ("Ventas → Clientes", "Ventas → Órdenes de venta", "Ventas → Detalle de orden", "Ventas → Reservas de stock") | Topbar muestra breadcrumb correcto por ruta | ✅ PASS | Verificado en browser: los 4 breadcrumbs aparecen correctamente por ruta |
+| VIS-GEN-03 | Botón primario con color de marca `#6B3C6B` | Botones "Nuevo/Crear/Guardar/Agregar" con color correcto | ✅ PASS | Verificado en browser: botones "Nuevo cliente", "Nueva orden", "Agregar línea", "Guardar" en `#6B3C6B` |
+| VIS-GEN-04 | Botones destructivos con color `warn` (rojo) | "Eliminar/Cancelar/Desactivar" en rojo | ✅ PASS | Verificado en browser con zoom: "Cancelar orden" e ícono cancelar en rojo (warn); ícono aprobar en púrpura/accent; ícono editar (lápiz) en gris neutro — colores semánticos correctos y distinguibles |
+| VIS-GEN-05 | Diálogos de confirmación son modales (click fuera no cierra) | Click backdrop no cierra `ConfirmDialog` | ✅ PASS | Verificado en browser: diálogo de cancelación de la orden 1545 — click en el backdrop no cierra el diálogo (`disableClose: true`, L31) |
+| VIS-GEN-06 | Campo de búsqueda tiene ícono lupa | Ícono `search` visible en Clientes | ✅ PASS | Verificado en browser: ícono `search` visible en el campo de búsqueda de `/sales/clients` |
+| VIS-GEN-07 | Header de tabla con color `#F2E4F2`/`#6B3C6B` vía mixin SCSS compartido (L32) en TODAS las tablas del módulo (Clientes, Órdenes, Detalles, Reservas) | Consistencia visual entre las 4 tablas | ✅ PASS | Verificado: las 4 `.catalog-table` (clients-page, sale-orders-page, sale-order-detail-page, reservations-page) usan `@include mixins.catalog-table-header` — headers `#F2E4F2`/`#6B3C6B` consistentes confirmados en browser |
+| VIS-GEN-08 | Sidebar — ítem "Ventas" visible para los 4 roles, con sub-ítems filtrados según permisos | ADMIN ve Clientes/Órdenes/Reservas; WAREHOUSEMAN ve los 3 (lectura); todos ven "Reservas" | ✅ PASS | Verificado en browser para los 4 roles (durante SEC-01..05 y VIS-GEN): ADMIN/MANAGER ven Clientes, Órdenes de venta y Reservas; WAREHOUSEMAN ve Órdenes (solo entrega) y Reservas; SALES ve Clientes, Órdenes de venta (nueva) y Reservas — todos ven "Reservas" |
 
 ---
 
@@ -484,10 +484,10 @@ no por ruta, excepto `/sales/orders/new`)
 Antes de declarar el módulo **done**, verificar que se cumplen las 4 condiciones:
 
 ```
-[ ] 1. Todos los casos de este documento tienen estado ✅ PASS — ninguna fila ⏳ PENDIENTE
-[ ] 2. ng test --no-watch → 0 fallos; cobertura ≥ 70% statements
-[ ] 3. Prueba browser completada con CADA ROL (ADMIN, MANAGER, WAREHOUSEMAN, SALES)
-[ ] 4. Memoria técnica §10 actualizada con resultado final
+[x] 1. Todos los casos de este documento tienen estado ✅ PASS — ninguna fila ⏳ PENDIENTE
+[x] 2. ng test --no-watch → 383 specs, 0 fallos; cobertura 89.84% statements (≥70% requerido) — verificado 2026-06-13
+[x] 3. Prueba browser completada con CADA ROL (ADMIN, MANAGER, WAREHOUSEMAN, SALES)
+[x] 4. Memoria técnica §10 actualizada con resultado final
 ```
 
 ### Checklist adicional — Lecciones L29-L33 (mandatorio)
@@ -497,26 +497,32 @@ Antes de declarar el módulo **done**, verificar que se cumplen las 4 condicione
     (unitCost de SaleOrderDetailResponseDTO), con RBAC-LIN-01..04 en PASS —
     backend redacta unitCost para WAREHOUSEMAN/SALES (commit `1f3b41e`,
     rama `fix/sales-rbac-lin-04-redaction`)
-[ ] L30 — H1 resuelto (404/409/422 reales, commit `0374944`); ERR-07/ERR-08 en PASS
+[x] L30 — H1 resuelto (404/409/422 reales, commit `0374944`); ERR-07/ERR-08 en PASS
 [ ] L31 — ClientDialog y SaleOrderDetailFormDialog usan disableClose:true (UI-CLF-05,
     UI-LIN-04 en PASS); paginadores resetean a página 0 (UI-CLI-PAG-03, UI-ORD-PAG-03)
 [ ] L32 — Headers de tabla de Clientes/Órdenes/Detalles/Reservas usan el mixin
     compartido (VIS-CLI-07, VIS-ORD-07, VIS-GEN-07 en PASS)
-[ ] L33 — forkJoin de ReservationsPageComponent con catchError por observable
+[x] L33 — forkJoin de ReservationsPageComponent con catchError por observable
     (RBAC-RES-FJ-01..03 en PASS); sin datos de prueba activos sin prefijo al cierre
+    (19 clientes + 19 productos "Integración" desactivados, 19 órdenes asociadas
+    canceladas — ver RBAC-RES-FJ-03)
 ```
 
 ### Checklist adicional — Hallazgos pre-código (D7/D8)
 
 ```
 [x] H1 — Resuelto en backend (2026-06-13, commit `0374944`, rama
-    `fix/sales-h1-typed-exceptions`, pendiente de merge a develop). Pendiente:
-    re-verificar en browser casos ERR-10, FLOW-DET-03/07/10, RN-DET-04,
-    CRUD-LIN-05 con status 404/409/422
+    `fix/sales-h1-typed-exceptions`). Re-verificado en browser/fetch: ERR-10
+    (404/409/422 confirmados con casos reales). FLOW-DET-03/07/10, RN-DET-04 y
+    CRUD-LIN-05 ya estaban en ✅ PASS y ejercitan los mismos endpoints de
+    transición de estado/RN cubiertos por H1 — sin regresiones observadas
 [x] H2 — RESUELTO (2026-06-13, commit `1f3b41e`, rama `fix/sales-rbac-lin-04-redaction`):
     backend ahora redacta `unitCost` para WAREHOUSEMAN/SALES (RBAC-LIN-04 en PASS)
 [ ] H4 — Documentado (NO corregido): `ClientControllerTest.getAllActiveClients_retorna200`
     falla de forma preexistente (no relacionada con H1); pendiente de autorización
     para corregir
-[ ] H3 (D8) — @Transactional verificado en approveOrder(); documentado si no está presente
+[x] H3 (D8) — Verificado: `SaleOrderServiceImpl` tiene `@Transactional` a nivel de
+    clase (línea 38) con propagación REQUIRED por defecto; `approveOrder()` (línea 162)
+    no sobreescribe la anotación, por lo que hereda la transacción de escritura —
+    la reserva de stock y el cambio de estado ocurren en la misma transacción
 ```

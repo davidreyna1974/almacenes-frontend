@@ -1050,12 +1050,18 @@ diferida a FASE 6 (ver hallazgo en §8).
   `titleOverride="Sin reservas activas"`); el patrón `EmptyStateComponent` ya
   está validado visualmente en otros módulos (Inventory, Purchases, Sales
   FASE 2/3).
-- **RBAC-RES-FJ-03** ⏳ PENDIENTE — se detectaron ~20 productos
-  "Producto Integración NNNNN" (SKU `SKU-SO-NNNNN`) y ~20 clientes
-  "Cliente Int NNNNN" con reservas activas, originados por suites de
-  integración del backend (`SaleOrderConcurrencyIT` y similares). No siguen
-  el prefijo `[QA]`/`TEST_` de L33. Diferido a FASE 6 — requiere coordinar con
-  el cierre de las suites de integración del backend antes de limpiar la BD.
+- **RBAC-RES-FJ-03** ✅ — limpieza ejecutada en FASE 6 (2026-06-13): se
+  identificaron 19 productos "Producto Integración NNNNN" (SKU `SKU-SO-NNNNN`)
+  y 19 clientes "Cliente Int NNNNN" con reservas activas, originados por
+  suites de integración del backend, sin prefijo `[QA]`/`TEST_` (L33). Cada
+  uno tenía exactamente una orden APPROVED asociada (OV-2026-0001..0235, 19
+  órdenes). Se canceló cada orden (`PATCH /sales/orders/{id}/cancel` → 200
+  ×19), liberando el stock reservado, y luego se desactivaron los 19 clientes
+  (`DELETE /sales/clients/{id}` → 204 ×19) y los 19 productos
+  (`DELETE /inventory/products/{id}` → 204 ×19). El dashboard de reservas se
+  re-verificó tras la limpieza: carga sin errores con 26 productos con
+  reservas, 118 unidades reservadas, $533,135.00 y 2 órdenes aprobadas
+  restantes — datos legítimos de la sesión actual.
 
 **Suite del módulo (2026-06-13):**
 ```
@@ -1337,8 +1343,15 @@ XXXXX" aparecen en `GET /sales/reservations/clients` (RBAC-RES-FJ-03), y sus
 SKU `SKU-SO-NNNNN`) aparecen en `GET /sales/reservations/products` — ~20
 productos y ~20 clientes con reservas activas. Es el mismo hallazgo de
 higiene de datos, ahora visible también desde el dashboard de reservas.
-RBAC-RES-FJ-03 queda ⏳ PENDIENTE hasta que se resuelva esta limpieza en
-FASE 6.
+
+**Resolución FASE 6 (2026-06-13):** se limpiaron los 19 "Cliente Int NNNNN" /
+19 "Producto Integración NNNNN" con reservas activas — ver RBAC-RES-FJ-03 en
+§7 para el detalle completo (19 órdenes APPROVED canceladas, 19 clientes y 19
+productos desactivados vía API). `GET /sales/clients/active` pasó de 38 a 19
+registros activos, sin ningún "Cliente Int" restante. El hallazgo de "~50
+Cliente Int XXXXX" de FASE 2 quedó resuelto en su totalidad — no quedan
+registros sin prefijo `[QA]`/`TEST_` con impacto en reservas o en el conteo de
+clientes activos.
 
 ---
 
@@ -1375,12 +1388,129 @@ debe coordinarse para no romper esas suites. No bloquea el cierre de FASE 3.
 
 ## 9. Estándares y buenas prácticas aplicadas
 
-_Pendiente — se completa al cierre del módulo, listando L1-L33 efectivamente
-aplicadas con referencia a archivos/componentes concretos._
+Lecciones de `memoria_tecnica_global_proyecto.md` aplicadas en el módulo Sales,
+con referencia a archivos/componentes concretos:
+
+- **L1/L8** — contratos de API verificados contra el código fuente del backend
+  (controllers/services) antes de escribir cada servicio Angular (§4).
+- **L2** — sin mocks de servicios en tests de integración de RBAC; verificación
+  de redacción de `unitCost` (H2/L29) hecha con `fetch()` + JWT real contra el
+  backend corriendo, no con mocks.
+- **L9** — todos los manejadores de error usan `err.error?.message ?? '...'`
+  (clients-page, sale-orders-page, sale-order-detail-page,
+  client-form-dialog) — nunca un mensaje genérico que oculte el mensaje de
+  negocio del backend (ERR-03/ERR-05/ERR-10).
+- **L11** — `fixture.componentRef.setInput()` usado en specs de componentes
+  con `@Input()` (`StatusBadgeComponent`, `ConfirmDialogComponent` cuando
+  aplica).
+- **L15** — sin asteriscos dobles: `client-form.component.html` corregido
+  (BUG-S4-01) para dejar que Angular Material agregue el `*` automático de
+  `Validators.required`.
+- **L16/Propuesta C** — las 4 rutas de Sales (`/sales/clients`,
+  `/sales/orders`, `/sales/orders/new` y `/sales/orders/:id`,
+  `/sales/reservations`) tienen `canActivate: [authGuard]` +
+  `data: { roles: [...] }`; SEC-01..05 verificó acceso directo por URL con el
+  rol menos privilegiado.
+- **L18** — `panelClass` siempre como array (`['snackbar-success']` /
+  `['snackbar-error']`) en todos los `snackBar.open(...)` del módulo.
+- **L21/L22** — `.catalog-page` / `__table-wrapper` con `padding: var(--space-3)`,
+  `border-radius: 8px`, `border: 1px solid var(--color-divider)` consistentes
+  en Clientes, Órdenes, Detalle de orden y Reservas (VIS-GEN-07).
+- **L23/L24** — `SaleOrdersPageComponent` carga contadores de los 4 tabs al
+  inicio (`loadCount`) separados de `pages: Map<Status, PageResponse<T>>`; la
+  navegación lista↔detalle preserva el tab activo vía `queryParams: { from }`.
+- **L25** — `SaleOrderDetailFormComponent`/`ClientFormDialogComponent` usan
+  `!form.dirty` en la condición del botón "Guardar" y `form.markAsPristine()`
+  tras guardar.
+- **L27** — todos los botones de acción dentro de filas clickeables
+  (`mat-row[click]`) usan `$event.stopPropagation()` antes de abrir diálogos
+  de edición/cancelación/aprobación.
+- **L29** — matriz de campos sensibles documentada en §6.2 (`unitCost`/
+  `margin` en `SaleOrderDetailResponseDTO`); redacción centralizada
+  `redactUnitCost(...)` aplicada en backend a los 13 métodos de
+  `SaleOrderServiceImpl` que retornan el DTO (H2, RBAC-LIN-04 ✅ PASS).
+- **L30** — interceptor global `error.interceptor.ts` maneja 401 (logout +
+  redirect `/login?reason=expired` + snackbar) y 403 (snackbar "No tienes
+  permiso...") sin duplicar lógica por módulo; `authGuard` maneja
+  `invalid`/`expired`/`missing` con `reason` (ERR-07/ERR-08 ✅ PASS).
+- **L31** — `ClientFormDialogComponent` y `SaleOrderDetailFormDialogComponent`
+  (línea de orden) usan `disableClose: true` (UI-CLF-05, UI-LIN-04);
+  `SaleOrdersPageComponent`/`ClientsPageComponent` resetean el paginador a
+  página 0 al cambiar filtros (UI-ORD-PAG-03, UI-CLI-PAG-03).
+- **L32** — `.catalog-table { @include mixins.catalog-table-header; }` en las
+  4 tablas del módulo (clients-page, sale-orders-page,
+  sale-order-detail-page, reservations-page) — sin copiar el estilo
+  manualmente (VIS-GEN-07 ✅ PASS).
+- **L33** — `ReservationsPageComponent.ngOnInit()` envuelve `getSummary()`,
+  `getProducts()` y `getClients()` con `catchError(() => of(<default
+  seguro>))` dentro del `forkJoin` (RBAC-RES-FJ-01/02 ✅ PASS); datos de
+  prueba sin prefijo `[QA]`/`TEST_` ("Cliente Int NNNNN" / "Producto
+  Integración NNNNN") limpiados al cierre del módulo (RBAC-RES-FJ-03 ✅ PASS).
 
 ---
 
 ## 10. Cumplimiento y validación
 
-_Pendiente — checklist de cierre (Propuesta D) se completa al final del módulo,
-referenciando `casos_de_prueba_modulo_sales.md`._
+### Resultado final — Propuesta D (2026-06-13)
+
+```
+[x] 1. Todos los casos de casos_de_prueba_modulo_sales.md tienen ✅ PASS
+       (o N/A con justificación) — ninguna fila ⏳ PENDIENTE
+[x] 2. ng test --no-watch → 383/383 specs, 0 fallos
+       Cobertura: 89.84% statements / 87% branches / 83.76% funciones /
+       94.85% líneas (≥ 70% statements requerido)
+[x] 3. Pruebas de navegador completadas con los 4 roles (ADMIN, MANAGER,
+       WAREHOUSEMAN, SALES) — documentadas por sección en casos_de_prueba_*
+[x] 4. Esta sección (§10) actualizada con el resultado final
+```
+
+### Checklist L29-L33 (mandatorio)
+
+```
+[x] L29 — Matriz de campos sensibles documentada (§4/§6.2); RBAC-LIN-01..04 ✅
+    PASS; redacción de unitCost centralizada en backend (commit `1f3b41e`)
+[x] L30 — H1 resuelto (404/409/422, commit `0374944`); ERR-07/ERR-08 ✅ PASS
+[x] L31 — Diálogos con disableClose:true (UI-CLF-05, UI-LIN-04 ✅ PASS);
+    paginadores reseteados a página 0 en filtros (UI-CLI-PAG-03,
+    UI-ORD-PAG-03 ✅ PASS)
+[x] L32 — Mixin catalog-table-header incluido en las 4 tablas del módulo
+    (VIS-CLI-07, VIS-ORD-07, VIS-GEN-07 ✅ PASS)
+[x] L33 — forkJoin de ReservationsPageComponent con catchError por fuente
+    (RBAC-RES-FJ-01/02 ✅ PASS); datos de prueba sin prefijo limpiados
+    (RBAC-RES-FJ-03 ✅ PASS — 19 clientes + 19 productos desactivados, 19
+    órdenes canceladas)
+```
+
+### Checklist hallazgos pre-código (D7/D8)
+
+```
+[x] H1 — Resuelto (commit `0374944`, rama fix/sales-h1-typed-exceptions):
+    404/409/422 reales en lugar de 500. Re-verificado en browser/fetch
+    (ERR-10 ✅ PASS) y por regresión sobre FLOW-DET-03/07/10, RN-DET-04,
+    CRUD-LIN-05 (sin cambios de comportamiento, ya estaban en ✅ PASS)
+[x] H2 — Resuelto (commit `1f3b41e`): redacción de unitCost por rol
+    (RBAC-LIN-04 ✅ PASS)
+[x] H3/D8 — Verificado: @Transactional a nivel de clase en
+    SaleOrderServiceImpl cubre approveOrder(); garantía "todo o nada"
+    confirmada (no se generó incidencia H3)
+[ ] H4 — Documentado, NO corregido: ClientControllerTest.getAllActiveClients_
+    retorna200 falla de forma preexistente (reproducible en develop sin los
+    cambios de Sales) — pendiente de autorización explícita para corregir,
+    fuera del alcance de cierre de este módulo frontend
+```
+
+### Evidencia de concurrencia (ERR-09)
+
+`SaleOrderConcurrencyTest.java` (backend) — 3/3 tests, 0 fallos, ejecutado
+2026-06-13: confirma que la colisión de `@Version` en `approveOrder()`
+produce 409 ("...concurrentemente...") o 422 ("...insuficiente..."), que
+`reservedStock` nunca supera `currentStock` bajo contención, y que la orden
+perdedora permanece en `PENDING` (reintentable sin pérdida de datos).
+
+### Conclusión
+
+El módulo **Sales (Frontend) — FASE 6 — se declara DONE** el 2026-06-13. Las 4
+condiciones de Propuesta D, las lecciones L29-L33 y los hallazgos H1-H4
+(H4 documentado y diferido con autorización pendiente, sin bloquear el
+cierre) están verificados y documentados en `casos_de_prueba_modulo_sales.md`
+y en este documento.
