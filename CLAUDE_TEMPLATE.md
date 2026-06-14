@@ -668,7 +668,15 @@ searchCtrl.valueChanges.pipe(
 - Usar `MatTable` con `MatPaginator` y barra de búsqueda.
 - Columnas con texto largo usan truncado con `text-overflow: ellipsis` + tooltip con el valor completo.
 - La fila seleccionada se resalta con fondo `[COLOR_SURFACE]`.
-- Columna de acciones (editar, ver, desactivar) siempre a la derecha, íconos con tooltip.
+- **Patrón estándar de acciones**: NO usar una columna `matColumnDef="actions"` con
+  íconos editar/ver/desactivar. El click en cualquier parte del `mat-row`
+  (`(click)="onRowClick(row)" class="catalog-row--clickable"`) abre el diálogo de
+  detalle/edición (rol con escritura → "Editar X" con campos habilitados; rol solo
+  lectura → "Ver X" con campos `disabled` y único botón "Cancelar"). El botón
+  "Desactivar" vive DENTRO de ese formulario (visible solo si `canDeactivate() &&
+  item.active`), no en la tabla. Una columna de acciones solo se justifica para
+  acciones que no tengan sentido dentro del diálogo de detalle (ej. "Reordenar",
+  "Duplicar") — documentar la excepción si se usa.
 - **Truncado de celdas**: nunca aplicar `display: block` sobre un `<td>`. Usar un `<div>` wrapper interno.
 - **Contenedor de tabla**: `border-radius: 8px; border: 1px solid var(--color-divider); background: #fff`.
 - **Botones en filas clickeables**: cuando `mat-row` tiene `(click)`, TODOS los botones de acción
@@ -726,6 +734,15 @@ El sidebar y las rutas se adaptan al rol del usuario extraído del JWT.
 
 Las rutas protegidas por rol usan `AuthGuard`. Si el usuario intenta acceder
 a una ruta no autorizada, se redirige a su pantalla de inicio con mensaje de acceso denegado.
+
+### Usuarios QA permanentes para pruebas RBAC
+
+Para verificar en browser el comportamiento de cada rol, mantener un usuario QA
+permanente por rol (no efímero/aleatorio), con contraseña conocida y documentada en
+`memoria_tecnica_global_proyecto.md` (sección de credenciales por defecto). Si no
+existen, crearlos vía el endpoint de creación de usuarios (con el JWT de un usuario
+ADMIN) y documentar las credenciales antes de iniciar la verificación. Reutilizarlos en
+todos los ciclos de pruebas futuros en vez de crear usuarios nuevos cada vez.
 
 ---
 
