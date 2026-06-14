@@ -209,7 +209,7 @@ no por ruta, excepto `/sales/orders/new`)
 | CRUD-CLF-06 | Click en Desactivar abre `ConfirmDialog` | Cliente activo | Modal con texto de confirmación y botones Confirmar/Cancelar | ✅ PASS | |
 | CRUD-CLF-07 | Cancelar en `ConfirmDialog` — cliente no cambia | Diálogo abierto | Cliente permanece activo | ✅ PASS | |
 | CRUD-CLF-08 | Confirmar desactivación de cliente sin órdenes activas | Cliente sin órdenes PENDING/APPROVED | Snackbar verde; cliente desaparece de `/clients/active` | ✅ PASS | Verificado desactivando `[QA] Cliente Almacén Acentuado` (cumple L33: dato de prueba propio, limpiado al cierre) |
-| CRUD-CLF-09 | Intentar desactivar cliente con órdenes PENDING/APPROVED (si el backend lo restringe) | Cliente con orden PENDING/APPROVED | Snackbar rojo con mensaje del backend (verificar regla real en `ClientServiceImpl` durante FASE 2) | N/A | Regla SÍ existe en backend (`ClientServiceImpl.deactivateClient()` lanza `BusinessRuleException` si `saleOrderRepository.findActiveOrdersByClient(id)` no está vacío), verificada por código. No reproducible en browser en esta fase porque Sales Orders (FASE 3/4) aún no está implementado — no es posible crear una orden PENDING/APPROVED para asociar al cliente. Re-verificar en browser durante FASE 4 (Órdenes de venta) |
+| CRUD-CLF-09 | Intentar desactivar cliente con órdenes PENDING/APPROVED (si el backend lo restringe) | Cliente con orden PENDING/APPROVED | Snackbar rojo con mensaje del backend | ✅ PASS | Verificado en browser (FASE 6, cierre final): "Cliente RBAC R70934" (id 878) tiene la orden OV-2026-0199 (id 1520) en estado PENDING. Al confirmar la desactivación en el `ConfirmDialog`, el backend respondió 422 y se mostró el snackbar rojo "El cliente tiene órdenes de venta activas (PENDING o APPROVED) y no puede desactivarse." El cliente permanece activo y la orden permanece PENDING (sin efectos secundarios) |
 
 ---
 
@@ -498,9 +498,9 @@ Antes de declarar el módulo **done**, verificar que se cumplen las 4 condicione
     backend redacta unitCost para WAREHOUSEMAN/SALES (commit `1f3b41e`,
     rama `fix/sales-rbac-lin-04-redaction`)
 [x] L30 — H1 resuelto (404/409/422 reales, commit `0374944`); ERR-07/ERR-08 en PASS
-[ ] L31 — ClientDialog y SaleOrderDetailFormDialog usan disableClose:true (UI-CLF-05,
+[x] L31 — ClientDialog y SaleOrderDetailFormDialog usan disableClose:true (UI-CLF-05,
     UI-LIN-04 en PASS); paginadores resetean a página 0 (UI-CLI-PAG-03, UI-ORD-PAG-03)
-[ ] L32 — Headers de tabla de Clientes/Órdenes/Detalles/Reservas usan el mixin
+[x] L32 — Headers de tabla de Clientes/Órdenes/Detalles/Reservas usan el mixin
     compartido (VIS-CLI-07, VIS-ORD-07, VIS-GEN-07 en PASS)
 [x] L33 — forkJoin de ReservationsPageComponent con catchError por observable
     (RBAC-RES-FJ-01..03 en PASS); sin datos de prueba activos sin prefijo al cierre
