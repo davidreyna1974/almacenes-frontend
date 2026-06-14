@@ -1119,8 +1119,8 @@ Cambios:
 **Tests:** `SaleOrderConcurrencyTest` actualizado para esperar 409/422 en lugar
 de 500 en los rechazos de `approveOrder()`. Suite `sales.**`: 75 tests, 74 pass
 — la 1 falla restante (`ClientControllerTest.getAllActiveClients_retorna200`)
-es **preexistente y no relacionada** (falla igual en `develop` sin estos
-cambios) — ver H4 más abajo.
+era **preexistente y no relacionada** (falla igual en `develop` sin estos
+cambios) — resuelta posteriormente, ver H4 más abajo.
 
 Los casos `ERR-*` de `casos_de_prueba_modulo_sales.md` deben actualizarse para
 reflejar los códigos correctos (404/409/422) en lugar de 500.
@@ -1183,9 +1183,10 @@ mismo `fetch()` contra `GET /api/v1/sales/orders/1470`:
 `SaleOrderServiceImplTest`). Suite completa del backend: las 13 fallas
 preexistentes (`AuditAndConstraintIntegrationTest`, `RbacIntegrationTest`,
 `SupplierControllerTest`, `ClientControllerTest`, `CategoryControllerTest`,
-`ProductServiceImplTest`) se reproducen igual en `develop` sin este cambio —
-no son regresiones introducidas por esta corrección (H4 ampliado, ver checklist
-§10).
+`ProductServiceImplTest`) se reproducían igual en `develop` sin este cambio —
+no eran regresiones introducidas por esta corrección. Resueltas el mismo día
+(commit `cca468b`, rama `fix/backend-pretest-failures`, ver H4 ampliado en
+checklist §10).
 
 **RBAC-LIN-04 → ✅ PASS** en `casos_de_prueba_modulo_sales.md`.
 
@@ -1216,7 +1217,7 @@ vez de 409 para el mensaje de "Stock modificado concurrentemente") fue
 **resuelto** (ver arriba) — el código HTTP ahora es correcto y la integridad
 de los datos siempre estuvo garantizada.
 
-### H4 — `ClientControllerTest.getAllActiveClients_retorna200` falla (preexistente, NO relacionada con Sales/H1)
+### H4 — `ClientControllerTest.getAllActiveClients_retorna200` falla (preexistente, NO relacionada con Sales/H1) — RESUELTO ✅
 
 **Origen:** detectado al ejecutar la suite `sales.**` tras el fix de H1
 (2026-06-13). Error: `No value at JSON path "$.content[0].name"`.
@@ -1224,12 +1225,46 @@ de los datos siempre estuvo garantizada.
 **Detalle:** se verificó con `git stash` que la falla ocurre de forma
 idéntica en `develop` sin ninguno de los cambios de H1 — mismo test, mismo
 mensaje de error, 6 tests / 1 falla. Por lo tanto **no es una regresión** del
-fix de H1, sino un bug preexistente en el test (o en el endpoint
-`GET /api/v1/sales/clients/active`) no relacionado con esta tarea.
+fix de H1, sino un bug preexistente en el test no relacionado con esta tarea.
 
-**Estado:** documentado, NO corregido — pendiente de autorización explícita
-del usuario, según la instrucción permanente "si identificas errores o bugs,
-solo identifícalos y documéntalos, no los corrijas hasta que lo autorices".
+**Estado (inicial):** documentado, NO corregido — pendiente de autorización
+explícita del usuario, según la instrucción permanente "si identificas
+errores o bugs, solo identifícalos y documéntalos, no los corrijas hasta que
+lo autorices".
+
+**Corrección (2026-06-13, autorizada por el usuario en esta misma sesión —
+"informame de todos los pendientes/bugs/errores/inconsistencias... analiza la
+causa raiz... haz las correcciones necesarias"):** se realizó un análisis de
+causa raíz de las 13 fallas preexistentes del backend (4 failures + 9 errors
+de 405 tests). H4 resultó ser parte del **Grupo A** (3 tests): el controller
+(`ClientController`, `CategoryController`, `SupplierController`) fue
+actualizado previamente para invocar `searchXxx(search, page, size)` en lugar
+de `getAllActiveXxx(page, size)` al agregarse la funcionalidad de búsqueda,
+pero los tests correspondientes seguían mockeando el método antiguo
+(`getAllActiveClients(0, 20)`), que el controller ya no llama — Mockito
+devolvía `null` y `$.content[0].name` no existía.
+
+**Fix aplicado:** `ClientControllerTest.getAllActiveClients_retorna200` ahora
+mockea `clientService.searchClients(null, 0, 20)` (igual patrón aplicado a
+`CategoryControllerTest` y `SupplierControllerTest`). Cambio solo en código de
+test, sin tocar producción.
+
+**Checkpoint y verificación:** rama `fix/backend-pretest-failures` creada
+desde `develop` limpio (commit `122c3e6`, checkpoint de revert si hubiera sido
+necesario). Junto con los otros 2 grupos de causa raíz (validación
+`SupplierDTO.rfc` `@Size(min=12,max=13)` en `RbacIntegrationTest` y
+`AuditAndConstraintIntegrationTest`, y stub de `Sort` obsoleto en
+`ProductServiceImplTest.shouldReturnAllProductsWhenNoFilters`), la suite
+completa del backend pasó de 405 tests/4 failures/9 errors a **405/405, 0
+failures, 0 errors** en 2 ejecuciones consecutivas. `git diff --stat`: 6
+archivos de test modificados, 0 cambios en código de producción.
+
+**Commit/merge:** commit en `fix/backend-pretest-failures`, mergeado
+`--no-ff` a `develop` y pusheado a `origin/develop` como `cca468b`.
+
+**Estado final:** RESUELTO. H4 ya no bloquea ni condiciona el cierre del
+módulo Sales — era, como se documentó originalmente, un bug preexistente no
+relacionado con Sales, ahora corregido en el backend.
 
 ### Hallazgo FLOW-DET-07 — escenario "stock físico insuficiente al entregar" inalcanzable (N/A)
 
@@ -1498,10 +1533,11 @@ con referencia a archivos/componentes concretos:
 [x] H3/D8 — Verificado: @Transactional a nivel de clase en
     SaleOrderServiceImpl cubre approveOrder(); garantía "todo o nada"
     confirmada (no se generó incidencia H3)
-[ ] H4 — Documentado, NO corregido: ClientControllerTest.getAllActiveClients_
-    retorna200 falla de forma preexistente (reproducible en develop sin los
-    cambios de Sales) — pendiente de autorización explícita para corregir,
-    fuera del alcance de cierre de este módulo frontend
+[x] H4 — Resuelto (commit `cca468b`, rama fix/backend-pretest-failures):
+    ClientControllerTest.getAllActiveClients_retorna200 mockeaba el método
+    getAllActiveClients(0,20) ya no invocado por el controller; corregido a
+    searchClients(null,0,20). Junto con 2 fallas análogas y 10 fallas de
+    validación de RFC, suite backend completa: 405/405, 0 fallos/0 errores
 ```
 
 ### Evidencia de concurrencia (ERR-09)
@@ -1530,7 +1566,7 @@ encontraron otros hallazgos, bugs o inconsistencias adicionales.
 ### Conclusión
 
 El módulo **Sales (Frontend) — FASE 6 — se declara DONE** el 2026-06-13. Las 4
-condiciones de Propuesta D, las lecciones L29-L33 y los hallazgos H1-H4
-(H4 documentado y diferido con autorización pendiente, sin bloquear el
-cierre) están verificados y documentados en `casos_de_prueba_modulo_sales.md`
-y en este documento.
+condiciones de Propuesta D, las lecciones L29-L33 y los hallazgos H1-H4 (los 4
+resueltos y verificados — H4 corregido en backend commit `cca468b`, suite
+completa 405/405 0 fallos) están verificados y documentados en
+`casos_de_prueba_modulo_sales.md` y en este documento.

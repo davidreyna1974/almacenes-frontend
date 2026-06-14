@@ -518,9 +518,15 @@ Antes de declarar el módulo **done**, verificar que se cumplen las 4 condicione
     transición de estado/RN cubiertos por H1 — sin regresiones observadas
 [x] H2 — RESUELTO (2026-06-13, commit `1f3b41e`, rama `fix/sales-rbac-lin-04-redaction`):
     backend ahora redacta `unitCost` para WAREHOUSEMAN/SALES (RBAC-LIN-04 en PASS)
-[ ] H4 — Documentado (NO corregido): `ClientControllerTest.getAllActiveClients_retorna200`
-    falla de forma preexistente (no relacionada con H1); pendiente de autorización
-    para corregir
+[x] H4 — RESUELTO (2026-06-13, commit `cca468b`, rama `fix/backend-pretest-failures`):
+    `ClientControllerTest.getAllActiveClients_retorna200` mockeaba
+    `getAllActiveClients(0, 20)` (método ya no invocado por el controller, que
+    usa `searchClients(search, page, size)` desde la introducción de búsqueda).
+    Corregido el mock a `searchClients(null, 0, 20)`. Junto con 2 fallas más del
+    mismo patrón (`CategoryControllerTest`, `SupplierControllerTest`) y 10
+    fallas de validación de RFC en tests de integración (`SupplierDTO.rfc`
+    `@Size(min=12,max=13)`), suite completa: 405/405, 0 fallos/0 errores
+    (2 ejecuciones consecutivas)
 [x] H3 (D8) — Verificado: `SaleOrderServiceImpl` tiene `@Transactional` a nivel de
     clase (línea 38) con propagación REQUIRED por defecto; `approveOrder()` (línea 162)
     no sobreescribe la anotación, por lo que hereda la transacción de escritura —
