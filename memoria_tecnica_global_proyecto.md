@@ -406,8 +406,23 @@ ng serve
 | Usuario | Contraseña | Rol |
 |---|---|---|
 | `admin` | `Admin123!` | ADMIN + WAREHOUSEMAN |
+| `qa_manager` | `QaManager123!` | MANAGER |
+| `qa_sales` | `QaSales123!` | SALES |
+| `qa_warehouse` | `QaWarehouse123!` | WAREHOUSEMAN |
 
 Usuarios adicionales se crean desde la interfaz de gestión de usuarios (solo ADMIN).
+
+> **Usuarios QA permanentes (2026-06-14)**: `qa_manager`, `qa_sales` y `qa_warehouse` se
+> crearon vía `POST /api/v1/auth/users` (con el JWT de `admin`) para cubrir la verificación
+> manual en browser de los 4 roles sin tener que crear/recordar usuarios nuevos en cada
+> ciclo. Mantenerlos activos y reutilizarlos en futuras rondas de pruebas RBAC.
+>
+> ⚠️ **Hallazgo (2026-06-14)**: el ítem "Usuarios" del sidebar apunta a `/admin/users`,
+> pero esa ruta NO existe en `app.routes.ts` (solo existen `inventory`, `purchases`,
+> `sales`) — al hacer click, la app redirige a `/` y el panel queda en blanco. La gestión
+> de usuarios vía UI está rota o no implementada; los usuarios QA de esta tabla se crearon
+> directamente contra el backend (`curl` + JWT admin). Pendiente: implementar el módulo
+> de gestión de usuarios en el frontend o corregir la ruta del sidebar.
 
 ---
 

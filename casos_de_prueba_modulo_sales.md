@@ -127,20 +127,20 @@ no por ruta, excepto `/sales/orders/new`)
 |---|---|---|---|---|---|
 | RBAC-CLI-01 | Botón "Nuevo cliente" visible | ADMIN / MANAGER / SALES | Visible | ✅ PASS | Verificado con admin, manager01, ventas01 |
 | RBAC-CLI-02 | Botón "Nuevo cliente" NO visible | WAREHOUSEMAN | Ausente del DOM (no solo oculto) | ✅ PASS | Verificado con almacen01 |
-| RBAC-CLI-03 | Ícono "Editar" visible en fila | ADMIN / MANAGER / SALES | Visible | ✅ PASS | Verificado con admin, manager01, ventas01 |
-| RBAC-CLI-04 | Ícono "Editar" NO visible en fila (solo Ver) | WAREHOUSEMAN | Ausente del DOM | ✅ PASS | almacen01 muestra ícono `visibility` ("Ver cliente") en lugar de `edit` |
-| RBAC-CLI-05 | Ícono "Desactivar" visible en fila | ADMIN / MANAGER | Visible | ✅ PASS | Verificado con admin y manager01 |
-| RBAC-CLI-06 | Ícono "Desactivar" NO visible en fila | SALES | Ausente del DOM (SecurityConfig: DELETE /clients excluye SALES) | ✅ PASS | Verificado con ventas01 |
-| RBAC-CLI-07 | Ícono "Desactivar" NO visible en fila | WAREHOUSEMAN | Ausente del DOM | ✅ PASS | Verificado con almacen01 |
+| RBAC-CLI-03 | Click en fila abre "Editar cliente" (campos editables) | ADMIN / MANAGER / SALES | Diálogo "Editar cliente" con campos habilitados | ✅ PASS | **Homologación 2026-06-14**: ya no hay íconos de fila; el renglón completo es el punto de entrada (`onRowClick` → `openDetail`). Verificado con `admin`, `qa_manager`, `qa_sales` |
+| RBAC-CLI-04 | Click en fila abre "Ver cliente" (solo lectura) | WAREHOUSEMAN | Diálogo "Ver cliente" con campos `disabled` y solo botón "Cancelar" | ✅ PASS | **Homologación 2026-06-14**: verificado con `qa_warehouse` — título "Ver cliente", todos los campos deshabilitados, sin "Desactivar" ni "Guardar cambios" |
+| RBAC-CLI-05 | Botón "Desactivar" visible dentro del diálogo "Editar cliente" | ADMIN / MANAGER | Visible | ✅ PASS | **Homologación 2026-06-14**: verificado con `admin` y `qa_manager` |
+| RBAC-CLI-06 | Botón "Desactivar" NO visible dentro del diálogo "Editar cliente" | SALES | Ausente del DOM (`canDeactivate()` excluye SALES) | ✅ PASS | **Homologación 2026-06-14**: verificado con `qa_sales` — diálogo "Editar cliente" sin botón "Desactivar" |
+| RBAC-CLI-07 | Botón "Desactivar" NO visible (modo solo lectura) | WAREHOUSEMAN | Ausente del DOM | ✅ PASS | **Homologación 2026-06-14**: verificado con `qa_warehouse` — cubierto por el mismo caso que RBAC-CLI-04 |
 
 ### 1d. Botones e íconos de acción (UI)
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
 | UI-CLI-01 | Click en fila selecciona el cliente en el panel/diálogo de detalle | ADMIN | Lista cargada | Detalle del cliente mostrado | ✅ PASS | Abre `ClientFormDialogComponent` |
-| UI-CLI-02 | Ícono Editar — clic abre `ClientDialog` con datos precargados | ADMIN | Cliente seleccionado | Diálogo abre SIN navegar fuera | ✅ PASS | (L27) `$event.stopPropagation()` presente y funcional |
-| UI-CLI-03 | Ícono Desactivar — clic abre `ConfirmDialog` | ADMIN | Cliente activo | Diálogo de confirmación abre | ✅ PASS | (L27) `$event.stopPropagation()` presente y funcional |
-| UI-CLI-04 | Confirmar Desactivar → cliente desaparece de la lista de activos | ADMIN | Diálogo abierto | Snackbar verde; lista actualizada sin recargar | ✅ PASS | Verificado con `[QA] Cliente Almacén Acentuado` (creado y desactivado en esta misma sesión, L33) |
+| UI-CLI-02 | Click en fila abre `ClientFormDialogComponent` con datos precargados, campo editado se guarda | ADMIN | Cliente seleccionado | Diálogo "Editar cliente" abre con precarga; tras editar y "Guardar cambios" → snackbar "Cliente actualizado correctamente" y valor persistido visible en la tabla | ✅ PASS | **Homologación 2026-06-14**: reemplaza el patrón de ícono "Editar" (eliminado). Verificado end-to-end con `[QA] Cliente Homologacion Row`: editar teléfono → guardar → reabrir muestra "Actualizado por admin" y el nuevo teléfono |
+| UI-CLI-03 | Botón "Desactivar" dentro de `ClientFormDialogComponent` abre `ConfirmDialog` | ADMIN | Cliente activo, diálogo "Editar cliente" abierto | Diálogo de confirmación abre con mensaje correcto | ✅ PASS | **Homologación 2026-06-14**: reemplaza el patrón de ícono "Desactivar" (eliminado). El botón vive ahora dentro de `ClientFormComponent` (línea 71) |
+| UI-CLI-04 | Confirmar Desactivar → cliente desaparece de la lista de activos | ADMIN | Diálogo de confirmación abierto | Snackbar verde "Cliente desactivado."; lista actualizada sin recargar | ✅ PASS | Verificado con `[QA] Cliente Homologacion Row` (creado, editado y desactivado en esta sesión, L33) |
 
 ### 1e. Estados vacíos (EMPTY)
 
