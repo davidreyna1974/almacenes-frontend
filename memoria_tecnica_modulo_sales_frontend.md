@@ -1599,6 +1599,50 @@ la tabla.
 
 UI-CLF-02 actualizado en `casos_de_prueba_modulo_sales.md` (✅ PASS).
 
+**Re-verificación end-to-end y RBAC completa (2026-06-14, post-feedback del usuario):**
+
+El usuario cuestionó si la verificación inicial (solo abrir/cerrar el diálogo)
+era suficiente. Se realizó verificación end-to-end real con ADMIN usando
+`[QA] Cliente Homologacion Row`:
+- Crear cliente `[QA]` → click en renglón abre "Editar cliente" con precarga
+  y botón "Desactivar" visible.
+- Editar campo teléfono → "Guardar cambios" se habilita solo tras `dirty`
+  (L25) → guardar → snackbar "Cliente actualizado correctamente" → tabla
+  muestra el nuevo teléfono.
+- Reabrir el mismo cliente → footer muestra "Actualizado por admin" y el
+  teléfono persistido.
+- Click "Desactivar" → `ConfirmDialog` con mensaje correcto → confirmar →
+  snackbar "Cliente desactivado." → cliente desaparece de la lista de activos
+  (L33 — dato `[QA]` limpiado al cierre).
+
+**Usuarios QA permanentes creados para RBAC (2026-06-14):** dado que no
+existía ruta funcional de gestión de usuarios en el frontend (`/admin/users`
+del sidebar no está definida en `app.routes.ts` — redirige a `/` con panel en
+blanco), se crearon 3 usuarios vía `POST /api/v1/auth/users` con el JWT de
+`admin`. Credenciales documentadas en `memoria_tecnica_global_proyecto.md`
+§5 (tabla "Credenciales por defecto"): `qa_manager`/`QaManager123!` (MANAGER),
+`qa_sales`/`QaSales123!` (SALES), `qa_warehouse`/`QaWarehouse123!`
+(WAREHOUSEMAN). Se reutilizarán en futuros ciclos de pruebas RBAC.
+
+Verificación por rol en `/sales/clients` (click en renglón):
+- **MANAGER** (`qa_manager`): abre "Editar cliente" con precarga y botón
+  "Desactivar" visible — RBAC-CLI-03/05 ✅ PASS.
+- **SALES** (`qa_sales`): abre "Editar cliente" con campos editables, SIN
+  botón "Desactivar" — RBAC-CLI-03/06 ✅ PASS.
+- **WAREHOUSEMAN** (`qa_warehouse`): "Nuevo cliente" ausente del DOM; abre
+  "Ver cliente" (solo lectura), todos los campos `disabled`, único botón
+  "Cancelar" — RBAC-CLI-04/07 ✅ PASS.
+
+`casos_de_prueba_modulo_sales.md` actualizado: RBAC-CLI-03..07 y
+UI-CLI-02..04 reescritos para reflejar el patrón row-click + botón en
+diálogo (ya no hay íconos por renglón), todos ✅ PASS.
+
+**Hallazgo pendiente (fuera de alcance de esta homologación):** la ruta
+`/admin/users` referenciada por el ítem "Usuarios" del sidebar
+(`sidebar.component.ts` y `topbar.component.ts`) no existe en
+`app.routes.ts` — la gestión de usuarios vía UI no es accesible. Documentado
+en `memoria_tecnica_global_proyecto.md` §5 para un módulo futuro.
+
 ### Conclusión
 
 El módulo **Sales (Frontend) — FASE 6 — se declara DONE** el 2026-06-13. Las 4
