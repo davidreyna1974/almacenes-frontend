@@ -1,0 +1,130 @@
+<div class="exec-page">
+
+  <div class="exec-page__header">
+    <h1 class="exec-page__title">Dashboard Ejecutivo</h1>
+    <div class="exec-page__actions">
+      <mat-form-field appearance="outline" class="filter-date">
+        <mat-label>Desde</mat-label>
+        <input matInput [matDatepicker]="fromPicker" [formControl]="fromCtrl">
+        <mat-datepicker-toggle matIconSuffix [for]="fromPicker"></mat-datepicker-toggle>
+        <mat-datepicker #fromPicker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="filter-date">
+        <mat-label>Hasta</mat-label>
+        <input matInput [matDatepicker]="toPicker" [formControl]="toCtrl">
+        <mat-datepicker-toggle matIconSuffix [for]="toPicker"></mat-datepicker-toggle>
+        <mat-datepicker #toPicker></mat-datepicker>
+      </mat-form-field>
+
+      <button mat-flat-button color="primary" (click)="load()" [disabled]="!datesValid() || loading">
+        <mat-icon>refresh</mat-icon> Actualizar
+      </button>
+    </div>
+  </div>
+
+  <p class="exec-page__date-error" *ngIf="datesInvalidError()">
+    <mat-icon>error</mat-icon>
+    La fecha "Desde" no puede ser posterior a "Hasta"
+  </p>
+
+  <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+
+  <!-- ── Alertas de pendientes ────────────────────────────────────────────── -->
+  <div class="alert-strip" *ngIf="execData && !loading">
+    <button class="alert-chip alert-chip--purchases"
+            (click)="navigateTo('/reports/pending')"
+            matTooltip="Ver órdenes de compra pendientes">
+      <mat-icon>shopping_cart</mat-icon>
+      <span>{{ execData.pendingPurchaseOrders }} compra{{ execData.pendingPurchaseOrders !== 1 ? 's' : '' }} pendiente{{ execData.pendingPurchaseOrders !== 1 ? 's' : '' }}</span>
+      <mat-icon class="alert-chip__arrow">arrow_forward</mat-icon>
+    </button>
+
+    <button class="alert-chip alert-chip--sales"
+            (click)="navigateTo('/reports/pending')"
+            matTooltip="Ver órdenes de venta pendientes">
+      <mat-icon>point_of_sale</mat-icon>
+      <span>{{ execData.pendingSaleOrders }} venta{{ execData.pendingSaleOrders !== 1 ? 's' : '' }} pendiente{{ execData.pendingSaleOrders !== 1 ? 's' : '' }}</span>
+      <mat-icon class="alert-chip__arrow">arrow_forward</mat-icon>
+    </button>
+  </div>
+
+  <!-- ── KPI cards ─────────────────────────────────────────────────────────── -->
+  <div class="kpi-grid" *ngIf="execData && !loading">
+    <div class="kpi-card kpi-card--primary">
+      <div class="kpi-card__icon"><mat-icon>paid</mat-icon></div>
+      <span class="kpi-card__label">Ingresos totales</span>
+      <span class="kpi-card__value">{{ execData.totalRevenue | currency:'PEN':'S/ ' }}</span>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-card__icon"><mat-icon>production_quantity_limits</mat-icon></div>
+      <span class="kpi-card__label">Costo de ventas (COGS)</span>
+      <span class="kpi-card__value">{{ execData.totalCogs | currency:'PEN':'S/ ' }}</span>
+    </div>
+
+    <div class="kpi-card kpi-card--success">
+      <div class="kpi-card__icon"><mat-icon>trending_up</mat-icon></div>
+      <span class="kpi-card__label">Margen bruto</span>
+      <span class="kpi-card__value">{{ execData.grossMargin | currency:'PEN':'S/ ' }}</span>
+      <span class="kpi-card__sub" *ngIf="execData.grossMarginPct !== null">
+        {{ execData.grossMarginPct | number:'1.1-1' }}%
+      </span>
+      <span class="kpi-card__sub" *ngIf="execData.grossMarginPct === null">—</span>
+    </div>
+
+    <div class="kpi-card" *ngIf="valuationData"
+         matTooltip="Valuación actual en tiempo real (independiente del período seleccionado)"
+         matTooltipPosition="below">
+      <div class="kpi-card__icon"><mat-icon>inventory_2</mat-icon></div>
+      <span class="kpi-card__label">Valor del inventario</span>
+      <span class="kpi-card__value">{{ valuationData.totalValue | currency:'PEN':'S/ ' }}</span>
+    </div>
+  </div>
+
+  <!-- ── Layout inferior: gráfica + acceso rápido ───────────────────────── -->
+  <div class="bottom-layout" *ngIf="!loading">
+
+    <!-- Dona de valuación por categoría -->
+    <div class="chart-panel" *ngIf="valuationData && donutChartData.datasets.length > 0 && (donutChartData.datasets[0]?.data?.length ?? 0) > 0">
+      <h2 class="chart-panel__title">Inventario por categoría</h2>
+      <canvas baseChart
+              [data]="donutChartData"
+              [options]="donutChartOptions"
+              type="doughnut"
+              class="donut-chart">
+      </canvas>
+    </div>
+
+    <!-- Acceso rápido a otras vistas -->
+    <div class="quick-access">
+      <h2 class="quick-access__title">Acceso rápido</h2>
+      <div class="quick-access__grid">
+        <button class="quick-card" (click)="navigateTo('/reports/analytics')">
+          <mat-icon>analytics</mat-icon>
+          <span>Dashboard Analítico</span>
+          <small>Rentabilidad, tendencia, top productos</small>
+        </button>
+        <button class="quick-card" (click)="navigateTo('/reports/operational')">
+          <mat-icon>inventory_2</mat-icon>
+          <span>Reportes Operativos</span>
+          <small>Stock bajo, Kardex, movimientos</small>
+        </button>
+        <button class="quick-card" (click)="navigateTo('/reports/pending')">
+          <mat-icon>pending_actions</mat-icon>
+          <span>Operaciones Pendientes</span>
+          <small>Compras y ventas sin completar</small>
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Estado vacío si ambas fuentes fallaron -->
+  <div class="empty-state" *ngIf="!loading && !execData && !valuationData">
+    <mat-icon>dashboard</mat-icon>
+    <p>No se pudieron cargar los datos del dashboard</p>
+    <button mat-stroked-button color="primary" (click)="load()">Reintentar</button>
+  </div>
+
+</div>

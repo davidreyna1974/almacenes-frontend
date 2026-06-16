@@ -59,8 +59,24 @@ const ALL_NAV_ITEMS: NavItem[] = [
         roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'] },
     ]
   },
-  { label: 'Reportes', icon: 'bar_chart',        route: '/reports',
-    roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'] },
+  {
+    label: 'Reportes', icon: 'bar_chart',
+    roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'],
+    children: [
+      { label: 'Dashboard Ejecutivo', icon: 'dashboard',
+        route: '/reports/executive',
+        roles: ['ROLE_ADMIN'] },
+      { label: 'Dashboard Analítico', icon: 'analytics',
+        route: '/reports/analytics',
+        roles: ['ROLE_ADMIN', 'ROLE_MANAGER'] },
+      { label: 'Operativo',           icon: 'inventory_2',
+        route: '/reports/operational',
+        roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN'] },
+      { label: 'Pendientes',          icon: 'pending_actions',
+        route: '/reports/pending',
+        roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'] },
+    ]
+  },
   { label: 'Usuarios', icon: 'manage_accounts',  route: '/admin/users',
     roles: ['ROLE_ADMIN'] },
 ];

@@ -766,6 +766,7 @@ En producción, la URL viene de la configuración del servidor o de un archivo
 - **Headers de tabla**: el estilo `.mat-mdc-header-cell { font-weight: 600; color: #6B3C6B; background: #F2E4F2; }` se define en un mixin/placeholder SCSS compartido y se incluye (`@include`/`@extend`) en cada `.catalog-table` — nunca se copia manualmente en el `.scss` de cada componente. (L32 — BUG-INV-07)
 - **Reset de paginador**: toda lista con filtros/búsqueda debe resetear el paginador a la página 0 al cambiar el filtro, en el mismo punto donde se aplica. (L31 — BUG-INV-10)
 - **Botones de acción en filas clickeables**: cuando `mat-row` tiene `(click)="viewDetail(row)"`, TODOS los botones de acción dentro de la fila DEBEN incluir `$event.stopPropagation()` al inicio de su handler: `(click)="$event.stopPropagation(); acción(row)"`. Sin esto, el click burbujea al `mat-row`, navega al detalle y destruye el componente antes de que `afterClosed()` pueda ejecutarse. (L27 — BUG-M3-22)
+- **Botones de consulta con validación de fechas**: cualquier botón "Consultar" / "Buscar" que dependa de un rango `from`/`to` DEBE incluir la validación `from > to` en su condición `[disabled]`, no solo `[disabled]="loading"`. Sin esto el usuario puede disparar una petición con fechas inválidas. Patrón: `[disabled]="loading || datesInvalidError(fromCtrl.value, toCtrl.value)"`. (BUG-REP-03)
 
 ### Navegación lista ↔ detalle con tabs
 
