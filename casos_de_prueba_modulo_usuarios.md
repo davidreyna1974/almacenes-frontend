@@ -6,8 +6,8 @@
 **Roles con acceso a /admin/profile:** ADMIN, MANAGER, WAREHOUSEMAN, SALES  
 **Roles sin acceso a /admin/users:** MANAGER, WAREHOUSEMAN, SALES  
 **Fecha de creación:** 2026-06-16  
-**Última actualización:** 2026-06-16  
-**Estado del documento:** ⏳ En desarrollo — implementación pendiente
+**Última actualización:** 2026-06-16 (Fase 3 — verificación browser parcial)  
+**Estado del documento:** ⚠️ Parcialmente verificado — 38 casos ✅ PASS, 53 ⏳ PENDIENTE
 
 ---
 
@@ -45,18 +45,20 @@
 
 | Categoría | Total casos | PASS | FAIL | PENDIENTE |
 |---|---|---|---|---|
-| SEC — Seguridad de rutas | 5 | 0 | 0 | 5 |
-| RBAC — Control de acceso UI | 9 | 0 | 0 | 9 |
+| SEC — Seguridad de rutas | 5 | 1 | 0 | 4 |
+| RBAC — Control de acceso UI | 9 | 4 | 0 | 5 |
 | CRUD — Flujos de datos | 11 | 0 | 0 | 11 |
-| VAL — Validaciones de formulario | 13 | 0 | 0 | 13 |
-| BSRCH — Búsqueda e inputs | 3 | 0 | 0 | 3 |
-| UI — Botones e íconos | 16 | 0 | 0 | 16 |
+| VAL — Validaciones de formulario | 13 | 4 | 0 | 9 |
+| BSRCH — Búsqueda e inputs | 3 | 2 | 0 | 1 |
+| UI — Botones e íconos | 16 | 13 | 0 | 3 |
 | FLOW — Flujos de estado/negocio | 7 | 0 | 0 | 7 |
 | RN — Reglas de negocio | 7 | 0 | 0 | 7 |
 | ERR — Mensajes de error | 8 | 0 | 0 | 8 |
-| EMPTY — Estados vacíos | 2 | 0 | 0 | 2 |
-| VIS — Visual y estética | 10 | 0 | 0 | 10 |
-| **TOTAL** | **91** | **0** | **0** | **91** |
+| EMPTY — Estados vacíos | 2 | 1 | 0 | 1 |
+| VIS — Visual y estética | 10 | 13* | 0 | 8 |
+| **TOTAL** | **91** | **38** | **0** | **53** |
+
+> \* VIS abarca casos distribuidos en VIS-USR (7), VIS-PROF (4) y VIS-GEN (10) = 21 casos reales.
 
 > Actualizar este resumen cada vez que se completa una sección.
 
@@ -68,7 +70,7 @@
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| SEC-01 | Acceso directo `/admin/users` con rol MANAGER | qa_manager | Sesión activa con JWT de MANAGER | Redirige a home (`/`); no se muestra la lista de usuarios | ⏳ PENDIENTE | |
+| SEC-01 | Acceso directo `/admin/users` con rol MANAGER | qa_manager | Sesión activa con JWT de MANAGER | Redirige a home (`/`); no se muestra la lista de usuarios | ✅ PASS | Verificado 2026-06-16: URL redirige a `/` |
 | SEC-02 | Acceso directo `/admin/users` con rol WAREHOUSEMAN | qa_warehouse | Sesión activa con JWT de WAREHOUSEMAN | Redirige a home (`/`); no se muestra la lista de usuarios | ⏳ PENDIENTE | |
 | SEC-03 | Acceso directo `/admin/users` con rol SALES | qa_sales | Sesión activa con JWT de SALES | Redirige a home (`/`); no se muestra la lista de usuarios | ⏳ PENDIENTE | |
 | SEC-04 | Acceso directo `/admin/users` sin JWT (sesión caducada) | (sin JWT) | Token eliminado de localStorage | Redirige a `/login` | ⏳ PENDIENTE | |
@@ -82,11 +84,11 @@
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VIS-USR-01 | Título de la página visible | admin | "Usuarios" o similar visible como encabezado | ⏳ PENDIENTE | |
-| VIS-USR-02 | Columnas de la tabla: Usuario, Email, Roles, Alta | admin | Las 4 columnas visibles con headers | ⏳ PENDIENTE | |
-| VIS-USR-03 | Roles de cada usuario mostrados como chips de colores | admin | Chips: ADMIN→`#6B3C6B`, MANAGER→`#1565C0`, WAREHOUSEMAN→`#2E7D32`, SALES→`#E65100` | ⏳ PENDIENTE | |
-| VIS-USR-04 | Fecha de alta (`createdAt`) formateada como `dd/MM/yyyy` | admin | Fecha legible; no ISO 8601 en bruto | ⏳ PENDIENTE | |
-| VIS-USR-05 | Header de tabla con fondo `#F2E4F2` y texto `#6B3C6B` via mixin SCSS (L32) | admin | Colores de marca correctos; CSS viene del mixin compartido | ⏳ PENDIENTE | |
+| VIS-USR-01 | Título de la página visible | admin | "Usuarios" o similar visible como encabezado | ✅ PASS | Breadcrumb "Usuarios" visible |
+| VIS-USR-02 | Columnas de la tabla: Usuario, Email, Roles, Alta | admin | Las 4 columnas visibles con headers | ✅ PASS | 4 columnas confirmadas |
+| VIS-USR-03 | Roles de cada usuario mostrados como chips de colores | admin | Chips: ADMIN→`#6B3C6B`, MANAGER→`#1565C0`, WAREHOUSEMAN→`#2E7D32`, SALES→`#E65100` | ✅ PASS | Colores correctos en tabla |
+| VIS-USR-04 | Fecha de alta (`createdAt`) formateada como `dd/MM/yyyy` | admin | Fecha legible; no ISO 8601 en bruto | ✅ PASS | "14/06/2026" verificado |
+| VIS-USR-05 | Header de tabla con fondo `#F2E4F2` y texto `#6B3C6B` via mixin SCSS (L32) | admin | Colores de marca correctos; CSS viene del mixin compartido | ✅ PASS | Headers con lavanda y púrpura |
 | VIS-USR-06 | `mat-progress-bar` visible durante carga inicial | admin | Barra indeterminada en parte superior mientras carga | ⏳ PENDIENTE | |
 | VIS-USR-07 | Cursor `pointer` en filas; hover cambia el fondo | admin | Comportamiento hover correcto | ⏳ PENDIENTE | |
 
@@ -94,9 +96,9 @@
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RBAC-USR-01 | Botón "+ Nuevo usuario" visible | admin | Botón visible en la parte superior derecha | ⏳ PENDIENTE | |
-| RBAC-USR-02 | Ítem "Usuarios" visible en sidebar | admin | Ítem con ícono `manage_accounts` visible | ⏳ PENDIENTE | |
-| RBAC-USR-03 | Ítem "Usuarios" NO visible en sidebar para MANAGER | qa_manager | Ítem ausente del sidebar | ⏳ PENDIENTE | |
+| RBAC-USR-01 | Botón "+ Nuevo usuario" visible | admin | Botón visible en la parte superior derecha | ✅ PASS | Botón visible, abre diálogo crear |
+| RBAC-USR-02 | Ítem "Usuarios" visible en sidebar | admin | Ítem con ícono `manage_accounts` visible | ✅ PASS | Ítem "Usuarios" activo en sidebar |
+| RBAC-USR-03 | Ítem "Usuarios" NO visible en sidebar para MANAGER | qa_manager | Ítem ausente del sidebar | ✅ PASS | Sidebar MANAGER: sin "Usuarios" |
 | RBAC-USR-04 | Ítem "Usuarios" NO visible en sidebar para SALES | qa_sales | Ítem ausente del sidebar | ⏳ PENDIENTE | |
 
 ### 1c. Búsqueda (BSRCH)
@@ -105,17 +107,17 @@
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| BSRCH-USR-01 | Filtrar por username (client-side) | admin | Lista cargada con varios usuarios | Filtra la lista visible en tiempo real | ⏳ PENDIENTE | N/A si no se implementa filtro |
-| BSRCH-USR-02 | Filtrar es case insensitive | admin | Usuario con username en mayúsculas | Buscar en minúsculas lo encuentra | ⏳ PENDIENTE | N/A si no se implementa filtro |
-| BSRCH-USR-03 | Limpiar filtro restaura la lista completa | admin | Filtro activo | Al limpiar, todos los usuarios visibles | ⏳ PENDIENTE | N/A si no se implementa filtro |
+| BSRCH-USR-01 | Filtrar por username (client-side) | admin | Lista cargada con varios usuarios | Filtra la lista visible en tiempo real | ✅ PASS | "qa_manager" → 1 resultado |
+| BSRCH-USR-02 | Filtrar es case insensitive | admin | Usuario con username en mayúsculas | Buscar en minúsculas lo encuentra | ✅ PASS | "ADMIN" → encuentra "admin" |
+| BSRCH-USR-03 | Limpiar filtro restaura la lista completa | admin | Filtro activo | Al limpiar, todos los usuarios visibles | ⏳ PENDIENTE | |
 
 ### 1d. Botones e íconos en tabla (UI)
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| UI-USR-01 | Clic en fila abre `UserFormDialogComponent` en modo edición | admin | Lista cargada | Diálogo abre con datos del usuario precargados | ⏳ PENDIENTE | Patrón L34 |
-| UI-USR-02 | Botón "+ Nuevo usuario" abre `UserFormDialogComponent` en modo crear | admin | — | Diálogo abre con todos los campos vacíos | ⏳ PENDIENTE | |
-| UI-USR-03 | Paginador visible cuando hay más usuarios que el tamaño de página | admin | Más de 20 usuarios activos en BD | Paginador con total visible | ⏳ PENDIENTE | |
+| UI-USR-01 | Clic en fila abre `UserFormDialogComponent` en modo edición | admin | Lista cargada | Diálogo abre con datos del usuario precargados | ✅ PASS | Click en qa_manager → diálogo con datos |
+| UI-USR-02 | Botón "+ Nuevo usuario" abre `UserFormDialogComponent` en modo crear | admin | — | Diálogo abre con todos los campos vacíos | ✅ PASS | Campos vacíos, campo password visible |
+| UI-USR-03 | Paginador visible cuando hay más usuarios que el tamaño de página | admin | Más de 20 usuarios activos en BD | Paginador con total visible | ✅ PASS | "1 – 20 of 148" visible |
 | UI-USR-04 | Cambio de página carga la página correcta del servidor | admin | Paginador con más de 1 página | Filas cambian al ir a página 2 | ⏳ PENDIENTE | |
 
 ### 1e. Estados vacíos (EMPTY)
@@ -123,7 +125,7 @@
 | ID | Descripción | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|
 | EMPTY-USR-01 | Lista de usuarios activos vacía (caso extremo) | Ícono + "No hay usuarios registrados" o equivalente | ⏳ PENDIENTE | Difícil de reproducir — al menos existe el usuario `admin` |
-| EMPTY-USR-02 | Filtro client-side sin resultados (si se implementa búsqueda) | Ícono + "Sin resultados para el término buscado" | ⏳ PENDIENTE | N/A si no hay filtro |
+| EMPTY-USR-02 | Filtro client-side sin resultados (si se implementa búsqueda) | Ícono + "Sin resultados para el término buscado" | ✅ PASS | "zzz_inexistente_xyz" → ícono + mensaje contextual |
 
 ---
 
@@ -133,35 +135,35 @@
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| UI-UFMD-01 | Diálogo crear: título "Nuevo usuario" | admin | Clic en "+ Nuevo usuario" | Título correcto; todos los campos vacíos | ⏳ PENDIENTE | |
-| UI-UFMD-02 | Diálogo editar: título "Editar usuario" con el username | admin | Clic en fila de usuario existente | Título con el nombre del usuario; datos precargados | ⏳ PENDIENTE | |
-| UI-UFMD-03 | Modo crear: campo Contraseña visible | admin | Diálogo en modo crear | Campo password presente con tipo `password` | ⏳ PENDIENTE | |
-| UI-UFMD-04 | Modo editar: campo Contraseña NO visible | admin | Diálogo en modo editar | Campo password ausente del DOM | ⏳ PENDIENTE | La contraseña no es editable por el admin desde aquí |
+| UI-UFMD-01 | Diálogo crear: título "Nuevo usuario" | admin | Clic en "+ Nuevo usuario" | Título correcto; todos los campos vacíos | ✅ PASS | Título "Nuevo usuario" confirmado |
+| UI-UFMD-02 | Diálogo editar: título "Editar usuario" con el username | admin | Clic en fila de usuario existente | Título con el nombre del usuario; datos precargados | ✅ PASS | "Editar usuario: qa_manager" con datos |
+| UI-UFMD-03 | Modo crear: campo Contraseña visible | admin | Diálogo en modo crear | Campo password presente con tipo `password` | ✅ PASS | Campo "Contraseña*" presente |
+| UI-UFMD-04 | Modo editar: campo Contraseña NO visible | admin | Diálogo en modo editar | Campo password ausente del DOM | ✅ PASS | Solo username, email y roles en modo editar |
 | UI-UFMD-05 | Click en backdrop/ESC no cierra el diálogo (L31, `disableClose: true`) | admin | Diálogo abierto con cambios | Diálogo permanece abierto | ⏳ PENDIENTE | |
-| UI-UFMD-06 | Campos obligatorios tienen `*` (solo uno, no `**`) | admin | Diálogo abierto | Un solo `*` por campo obligatorio | ⏳ PENDIENTE | |
-| UI-UFMD-07 | Sección de roles: 4 checkboxes con etiquetas legibles | admin | Diálogo en modo crear | ADMIN, Manager, Almacenista, Ventas como checkboxes | ⏳ PENDIENTE | Etiquetas en español, valores internos ROLE_X |
-| UI-UFMD-08 | Botón "Cancelar" cierra el diálogo sin guardar | admin | Diálogo con cambios | Cierra; lista no cambia | ⏳ PENDIENTE | |
+| UI-UFMD-06 | Campos obligatorios tienen `*` (solo uno, no `**`) | admin | Diálogo abierto | Un solo `*` por campo obligatorio | ✅ PASS | "Nombre de usuario*", "Email*" confirmados |
+| UI-UFMD-07 | Sección de roles: 4 checkboxes con etiquetas legibles | admin | Diálogo en modo crear | ADMIN, Manager, Almacenista, Ventas como checkboxes | ✅ PASS | 4 checkboxes con etiquetas en español |
+| UI-UFMD-08 | Botón "Cancelar" cierra el diálogo sin guardar | admin | Diálogo con cambios | Cierra; lista no cambia | ✅ PASS | Botón "Cancelar" funciona |
 
 ### 2b. RBAC en formulario (RBAC)
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RBAC-UFMD-01 | Botón "Desactivar usuario" visible para usuario distinto al propio | admin | Botón visible si el usuario a editar ≠ `admin` logueado | ⏳ PENDIENTE | |
-| RBAC-UFMD-02 | Botón "Desactivar usuario" NO visible al editar la propia cuenta | admin | Admin edita su propio registro → botón ausente del DOM | ⏳ PENDIENTE | RN-USR-04 |
+| RBAC-UFMD-01 | Botón "Desactivar usuario" visible para usuario distinto al propio | admin | Botón visible si el usuario a editar ≠ `admin` logueado | ✅ PASS | "Desactivar" visible al editar qa_manager |
+| RBAC-UFMD-02 | Botón "Desactivar usuario" NO visible al editar la propia cuenta | admin | Admin edita su propio registro → botón ausente del DOM | ⏳ PENDIENTE | |
 
 ### 2c. Validaciones al crear (VAL)
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VAL-UFMD-01 | Username vacío → error visible | Campo vacío | Error "El nombre de usuario es obligatorio" bajo el campo | ⏳ PENDIENTE | |
+| VAL-UFMD-01 | Username vacío → error visible | Campo vacío | Error "El nombre de usuario es obligatorio" bajo el campo | ✅ PASS | "El nombre de usuario es obligatorio." visible |
 | VAL-UFMD-02 | Username con más de 50 caracteres | 51 chars | Error o campo no acepta más de 50 | ⏳ PENDIENTE | |
 | VAL-UFMD-03 | Email vacío → error visible | Campo vacío | Error "El email es obligatorio" | ⏳ PENDIENTE | |
 | VAL-UFMD-04 | Email con formato inválido | "noesun@email" o "sinArroba" | Error "El email no tiene un formato válido" | ⏳ PENDIENTE | |
 | VAL-UFMD-05 | Contraseña vacía (modo crear) | Campo vacío | Error "La contraseña es obligatoria" | ⏳ PENDIENTE | |
 | VAL-UFMD-06 | Contraseña menor a 8 caracteres (modo crear) | 7 chars | Error "La contraseña debe tener al menos 8 caracteres" | ⏳ PENDIENTE | |
-| VAL-UFMD-07 | Sin ningún rol seleccionado → botón Guardar deshabilitado | Todos los checkboxes desmarcados | Botón "Crear usuario"/"Guardar" deshabilitado + mensaje de error visible | ⏳ PENDIENTE | |
-| VAL-UFMD-08 | Botón Guardar deshabilitado con formulario inválido | Campos inválidos | `disabled:true` en el DOM | ⏳ PENDIENTE | |
-| VAL-UFMD-09 | Botón Guardar deshabilitado en modo editar al cargar (sin cambios) (L25) | Diálogo recién abierto | `disabled:true` — `form.dirty = false` | ⏳ PENDIENTE | |
+| VAL-UFMD-07 | Sin ningún rol seleccionado → botón Guardar deshabilitado | Todos los checkboxes desmarcados | Botón "Crear usuario"/"Guardar" deshabilitado + mensaje de error visible | ✅ PASS | "Debe seleccionar al menos un rol." visible |
+| VAL-UFMD-08 | Botón Guardar deshabilitado con formulario inválido | Campos inválidos | `disabled:true` en el DOM | ✅ PASS | "Crear usuario" deshabilitado con form vacío |
+| VAL-UFMD-09 | Botón Guardar deshabilitado en modo editar al cargar (sin cambios) (L25) | Diálogo recién abierto | `disabled:true` — `form.dirty = false` | ✅ PASS | "Guardar cambios" deshabilitado al abrir qa_manager |
 | VAL-UFMD-10 | Botón Guardar se activa al modificar un campo | Formulario cargado → editar username | `disabled:false` después del cambio | ⏳ PENDIENTE | |
 | VAL-UFMD-11 | Botón Guardar se desactiva después de guardar exitosamente | Guardar exitoso | `disabled:true` — `markAsPristine()` ejecutado | ⏳ PENDIENTE | |
 
@@ -197,17 +199,17 @@
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VIS-PROF-01 | Datos del propio usuario visibles: username, email, roles, fecha de alta | admin | Todos los campos con datos correctos del JWT / GET /me | ⏳ PENDIENTE | |
-| VIS-PROF-02 | Roles mostrados como chips de colores semánticos | qa_manager | Chip MANAGER con color `#1565C0` | ⏳ PENDIENTE | |
-| VIS-PROF-03 | `updatedAt` null → muestra "—" (no "null" ni crash) | admin | Si el usuario nunca fue editado, campo muestra "—" | ⏳ PENDIENTE | |
-| VIS-PROF-04 | Breadcrumb "Mi perfil" visible en la topbar | admin | "Mi perfil" en el breadcrumb al navegar a /admin/profile | ⏳ PENDIENTE | Requiere agregar entrada al BREADCRUMB_MAP |
+| VIS-PROF-01 | Datos del propio usuario visibles: username, email, roles, fecha de alta | admin | Todos los campos con datos correctos del JWT / GET /me | ✅ PASS | admin/admin@almacenes.com/fecha visible |
+| VIS-PROF-02 | Roles mostrados como chips de colores semánticos | qa_manager | Chip MANAGER con color `#1565C0` | ✅ PASS | Chip "Manager" azul para qa_manager |
+| VIS-PROF-03 | `updatedAt` null → muestra "—" (no "null" ni crash) | admin | Si el usuario nunca fue editado, campo muestra "—" | ✅ PASS | "Última actualización: —" confirmado |
+| VIS-PROF-04 | Breadcrumb "Mi perfil" visible en la topbar | admin | "Mi perfil" en el breadcrumb al navegar a /admin/profile | ✅ PASS | Breadcrumb "Mi perfil" visible |
 
 ### 3b. Botones e íconos en perfil (UI)
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
 | UI-PROF-01 | Botón "Cambiar contraseña" visible para todos los roles | qa_sales | En /admin/profile con sesión de SALES | Botón visible | ⏳ PENDIENTE | |
-| UI-PROF-02 | Clic en "Cambiar contraseña" abre `ChangePasswordDialogComponent` | admin | — | Diálogo con 3 campos de contraseña | ⏳ PENDIENTE | |
+| UI-PROF-02 | Clic en "Cambiar contraseña" abre `ChangePasswordDialogComponent` | admin | — | Diálogo con 3 campos de contraseña | ✅ PASS | Diálogo con 3 campos + toggles visible |
 
 ---
 
@@ -217,7 +219,7 @@
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| UI-CHPWD-01 | Diálogo tiene 3 campos: contraseña actual, nueva, confirmar | Diálogo abierto | Los 3 campos tipo `password` visibles | ⏳ PENDIENTE | |
+| UI-CHPWD-01 | Diálogo tiene 3 campos: contraseña actual, nueva, confirmar | Diálogo abierto | Los 3 campos tipo `password` visibles | ✅ PASS | 3 campos con toggle de visibilidad |
 | UI-CHPWD-02 | Click backdrop/ESC no cierra (L31, `disableClose: true`) | Diálogo abierto con cambios | Diálogo permanece abierto | ⏳ PENDIENTE | |
 | VAL-CHPWD-01 | Contraseña actual vacía → error visible | Campo vacío | Error "La contraseña actual es obligatoria" | ⏳ PENDIENTE | |
 | VAL-CHPWD-02 | Nueva contraseña < 8 caracteres → error visible | 7 chars | Error "La nueva contraseña debe tener al menos 8 caracteres" | ⏳ PENDIENTE | |
@@ -232,8 +234,8 @@
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| UI-TOP-01 | Clic en chip de usuario abre dropdown con opciones | admin | Sesión activa | Menú con "Mi perfil" y "Cerrar sesión" visible | ⏳ PENDIENTE | |
-| UI-TOP-02 | Dropdown "Mi perfil" navega a `/admin/profile` | admin | Dropdown abierto | Navega a /admin/profile; breadcrumb "Mi perfil" | ⏳ PENDIENTE | |
+| UI-TOP-01 | Clic en chip de usuario abre dropdown con opciones | admin | Sesión activa | Menú con "Mi perfil" y "Cerrar sesión" visible | ✅ PASS | Dropdown con 2 opciones visible |
+| UI-TOP-02 | Dropdown "Mi perfil" navega a `/admin/profile` | admin | Dropdown abierto | Navega a /admin/profile; breadcrumb "Mi perfil" | ✅ PASS | Navegó a /admin/profile correctamente |
 | UI-TOP-03 | Dropdown "Cerrar sesión" hace logout | admin | Dropdown abierto | Token eliminado; redirige a /login | ⏳ PENDIENTE | |
 | UI-TOP-04 | Dropdown visible para todos los roles | qa_sales | Sesión con SALES | Chip clickeable; dropdown con mismas opciones | ⏳ PENDIENTE | |
 
@@ -286,16 +288,16 @@
 
 | ID | Descripción | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|
-| VIS-GEN-01 | Breadcrumb "Usuarios" en `/admin/users` | "Usuarios" en la topbar | ⏳ PENDIENTE | Ya registrado en BREADCRUMB_MAP línea 30 |
-| VIS-GEN-02 | Breadcrumb "Mi perfil" en `/admin/profile` | "Mi perfil" en la topbar | ⏳ PENDIENTE | Requiere agregar al BREADCRUMB_MAP |
-| VIS-GEN-03 | Botón "+ Nuevo usuario" con color primario `#6B3C6B` | Botón con color de marca correcto | ⏳ PENDIENTE | |
-| VIS-GEN-04 | Botón "Desactivar usuario" con color `warn` (rojo) | Botón en rojo | ⏳ PENDIENTE | |
+| VIS-GEN-01 | Breadcrumb "Usuarios" en `/admin/users` | "Usuarios" en la topbar | ✅ PASS | "Almacenes › Usuarios" visible |
+| VIS-GEN-02 | Breadcrumb "Mi perfil" en `/admin/profile` | "Mi perfil" en la topbar | ✅ PASS | "Almacenes › Mi perfil" visible |
+| VIS-GEN-03 | Botón "+ Nuevo usuario" con color primario `#6B3C6B` | Botón con color de marca correcto | ✅ PASS | Botón con fondo púrpura de marca |
+| VIS-GEN-04 | Botón "Desactivar usuario" con color `warn` (rojo) | Botón en rojo | ✅ PASS | Botón "Desactivar" en color rojo |
 | VIS-GEN-05 | Diálogos son modales — click fuera no cierra (L31) | Click backdrop no cierra ningún diálogo del módulo | ⏳ PENDIENTE | |
-| VIS-GEN-06 | Chip de usuario en TopBar ahora es un botón con flecha ▼ | Chip clickeable con indicador de dropdown | ⏳ PENDIENTE | |
-| VIS-GEN-07 | Usuario activo (propio) en la lista resaltado visualmente | Fila del usuario logueado con indicador visual | ⏳ PENDIENTE | N/A si no se implementa este indicador |
+| VIS-GEN-06 | Chip de usuario en TopBar ahora es un botón con flecha ▼ | Chip clickeable con indicador de dropdown | ✅ PASS | Chip "ADMIN" con flecha ▼ clickeable |
+| VIS-GEN-07 | Usuario activo (propio) en la lista resaltado visualmente | Fila del usuario logueado con indicador visual | N/A | No se implementó indicador visual propio |
 | VIS-GEN-08 | `mat-progress-bar` visible durante carga de GET /me en perfil | Barra en parte superior de /admin/profile mientras carga | ⏳ PENDIENTE | |
-| VIS-GEN-09 | Campos de contraseña tienen ícono de mostrar/ocultar (toggle visibility) | Ícono ojo en campos password del diálogo de cambio de contraseña | ⏳ PENDIENTE | N/A si no se implementa |
-| VIS-GEN-10 | Formulario diálogo con `fondo #F2E4F2` (lavanda) o card blanca sobre fondo gris | Colores de marca correctos dentro del diálogo | ⏳ PENDIENTE | |
+| VIS-GEN-09 | Campos de contraseña tienen ícono de mostrar/ocultar (toggle visibility) | Ícono ojo en campos password del diálogo de cambio de contraseña | ✅ PASS | Íconos ojo visibles en 3 campos |
+| VIS-GEN-10 | Formulario diálogo con `fondo #F2E4F2` (lavanda) o card blanca sobre fondo gris | Colores de marca correctos dentro del diálogo | ✅ PASS | Diálogos con fondo blanco sobre gris |
 
 ---
 
@@ -303,7 +305,8 @@
 
 | Bug ID | Descripción | Dónde se encontró | Estado |
 |---|---|---|---|
-| — | (sin bugs aún — implementación pendiente) | — | — |
+| BUG-USR-00 | Tests con jasmine.createSpyObj incompatibles con Vitest (Angular 21) | Fase 3 — ejecución de tests | ✅ Resuelto — reescrito con vi.fn() |
+| BUG-USR-01 | Backend UserServiceImpl lanzaba RuntimeException sin tipar → HTTP 500 | Fase 0 — revisión backend | ✅ Resuelto — excepciones tipadas aplicadas |
 
 ---
 

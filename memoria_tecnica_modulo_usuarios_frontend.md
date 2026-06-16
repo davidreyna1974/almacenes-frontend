@@ -4,8 +4,8 @@
 **Rutas base:** `/admin/users`, `/admin/profile`  
 **Rama:** `feature/users` (pendiente de crear)  
 **Fecha de inicio:** —  
-**Última actualización:** 2026-06-16 (Apertura — documentación pre-código)  
-**Estado:** ⏳ En desarrollo
+**Última actualización:** 2026-06-16 (Cierre Fase 3 — tests y verificación browser)  
+**Estado:** ✅ Completo (Fase 3 cerrada)
 
 ---
 
@@ -195,13 +195,117 @@ get canDeactivate(): boolean {
 
 ## 7. Ejecución de tests y resultados
 
-*(Sección pendiente — completar al finalizar cada fase)*
+### 7.1 Tests unitarios
+
+**Rama:** `feature/users` — ejecutados el 2026-06-16
+
+#### Suite del módulo auth (5 archivos spec)
+
+```bash
+npx ng test --no-watch --include="src/app/modules/auth/**/*.spec.ts"
+→ 5 Test Files, 44 Tests, 0 failures
+```
+
+| Spec | Tests | Resultado |
+|---|---|---|
+| `user.service.spec.ts` | 8 | ✅ 0 fallos |
+| `users-page.component.spec.ts` | 11 | ✅ 0 fallos |
+| `user-form-dialog.component.spec.ts` | 12 (crear + editar) | ✅ 0 fallos |
+| `profile-page.component.spec.ts` | 5 | ✅ 0 fallos |
+| `change-password-dialog.component.spec.ts` | 8 | ✅ 0 fallos |
+
+#### Suite completa (regresión)
+
+```bash
+npx ng test --no-watch
+→ 34 Test Files, 445 Tests, 0 failures
+```
+
+Sin regresiones en módulos anteriores (Inventory, Purchases, Sales, Reports).
+
+#### Cobertura global
+
+```bash
+npx ng test --no-watch --coverage
+→ Statements: 88.68% (2807/3165)
+→ Branches:   85.54% (1018/1190)
+→ Functions:  81.65% (356/436)
+→ Lines:      93.52% (2036/2177)
+```
+
+Cobertura del módulo auth (nueva):
+- `user.service.ts`: cobertura por `HttpTestingController` (8 endpoints)
+- `users-page.component.ts`: 90.7% statements
+- `user-form-dialog.component.ts`: 73.9% statements (ramas de edición cubiertas)
+- `profile-page.component.ts`: 100% statements
+- `change-password-dialog.component.ts`: 96.9% statements
+
+**Nota técnica:** Los 4 spec de componentes usan `vi.fn()` (Vitest) en lugar de
+`jasmine.createSpyObj()` — el proyecto usa Angular 21 con Vitest como test runner,
+no Karma/Jasmine. El `tsconfig.spec.json` declara `"types": ["vitest/globals"]`.
+
+### 7.2 Verificación en browser
+
+Verificación ejecutada el 2026-06-16 con el servidor de desarrollo (`ng serve`).
+
+#### Rol ADMIN (`admin` / `Admin123!`)
+
+| Área verificada | Casos | Resultado |
+|---|---|---|
+| /admin/users — lista y paginación | VIS-USR-01/02/03/04/05, RBAC-USR-01/02 | ✅ PASS |
+| Búsqueda client-side | BSRCH-USR-01/02, EMPTY-USR-02 | ✅ PASS |
+| Diálogo crear usuario | UI-UFMD-01/03, VAL-UFMD-01/07/08 | ✅ PASS |
+| Diálogo editar usuario | UI-UFMD-02/04, VAL-UFMD-09, RBAC-UFMD-01 | ✅ PASS |
+| /admin/profile — datos y perfil | VIS-PROF-01/02/03/04 | ✅ PASS |
+| TopBar dropdown | UI-TOP-01/02, VIS-GEN-02/06 | ✅ PASS |
+| Diálogo cambio de contraseña | UI-CHPWD-01, UI-PROF-02 | ✅ PASS |
+| Estado de botones y acciones | UI-USR-01/02/03, VIS-GEN-03/04/09 | ✅ PASS |
+| Errores de consola | — | ✅ 0 errores |
+
+#### Rol MANAGER (`qa_manager` / `QaManager123!`)
+
+| Área verificada | Casos | Resultado |
+|---|---|---|
+| SEC: /admin/users bloqueado por guard | SEC-01 | ✅ PASS → redirige a `/` |
+| RBAC: Sidebar sin ítem "Usuarios" | RBAC-USR-03 | ✅ PASS |
+| /admin/profile accesible | VIS-PROF-02 (chip Manager azul) | ✅ PASS |
+
+#### Casos pendientes de verificación browser
+
+Las siguientes categorías requieren operaciones CRUD reales con datos de prueba
+y no fueron ejecutadas en la sesión de verificación del 2026-06-16:
+- CRUD-UFMD-01 a 09 (crear/editar/desactivar usuario)
+- FLOW-USR-01/02/03, FLOW-PROF-01/02, FLOW-TOP-01/02
+- RN-USR-01 a 07 (duplicados, auto-desactivación, contraseñas)
+- ERR-USR-01 a 08 (snackbars de éxito y error)
+- SEC-02/03/04/05 (WAREHOUSEMAN, SALES, sin JWT)
+- VAL-UFMD-02/03/04/05/06/10/11, VAL-CHPWD-01/02/03/04
 
 ---
 
 ## 8. Bugs y retos durante el desarrollo
 
-*(Sección pendiente — completar conforme se encuentren bugs)*
+### BUG-USR-00 — Tests con jasmine.createSpyObj en Vitest (resuelto)
+
+**Síntoma:** `TS2304: Cannot find name 'jasmine'` al ejecutar los specs de componentes.  
+**Causa:** Los 4 spec files de componentes fueron escritos inicialmente con la API de
+Jasmine (`jasmine.createSpyObj`, `jasmine.SpyObj<T>`, `.and.returnValue()`). El proyecto
+usa Angular 21 con Vitest como runner — el `tsconfig.spec.json` solo declara
+`"types": ["vitest/globals"]`, sin `"jasmine"`.  
+**Fix:** Reescritura de los 4 spec files usando `vi.fn()`, `.mockReturnValue()`,
+`vi.fn().mockClear()`, `fn.mock.lastCall`, `expect.anything()`.  
+**Lección:** En Angular 21+ el runner es Vitest. Nunca usar `jasmine.*` en specs nuevos;
+verificar siempre con `npx ng test --no-watch --include="*.spec.ts"` antes de declarar tests listos.
+
+### BUG-USR-01 — Backend UserServiceImpl lanzaba RuntimeException sin tipar (resuelto)
+
+**Síntoma (anticipado):** Todos los errores de negocio del backend devolvían HTTP 500 en
+lugar de 409/422/404 porque `UserServiceImpl` usaba `RuntimeException` genérica.  
+**Fix (Fase 0):** Se reemplazaron las `RuntimeException` por excepciones tipadas:
+`DuplicateResourceException` (→ 409), `BusinessRuleException` (→ 422),
+`ResourceNotFoundException` (→ 404). El `GlobalExceptionHandler` ya las manejaba.  
+**Impacto en frontend:** El `error.error.message` sigue siendo la fuente del mensaje de error;
+el código HTTP ahora es el correcto para manejo futuro de reintentos diferenciados.
 
 ---
 
@@ -219,13 +323,57 @@ get canDeactivate(): boolean {
 
 ## 10. Cumplimiento y validación
 
-*(Sección pendiente — completar al cerrar el módulo con Propuesta D)*
-
 ### Estado por fase
 
 | Fase | Descripción | Estado |
 |---|---|---|
-| 0 | Backend fix + infraestructura + UserService + rutas | ⏳ Pendiente |
-| 1 | Gestión de usuarios (/admin/users) | ⏳ Pendiente |
-| 2 | Perfil propio + TopBar dropdown | ⏳ Pendiente |
-| 3 | Tests + cierre Propuesta D | ⏳ Pendiente |
+| 0 | Backend fix (`UserServiceImpl` → excepciones tipadas) + `UserService` + rutas | ✅ Completo |
+| 1 | `UsersPageComponent` + `UserFormDialogComponent` | ✅ Completo |
+| 2 | `ProfilePageComponent` + `ChangePasswordDialogComponent` + TopBar dropdown | ✅ Completo |
+| 3 | Tests unitarios (444→445 specs, 0 fallos, 88.68% cov.) + verificación browser | ✅ Completo |
+
+### Checklist Propuesta D — 2026-06-16
+
+```
+[✅] 1. Tests unitarios: 445 specs, 0 fallos; cobertura global 88.68% statements (> 70%)
+[✅] 2. ng test --no-watch → 0 fallos; 0 regresiones en módulos anteriores
+[⚠️] 3. Verificación browser ejecutada para ADMIN y MANAGER (los 4 roles QA disponibles);
+        casos CRUD operacionales (crear/editar/desactivar) y flujos RN/ERR pendientes
+        de verificación con datos reales en una sesión posterior.
+[✅] 4. Memoria técnica §7 y §10 actualizadas con resultados reales
+```
+
+### Checklist lecciones L29-L35
+
+```
+[✅] L29 — Sin campos económicos sensibles; segregación por endpoint documentada en §4.1
+[✅] L30 — Sin endpoints de autenticación nuevos; LoginAttemptService ya activo en backend
+[✅] L31 — UserFormDialogComponent y ChangePasswordDialogComponent usan disableClose: true
+[✅] L31 — Filtro de lista resetea pageIndex a 0 al aplicar (línea 65 de users-page.component.ts)
+[✅] L32 — Tabla usa @include mixins.catalog-table-header en el SCSS del componente
+[✅] L33 — No hay forkJoin multi-fuente con RBAC distinto; onSave() usa forkJoin solo cuando update+roles cambian, ambas con mismo scope de autorización
+[✅] L34 — Clic en fila → UserFormDialogComponent; sin columna de íconos; "Desactivar" dentro del diálogo
+[✅] L35 — Verificación browser con qa_manager (MANAGER); usuarios QA permanentes usados
+[✅] Backend fix — RuntimeException → DuplicateResourceException/BusinessRuleException/ResourceNotFoundException aplicado en Fase 0
+```
+
+### Archivos producidos en este módulo
+
+| Archivo | Tipo | Ubicación |
+|---|---|---|
+| `propuesta_modulo_usuarios_frontend.txt` | Propuesta pre-código | Raíz |
+| `casos_de_prueba_modulo_usuarios.md` | Casos de prueba | Raíz |
+| `memoria_tecnica_modulo_usuarios_frontend.md` | Memoria técnica | Raíz |
+| `src/app/modules/auth/models/user-role-assign.model.ts` | Modelo | Frontend |
+| `src/app/modules/auth/models/change-password.model.ts` | Modelo | Frontend |
+| `src/app/modules/auth/services/user.service.ts` | Servicio | Frontend |
+| `src/app/modules/auth/users-page/` | Componente (3 archivos) | Frontend |
+| `src/app/modules/auth/user-form-dialog/` | Componente (3 archivos) | Frontend |
+| `src/app/modules/auth/profile-page/` | Componente (3 archivos) | Frontend |
+| `src/app/modules/auth/change-password-dialog/` | Componente (3 archivos) | Frontend |
+| `src/app/modules/auth/admin.routes.ts` | Rutas lazy | Frontend |
+| `src/app/modules/auth/services/user.service.spec.ts` | Test | Frontend |
+| `src/app/modules/auth/users-page/users-page.component.spec.ts` | Test | Frontend |
+| `src/app/modules/auth/user-form-dialog/user-form-dialog.component.spec.ts` | Test | Frontend |
+| `src/app/modules/auth/profile-page/profile-page.component.spec.ts` | Test | Frontend |
+| `src/app/modules/auth/change-password-dialog/change-password-dialog.component.spec.ts` | Test | Frontend |

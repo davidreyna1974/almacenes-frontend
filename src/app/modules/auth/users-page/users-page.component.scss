@@ -1,0 +1,112 @@
+@use '../../../../styles/mixins' as mixins;
+
+.users-page {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-3);
+  gap: var(--space-2);
+  height: 100%;
+
+  &__progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+  }
+
+  &__toolbar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+
+  &__search {
+    flex: 1;
+    max-width: 400px;
+  }
+
+  &__btn-new {
+    margin-left: auto;
+    gap: 6px;
+  }
+
+  &__table-wrapper {
+    border-radius: 8px;
+    border: 1px solid var(--color-divider);
+    background: #fff;
+    overflow: hidden;
+    flex: 1;
+  }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 64px 24px;
+    color: var(--color-text-secondary);
+
+    mat-icon {
+      font-size: 48px;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 12px;
+      opacity: 0.4;
+    }
+
+    p { margin: 0; font-size: 14px; }
+  }
+}
+
+.users-table {
+  width: 100%;
+
+  @include mixins.catalog-table-header;
+
+  &__username {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+  }
+
+  &__avatar-icon {
+    color: var(--color-text-secondary);
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+
+  &__truncate {
+    display: block;
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__roles {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  &__role-chip {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.2px;
+  }
+}
+
+.catalog-row--clickable {
+  cursor: pointer;
+
+  &:hover { background: #fafafa; }
+
+  &.selected { background: var(--color-surface); }
+}
