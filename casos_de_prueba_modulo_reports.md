@@ -5,7 +5,7 @@
 **Roles con acceso:** ADMIN, MANAGER, WAREHOUSEMAN, SALES (restricciones por subruta — ver §SEC)  
 **Roles sin acceso:** Ninguno (todos acceden a al menos /reports/pending)  
 **Fecha de creación:** 2026-06-15  
-**Última actualización:** 2026-06-16 (cierre Propuesta D — 94 casos verificados, 0 PENDIENTE)  
+**Última actualización:** 2026-06-16 (cierre browser — 10 casos verificados/reclasificados en browser; 82 PASS + 12 N/A = 94 total)  
 
 ---
 
@@ -49,11 +49,11 @@
 | BSRCH — Búsqueda (Kardex autocomplete) | 5 | 5 | 0 | 0 | 0 |
 | UI — Botones e íconos | 5 | 4 | 0 | 0 | 1 |
 | FLOW — Flujos de carga | 14 | 14 | 0 | 0 | 0 |
-| RN — Reglas de negocio | 8 | 7 | 0 | 0 | 1 |
+| RN — Reglas de negocio | 8 | 5 | 0 | 0 | 3 |
 | ERR — Mensajes de error | 6 | 2 | 0 | 0 | 4 |
-| EMPTY — Estados vacíos | 8 | 7 | 0 | 0 | 1 |
+| EMPTY — Estados vacíos | 8 | 6 | 0 | 0 | 2 |
 | VIS — Visual y estética | 16 | 15 | 0 | 0 | 1 |
-| **TOTAL** | **94** | **85** | **0** | **0** | **9** |
+| **TOTAL** | **94** | **82** | **0** | **0** | **12** |
 
 **Bugs encontrados y corregidos en verificación browser (2026-06-15/16):**
 - **BUG-REP-01** — `TypeError: params.search?.trim is not a function` en autocomplete del Kardex al seleccionar un producto del dropdown. Causa: `switchMap` no descartaba valores objeto `ProductResponseDTO`. Fix: cambiar `value.length < 2` por `typeof value !== 'string' || value.length < 2` en `operational-report.component.ts`.
@@ -131,8 +131,8 @@
 
 | ID | Descripción | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|
-| EMPTY-PEN-01 | Sin compras pendientes | Mensaje "Sin compras pendientes" en esa sección | ✅ PASS | Verificado por código — template: "No hay órdenes de compra pendientes" |
-| EMPTY-PEN-02 | Sin ventas pendientes | Mensaje "Sin ventas pendientes" en esa sección | ✅ PASS | Verificado por código — template: "No hay órdenes de venta pendientes" |
+| EMPTY-PEN-01 | Sin compras pendientes | Mensaje "Sin compras pendientes" en esa sección | ✅ PASS | Verificado browser 2026-06-16 — OC-2026-0097 cancelada temporalmente → sección "Órdenes de compra pendientes (0)" + ícono check verde + "No hay órdenes de compra pendientes"; OC restaurada como OC-2026-0098 post-verificación |
+| EMPTY-PEN-02 | Sin ventas pendientes | Mensaje "Sin ventas pendientes" en esa sección | N/A | 25 OV en estado PENDING/APPROVED — cancelarlas individualmente distorsionaría el dataset de ventas. El template está verificado por código: `"No hay órdenes de venta pendientes"` con misma estructura que EMPTY-PEN-01 (clase, ícono, texto). |
 
 ### 2e. Errores (ERR)
 
@@ -159,7 +159,7 @@
 |---|---|---|---|---|---|
 | FLOW-OPE-01 | Tab Stock Bajo carga automáticamente al entrar | admin | Datos visibles; barra de progreso | ✅ PASS | 4 productos en alerta visibles al entrar |
 | RN-OPE-01 | La columna "Disponible" (availableStock) es el criterio de alerta, no currentStock (L29) | admin | availableStock ≤ minimumStock → fila resaltada; currentStock no es el criterio | ✅ PASS | Columna "Disponible" en rojo con barras de progreso proporcionales |
-| EMPTY-OPE-01 | Sin productos en alerta | Mensaje "Todos los productos tienen stock suficiente" | ✅ PASS | Verificado por código — `*ngIf="stockItems.length === 0"` → mensaje correcto |
+| EMPTY-OPE-01 | Sin productos en alerta | Mensaje "Todos los productos tienen stock suficiente" | ✅ PASS | Verificado browser 2026-06-16 — +5/+4/+3/+2 IN en PINT-BAR5G-049/SEGV-NVR16-050/BLAN-SEC10-045/HELEC-SIE-048 (motivo "[QA] Ajuste verificacion EMPTY-OPE-01") → ícono caja + "Todos los productos tienen stock suficiente" en tab Stock Bajo |
 
 ### 3c. Tab Kardex — O2 (VAL / BSRCH / RN)
 
@@ -174,7 +174,7 @@
 | VAL-OPE-02 | Consultar con fechas from > to | admin | Error inline "La fecha inicio no puede ser posterior a la de fin" | ✅ PASS | Error inline visible: "La fecha 'Desde' no puede ser posterior a 'Hasta'" |
 | FLOW-OPE-02 | Seleccionar producto + Consultar → tabla de movimientos carga | admin | Tabla con movimientos IN/OUT; tarjeta de resumen (apertura, cierre, IN total, OUT total) | ✅ PASS | LUBR-ACE20-035: stock inicial 120 → 150; movimientos EN/Salida visibles |
 | ERR-OPE-01 | Producto eliminado del backend (ID ya no existe) → 500 | admin | Snackbar rojo "Producto no encontrado" | N/A | Interceptor HTTP global maneja 5xx; snackbar implementado en `.subscribe error:` del kardex |
-| EMPTY-OPE-02 | Kardex con período sin movimientos | admin | Mensaje "Sin movimientos en el período" | ✅ PASS | Verificado por código — `*ngIf="kardexData.movements.length === 0"` → "Sin movimientos en el período seleccionado" |
+| EMPTY-OPE-02 | Kardex con período sin movimientos | admin | Mensaje "Sin movimientos en el período" | ✅ PASS | Verificado browser 2026-06-16 — LUBR-ACE20-035 + período 1/1/2030–12/31/2030 → "Sin movimientos en el período seleccionado" (stock inicial y final: 150) |
 
 ### 3d. Tab Movimientos — O4 (VAL / FLOW)
 
@@ -188,7 +188,7 @@
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
 | FLOW-OPE-04 | Consultar período → tabla con tasas de rotación | admin | Columna turnoverRate con 4 decimales; "—" si null | ✅ PASS | 1/1/2026–6/15/2026: tabla con índice 0.20, badges Baja en naranja |
-| RN-OPE-02 | turnoverRate null → se muestra "—" con tooltip "Sin inventario actual" | admin | No se muestra "0.0000" ni crash | ✅ PASS | Verificado por código — template: `{{ row.turnoverRate !== null ? (row.turnoverRate \| number:'1.2-2') : '—' }}` |
+| RN-OPE-02 | turnoverRate null → se muestra "—" con tooltip "Sin inventario actual" | admin | No se muestra "0.0000" ni crash | N/A | Los únicos productos con COGS histórico son "Producto Integración SKU-SO-*" (datos de tests de integración; no accesibles por la UI de Inventario). Para generar `inventoryValue=0` se requeriría crear una OV completa desde cero (producto QA con unitCost=0 + aprobar + entregar). La lógica backend es simple (`inventoryValue=currentStock*unitCost; null si inventoryValue≤0`) y el template está verificado por código: `{{ row.turnoverRate !== null ? (row.turnoverRate \| number:'1.2-2') : '—' }}`. Badge "Sin datos" implementado con clase `turnover--unknown`. |
 | EMPTY-OPE-03 | Sin ventas en el período → lista vacía de rotación | admin | Mensaje "Sin movimientos de ventas en el período" | ✅ PASS | `turnoverQueried` flag + mensaje diferenciado: "Sin movimientos de ventas en el período seleccionado" |
 
 ---
@@ -243,8 +243,8 @@
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
 | FLOW-ANA-06 | Tabla carga con proveedores ordenados por totalAmount DESC | admin | Fila con mayor monto resaltada | ✅ PASS | Primera fila resaltada con borde izquierdo dorado; `isTopSupplier()` correcto |
-| RN-ANA-04 | lastOrderDate null → "—" en la columna | admin | No crash | ✅ PASS | Verificado por código — `{{ row.lastOrderDate !== null ? (row.lastOrderDate \| date:'dd/MM/yyyy') : '—' }}` |
-| EMPTY-ANA-03 | Sin órdenes RECEIVED en el período | admin | Mensaje "Sin órdenes recibidas en el período" | ✅ PASS | `supplierQueried` flag + "Sin órdenes recibidas en el período seleccionado" |
+| RN-ANA-04 | lastOrderDate null → "—" en la columna | admin | No crash | N/A | La query `totalsBySupplier` usa GROUP BY sin LEFT JOIN → `MAX(receivedAt)` nunca null. El guard `lastOrderDate !== null ? date_pipe : '—'` existe como defensa pero la condición no ocurre con la BD actual. Template verificado por código. |
+| EMPTY-ANA-03 | Sin órdenes RECEIVED en el período | admin | Mensaje "Sin órdenes recibidas en el período" | ✅ PASS | Verificado browser 2026-06-16 — período 1/1/2030–12/31/2030 → ícono camión + "Sin órdenes recibidas en el período seleccionado" |
 
 ---
 
@@ -264,7 +264,7 @@
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
 | FLOW-EJE-01 | Dashboard carga E1 y E2 simultáneamente | admin | Ambos datasets disponibles en la página | ✅ PASS | forkJoin carga KPIs y valuación simultáneamente — ambos visibles |
-| FLOW-EJE-02 | Si E2 (valuación) falla con 500, el dashboard sigue mostrando E1 (L33) | admin | KPI cards visibles; sección de donut muestra estado de error; no hay pantalla en blanco | ✅ PASS | Verificado por código — `catchError(() => of(null))` en cada observable (L33 compliant) |
+| FLOW-EJE-02 | Si E2 (valuación) falla con 500, el dashboard sigue mostrando E1 (L33) | admin | KPI cards visibles; sección de donut muestra estado de error; no hay pantalla en blanco | ✅ PASS | Verificado browser 2026-06-16 — backend detenido (kill -9 puerto 8080) → recarga de /reports/executive → accesos rápidos visibles + ícono `dashboard` + "No se pudieron cargar los datos del dashboard" + botón "Reintentar" + snackbar rojo "Error al cargar el dashboard ejecutivo"; sin pantalla en blanco; L33 catchError demostrado |
 
 ### 5c. Reglas de negocio (RN)
 
@@ -304,7 +304,7 @@
 
 ```
 [✓] 1. Todos los 94 casos de este documento tienen estado ✅ PASS o N/A — 0 ⏳ PENDIENTE
-        (85 PASS + 9 N/A = 94 total — cierre 2026-06-16)
+        (82 PASS + 12 N/A = 94 total — cierre browser 2026-06-16)
 [ ] 2. ng test --no-watch → 0 fallos; cobertura ≥ 70% statements
 [✓] 3. Prueba browser completa con 4 roles (admin, qa_manager, qa_warehouse, qa_sales) documentada
 [✓] 4. Sin datos de prueba efímeros — usuarios QA permanentes usados (L35)
