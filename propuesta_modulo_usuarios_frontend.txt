@@ -1,0 +1,360 @@
+PROPUESTA DE DESARROLLO — MÓDULO USUARIOS (Frontend)
+=====================================================
+Fecha: 2026-06-16
+Autor: David Reyna Pineda
+Estado: Borrador para revisión
+
+────────────────────────────────────────────────────
+§1. ALCANCE Y JUSTIFICACIÓN
+────────────────────────────────────────────────────
+
+Este módulo completa la funcionalidad pendiente del ítem "Usuarios" en el sidebar
+(/admin/users), que actualmente existe en el menú de navegación pero carece de ruta
+funcional en app.routes.ts. Cubre dos grupos de pantallas con audiencias distintas:
+
+  A) Gestión de usuarios  (/admin/users)       — exclusivo ADMIN
+     Lista paginada de usuarios activos + crear + editar username/email + asignar
+     roles + desactivar. El ADMIN NO puede cambiar la contraseña de otros usuarios
+     (no existe ese endpoint en el backend — separación de responsabilidades).
+
+  B) Perfil propio        (/admin/profile)      — todos los roles autenticados
+     Vista de los datos propios del usuario (username, email, roles, fecha de alta)
+     + cambio de contraseña propia (currentPassword + newPassword + confirmPassword).
+     Accesible desde el dropdown del chip de usuario en la TopBar.
+
+Adicionalmente este módulo requiere una mejora menor a TopbarComponent:
+convertir el chip de usuario en un botón que abra un MatMenu con
+"Mi perfil" y "Cerrar sesión" (actualmente solo tiene "Cerrar sesión" implícito).
+
+
+────────────────────────────────────────────────────
+§2. CONTRATOS API VERIFICADOS
+────────────────────────────────────────────────────
+
+Base URL: /api/v1/auth
+Fuente verificada: UserController.java + UserServiceImpl.java + DTOs
+
+┌────────────────────────────────────┬────────┬───────────────────────────┬────────┐
+│ Endpoint                           │ Método │ Request body              │ HTTP   │
+├────────────────────────────────────┼────────┼───────────────────────────┼────────┤
+│ /auth/users?page=0&size=20         │ GET    │ —                         │ 200    │
+│ /auth/users                        │ POST   │ UserCreateDTO             │ 201    │
+│ /auth/users/{id}                   │ GET    │ —                         │ 200    │
+│ /auth/users/{id}                   │ PUT    │ UserUpdateDTO             │ 200    │
+│ /auth/users/{id}                   │ DELETE │ —                         │ 204    │
+│ /auth/users/{id}/roles             │ PUT    │ UserRoleAssignDTO         │ 200    │
+│ /auth/me                           │ GET    │ —                         │ 200    │
+│ /auth/me/password                  │ PUT    │ ChangePasswordDTO         │ 204    │
+└────────────────────────────────────┴────────┴───────────────────────────┴────────┘
+
+Todos los endpoints /auth/users/** requieren ROLE_ADMIN (SecurityConfig).
+Los endpoints /auth/me/** aceptan cualquier rol autenticado.
+GET /auth/users devuelve solo usuarios con active=true (findByActiveTrue).
+Ordenamiento fijo del backend: createdAt DESC — no hay parámetro de sort.
+
+Interfaces TypeScript (nombres exactos de campos):
+
+  UserResponse {
+    id: number
+    username: string
+    email: string
+    active: boolean
+    createdAt: string        ← ISO 8601 string (no Date)
+    updatedAt: string        ← ISO 8601 string (puede ser null si nunca fue editado)
+    roles: string[]          ← ej. ["ROLE_ADMIN"], ["ROLE_MANAGER", "ROLE_SALES"]
+  }
+
+  UserCreate {               ← ya existe en models/user-create.model.ts ✓
+    username: string         ← max 50 chars, NotBlank
+    password: string         ← min 8 chars, NotBlank
+    email: string            ← email válido, max 100, NotBlank
+    roles: string[]          ← mínimo 1 rol, valores válidos abajo
+  }
+
+  UserUpdate {               ← ya existe en models/user-update.model.ts ✓
+    username: string         ← max 50 chars
+    email: string            ← email válido, max 100
+  }
+
+  UserRoleAssign {           ← NUEVO (aún no existe en frontend)
+    roles: string[]          ← semántica PUT: reemplaza TODOS los roles
+  }
+
+  ChangePassword {           ← NUEVO (aún no existe en frontend)
+    currentPassword: string
+    newPassword: string      ← min 8 chars
+    confirmPassword: string
+  }
+
+Roles válidos (4 valores exactos que acepta el backend):
+  "ROLE_ADMIN", "ROLE_MANAGER", "ROLE_WAREHOUSEMAN", "ROLE_SALES"
+
+
+────────────────────────────────────────────────────
+§3. ⚠️ RIESGO BACKEND — RuntimeException sin tipar en UserServiceImpl
+────────────────────────────────────────────────────
+
+UserServiceImpl lanza RuntimeException genérica (no tipada) en los siguientes casos:
+  - Username duplicado al crear/editar   → debería ser DuplicateResourceException → 409
+  - Email duplicado al crear/editar      → debería ser DuplicateResourceException → 409
+  - Auto-desactivación (propio usuario)  → debería ser BusinessRuleException → 422
+  - Rol no válido en assignRoles()       → debería ser BusinessRuleException → 422
+  - Usuario no encontrado (findOrThrow)  → debería ser ResourceNotFoundException → 404
+  - Contraseña actual incorrecta         → debería ser BusinessRuleException → 422
+  - Contraseñas nuevas no coinciden      → debería ser BusinessRuleException → 422
+
+El GlobalExceptionHandler captura RuntimeException y devuelve HTTP 500 con el
+mensaje del error en el body (campo "message"). Esto significa que el frontend
+puede extraer y mostrar el mensaje, pero todos estos errores de negocio llegan
+como 500 en lugar de 409/422/404.
+
+PLAN DE ACCIÓN (Fase 0, antes de codificar el frontend):
+  1. Corregir UserServiceImpl para usar las excepciones tipadas ya disponibles:
+     - DuplicateResourceException para username/email duplicado
+     - BusinessRuleException para auto-desactivación, rol inválido,
+       contraseña incorrecta, contraseñas no coinciden
+     - ResourceNotFoundException para usuario no encontrado
+  2. Verificar con curl que POST /users con username duplicado devuelve 409
+     y DELETE /users/{propio-id} devuelve 422.
+  3. Recién entonces implementar el frontend sabiendo qué códigos HTTP esperar.
+
+Este fix es pequeño (~10 líneas en UserServiceImpl) y no requiere cambios en
+la interfaz pública ni en SecurityConfig.
+
+
+────────────────────────────────────────────────────
+§4. REGLAS DE NEGOCIO DEL BACKEND
+────────────────────────────────────────────────────
+
+  RN-USR-01: Username único en el sistema. Error en crear y en editar.
+  RN-USR-02: Email único en el sistema. Error en crear y en editar.
+  RN-USR-03: Un usuario debe tener al menos 1 rol (no puede quedar sin roles).
+  RN-USR-04: El ADMIN no puede desactivar su propia cuenta (deactivateUser).
+             Mensaje: "No puedes desactivar tu propia cuenta. Pide a otro
+             administrador que lo haga."
+  RN-USR-05: Solo usuarios con active=true son devueltos por GET /users.
+             Los desactivados desaparecen de la lista (no hay listado de inactivos).
+  RN-USR-06: PUT /users/{id}/roles reemplaza TODOS los roles (semántica PUT).
+  RN-USR-07: changePassword requiere que currentPassword coincida con el hash
+             guardado. Mensaje: "La contraseña actual es incorrecta."
+  RN-USR-08: newPassword debe coincidir con confirmPassword.
+             Mensaje: "Las contraseñas nuevas no coinciden."
+  RN-USR-09: newPassword mínimo 8 caracteres (validación @Size del DTO).
+  RN-USR-10: El endpoint PUT /users/{id} NO cambia la contraseña ni los roles.
+             Son endpoints separados.
+
+
+────────────────────────────────────────────────────
+§5. DISEÑO DE COMPONENTES Y UX
+────────────────────────────────────────────────────
+
+5.1 Ruta /admin/users — Gestión de usuarios (ADMIN)
+
+Layout: página completa (sin master-detail dividida) con tabla centrada.
+Justificación: hay pocos campos — una tabla + diálogos es más directa que split view.
+
+Tabla de usuarios:
+  Columnas: Usuario | Email | Roles (chips) | Alta | Acciones
+  - "Alta" muestra createdAt formateado como dd/MM/yyyy
+  - "Roles" muestra cada rol como un chip de color
+    ROLE_ADMIN → #6B3C6B | ROLE_MANAGER → #1565C0
+    ROLE_WAREHOUSEMAN → #2E7D32 | ROLE_SALES → #E65100
+  - Patrón L34: clic en la fila → UserFormDialogComponent en modo edición
+  - Sin columna de íconos de acción
+
+Toolbar sobre la tabla:
+  [+ Nuevo usuario]  (botón primary, derecha)
+
+UserFormDialogComponent (crear y editar):
+  Modo crear:
+    - Campo: Nombre de usuario (username, max 50)
+    - Campo: Email
+    - Campo: Contraseña (password, min 8) — solo en crear
+    - Sección: Roles (checkboxes por los 4 roles disponibles, mínimo 1 requerido)
+    - Botones: [Cancelar] [Crear usuario]
+    - disableClose: true (L31)
+
+  Modo editar:
+    - Campo: Nombre de usuario (editable)
+    - Campo: Email (editable)
+    - Contraseña: NO aparece (endpoint separado, no disponible desde admin)
+    - Sección: Roles (checkboxes — refleja roles actuales del usuario)
+    - Botón "Desactivar usuario" (visible solo si user.id !== usuarioAutenticado.id)
+      — dentro del diálogo, no en la tabla (L34)
+    - Botones: [Cancelar] [Guardar cambios] (disabled hasta form.dirty)
+    - Al guardar: llama PUT /users/{id} (datos) y si roles cambiaron → PUT /users/{id}/roles
+    - disableClose: true (L31)
+
+  Validaciones preventivas:
+    - RN-USR-01/02: no verificables antes del submit (requiere backend)
+    - RN-USR-03: checkboxes → al menos 1 seleccionado (Validators.min en el grupo)
+    - RN-USR-04: botón "Desactivar" oculto para el propio usuario autenticado
+
+5.2 Ruta /admin/profile — Perfil propio (todos los roles)
+
+Layout: página centrada (card o panel de ~600px de ancho).
+
+Secciones:
+  1. Datos de la cuenta (solo lectura):
+     - Nombre de usuario
+     - Email
+     - Roles (chips de colores)
+     - Miembro desde (createdAt formateado)
+     - Última actualización (updatedAt — puede ser null → mostrar "—")
+
+  2. Acciones:
+     - Botón [Cambiar contraseña] → abre ChangePasswordDialogComponent
+
+ChangePasswordDialogComponent:
+    - Campo: Contraseña actual (input type="password")
+    - Campo: Nueva contraseña (input type="password", min 8)
+    - Campo: Confirmar nueva contraseña (input type="password")
+    - Validación preventiva: newPassword === confirmPassword (mat-error en tiempo real)
+    - Validación preventiva: min 8 chars
+    - RN-USR-07 (contraseña actual incorrecta) → solo detectada por el backend → snackbar rojo
+    - Botones: [Cancelar] [Cambiar contraseña] (disabled si form inválido)
+    - disableClose: true (L31)
+    - Al éxito (204): snackbar verde + diálogo cierra + NO cerrar sesión automáticamente
+
+5.3 Mejora a TopbarComponent
+
+Actualmente el chip de usuario no es clickeable (no tiene menú).
+Agregar MatMenu con dos opciones:
+  [person] Mi perfil     → router.navigate(['/admin/profile'])
+  [logout] Cerrar sesión → authService.logout()
+
+El chip pasa de `<span>` a `<button [matMenuTriggerFor]="userMenu">`.
+MatMenu ya está importado en TopbarComponent (línea 9).
+
+5.4 Breadcrumbs (ya registrados en topbar.component.ts):
+  /admin/users    → "Usuarios" ✓ (línea 30)
+  /admin/profile  → PENDIENTE DE AGREGAR → "Mi perfil"
+
+
+────────────────────────────────────────────────────
+§6. RBAC
+────────────────────────────────────────────────────
+
+│ Funcionalidad               │ ADMIN │ MANAGER │ WAREHOUSEMAN │ SALES │
+│─────────────────────────────│───────│─────────│──────────────│───────│
+│ /admin/users (todos op.)    │  ✓    │   —     │      —       │   —   │
+│ /admin/profile (ver)        │  ✓    │   ✓     │      ✓       │   ✓   │
+│ Cambiar contraseña propia   │  ✓    │   ✓     │      ✓       │   ✓   │
+│ TopBar dropdown (Mi perfil) │  ✓    │   ✓     │      ✓       │   ✓   │
+
+Rutas en app.routes.ts:
+  { path: 'admin/users',    ..., canActivate: [authGuard], data: { roles: ['ROLE_ADMIN'] } }
+  { path: 'admin/profile',  ..., canActivate: [authGuard], data: { roles: ['ROLE_ADMIN','ROLE_MANAGER','ROLE_WAREHOUSEMAN','ROLE_SALES'] } }
+
+
+────────────────────────────────────────────────────
+§7. ESTRUCTURA DE ARCHIVOS NUEVOS
+────────────────────────────────────────────────────
+
+src/app/modules/auth/
+  models/
+    user-role-assign.model.ts     ← NUEVO
+    change-password.model.ts      ← NUEVO
+  services/
+    user.service.ts               ← NUEVO (8 métodos Observable)
+    user.service.spec.ts          ← NUEVO (tests de contratos HTTP)
+  users-page/
+    users-page.component.ts       ← NUEVO
+    users-page.component.html     ← NUEVO
+    users-page.component.scss     ← NUEVO
+    users-page.component.spec.ts  ← NUEVO
+  user-form-dialog/
+    user-form-dialog.component.ts   ← NUEVO
+    user-form-dialog.component.html ← NUEVO
+    user-form-dialog.component.spec.ts ← NUEVO
+  profile-page/
+    profile-page.component.ts       ← NUEVO
+    profile-page.component.html     ← NUEVO
+    profile-page.component.scss     ← NUEVO
+    profile-page.component.spec.ts  ← NUEVO
+  change-password-dialog/
+    change-password-dialog.component.ts   ← NUEVO
+    change-password-dialog.component.html ← NUEVO
+    change-password-dialog.component.spec.ts ← NUEVO
+
+Archivos modificados (no nuevos):
+  src/app/app.routes.ts                    ← agregar 2 rutas nuevas
+  src/app/core/layout/topbar/
+    topbar.component.ts                    ← agregar navegación a /admin/profile, breadcrumb
+    topbar.component.html                  ← convertir chip en MatMenu trigger
+
+Backend (UserServiceImpl.java):
+  ← fix de excepciones no tipadas (Fase 0 — PREVIO al código frontend)
+
+
+────────────────────────────────────────────────────
+§8. PLAN DE FASES
+────────────────────────────────────────────────────
+
+FASE 0 — Backend fix + infraestructura frontend
+  [ ] Fix UserServiceImpl: reemplazar RuntimeException por excepciones tipadas
+  [ ] Verificar con curl: username duplicado → 409, auto-desactivar → 422
+  [ ] Crear UserService con 8 métodos Observable + user.service.spec.ts
+  [ ] Crear modelos user-role-assign y change-password
+  [ ] Configurar rutas /admin/users y /admin/profile en app.routes.ts
+  [ ] Verificar que el guard de ruta funciona (Propuesta C — SEC)
+  [ ] Suite: ng test --no-watch → 0 fallos
+
+FASE 1 — Gestión de usuarios (/admin/users)
+  [ ] UsersPageComponent: tabla paginada con chips de roles
+  [ ] UserFormDialogComponent: modo crear (username + email + password + roles)
+  [ ] UserFormDialogComponent: modo editar (username + email + roles + desactivar)
+  [ ] Prueba browser ADMIN: CRUD completo + validaciones + RN-USR-01..06
+  [ ] Suite: ng test --no-watch → 0 fallos
+
+FASE 2 — Perfil propio + TopBar dropdown
+  [ ] ProfilePageComponent: vista datos propios (GET /me)
+  [ ] ChangePasswordDialogComponent: cambio de contraseña (PUT /me/password)
+  [ ] TopbarComponent: chip → MatMenu con "Mi perfil" + "Cerrar sesión"
+  [ ] Agregar /admin/profile al BREADCRUMB_MAP
+  [ ] Prueba browser 4 roles: perfil visible, cambio de contraseña, topbar dropdown
+  [ ] Suite: ng test --no-watch → 0 fallos
+
+FASE 3 — Tests + cierre Propuesta D
+  [ ] Completar specs de todos los componentes (cobertura ≥ 70%)
+  [ ] Verificar casos SEC y RBAC con acceso directo por URL
+  [ ] Todos los casos de casos_de_prueba_modulo_usuarios.md en ✅ PASS o N/A
+  [ ] Suite completa: ng test --no-watch --coverage → 0 fallos, ≥ 70% statements
+  [ ] Regresión: specs de módulos 0-5 sin nuevos fallos
+
+
+────────────────────────────────────────────────────
+§9. ESTIMACIÓN DE TESTS
+────────────────────────────────────────────────────
+
+  user.service.spec.ts          → ~12 specs (8 endpoints × HTTP + params)
+  users-page.component.spec.ts  → ~10 specs (tabla, roles chips, RBAC displayedColumns)
+  user-form-dialog.component.spec.ts → ~12 specs (crear/editar, validaciones, RN)
+  profile-page.component.spec.ts → ~6 specs (carga datos, campos readonly)
+  change-password-dialog.component.spec.ts → ~8 specs (validaciones, RN-USR-07/08)
+
+  Total estimado: ~48 specs nuevos → suite total: ~449 specs
+
+
+────────────────────────────────────────────────────
+§10. RIESGOS Y DECISIONES PENDIENTES
+────────────────────────────────────────────────────
+
+  R1. Backend fix obligatorio en Fase 0: si no se tipan las excepciones,
+      todos los errores de negocio llegarán como HTTP 500 al frontend.
+      Impacto: el mensaje sí se puede mostrar (está en error.error.message),
+      pero no se puede distinguir 409 de 422 de 404 para lógica diferenciada.
+
+  R2. GET /users retorna solo usuarios activos. No hay endpoint para listar
+      usuarios desactivados. Un usuario desactivado desaparece de la tabla
+      sin opción de reactivarlo desde la UI (no existe endpoint de reactivación).
+      Decisión: aceptar esta limitación — documentar en memoria técnica.
+
+  R3. El ADMIN no puede cambiar la contraseña de otros usuarios desde la UI.
+      Solo puede cambiar la propia via /me/password. Decisión: aceptar —
+      el diseño del backend no lo contempla. Si se requiere en el futuro,
+      necesita un nuevo endpoint en el backend.
+
+  R4. Si el usuario autenticado es ADMIN y desactiva su cuenta desde otra sesión
+      mientras está logueado, su JWT sigue siendo válido hasta que expire (2h).
+      Esto es por diseño del sistema sin blacklist de tokens. Aceptar.
