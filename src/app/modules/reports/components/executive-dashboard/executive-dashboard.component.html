@@ -54,19 +54,19 @@
     <div class="kpi-card kpi-card--primary">
       <div class="kpi-card__icon"><mat-icon>paid</mat-icon></div>
       <span class="kpi-card__label">Ingresos totales</span>
-      <span class="kpi-card__value">{{ execData.totalRevenue | currency:'PEN':'S/ ' }}</span>
+      <span class="kpi-card__value">{{ execData.totalRevenue | currency:'MXN':'symbol-narrow':'1.2-2' }}</span>
     </div>
 
     <div class="kpi-card">
       <div class="kpi-card__icon"><mat-icon>production_quantity_limits</mat-icon></div>
       <span class="kpi-card__label">Costo de ventas (COGS)</span>
-      <span class="kpi-card__value">{{ execData.totalCogs | currency:'PEN':'S/ ' }}</span>
+      <span class="kpi-card__value">{{ execData.totalCogs | currency:'MXN':'symbol-narrow':'1.2-2' }}</span>
     </div>
 
     <div class="kpi-card kpi-card--success">
       <div class="kpi-card__icon"><mat-icon>trending_up</mat-icon></div>
       <span class="kpi-card__label">Margen bruto</span>
-      <span class="kpi-card__value">{{ execData.grossMargin | currency:'PEN':'S/ ' }}</span>
+      <span class="kpi-card__value">{{ execData.grossMargin | currency:'MXN':'symbol-narrow':'1.2-2' }}</span>
       <span class="kpi-card__sub" *ngIf="execData.grossMarginPct !== null">
         {{ execData.grossMarginPct | number:'1.1-1' }}%
       </span>
@@ -78,7 +78,7 @@
          matTooltipPosition="below">
       <div class="kpi-card__icon"><mat-icon>inventory_2</mat-icon></div>
       <span class="kpi-card__label">Valor del inventario</span>
-      <span class="kpi-card__value">{{ valuationData.totalValue | currency:'PEN':'S/ ' }}</span>
+      <span class="kpi-card__value">{{ valuationData.totalValue | currency:'MXN':'symbol-narrow':'1.2-2' }}</span>
     </div>
   </div>
 
