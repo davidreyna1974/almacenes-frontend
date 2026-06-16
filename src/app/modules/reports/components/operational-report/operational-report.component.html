@@ -338,12 +338,12 @@
 
             <ng-container matColumnDef="cogsInPeriod">
               <th mat-header-cell *matHeaderCellDef>Costo vendido</th>
-              <td mat-cell *matCellDef="let row">{{ row.cogsInPeriod | currency:'PEN':'S/ ' }}</td>
+              <td mat-cell *matCellDef="let row">{{ row.cogsInPeriod | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
             </ng-container>
 
             <ng-container matColumnDef="currentInventoryValue">
               <th mat-header-cell *matHeaderCellDef>Valor inventario</th>
-              <td mat-cell *matCellDef="let row">{{ row.currentInventoryValue | currency:'PEN':'S/ ' }}</td>
+              <td mat-cell *matCellDef="let row">{{ row.currentInventoryValue | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
             </ng-container>
 
             <ng-container matColumnDef="turnoverRate">

@@ -128,13 +128,13 @@
         <!-- Precio -->
         <ng-container matColumnDef="price">
           <th mat-header-cell *matHeaderCellDef>Precio</th>
-          <td mat-cell *matCellDef="let row">{{ row.price | currency:'USD':'symbol':'1.2-2' }}</td>
+          <td mat-cell *matCellDef="let row">{{ row.price | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
         </ng-container>
 
         <!-- Costo unitario (solo ADMIN/MANAGER) -->
         <ng-container matColumnDef="unitCost">
           <th mat-header-cell *matHeaderCellDef>Costo unit.</th>
-          <td mat-cell *matCellDef="let row">{{ row.unitCost | currency:'USD':'symbol':'1.2-2' }}</td>
+          <td mat-cell *matCellDef="let row">{{ row.unitCost | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
         </ng-container>
 
         <!-- Estado -->

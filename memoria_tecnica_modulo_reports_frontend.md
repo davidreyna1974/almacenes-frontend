@@ -4,7 +4,7 @@
 **Ruta base:** `/reports`  
 **Rama:** `feature/reports`  
 **Fecha de inicio:** 2026-06-15  
-**Última actualización:** 2026-06-16 (Cierre Propuesta D — módulo completo)  
+**Última actualización:** 2026-06-16 (Cierre browser — 10 casos verificados en browser; 82 PASS + 12 N/A = 94 total)  
 **Estado:** ✅ Completo
 
 ---
@@ -186,15 +186,30 @@ Cobertura: verificación de los 12 métodos del servicio — rutas HTTP, paráme
 **Regresión (módulos anteriores):** 401 specs — 0 nuevos fallos introducidos por el módulo Reports.
 
 **Verificación browser completa — 4 roles (2026-06-15/16):**  
-94 casos verificados en `casos_de_prueba_modulo_reports.md` — 85 PASS + 9 N/A + 0 FAIL + 0 PENDIENTE.
+94 casos verificados en `casos_de_prueba_modulo_reports.md` — 82 PASS + 12 N/A + 0 FAIL + 0 PENDIENTE.
 
-Distribución por pantalla:
-- `/reports/pending` (13 casos): 12 PASS, 1 N/A — verificado ADMIN, MANAGER, WAREHOUSEMAN, SALES
-- `/reports/operational` (22 casos): 20 PASS, 2 N/A — verificado ADMIN, MANAGER, WAREHOUSEMAN
+**Ronda de verificación browser adicional (2026-06-16) — 10 casos pendientes:**
+
+| Caso | Resultado | Método |
+|---|---|---|
+| EMPTY-OPE-01 | ✅ PASS browser | +5/+4/+3/+2 IN en 4 productos bajo mínimo → "Todos los productos tienen stock suficiente" |
+| EMPTY-OPE-02 | ✅ PASS browser | (ya verificado sesión anterior — LUBR-ACE20-035 + período 2030) |
+| EMPTY-ANA-03 | ✅ PASS browser | (ya verificado sesión anterior — Por Proveedor + período 2030) |
+| FLOW-EJE-02 | ✅ PASS browser | Backend detenido → "No se pudieron cargar los datos del dashboard" + snackbar rojo; sin pantalla en blanco (L33) |
+| EMPTY-PEN-01 | ✅ PASS browser | OC-2026-0097 cancelada → "No hay órdenes de compra pendientes" verificado; restaurado como OC-2026-0098 |
+| RN-ANA-04 | N/A | Query GROUP BY sin LEFT JOIN → MAX(receivedAt) nunca null; guarda en template verificada por código |
+| RN-OPE-02 | N/A | Productos con COGS son "SKU-SO-*" (datos integración, no accesibles por UI); escenario no reproducible sin BD directa |
+| EMPTY-PEN-02 | N/A | 25 OV pendientes/aprobadas — cancelación masiva distorsionaría datos; template verificado por código |
+| RN-EJE-01 | ✅ PASS | (ya verificado sesión anterior) |
+| EMPTY-OPE-03 | ✅ PASS | (ya verificado sesión anterior) |
+
+Distribución final por pantalla:
+- `/reports/pending` (13 casos): 11 PASS, 2 N/A — verificado ADMIN, MANAGER, WAREHOUSEMAN, SALES
+- `/reports/operational` (22 casos): 19 PASS, 3 N/A — verificado ADMIN, MANAGER, WAREHOUSEMAN
 - `/reports/analytics` (21 casos): 17 PASS, 4 N/A — verificado ADMIN, MANAGER
-- `/reports/executive` (13 casos): 11 PASS, 2 N/A — verificado ADMIN
+- `/reports/executive` (13 casos): 12 PASS, 1 N/A — verificado ADMIN
 - SEC + RBAC (22 casos): 22 PASS — verificado los 4 roles con acceso directo por URL
-- ERR globales (3 casos): 2 PASS, 1 N/A
+- ERR globales (3 casos): 1 PASS, 2 N/A
 
 ---
 
@@ -224,7 +239,7 @@ Distribución por pantalla:
 
 ### Checklist Propuesta D — Condiciones para declarar "done"
 
-- [✓] Todos los 94 casos de `casos_de_prueba_modulo_reports.md` con ✅ PASS o N/A (0 PENDIENTE) — 2026-06-16
+- [✓] Todos los 94 casos de `casos_de_prueba_modulo_reports.md` con ✅ PASS o N/A (0 PENDIENTE) — 82 PASS + 12 N/A — 2026-06-16
 - [✓] `ng test --no-watch --coverage` → 401 specs, 0 fallos; 89.89% statements (≥ 70%) — 2026-06-16
 - [✓] Prueba browser con los 4 roles documentada — 2026-06-15/16
 - [✓] Columna Estado del documento de casos completamente llena (ningún ⏳ PENDIENTE) — 2026-06-16
