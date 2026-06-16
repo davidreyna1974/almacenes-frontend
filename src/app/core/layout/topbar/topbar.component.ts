@@ -9,6 +9,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatMenuModule } from '@angular/material/menu';
 import { LayoutService } from '../layout.service';
 import { AuthService } from '../../auth/auth.service';
+import { RouterModule } from '@angular/router';
 
 const BREADCRUMB_MAP: { path: string; label: string }[] = [
   { path: '/inventory/products',   label: 'Inventario → Productos'   },
@@ -28,12 +29,13 @@ const BREADCRUMB_MAP: { path: string; label: string }[] = [
   { path: '/reports/pending',     label: 'Reportes → Pendientes'          },
   { path: '/reports',             label: 'Reportes'                       },
   { path: '/admin/users',          label: 'Usuarios'                },
+  { path: '/admin/profile',        label: 'Mi perfil'               },
 ];
 
 @Component({
   selector: 'app-topbar',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatTooltipModule, MatMenuModule],
+  imports: [CommonModule, RouterModule, MatIconModule, MatButtonModule, MatTooltipModule, MatMenuModule],
   templateUrl: './topbar.component.html',
   styleUrl: './topbar.component.scss'
 })

@@ -1,0 +1,57 @@
+.user-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 0;
+
+  &__field {
+    width: 100%;
+  }
+
+  &__roles-section {
+    margin-top: 8px;
+  }
+
+  &__roles-label {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin: 0 0 8px 0;
+    font-weight: 500;
+  }
+
+  &__roles-required {
+    color: #c62828;
+    margin-left: 2px;
+  }
+
+  &__roles-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 16px;
+  }
+
+  &__roles-error {
+    font-size: 12px;
+    color: #c62828;
+    margin: 4px 0 0 0;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    padding: 12px 24px !important;
+    gap: 8px;
+  }
+
+  &__actions-spacer {
+    flex: 1;
+  }
+
+  &__btn-deactivate {
+    gap: 4px;
+  }
+}
+
+mat-spinner {
+  display: inline-block;
+}
