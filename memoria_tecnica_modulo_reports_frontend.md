@@ -4,8 +4,8 @@
 **Ruta base:** `/reports`  
 **Rama:** `feature/reports`  
 **Fecha de inicio:** 2026-06-15  
-**Última actualización:** 2026-06-15 (Fase 0 — Infraestructura)  
-**Estado:** En desarrollo
+**Última actualización:** 2026-06-16 (Cierre Propuesta D — módulo completo)  
+**Estado:** ✅ Completo
 
 ---
 
@@ -171,11 +171,40 @@ Cobertura: verificación de los 12 métodos del servicio — rutas HTTP, paráme
 | SEC-06: /reports/operational con SALES → redirige | qa_sales | URL cambia a / después del guard | ✅ PASS |
 | SALES: sidebar muestra 1 sub-ítem (solo Pendientes) | qa_sales | Solo "Pendientes" visible; sin "Compras" | ✅ PASS |
 
+### Cierre Propuesta D (2026-06-16)
+
+**Suite completa con cobertura:**  
+`ng test --no-watch --coverage` → **401 specs, 0 fallos**
+
+| Métrica | Resultado | Umbral |
+|---|---|---|
+| Statements | 89.89% (2393/2662) | ≥ 70% ✅ |
+| Branches | 87.11% (879/1009) | ≥ 70% ✅ |
+| Functions | 84.06% (306/364) | ≥ 70% ✅ |
+| Lines | 94.85% (1715/1808) | ≥ 70% ✅ |
+
+**Regresión (módulos anteriores):** 401 specs — 0 nuevos fallos introducidos por el módulo Reports.
+
+**Verificación browser completa — 4 roles (2026-06-15/16):**  
+94 casos verificados en `casos_de_prueba_modulo_reports.md` — 85 PASS + 9 N/A + 0 FAIL + 0 PENDIENTE.
+
+Distribución por pantalla:
+- `/reports/pending` (13 casos): 12 PASS, 1 N/A — verificado ADMIN, MANAGER, WAREHOUSEMAN, SALES
+- `/reports/operational` (22 casos): 20 PASS, 2 N/A — verificado ADMIN, MANAGER, WAREHOUSEMAN
+- `/reports/analytics` (21 casos): 17 PASS, 4 N/A — verificado ADMIN, MANAGER
+- `/reports/executive` (13 casos): 11 PASS, 2 N/A — verificado ADMIN
+- SEC + RBAC (22 casos): 22 PASS — verificado los 4 roles con acceso directo por URL
+- ERR globales (3 casos): 2 PASS, 1 N/A
+
 ---
 
 ## 8. Bugs y retos durante el desarrollo
 
-*(Actualizar durante el desarrollo)*
+| ID | Componente | Descripción | Fix |
+|---|---|---|---|
+| BUG-REP-01 | `operational-report.component.ts` | `TypeError: params.search?.trim is not a function` en autocomplete del Kardex al seleccionar un producto del dropdown. Causa: `switchMap` no descartaba valores objeto `ProductResponseDTO`. | `typeof value !== 'string' \|\| value.length < 2` en el guard del switchMap |
+| BUG-REP-02 | `operational-report.component.html` | Tab "Rotación" visible para WAREHOUSEMAN; el backend retorna 403 porque `SecurityConfig` solo autoriza ADMIN y MANAGER en ese endpoint. | `*ngIf="canViewTurnover"` en el `mat-tab`; getter `canViewTurnover` verifica `ROLE_ADMIN \|\| ROLE_MANAGER` |
+| BUG-REP-03 | `operational-report.component.html` | Botón "Consultar" en tab Movimientos (y Rotación) no se deshabilitaba cuando `from > to` — solo tenía `[disabled]="movLoading"`, sin validación de rango de fechas. | Agregar `\|\| datesInvalidError(movFromCtrl.value, movToCtrl.value)` a la condición `[disabled]` de ambos botones |
 
 ---
 
@@ -195,18 +224,18 @@ Cobertura: verificación de los 12 métodos del servicio — rutas HTTP, paráme
 
 ### Checklist Propuesta D — Condiciones para declarar "done"
 
-- [ ] Todos los casos de `casos_de_prueba_modulo_reports.md` con ✅ PASS
-- [ ] `ng test --no-watch` → 0 fallos; cobertura ≥ 70% statements
-- [ ] Prueba browser con los 4 roles documentada
-- [ ] Columna Estado del documento de casos completamente llena (ningún ⏳ PENDIENTE)
+- [✓] Todos los 94 casos de `casos_de_prueba_modulo_reports.md` con ✅ PASS o N/A (0 PENDIENTE) — 2026-06-16
+- [✓] `ng test --no-watch --coverage` → 401 specs, 0 fallos; 89.89% statements (≥ 70%) — 2026-06-16
+- [✓] Prueba browser con los 4 roles documentada — 2026-06-15/16
+- [✓] Columna Estado del documento de casos completamente llena (ningún ⏳ PENDIENTE) — 2026-06-16
 
 ### Estado por fase
 
 | Fase | Descripción | Estado |
 |---|---|---|
 | 0 | Infraestructura del módulo | ✅ Completa (2026-06-15) |
-| 1 | V1: Operaciones Pendientes | ⏳ Pendiente |
-| 2 | V2: Reportes Operativos | ⏳ Pendiente |
-| 3 | V3: Dashboard Analítico | ⏳ Pendiente |
-| 4 | V4: Dashboard Ejecutivo | ⏳ Pendiente |
-| 5 | Cierre y Propuesta D | ⏳ Pendiente |
+| 1 | V1: Operaciones Pendientes | ✅ Completa (2026-06-15) |
+| 2 | V2: Reportes Operativos | ✅ Completa (2026-06-15/16) |
+| 3 | V3: Dashboard Analítico | ✅ Completa (2026-06-15/16) |
+| 4 | V4: Dashboard Ejecutivo | ✅ Completa (2026-06-15/16) |
+| 5 | Cierre y Propuesta D | ✅ Completa (2026-06-16) |
