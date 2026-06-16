@@ -22,7 +22,11 @@ const BREADCRUMB_MAP: { path: string; label: string }[] = [
   { path: '/sales/orders/',        label: 'Ventas → Detalle de orden'    },
   { path: '/sales/orders',         label: 'Ventas → Órdenes de venta'    },
   { path: '/sales/reservations',   label: 'Ventas → Reservas de stock'   },
-  { path: '/reports',              label: 'Reportes'                },
+  { path: '/reports/executive',   label: 'Reportes → Dashboard Ejecutivo' },
+  { path: '/reports/analytics',   label: 'Reportes → Dashboard Analítico' },
+  { path: '/reports/operational', label: 'Reportes → Operativo'           },
+  { path: '/reports/pending',     label: 'Reportes → Pendientes'          },
+  { path: '/reports',             label: 'Reportes'                       },
   { path: '/admin/users',          label: 'Usuarios'                },
 ];
 
