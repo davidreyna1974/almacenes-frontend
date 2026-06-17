@@ -2,7 +2,7 @@ import {
   Component, inject, ChangeDetectionStrategy, ChangeDetectorRef, DestroyRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, FormControl, FormGroupDirective, NgForm, Validators, AbstractControl } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatDialogRef, MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ErrorStateMatcher } from '@angular/material/core';
 
 import { UserService } from '../services/user.service';
 
@@ -45,6 +46,12 @@ export class ChangePasswordDialogComponent {
   hideCurrent   = true;
   hideNew       = true;
   hideConfirm   = true;
+
+  // Permite que mat-form-field entre en error state cuando el grupo tiene passwordsMismatch
+  readonly mismatchMatcher: ErrorStateMatcher = {
+    isErrorState: (control: FormControl | null, _form: FormGroupDirective | NgForm | null): boolean =>
+      !!(control?.dirty && this.form.hasError('passwordsMismatch')),
+  };
 
   form: FormGroup = this.fb.group({
     currentPassword:  ['', [Validators.required]],
