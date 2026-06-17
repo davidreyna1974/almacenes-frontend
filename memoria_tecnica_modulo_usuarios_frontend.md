@@ -270,16 +270,42 @@ Verificación ejecutada el 2026-06-16 con el servidor de desarrollo (`ng serve`)
 | RBAC: Sidebar sin ítem "Usuarios" | RBAC-USR-03 | ✅ PASS |
 | /admin/profile accesible | VIS-PROF-02 (chip Manager azul) | ✅ PASS |
 
-#### Casos pendientes de verificación browser
+#### Rol WAREHOUSEMAN (`qa_warehouse` / `QaWarehouse123!`)
 
-Las siguientes categorías requieren operaciones CRUD reales con datos de prueba
-y no fueron ejecutadas en la sesión de verificación del 2026-06-16:
-- CRUD-UFMD-01 a 09 (crear/editar/desactivar usuario)
-- FLOW-USR-01/02/03, FLOW-PROF-01/02, FLOW-TOP-01/02
-- RN-USR-01 a 07 (duplicados, auto-desactivación, contraseñas)
-- ERR-USR-01 a 08 (snackbars de éxito y error)
-- SEC-02/03/04/05 (WAREHOUSEMAN, SALES, sin JWT)
-- VAL-UFMD-02/03/04/05/06/10/11, VAL-CHPWD-01/02/03/04
+| Área verificada | Casos | Resultado |
+|---|---|---|
+| SEC: /admin/users bloqueado por guard | SEC-02 | ✅ PASS → redirige a `/` |
+| /admin/profile accesible | UI-PROF-01 (botón cambiar contraseña visible) | ✅ PASS |
+| TopBar dropdown | UI-TOP-04 | ✅ PASS |
+
+#### Rol SALES (`qa_sales` / `QaSales123!`)
+
+| Área verificada | Casos | Resultado |
+|---|---|---|
+| SEC: /admin/users bloqueado por guard | SEC-03 | ✅ PASS → redirige a `/` |
+| RBAC: Sidebar sin ítem "Usuarios" | RBAC-USR-04 | ✅ PASS |
+| /admin/profile accesible | UI-PROF-01 (botón visible), UI-TOP-04 | ✅ PASS |
+
+#### Rol ADMIN — sesión 2 (CRUD, FLOW, RN, ERR, validaciones, SEC sin JWT)
+
+| Área verificada | Casos | Resultado |
+|---|---|---|
+| SEC: sin JWT → redirige a /login | SEC-04, SEC-05 | ✅ PASS |
+| RBAC: editar propio usuario → sin botón Desactivar | RBAC-UFMD-02 | ✅ PASS |
+| CRUD: crear usuario (1 rol y 2 roles) | CRUD-UFMD-01/02/03 | ✅ PASS |
+| CRUD: editar username, email y roles | CRUD-UFMD-04/05/06 | ✅ PASS |
+| CRUD: desactivar usuario (ciclo completo) | CRUD-UFMD-07/08/09 | ✅ PASS |
+| Validaciones formulario crear/editar | VAL-UFMD-02 a 11 | ✅ PASS |
+| Búsqueda: limpiar filtro restaura lista | BSRCH-USR-03 | ✅ PASS |
+| Diálogos modales: click backdrop + ESC | UI-UFMD-05, UI-CHPWD-02 | ✅ PASS |
+| Paginación: página 2+ | UI-USR-04 | ✅ PASS |
+| Validaciones cambio de contraseña | VAL-CHPWD-01 a 04 (incl. BUG-USR-02 fix) | ✅ PASS |
+| Flujos negocio y reglas de negocio | FLOW-USR-01/02/03, FLOW-PROF-01/02, FLOW-TOP-01/02 | ✅ PASS |
+| Reglas de negocio backend | RN-USR-01 a 07 | ✅ PASS |
+| Snackbars éxito y error | ERR-USR-01 a 08 | ✅ PASS |
+| Visual general | VIS-USR-06/07, VIS-GEN-05/08 | ✅ PASS |
+
+**Resultado final:** 90 casos ✅ PASS, 1 N/A (EMPTY-USR-01), 0 ⏳ PENDIENTE.
 
 ---
 
@@ -296,6 +322,21 @@ usa Angular 21 con Vitest como runner — el `tsconfig.spec.json` solo declara
 `vi.fn().mockClear()`, `fn.mock.lastCall`, `expect.anything()`.  
 **Lección:** En Angular 21+ el runner es Vitest. Nunca usar `jasmine.*` en specs nuevos;
 verificar siempre con `npx ng test --no-watch --include="*.spec.ts"` antes de declarar tests listos.
+
+### BUG-USR-02 — `mat-error` de "contraseñas no coinciden" no visible (resuelto)
+
+**Síntoma:** En `ChangePasswordDialogComponent`, al escribir contraseñas distintas en
+"Nueva contraseña" y "Confirmar nueva contraseña", el error "Las contraseñas no coinciden"
+nunca aparecía bajo el campo — el formulario permanecía visualmente sin error aunque
+`form.hasError('passwordsMismatch')` era `true`.  
+**Causa:** `passwordsMatchValidator` es un validador de grupo — establece el error en el
+`FormGroup`, no en el `FormControl` de `confirmPassword`. Angular Material (`mat-form-field`)
+solo entra en estado de error cuando el `FormControl` propio es inválido (`control.invalid`).
+Como `confirmPassword` tenía solo `Validators.required` y no estaba vacío, su control era
+válido y `mat-form-field` nunca activaba `mat-error`.  
+**Fix:** `ErrorStateMatcher` custom inyectado via `[errorStateMatcher]="mismatchMatcher"` en
+el input de confirmación. `isErrorState` devuelve `true` cuando `control?.dirty && this.form.hasError('passwordsMismatch')`, forzando a `mat-form-field` a entrar en error state aunque el control individual sea válido.  
+**Detectado:** VAL-CHPWD-03 — verificación browser 2026-06-16.
 
 ### BUG-USR-01 — Backend UserServiceImpl lanzaba RuntimeException sin tipar (resuelto)
 
@@ -335,11 +376,11 @@ el código HTTP ahora es el correcto para manejo futuro de reintentos diferencia
 ### Checklist Propuesta D — 2026-06-16
 
 ```
-[✅] 1. Tests unitarios: 445 specs, 0 fallos; cobertura global 88.68% statements (> 70%)
+[✅] 1. Tests unitarios: 445 specs, 0 fallos; cobertura global 88.69% statements (> 70%)
 [✅] 2. ng test --no-watch → 0 fallos; 0 regresiones en módulos anteriores
-[⚠️] 3. Verificación browser ejecutada para ADMIN y MANAGER (los 4 roles QA disponibles);
-        casos CRUD operacionales (crear/editar/desactivar) y flujos RN/ERR pendientes
-        de verificación con datos reales en una sesión posterior.
+[✅] 3. Verificación browser completada con los 4 roles (admin, qa_manager, qa_warehouse,
+        qa_sales) — 2026-06-16. 90 casos ✅ PASS, 1 N/A, 0 ⏳ PENDIENTE.
+        BUG-USR-02 detectado y corregido durante la verificación.
 [✅] 4. Memoria técnica §7 y §10 actualizadas con resultados reales
 ```
 
@@ -353,7 +394,7 @@ el código HTTP ahora es el correcto para manejo futuro de reintentos diferencia
 [✅] L32 — Tabla usa @include mixins.catalog-table-header en el SCSS del componente
 [✅] L33 — No hay forkJoin multi-fuente con RBAC distinto; onSave() usa forkJoin solo cuando update+roles cambian, ambas con mismo scope de autorización
 [✅] L34 — Clic en fila → UserFormDialogComponent; sin columna de íconos; "Desactivar" dentro del diálogo
-[✅] L35 — Verificación browser con qa_manager (MANAGER); usuarios QA permanentes usados
+[✅] L35 — Verificación browser con los 4 roles QA permanentes: admin (ADMIN), qa_manager (MANAGER), qa_warehouse (WAREHOUSEMAN), qa_sales (SALES) — 2026-06-16
 [✅] Backend fix — RuntimeException → DuplicateResourceException/BusinessRuleException/ResourceNotFoundException aplicado en Fase 0
 ```
 
