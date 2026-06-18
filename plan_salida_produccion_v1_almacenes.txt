@@ -1,0 +1,1251 @@
+================================================================================
+  PLAN DE SALIDA A PRODUCCIÓN v1.0
+  SISTEMA DE GESTIÓN DE ALMACENES — "Almacenes"
+  Fecha de elaboración: 2026-06-17
+  Versión del documento: 1.0
+================================================================================
+
+ÍNDICE
+------
+1.  Resumen ejecutivo
+2.  Descripción del sistema y alcance v1.0
+3.  Estado actual del sistema
+4.  Análisis de brechas — Backend
+5.  Análisis de brechas — Frontend
+6.  Análisis de brechas — Funcional WMS e industria
+7.  Análisis de brechas — Procesos operativos
+8.  Plan de acción priorizado
+9.  Procedimiento de instalación en producción
+10. Procedimiento de backup y recuperación ante desastres
+11. Checklist de go-live
+12. Alcance funcional declarado v1.0 y restricciones conocidas
+13. Deuda técnica documentada para v1.1+
+
+
+================================================================================
+1. RESUMEN EJECUTIVO
+================================================================================
+
+El sistema Almacenes es un WMS (Warehouse Management System) de escala media
+desarrollado con Angular 21 (frontend) y Spring Boot 3.5 / Java 17 (backend),
+persistido en PostgreSQL. Está dirigido a un almacén único con menos de 100
+usuarios concurrentes y busca reemplazar hojas de cálculo como herramienta de
+gestión operativa.
+
+ESTADO GENERAL: APTO PARA PRODUCCIÓN CON CONDICIONES
+
+El código de negocio, la seguridad de dominio, la cobertura de tests y la
+arquitectura general son sólidos y están por encima del estándar mínimo para
+sistemas de esta escala. Los problemas identificados no son de lógica de negocio
+— son de infraestructura y configuración de despliegue, que es el patrón
+habitual de un proyecto que no ha pasado aún por el proceso de "hardening" para
+producción.
+
+Antes del go-live DEBEN resolverse los ítems clasificados como BLOQUEANTE (§8).
+Los ítems IMPORTANTES deben resolverse en el primer sprint post-go-live (máximo
+2 semanas). Los ítems de v1.1+ son mejoras aceptadas como deuda técnica
+conocida.
+
+MÉTRICAS ACTUALES DEL SISTEMA:
+  Frontend (Angular 21 + Vitest)
+    · 401 specs, 0 fallos, 89.89% statements, 87.11% branches
+    · 7 módulos: Infraestructura, Auth, Inventario, Compras, Ventas, Reportes,
+      Usuarios — todos con Propuesta D (protocolo de cierre) completada
+  Backend (Spring Boot 3.5 + JUnit 5)
+    · 405 tests, 0 fallos, 84.6% líneas, 87.5% métodos
+    · JaCoCo con umbral mínimo del 70% configurado en pom.xml
+  RBAC verificado en browser con 4 roles reales para todos los módulos.
+
+
+================================================================================
+2. DESCRIPCIÓN DEL SISTEMA Y ALCANCE v1.0
+================================================================================
+
+MÓDULOS IMPLEMENTADOS EN v1.0
+------------------------------
+  Módulo 0 — Infraestructura base
+    Layout shell (sidebar + topbar + main-layout), componentes shared
+    (EmptyState, ConfirmDialog, MasterDetail), tema Angular Material
+    (paleta #6B3C6B / #CE6EEB / #F2E4F2), interceptores JWT y de errores.
+
+  Módulo 1 — Autenticación
+    Login con JWT (HMAC-SHA256), rate limiting (5 intentos → bloqueo 15 min),
+    AuthGuard por rol, logout, sidebar dinámico por rol.
+
+  Módulo 2 — Inventario
+    Categorías (CRUD), Productos (CRUD + Kardex + movimientos IN/OUT),
+    LowStock (alertas visuales por severidad), búsqueda insensible a acentos
+    via f_unaccent() de PostgreSQL.
+
+  Módulo 3 — Compras
+    Proveedores (CRUD), Órdenes de compra (flujo PENDING→APPROVED→RECEIVED
+    o CANCELLED), líneas de detalle con autocomplete de productos.
+
+  Módulo 4 — Ventas
+    Clientes (CRUD), Órdenes de venta (flujo PENDING→APPROVED→DELIVERED
+    o CANCELLED), reservas de stock con Optimistic Locking, dashboard de
+    reservas por producto y por cliente.
+
+  Módulo 5 — Reportes
+    V1 Pendientes (OC/OV con navegación a órdenes), V2 Operativos (Stock
+    bajo, Kardex, Movimientos, Rotación), V3 Analítico (Rentabilidad,
+    Tendencia, Top Productos, ABC, Por Proveedor), V4 Ejecutivo (KPIs +
+    gráfica de valuación).
+
+  Módulo 6 — Usuarios
+    Gestión de usuarios (CRUD + asignación de roles, solo ADMIN), perfil
+    propio (todos los roles), cambio de contraseña, dropdown de usuario
+    en topbar.
+
+ROLES DEL SISTEMA
+-----------------
+  ADMIN          Acceso total — gestión de usuarios + todos los módulos
+  MANAGER        Todos los módulos excepto gestión de usuarios + reportes analíticos
+  WAREHOUSEMAN   Inventario (lectura), recepción de compras, entrega de ventas,
+                 reportes operativos
+  SALES          Inventario (lectura), creación y entrega de órdenes de venta,
+                 reportes de pendientes
+
+STACK TECNOLÓGICO
+-----------------
+  Frontend   Angular 21, Angular Material, TypeScript strict, Vitest
+  Backend    Spring Boot 3.5.14, Java 17, Spring Security 6, JJWT 0.12.6
+             MapStruct 1.5.5, SpringDoc 2.7.0
+  Base datos PostgreSQL (versión mínima recomendada: 14)
+  Build      ng build (Angular CLI), Maven (Spring Boot)
+
+
+================================================================================
+3. ESTADO ACTUAL DEL SISTEMA
+================================================================================
+
+FORTALEZAS CONFIRMADAS POR ANÁLISIS DE CÓDIGO
+----------------------------------------------
+  ✔ RBAC implementado en doble capa: Spring Security (backend) + authGuard
+    (frontend). Tests automatizados de seguridad por rol verifican ambas capas.
+  ✔ Optimistic Locking (@Version) en Product para concurrencia de reservas.
+    Verificado con SaleOrderConcurrencyTest (5 threads simultáneos).
+  ✔ Rate limiting en login: LoginAttemptService, 5 intentos → 15 min de bloqueo,
+    aplicado ANTES de consultar la base de datos.
+  ✔ Separación semántica de 401 (token inválido) y 403 (rol insuficiente) con
+    JwtAuthenticationEntryPoint y JwtAccessDeniedHandler propios.
+  ✔ Excepciones de negocio tipadas (DuplicateResourceException → 409,
+    BusinessRuleException → 422, ResourceNotFoundException → 404) con handler
+    global que no expone stack traces.
+  ✔ Búsqueda de texto insensible a mayúsculas Y acentos mediante función
+    PostgreSQL f_unaccent() con índices funcionales en suppliers, clients,
+    products, categories.
+  ✔ FetchType.LAZY en todas las relaciones + @Transactional(readOnly=true) en
+    todos los métodos de lectura.
+  ✔ takeUntilDestroyed() con DestroyRef en todos los componentes Angular
+    (excepto los de Reports — ver §5, IMP-05).
+  ✔ ChangeDetectionStrategy.OnPush en prácticamente todos los smart components.
+  ✔ disableClose: true en todos los diálogos con formularios (regla L31).
+  ✔ forkJoin con catchError por observable para llamadas multi-RBAC (L33).
+  ✔ Documentación técnica exhaustiva: 15+ memorias técnicas, 500+ casos de
+    prueba en browser con 4 roles, 20+ lecciones transversales.
+
+ADVERTENCIA SOBRE DOCUMENTACIÓN GLOBAL
+---------------------------------------
+  El archivo memoria_tecnica_global_proyecto.md (§5) contiene una nota del
+  2026-06-14 que indica que la ruta /admin/users "no existe en app.routes.ts".
+  Esa nota es OBSOLETA: el Módulo 6 (Usuarios) se implementó posteriormente y
+  la ruta /admin con admin.routes lazy SÍ existe en app.routes.ts (línea 44).
+  ACCIÓN: actualizar §5 de memoria_tecnica_global_proyecto.md antes del go-live.
+
+
+================================================================================
+4. ANÁLISIS DE BRECHAS — BACKEND
+================================================================================
+
+--- BLOQUEANTES ---------------------------------------------------------------
+
+[BACK-B1] Sin herramienta de migraciones de base de datos (Flyway / Liquibase)
+  Archivo: pom.xml (ausente), application.yaml (ddl-auto: validate)
+  Descripción: No existe ningún script SQL de creación del schema. No hay
+  data.sql, schema.sql ni migraciones versionadas. El schema en producción debe
+  crearse manualmente. Con ddl-auto: validate, si el schema no existe o está
+  desactualizado, la aplicación NO ARRANCA y no hay mensaje que indique qué
+  falta exactamente.
+  Sin migraciones no es posible:
+    · Reproducir la BD en un nuevo servidor sin documentación extra.
+    · Rastrear cambios de schema entre versiones.
+    · Hacer rollback de un cambio de schema.
+  Acción: generar el script DDL inicial desde el ORM (spring.jpa.generate-ddl:
+  true una vez para exportar), versionarlo como V1__init_schema.sql y agregar
+  la dependencia de Flyway al pom.xml. Para v1.0, un único script SQL es
+  aceptable — no es necesaria la complejidad completa de Flyway si el equipo
+  prefiere scripts manuales, pero el script DEBE existir en el repositorio.
+
+[BACK-B2] Sin Dockerfile ni docker-compose.yml
+  El despliegue es enteramente manual. No hay forma reproducible de levantar
+  el stack (app + PostgreSQL + red) en un servidor nuevo. Cada despliegue
+  depende de documentación externa o memoria del operador.
+  Acción: crear al mínimo un Dockerfile multi-stage para el backend y un
+  docker-compose.yml que incluya el servicio de la app + PostgreSQL.
+  Ver §9 (Procedimiento de instalación) para los archivos concretos.
+
+[BACK-B3] Sin perfil de producción (application-prod.yaml)
+  application.yaml es el único archivo de configuración. Contiene:
+    · spring.jpa.show-sql: true  ← imprime cada SQL en producción
+    · JWT secret con valor por defecto hardcodeado si JWT_SECRET no está
+      definido en el entorno
+    · Contraseña de BD por defecto (david123) si DB_PASSWORD no está definido
+  Si se olvida definir alguna variable de entorno en producción, la aplicación
+  arranca con valores de desarrollo inseguros sin ningún aviso.
+  Acción: crear src/main/resources/application-prod.yaml con:
+    spring.jpa.show-sql: false
+    spring.jpa.properties.hibernate.format_sql: false
+    spring.jpa.hibernate.ddl-auto: validate
+    springdoc.api-docs.enabled: false
+    springdoc.swagger-ui.enabled: false
+    logging.level.root: WARN
+    logging.level.com.codigo2enter.almacenes: INFO
+  Y activar con SPRING_PROFILES_ACTIVE=prod en el servidor de producción.
+
+--- IMPORTANTES ---------------------------------------------------------------
+
+[BACK-I1] DataInitializer registra la contraseña del admin en texto plano
+  Archivo: DataInitializer.java, línea 53
+  Código: log.warn(" Usuario: admin | Password: Admin123!")
+  En los logs de arranque del servidor queda impresa la contraseña en claro.
+  Cualquier persona con acceso a los logs del servidor la ve inmediatamente.
+  Acción: eliminar esa línea. El log útil es solo confirmar que el admin fue
+  creado. La contraseña NUNCA debe loggearse.
+
+[BACK-I2] Swagger UI accesible sin autenticación en producción
+  Archivo: SecurityConfig.java (permitAll en /swagger-ui/**, /v3/api-docs/**)
+  En producción, cualquier persona que llegue al servidor puede explorar toda
+  la estructura de la API (endpoints, DTOs, parámetros, respuestas posibles)
+  sin autenticarse. Esto facilita la enumeración de la API por atacantes.
+  Acción: en application-prod.yaml: springdoc.api-docs.enabled: false
+  O restringir la ruta a rangos IP de red interna en SecurityConfig.
+
+[BACK-I3] Sin headers de seguridad HTTP
+  Archivo: SecurityConfig.java
+  El servidor no envía ninguno de los headers de seguridad estándar:
+    · Content-Security-Policy
+    · Strict-Transport-Security (HSTS)
+    · X-Frame-Options: DENY
+    · X-Content-Type-Options: nosniff
+    · Referrer-Policy: strict-origin-when-cross-origin
+  Acción en SecurityConfig.java (método filterChain):
+    http.headers(headers -> headers
+        .frameOptions(f -> f.deny())
+        .xssProtection(Customizer.withDefaults())
+        .contentTypeOptions(Customizer.withDefaults())
+        .httpStrictTransportSecurity(hsts -> hsts
+            .includeSubDomains(true)
+            .maxAgeInSeconds(31536000))
+    );
+  El CSP completo configurarlo en nginx (más flexible que en Spring).
+
+[BACK-I4] DataIntegrityViolationException no manejada en GlobalExceptionHandler
+  Archivo: GlobalExceptionHandler.java
+  Si una constraint de BD se viola por race condition (dos requests simultáneos
+  crean el mismo username/RFC), PostgreSQL lanza DataIntegrityViolationException
+  que llega al catch genérico de RuntimeException y retorna HTTP 500 exponiendo
+  el nombre interno de la constraint (ej: "uq_supplier_rfc").
+  Acción: agregar handler específico:
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiError> handleDataIntegrity(...) {
+        // Extraer constraint del mensaje para dar mensaje amigable
+        // Retornar 409 con mensaje genérico
+    }
+
+[BACK-I5] ~15 new RuntimeException() en servicios que deberían ser
+  ResourceNotFoundException
+  Archivos: PurchaseOrderServiceImpl, SaleOrderServiceImpl,
+  ReservationServiceImpl (~15 ocurrencias total)
+  Ejemplo: "Orden con id X no encontrada" lanzada como RuntimeException →
+  GlobalExceptionHandler lo captura como HTTP 500, no como 404.
+  Esto significa que un GET a una orden inexistente devuelve 500 en lugar de 404,
+  contamina los logs de producción (los errores 500 parecen bugs del sistema)
+  y dificulta el monitoreo.
+  Acción: buscar con grep "new RuntimeException" en los servicios y reemplazar
+  por ResourceNotFoundException o BusinessRuleException según corresponda.
+
+[BACK-I6] Login devuelve HTTP 500 para credenciales incorrectas (no 401)
+  El backend lanza BadCredentialsException que sí es capturada por
+  GlobalExceptionHandler y retorna 401, PERO si hay algún otro error en el
+  flujo de autenticación, puede retornar 500. El frontend ya lo maneja leyendo
+  err.error?.message independientemente del status code. Sin embargo, en
+  producción, cada login fallido por contraseña incorrecta genera un 500 en
+  los logs, lo que hace imposible distinguir errores reales del servidor de
+  intentos de login fallidos con alertas basadas en tasa de 5xx.
+  Acción: verificar que AuthController siempre retorna 401 para credenciales
+  incorrectas (nunca 500). Si hay un caso que llega a 500, corregirlo.
+
+[BACK-I7] Sin configuración de HikariCP
+  application.yaml no tiene spring.datasource.hikari.*. Se usan los defaults:
+  pool de 10 conexiones, timeout 30 segundos. Para producción con carga normal
+  de un almacén, 10 conexiones puede ser insuficiente durante picos (generación
+  de reportes analíticos que ejecutan múltiples queries simultáneas).
+  Acción en application-prod.yaml:
+    spring.datasource.hikari.maximum-pool-size: 20
+    spring.datasource.hikari.minimum-idle: 5
+    spring.datasource.hikari.connection-timeout: 30000
+    spring.datasource.hikari.idle-timeout: 600000
+    spring.datasource.hikari.max-lifetime: 1800000
+
+[BACK-I8] Sin Spring Boot Actuator
+  pom.xml no incluye spring-boot-starter-actuator. Sin él no hay:
+    · /actuator/health para verificar que el sistema está vivo
+    · Liveness/readiness probes para load balancers
+    · Métricas de JVM y pool de conexiones
+    · Smoke tests automatizados post-deploy
+  Acción: agregar al pom.xml y configurar en application-prod.yaml:
+    management.endpoints.web.exposure.include: health,info
+    management.endpoint.health.show-details: never
+    management.server.port: 8081  # Puerto separado, no expuesto al público
+
+[BACK-I9] Sin logback-spring.xml (logging estructurado para producción)
+  Spring Boot usa su configuración por defecto: solo consola, nivel INFO, sin
+  rotación, sin formato JSON. En producción esto significa:
+    · Los logs se pierden al reiniciar el proceso
+    · No hay integración posible con sistemas de monitoreo (ELK, Grafana Loki)
+    · No hay rotación automática (el log crece indefinidamente en disco)
+  Acción: crear src/main/resources/logback-spring.xml con:
+    · Perfil dev: consola con colores
+    · Perfil prod: archivo rotativo diario + retención 30 días + nivel WARN
+      para librerías externas, INFO para com.codigo2enter.almacenes
+
+[BACK-I10] Sin logging de operaciones críticas de negocio
+  Ningún servicio tiene @Slf4j + registro de las operaciones de negocio
+  importantes. En producción no hay trazabilidad de:
+    · Login exitoso/fallido con username e IP de origen
+    · Cambios de contraseña
+    · Creación/desactivación de usuarios
+    · Transiciones de estado de órdenes (quién aprobó OC-123 y cuándo)
+    · Movimientos de stock (quién registró qué movimiento)
+  Los campos de auditoría en la BD (createdByUsername, approvedByUsername, etc.)
+  cubren la trazabilidad de datos, pero no hay registro en logs de los intentos
+  fallidos ni de las acciones exitosas en tiempo real.
+  Acción: agregar @Slf4j en los ServiceImpl críticos y log.info() en las
+  operaciones de negocio con username, id de entidad y acción.
+
+--- MEJORAS (v1.1) ------------------------------------------------------------
+
+[BACK-M1] User.roles con FetchType.EAGER — JOIN redundante por request
+  User.java línea ~50: @ManyToMany(fetch = FetchType.EAGER)
+  Los roles ya viajan en el JWT. Cargarlos desde BD en cada request autenticado
+  (via resolveAuthenticatedUser) genera un JOIN innecesario. Cambiar a LAZY y
+  cargar solo cuando el objeto User se necesita fuera del contexto del JWT.
+
+[BACK-M2] Sin @Operation/@ApiResponse en endpoints individuales
+  Solo hay @Tag a nivel de clase. Swagger genera documentación básica pero
+  sin descripciones de respuestas posibles. Para v1.1, agregar @Operation con
+  descripción y @ApiResponse para 200/400/404/422/429.
+
+[BACK-M3] Endpoints de lista sin paginación (findBySupplierId, findByProductId)
+  PurchaseOrderController y SaleOrderController tienen endpoints que retornan
+  List<> sin paginar. Con volumen alto de órdenes por proveedor/producto,
+  esto puede ser un problema de memoria. Paginar en v1.1.
+
+[BACK-M4] Sin @Cacheable en catálogos de lectura frecuente
+  Categorías, estados y roles no cambian con frecuencia pero se consultan en
+  cada operación. Spring Cache + CaffeineCache con TTL de 5 minutos reduciría
+  la carga en BD para catálogos pequeños.
+
+[BACK-M5] ExecutiveReportServiceImpl: fecha por defecto "desde el año 2000"
+  Si from es null, se usa LocalDateTime.of(2000, 1, 1, 0, 0). Con datos de
+  producción desde 2026, esto es inofensivo a corto plazo pero es un bug latente.
+  Mejor default: inicio del año en curso (LocalDate.now().withDayOfYear(1)).
+
+
+================================================================================
+5. ANÁLISIS DE BRECHAS — FRONTEND
+================================================================================
+
+--- BLOQUEANTES ---------------------------------------------------------------
+
+[FRONT-B1] environment.prod.ts tiene URL de API placeholder (dominio ficticio)
+  Archivo: src/environments/environment.prod.ts
+  Contenido actual: apiUrl: 'https://api.tudominio.com/api/v1'
+  La URL queda compilada en el bundle de Angular. Si se hace ng build sin
+  reemplazar esta URL, TODAS las peticiones HTTP fallarán en producción.
+  Angular no soporta configuración de URL en runtime sin un patrón específico.
+  Acción (opción 1 — simple): reemplazar el dominio ficticio con la URL real
+  del backend antes del build de producción.
+  Acción (opción 2 — recomendada para múltiples entornos): implementar un
+  APP_INITIALIZER que cargue la config desde src/assets/config.json en runtime:
+    {
+      "apiUrl": "https://api.miempresa.com/api/v1"
+    }
+  Este archivo no se commitea al repositorio. El servidor lo sirve con los
+  valores correctos del entorno. El frontend carga la config antes de
+  inicializar el módulo raíz.
+
+[FRONT-B2] angular.json — configuración de producción sin optimización explícita
+  Archivo: angular.json, bloque "production"
+  La configuración de producción no declara explícitamente:
+    "optimization": true,
+    "sourceMap": false,
+    "namedChunks": false,
+    "buildOptimizer": true
+  En Angular 21 los defaults del builder aplican optimización automáticamente,
+  pero confiar en defaults implícitos es frágil. Más importante: sourceMap sin
+  valor explícito false en producción deja la puerta abierta a exponer el código
+  fuente accidentalmente.
+  Acción: agregar explícitamente en el bloque "production" de angular.json:
+    "optimization": true,
+    "sourceMap": false,
+    "namedChunks": false
+
+[FRONT-B3] Rutas de Inventory sin canActivate ni data.roles
+  Archivo: src/app/app.routes.ts (ruta 'inventory')
+           src/app/modules/inventory/inventory.routes.ts
+  La ruta 'inventory' no tiene canActivate propio ni data.roles. Las rutas
+  hijas (products, categories, low-stock) tampoco. El guard del padre ''
+  (MainLayout) protege contra acceso sin token, pero el contrato RBAC explícito
+  no está declarado. Si en el futuro se agrega una sub-ruta de Inventory
+  restringida a ADMIN/MANAGER, heredará el patrón permisivo y quedará
+  desprotegida.
+  Para v1.0, el acceso de lectura a Inventory para todos los roles es correcto,
+  pero la inconsistencia con el resto del proyecto (purchases, sales, reports
+  sí tienen canActivate + data.roles) es un riesgo arquitectónico.
+  Acción: agregar a la ruta 'inventory' en app.routes.ts:
+    canActivate: [authGuard],
+    data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'] }
+
+--- IMPORTANTES ---------------------------------------------------------------
+
+[FRONT-I1] Suscripciones sin takeUntilDestroyed en componentes de Reports
+  Archivos: executive-dashboard.component.ts, analytics-dashboard.component.ts,
+            operational-report.component.ts, pending-report.component.ts
+  Los métodos load(), loadKardex(), loadMovements(), loadTurnover(), etc. usan
+  finalize().subscribe() sin takeUntilDestroyed. Si el usuario navega fuera del
+  componente mientras una petición está en vuelo (común en reportes con filtros
+  de fecha que tardan segundos), la suscripción no se cancela y puede intentar
+  actualizar estado de un componente ya destruido.
+  Acción: inyectar DestroyRef en los 4 componentes de Reports y agregar
+  .pipe(takeUntilDestroyed(this.destroyRef)) antes de cada .subscribe().
+
+[FRONT-I2] Sin ErrorHandler global de Angular
+  Archivo: src/app/app.config.ts
+  Angular tiene un sistema de error handling de componentes separado de los
+  errores HTTP. Sin un ErrorHandler personalizado, los errores de template
+  (null references, errores en ngOnInit), los errores de carga de módulos lazy
+  y los RxJS errors no capturados muestran un stack trace en la consola pero no
+  hay forma de mostrar al usuario una pantalla amigable ni de registrarlos.
+  En producción, el usuario simplemente ve la pantalla congelada.
+  Acción: implementar GlobalErrorHandler extends ErrorHandler que:
+    · Loggea el error internamente
+    · Muestra un snackbar rojo "Ocurrió un error inesperado. Recarga la página."
+    · (Opcional v1.1) envía el error a un sistema de monitoreo
+  Registrar en app.config.ts: { provide: ErrorHandler, useClass: GlobalErrorHandler }
+
+[FRONT-I3] Sin página 404 personalizada
+  Archivo: src/app/app.routes.ts
+  El wildcard '**' hace redirectTo: '' en lugar de mostrar un componente de
+  error 404. El usuario que navega a una URL incorrecta llega al root sin saber
+  por qué fue redirigido.
+  Acción: crear NotFoundComponent con mensaje "Página no encontrada" y link al
+  inicio. Usar { path: '**', component: NotFoundComponent }.
+
+[FRONT-I4] Sin página de acceso denegado (403)
+  authGuard redirige a '/' cuando el rol no tiene acceso. El usuario no recibe
+  feedback de por qué fue redirigido.
+  Acción: redirigir a '/access-denied' con un componente que explique "No tienes
+  permiso para acceder a esta sección" y muestre el rol actual del usuario.
+
+[FRONT-I5] Clase CSS snack-error ausente en global.scss
+  Archivos: executive-dashboard, analytics-dashboard, operational-report,
+            pending-report — usan panelClass: ['snack-error']
+  global.scss solo define .snackbar-error (con guion). Los snackbars de error
+  en los 4 componentes de Reports no aplican el color rojo corporativo (#C62828).
+  Acción: agregar alias en global.scss: .snack-error { @extend .snackbar-error; }
+  O unificar a 'snackbar-error' en los 4 componentes de Reports.
+
+[FRONT-I6] Sin configuración de nginx para SPA (crítico para producción)
+  No existe nginx.conf ni Dockerfile para el frontend. Una SPA Angular requiere
+  que el servidor web redirija todas las URLs al index.html para que el router
+  de Angular las procese. Sin esta configuración, cualquier recarga directa en
+  una ruta (ej: F5 en /inventory/products) devuelve 404 del servidor.
+  Ver §9 para el nginx.conf completo a crear.
+
+[FRONT-I7] Ruta orders/:id en purchases y sales sin guard hijo explícito
+  Archivos: purchases.routes.ts, sales.routes.ts
+  Las rutas orders/new tienen guard y roles, pero orders/:id no lo declaran
+  explícitamente. El guard del padre (purchases/sales con sus roles) protege
+  correctamente en Angular (los guards padre se evalúan antes que los hijos).
+  Sin embargo, la inconsistencia con el patrón documentado en la lección
+  BUG-M3-07 es un riesgo arquitectónico para mantenimiento futuro.
+  Acción: agregar canActivate: [authGuard] + data.roles en las rutas orders/:id
+  de purchases.routes.ts y sales.routes.ts, siguiendo el patrón del módulo.
+
+[FRONT-I8] Sin smoke test de frontend post-deploy
+  No hay script que verifique que el bundle de Angular cargó correctamente
+  después de un despliegue. Ver §9 y §11 para el checklist de verificación.
+
+--- MEJORAS (v1.1) ------------------------------------------------------------
+
+[FRONT-M1] Sin preloadingStrategy en el router
+  withPreloading(PreloadAllModules) en app.config.ts mejoraría el tiempo de
+  navegación entre módulos al precargar los bundles lazy en background.
+
+[FRONT-M2] MainLayoutComponent sin ChangeDetectionStrategy.OnPush
+  Es el shell de toda la aplicación. Con OnPush y el async pipe ya presente
+  (collapsed$ | async), el cambio es trivial y mejora el rendimiento global.
+
+[FRONT-M3] Sin trackBy en listas largas
+  Las tablas de productos (hasta 200 con getLowStock), el Kardex y los reportes
+  no usan trackBy con @for/@ngFor. Reduce re-rendering innecesario al paginar.
+
+[FRONT-M4] LoginComponent sin takeUntilDestroyed
+  Si el componente se desmonta mientras la petición de login está en vuelo
+  (poco probable pero posible), la suscripción queda huérfana.
+
+[FRONT-M5] Sin integración de error tracking (Sentry o similar)
+  En producción, los errores de JavaScript del usuario no se reportan
+  automáticamente. Requiere que los usuarios reporten los problemas manualmente.
+  GlobalErrorHandler (FRONT-I2) + Sentry SDK resuelven ambos gaps juntos.
+
+
+================================================================================
+6. ANÁLISIS DE BRECHAS — FUNCIONAL WMS E INDUSTRIA
+================================================================================
+
+Esta sección evalúa el sistema contra los estándares funcionales de WMS de
+industria. Los gaps aquí listados están clasificados según si son bloqueantes
+para el ALCANCE DECLARADO del sistema (almacén único, escala media, menos de
+100 usuarios, reemplaza hojas de cálculo).
+
+IMPLEMENTADO ✔
+  · Gestión de productos con SKU, categorías, costo unitario
+  · Control de stock con movimientos IN/OUT y Kardex completo
+  · Stock reservado separado de stock disponible (físico − reservado)
+  · Órdenes de compra con flujo de estados y recepción
+  · Órdenes de venta con flujo de estados, reserva y entrega
+  · Gestión de proveedores y clientes
+  · RBAC por rol para todas las operaciones
+  · Reportes operativos (stock bajo, kardex, movimientos, rotación)
+  · Dashboard ejecutivo con KPIs financieros
+  · Alertas visuales de stock bajo (por severidad)
+  · Trazabilidad de auditoría por campo (quién creó/aprobó/recibió/entregó)
+  · Búsqueda insensible a acentos y mayúsculas
+
+AUSENTE — Resolver según alcance con el cliente (antes del go-live)
+  · Gestión de ubicaciones físicas (zonas, pasillos, estantes, posiciones)
+    → Para almacenes pequeños o con pocos SKUs, no es crítico.
+    → Para almacenes con más de 2-3 pasillos o >300 SKUs activos con picking
+      simultáneo de múltiples personas, ES UN BLOQUEANTE REAL.
+    → ACCIÓN: antes del go-live, confirmar con el cliente si es necesario.
+
+  · Trazabilidad de lotes (lot number) y fechas de caducidad (FEFO)
+    → Inaceptable para empresas con productos perecederos, farmacéuticos o
+      sujetos a garantía. Para ferretería, materiales o herramientas: no crítico.
+    → ACCIÓN: calificar con el cliente si maneja productos con caducidad.
+      Si la respuesta es sí, esto bloquea v1.0 para esos productos.
+
+  · Módulo de devoluciones (de clientes y a proveedores)
+    → El workaround es un movimiento manual de stock (IN/OUT libre) sin
+      vincularlo a una orden. Si el volumen de devoluciones supera el 5-10%
+      de las transacciones, esto es un bloqueante operativo real.
+    → ACCIÓN: confirmar volumen de devoluciones con el cliente. Si es bajo,
+      documentar el workaround en el manual de usuario.
+
+AUSENTE — No bloqueante para el alcance declarado (implementar en v1.1+)
+  · Estrategias de picking (FIFO, FEFO, LIFO) — requiere lotes primero
+  · Gestión de múltiples almacenes — diseño de sistema único declarado
+  · Proceso formal de putaway (recepción a ubicación específica)
+  · Pick list / packing list / remisión en papel o PDF
+  · Inventario físico / conteo cíclico — workaround documentado en §12
+  · Alertas automáticas push (email/notificación) — roadmap módulo notifications
+  · Integración con lectores de código de barras / QR
+  · Números de serie por unidad
+  · Importación masiva desde CSV/Excel
+
+
+================================================================================
+7. ANÁLISIS DE BRECHAS — PROCESOS OPERATIVOS
+================================================================================
+
+[OPS-B1] Sin procedimiento de backup — CRÍTICO para go-live
+  No existe ningún documento de procedimiento de backup en el repositorio.
+  Si el servidor de BD falla sin backup, se pierde el historial completo de
+  órdenes, Kardex, clientes, proveedores y productos.
+  Ver §10 para el procedimiento completo.
+
+[OPS-B2] Sin procedimiento de recuperación ante desastres — CRÍTICO para go-live
+  No hay documentación sobre qué hacer si el servidor cae o si la BD se
+  corrompe. No hay scripts de restauración, no hay lista de variables de
+  entorno necesarias para reproducir el entorno.
+  Ver §10 para el procedimiento completo.
+
+[OPS-B3] Sin procedimiento de carga inicial de datos — CRÍTICO para go-live
+  El sistema sale a producción vacío. Si el cliente tiene datos existentes en
+  hojas de cálculo (productos, proveedores, clientes, saldos iniciales de
+  stock), la migración inicial debe planificarse ANTES del go-live.
+  El sistema solo permite crear registros uno por uno desde la UI.
+  Opciones según volumen:
+    · < 50 registros: carga manual desde la UI por un operador
+    · 50-500 registros: script de importación via API REST (curl/Python)
+    · > 500 registros: evaluar una importación directa a PostgreSQL vía
+      archivo SQL o pg_restore, verificando las constraints de la BD
+
+[OPS-B4] Sin manual de usuario — IMPORTANTE para go-live
+  No existe ningún documento orientado al usuario final. Todo el material del
+  repositorio es técnico. Sin manual, el go-live requiere entrenamiento
+  extenso en persona.
+  Acción mínima para v1.0: crear un documento "Guía rápida por rol" con
+  los flujos más comunes para cada uno de los 4 roles.
+
+[OPS-B5] Contraseñas QA documentadas en el repositorio
+  memoria_tecnica_global_proyecto.md §5 documenta:
+    qa_manager / QaManager123!
+    qa_sales / QaSales123!
+    qa_warehouse / QaWarehouse123!
+    admin / Admin123!
+  Estas contraseñas están en el historial de git. En producción DEBEN
+  cambiarse. Los usuarios QA no deben existir en el entorno productivo.
+  Acción: antes del go-live, cambiar la contraseña de admin desde la UI y
+  desactivar todos los usuarios qa_*. Documentar la contraseña del admin de
+  producción en un gestor de contraseñas, NUNCA en el repositorio.
+
+[OPS-B6] Sin tests E2E automatizados para el flujo crítico
+  Toda la verificación de los flujos de negocio (crear orden → aprobar →
+  recibir/entregar → verificar stock) es manual. Cada despliegue requiere
+  una regresión manual que, con 500+ casos de prueba documentados, tomaría
+  horas. Sin automatización E2E, los deploys son lentos y arriesgados.
+  Acción mínima para v1.0: implementar 5-8 specs Cypress o Playwright:
+    1. Login con cada rol → verificar sidebar correcto
+    2. Crear producto → verificar que aparece en lista
+    3. Crear OC → aprobar → recibir → verificar que stock aumentó
+    4. Crear OV → aprobar → entregar → verificar que stock decrementó
+    5. Acceso por URL a ruta no autorizada → verificar redirección
+    6. Crear orden con stock insuficiente → verificar error
+
+[OPS-B7] Sin smoke tests post-deploy
+  No hay script de verificación rápida para confirmar que el sistema está
+  vivo después de un despliegue. Ver §11 (Checklist de go-live) para el
+  script de smoke test.
+
+[OPS-I1] memoria_tecnica_global_proyecto.md con nota obsoleta de Módulo 6
+  §5 de la memoria global contiene una nota del 2026-06-14 que indica que
+  /admin/users no existe. Esta nota es OBSOLETA: el Módulo 6 (Usuarios) fue
+  implementado posteriormente con todas sus funciones. Actualizar esa sección
+  antes del go-live para reflejar el estado real.
+
+
+================================================================================
+8. PLAN DE ACCIÓN PRIORIZADO
+================================================================================
+
+BLOQUEANTES — Deben resolverse ANTES del primer despliegue en producción
+------------------------------------------------------------------
+  #   ID           Tarea                                          Esfuerzo
+  1   BACK-B1      Generar script DDL inicial (schema SQL)        4 horas
+  2   BACK-B2      Crear Dockerfile + docker-compose.yml          4 horas
+  3   BACK-B3      Crear application-prod.yaml                    2 horas
+  4   BACK-B4*     (se resuelve con BACK-B3 — show-sql)           —
+  5   BACK-I1      Eliminar log de contraseña en DataInitializer  30 min
+  6   BACK-I2      Deshabilitar Swagger en prod (application-prod)15 min
+  7   FRONT-B1     Definir URL real en environment.prod.ts o      2 horas
+                   implementar APP_INITIALIZER con config.json
+  8   FRONT-B2     Agregar optimization/sourceMap explícitos en   30 min
+                   angular.json config producción
+  9   FRONT-B3     Agregar canActivate+data.roles en inventory    1 hora
+  10  FRONT-I6     Crear nginx.conf para SPA + Dockerfile front   2 horas
+  11  OPS-B1/B2    Configurar backup diario de PostgreSQL y       4 horas
+                   documentar procedimiento de recuperación
+  12  OPS-B3       Planificar e implementar carga inicial de datos Variable
+  13  OPS-B4       Crear guía rápida de uso por rol               8 horas
+  14  OPS-B5       Cambiar contraseñas de producción antes del    30 min
+                   go-live; desactivar usuarios QA en prod
+  15  OPS-I1       Actualizar §5 de memoria_tecnica_global        1 hora
+
+IMPORTANTES — Primer sprint post-go-live (máximo 2 semanas)
+-----------------------------------------------------------
+  #   ID           Tarea                                          Esfuerzo
+  1   BACK-I3      Agregar headers de seguridad HTTP              2 horas
+  2   BACK-I4      Handler DataIntegrityViolationException        2 horas
+  3   BACK-I5      Reemplazar ~15 RuntimeException con tipadas    3 horas
+  4   BACK-I6      Verificar que login incorrecto → siempre 401   1 hora
+  5   BACK-I7      Configurar HikariCP en application-prod        1 hora
+  6   BACK-I8      Agregar Spring Boot Actuator (/health)         2 horas
+  7   BACK-I9      Crear logback-spring.xml con rotación          3 horas
+  8   BACK-I10     Logging de operaciones críticas en servicios   4 horas
+  9   FRONT-I1     takeUntilDestroyed en 4 componentes Reports    3 horas
+  10  FRONT-I2     GlobalErrorHandler de Angular                  2 horas
+  11  FRONT-I3     Página 404 personalizada                       1 hora
+  12  FRONT-I4     Página acceso denegado (403)                   1 hora
+  13  FRONT-I5     Clase CSS .snack-error en global.scss          15 min
+  14  FRONT-I7     Agregar guards explícitos en orders/:id        1 hora
+  15  OPS-B6       Tests E2E automatizados (5-8 specs Cypress)    2 días
+  16  OPS-B7       Script de smoke test post-deploy               2 horas
+
+MEJORAS — v1.1 (sprint de calidad post-estabilización)
+------------------------------------------------------
+  BACK-M1  FetchType.LAZY en User.roles
+  BACK-M2  @Operation/@ApiResponse en endpoints
+  BACK-M3  Paginación en findBySupplierId/findByProductId
+  BACK-M4  @Cacheable en catálogos
+  BACK-M5  Default de fecha en dashboard ejecutivo
+  FRONT-M1 withPreloading(PreloadAllModules)
+  FRONT-M2 OnPush en MainLayoutComponent
+  FRONT-M3 trackBy en listas largas
+  FRONT-M4 takeUntilDestroyed en LoginComponent
+  FRONT-M5 Integración Sentry o similar
+  WMS      Módulo de devoluciones (backend ya lo tiene en roadmap)
+  WMS      Gestión de ubicaciones físicas
+  WMS      Trazabilidad de lotes y caducidades
+  WMS      Alertas automáticas (email/push)
+  WMS      Inventario físico / conteo cíclico
+  WMS      Importación masiva CSV/Excel
+
+
+================================================================================
+9. PROCEDIMIENTO DE INSTALACIÓN EN PRODUCCIÓN
+================================================================================
+
+REQUISITOS DEL SERVIDOR
+-----------------------
+  Sistema operativo: Ubuntu 22.04 LTS o RHEL 8/9 (recomendado)
+  CPU:               mínimo 2 núcleos (4 recomendado para reportes analíticos)
+  RAM:               mínimo 4 GB (2 GB para app + 1.5 GB para PostgreSQL + SO)
+  Disco:             mínimo 50 GB SSD (20 GB app + logs + 30 GB BD + crecimiento)
+  Red:               1 IP pública fija + dominio con certificado SSL/TLS
+  Software base:
+    · Java 17 (OpenJDK o Amazon Corretto)
+    · PostgreSQL 14+ con extensión unaccent
+    · Node.js 20+ (solo para build del frontend, puede ser en máquina separada)
+    · nginx 1.24+
+    · certbot (para certificados Let's Encrypt)
+
+PASO 1 — PREPARAR LA BASE DE DATOS
+------------------------------------
+  1.1 Instalar PostgreSQL:
+      sudo apt-get install postgresql-14
+
+  1.2 Crear base de datos y usuario:
+      sudo -u postgres psql
+      CREATE USER almacen_user WITH PASSWORD 'contraseña_segura_de_produccion';
+      CREATE DATABASE almacen_db OWNER almacen_user;
+      \c almacen_db
+      GRANT ALL PRIVILEGES ON DATABASE almacen_db TO almacen_user;
+
+  1.3 Instalar extensión unaccent (OBLIGATORIO para búsquedas):
+      \c almacen_db
+      CREATE EXTENSION IF NOT EXISTS unaccent;
+
+  1.4 Crear función f_unaccent (OBLIGATORIO, usada por los índices de búsqueda):
+      CREATE OR REPLACE FUNCTION f_unaccent(text)
+      RETURNS text
+      LANGUAGE sql IMMUTABLE PARALLEL SAFE STRICT AS
+      $func$
+        SELECT public.unaccent('public.unaccent', $1)
+      $func$;
+
+  1.5 Crear el schema (HASTA QUE SE IMPLEMENTE FLYWAY — BACK-B1):
+      · Opción A: Ejecutar el sistema UNA VEZ con ddl-auto: create para que
+        Hibernate genere el schema, luego cambiar a validate.
+        ADVERTENCIA: ddl-auto: create DESTRUYE los datos existentes si los hay.
+        Solo usar en el primer arranque con BD vacía.
+      · Opción B (recomendada): generar el script DDL desde Maven:
+          mvn spring-boot:run -Dspring.jpa.hibernate.ddl-auto=create \
+              -Dspring.jpa.properties.javax.persistence.schema-generation.scripts.action=create \
+              -Dspring.jpa.properties.javax.persistence.schema-generation.scripts.create-target=schema.sql
+        Revisar schema.sql, ejecutarlo en producción: psql -U almacen_user -d almacen_db -f schema.sql
+        Luego cambiar a ddl-auto: validate para todos los despliegues siguientes.
+
+  1.6 Crear índices funcionales para búsqueda insensible a acentos:
+      CREATE INDEX IF NOT EXISTS idx_products_unaccent_name
+          ON products (f_unaccent(lower(name)));
+      CREATE INDEX IF NOT EXISTS idx_products_unaccent_sku
+          ON products (f_unaccent(lower(sku)));
+      CREATE INDEX IF NOT EXISTS idx_categories_unaccent_name
+          ON categories (f_unaccent(lower(name)));
+      CREATE INDEX IF NOT EXISTS idx_suppliers_unaccent_company
+          ON suppliers (f_unaccent(lower(company_name)));
+      CREATE INDEX IF NOT EXISTS idx_clients_unaccent_name
+          ON clients (f_unaccent(lower(name)));
+      CREATE INDEX IF NOT EXISTS idx_users_username ON users (username);
+      CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
+      CREATE INDEX IF NOT EXISTS idx_sale_orders_status ON sale_orders (status);
+      CREATE INDEX IF NOT EXISTS idx_purchase_orders_status ON purchase_orders (status);
+      CREATE INDEX IF NOT EXISTS idx_stock_movements_product_id
+          ON stock_movements (product_id);
+
+PASO 2 — CONFIGURAR VARIABLES DE ENTORNO
+-----------------------------------------
+  Crear el archivo /etc/almacenes/env.conf (permisos 600, propietario root):
+
+      # Base de datos
+      DB_HOST=localhost
+      DB_PORT=5432
+      DB_NAME=almacen_db
+      DB_USERNAME=almacen_user
+      DB_PASSWORD=contraseña_segura_de_produccion
+
+      # JWT (generar con: openssl rand -hex 64)
+      JWT_SECRET=clave_hex_de_64_bytes_minimo_generada_con_openssl
+
+      # CORS — dominio exacto del frontend en producción (sin barra final)
+      CORS_ALLOWED_ORIGINS=https://almacenes.miempresa.com
+
+      # Perfil de Spring
+      SPRING_PROFILES_ACTIVE=prod
+
+  Cargar en el servicio systemd: EnvironmentFile=/etc/almacenes/env.conf
+
+  IMPORTANTE: NUNCA commitear este archivo al repositorio de código.
+  IMPORTANTE: JWT_SECRET debe tener al menos 64 caracteres hexadecimales.
+              Generar con: openssl rand -hex 64
+
+PASO 3 — DESPLEGAR EL BACKEND
+-------------------------------
+  3.1 Compilar el JAR de producción (en máquina de build):
+      mvn clean package -DskipTests -Pprod
+      # Genera: target/almacenes-0.0.1-SNAPSHOT.jar
+
+  3.2 Transferir al servidor:
+      scp target/almacenes-0.0.1-SNAPSHOT.jar usuario@servidor:/opt/almacenes/
+
+  3.3 Crear el servicio systemd (/etc/systemd/system/almacenes-backend.service):
+
+      [Unit]
+      Description=Almacenes Backend — Spring Boot
+      After=network.target postgresql.service
+
+      [Service]
+      User=almacenes
+      WorkingDirectory=/opt/almacenes
+      EnvironmentFile=/etc/almacenes/env.conf
+      ExecStart=/usr/bin/java -Xms512m -Xmx1g \
+          -Dspring.profiles.active=prod \
+          -jar /opt/almacenes/almacenes-0.0.1-SNAPSHOT.jar
+      SuccessExitStatus=143
+      TimeoutStopSec=10
+      Restart=on-failure
+      RestartSec=5
+
+      [Install]
+      WantedBy=multi-user.target
+
+  3.4 Activar y arrancar:
+      sudo systemctl daemon-reload
+      sudo systemctl enable almacenes-backend
+      sudo systemctl start almacenes-backend
+      sudo systemctl status almacenes-backend
+
+  3.5 Verificar el arranque:
+      sudo journalctl -u almacenes-backend -f
+      # Buscar: "Started AlmacenesApplication"
+      # Buscar: "Tomcat started on port(s): 8080"
+      # NO debe aparecer ningún: "Error creating bean" ni "Connection refused"
+
+  3.6 Verificar el health check (una vez implementado Actuator):
+      curl http://localhost:8080/actuator/health
+      # Debe responder: {"status":"UP"}
+
+PASO 4 — CONSTRUIR EL FRONTEND
+--------------------------------
+  4.1 En máquina de build (con Node.js 20+):
+      cd frontend/almacenes
+      npm ci
+      # IMPORTANTE: actualizar environment.prod.ts con la URL real antes del build:
+      # apiUrl: 'https://api.almacenes.miempresa.com/api/v1'
+      ng build --configuration production
+      # Genera: dist/almacenes/browser/
+
+  4.2 Transferir los assets al servidor:
+      rsync -avz dist/almacenes/browser/ usuario@servidor:/var/www/almacenes/
+
+PASO 5 — CONFIGURAR NGINX
+---------------------------
+  5.1 Crear /etc/nginx/sites-available/almacenes:
+
+      server {
+          listen 80;
+          server_name almacenes.miempresa.com;
+          return 301 https://$host$request_uri;
+      }
+
+      server {
+          listen 443 ssl http2;
+          server_name almacenes.miempresa.com;
+
+          ssl_certificate     /etc/letsencrypt/live/almacenes.miempresa.com/fullchain.pem;
+          ssl_certificate_key /etc/letsencrypt/live/almacenes.miempresa.com/privkey.pem;
+          ssl_protocols       TLSv1.2 TLSv1.3;
+          ssl_ciphers         HIGH:!aNULL:!MD5;
+
+          # Directorio del frontend compilado
+          root /var/www/almacenes;
+          index index.html;
+
+          # Headers de seguridad HTTP
+          add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+          add_header X-Frame-Options "DENY" always;
+          add_header X-Content-Type-Options "nosniff" always;
+          add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+          add_header Content-Security-Policy "default-src 'self'; \
+              connect-src 'self' https://api.almacenes.miempresa.com; \
+              style-src 'self' 'unsafe-inline'; \
+              script-src 'self'; \
+              img-src 'self' data:; \
+              font-src 'self';" always;
+
+          # Cache para assets con hash (outputHashing: all en Angular)
+          location ~* \.(js|css|png|jpg|jpeg|gif|ico|woff|woff2|ttf|svg)$ {
+              expires 1y;
+              add_header Cache-Control "public, immutable";
+          }
+
+          # index.html nunca se cachea (siempre la versión más nueva)
+          location = /index.html {
+              add_header Cache-Control "no-cache, no-store, must-revalidate";
+          }
+
+          # CRÍTICO: redirigir todas las rutas al index.html para el router de Angular
+          location / {
+              try_files $uri $uri/ /index.html;
+          }
+
+          # Proxy al backend Spring Boot
+          location /api/ {
+              proxy_pass http://localhost:8080;
+              proxy_set_header Host $host;
+              proxy_set_header X-Real-IP $remote_addr;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header X-Forwarded-Proto $scheme;
+              proxy_read_timeout 60s;
+              proxy_connect_timeout 10s;
+          }
+      }
+
+  5.2 Habilitar el sitio:
+      sudo ln -s /etc/nginx/sites-available/almacenes /etc/nginx/sites-enabled/
+      sudo nginx -t
+      sudo systemctl reload nginx
+
+  5.3 Obtener certificado SSL con Let's Encrypt:
+      sudo certbot --nginx -d almacenes.miempresa.com
+      # Certbot modifica automáticamente la configuración de nginx
+
+PASO 6 — CONFIGURAR FIREWALL
+------------------------------
+      sudo ufw allow 22/tcp    # SSH
+      sudo ufw allow 80/tcp    # HTTP (redirige a HTTPS)
+      sudo ufw allow 443/tcp   # HTTPS
+      sudo ufw deny 8080/tcp   # Puerto del backend — solo accesible via nginx proxy
+      sudo ufw deny 5432/tcp   # PostgreSQL — solo accesible localmente
+      sudo ufw enable
+
+PASO 7 — PRIMER ARRANQUE Y DATOS INICIALES
+-------------------------------------------
+  7.1 Verificar que la BD está vacía y que el schema fue creado correctamente.
+
+  7.2 Arrancar el backend. El DataInitializer creará automáticamente el usuario
+      admin con contraseña Admin123! si la tabla users está vacía.
+      IMPORTANTE: cambiar la contraseña del admin INMEDIATAMENTE después del
+      primer arranque.
+
+  7.3 Entrar a https://almacenes.miempresa.com con admin/Admin123! y desde
+      el módulo Usuarios cambiar la contraseña del admin por una segura.
+
+  7.4 Crear los usuarios de producción desde el módulo Usuarios (ADMIN) con
+      las contraseñas definitivas para cada operador del almacén.
+
+  7.5 Cargar los datos maestros en este orden:
+      1. Categorías (menú Inventario → Categorías)
+      2. Productos (menú Inventario → Productos)
+      3. Proveedores (menú Compras → Proveedores)
+      4. Clientes (menú Ventas → Clientes)
+      5. Saldos iniciales de stock (movimientos IN por producto con
+         motivo "SALDO INICIAL YYYY-MM-DD")
+
+DOCKERFILE (para referencia — implementar como parte de BACK-B2)
+-----------------------------------------------------------------
+  # Dockerfile para el backend (multi-stage)
+
+  # Stage 1: Build
+  FROM maven:3.9-eclipse-temurin-17 AS build
+  WORKDIR /app
+  COPY pom.xml .
+  RUN mvn dependency:go-offline
+  COPY src ./src
+  RUN mvn clean package -DskipTests
+
+  # Stage 2: Runtime
+  FROM eclipse-temurin:17-jre-alpine
+  RUN addgroup -S almacenes && adduser -S almacenes -G almacenes
+  WORKDIR /app
+  COPY --from=build /app/target/almacenes-*.jar app.jar
+  USER almacenes
+  EXPOSE 8080
+  ENTRYPOINT ["java", "-Xms512m", "-Xmx1g", "-jar", "app.jar"]
+
+  # docker-compose.yml (backend + PostgreSQL)
+
+  version: '3.9'
+  services:
+    db:
+      image: postgres:16-alpine
+      environment:
+        POSTGRES_DB: almacen_db
+        POSTGRES_USER: almacen_user
+        POSTGRES_PASSWORD: ${DB_PASSWORD}
+      volumes:
+        - pgdata:/var/lib/postgresql/data
+        - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      healthcheck:
+        test: ["CMD-SHELL", "pg_isready -U almacen_user -d almacen_db"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+
+    backend:
+      build: .
+      ports:
+        - "8080:8080"
+      environment:
+        SPRING_PROFILES_ACTIVE: prod
+        DB_HOST: db
+        DB_PORT: 5432
+        DB_NAME: almacen_db
+        DB_USERNAME: almacen_user
+        DB_PASSWORD: ${DB_PASSWORD}
+        JWT_SECRET: ${JWT_SECRET}
+        CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
+      depends_on:
+        db:
+          condition: service_healthy
+
+  volumes:
+    pgdata:
+
+
+================================================================================
+10. PROCEDIMIENTO DE BACKUP Y RECUPERACIÓN ANTE DESASTRES
+================================================================================
+
+POLÍTICA DE BACKUP
+------------------
+  · Tipo:       Lógico (pg_dump — SQL portable)
+  · Frecuencia: Diario, a las 02:00 AM (horario de menor actividad)
+  · Retención:  Últimos 30 días diarios + 1 backup mensual por 12 meses
+  · Verificación: Restaurar en entorno de prueba el primer lunes de cada mes
+  · Almacenamiento: Local (/var/backups/almacenes/) + copia remota (S3 o SFTP)
+
+SCRIPT DE BACKUP (/opt/almacenes/scripts/backup.sh)
+----------------------------------------------------
+  #!/bin/bash
+  set -euo pipefail
+
+  BACKUP_DIR="/var/backups/almacenes"
+  TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+  FILENAME="almacen_db_${TIMESTAMP}.sql.gz"
+  RETENTION_DAYS=30
+
+  # Crear directorio si no existe
+  mkdir -p "${BACKUP_DIR}"
+
+  # Generar backup comprimido
+  PGPASSWORD="${DB_PASSWORD}" pg_dump \
+      -h localhost -U almacen_user -d almacen_db \
+      --no-owner --no-acl \
+      | gzip > "${BACKUP_DIR}/${FILENAME}"
+
+  # Verificar que el archivo no está vacío
+  if [ ! -s "${BACKUP_DIR}/${FILENAME}" ]; then
+      echo "ERROR: El backup está vacío. Verificar conexión a BD."
+      exit 1
+  fi
+
+  echo "Backup completado: ${BACKUP_DIR}/${FILENAME} ($(du -h "${BACKUP_DIR}/${FILENAME}" | cut -f1))"
+
+  # Eliminar backups más antiguos que la retención configurada
+  find "${BACKUP_DIR}" -name "almacen_db_*.sql.gz" -mtime +${RETENTION_DAYS} -delete
+
+  # (Opcional) Copiar a almacenamiento remoto
+  # aws s3 cp "${BACKUP_DIR}/${FILENAME}" s3://bucket-backups/almacenes/
+
+CONFIGURAR CRON (/etc/cron.d/almacenes-backup)
+----------------------------------------------
+  # Backup diario a las 02:00 AM
+  0 2 * * * root /bin/bash /opt/almacenes/scripts/backup.sh >> /var/log/almacenes-backup.log 2>&1
+
+PROCEDIMIENTO DE RESTAURACIÓN
+------------------------------
+  1. Identificar el backup a restaurar:
+     ls -lh /var/backups/almacenes/
+
+  2. Detener el backend para evitar escrituras durante la restauración:
+     sudo systemctl stop almacenes-backend
+
+  3. Crear una BD vacía nueva (o limpiar la existente):
+     sudo -u postgres psql -c "DROP DATABASE IF EXISTS almacen_db_restore;"
+     sudo -u postgres psql -c "CREATE DATABASE almacen_db_restore OWNER almacen_user;"
+     sudo -u postgres psql -c "\c almacen_db_restore; CREATE EXTENSION unaccent;"
+     sudo -u postgres psql -c "\c almacen_db_restore; CREATE OR REPLACE FUNCTION f_unaccent..."
+
+  4. Restaurar el backup:
+     gunzip -c /var/backups/almacenes/almacen_db_20260617_020000.sql.gz \
+         | PGPASSWORD="${DB_PASSWORD}" psql -h localhost -U almacen_user almacen_db_restore
+
+  5. Verificar la integridad básica:
+     PGPASSWORD="${DB_PASSWORD}" psql -h localhost -U almacen_user almacen_db_restore \
+         -c "SELECT COUNT(*) FROM products; SELECT COUNT(*) FROM sale_orders;"
+
+  6. Si la restauración es correcta, hacer swap de la BD activa:
+     sudo -u postgres psql -c "ALTER DATABASE almacen_db RENAME TO almacen_db_old;"
+     sudo -u postgres psql -c "ALTER DATABASE almacen_db_restore RENAME TO almacen_db;"
+
+  7. Reiniciar el backend:
+     sudo systemctl start almacenes-backend
+
+  8. Ejecutar el smoke test (ver §11) para verificar el sistema.
+
+  9. Una vez verificado, eliminar la BD vieja:
+     sudo -u postgres psql -c "DROP DATABASE almacen_db_old;"
+
+TIEMPO OBJETIVO DE RECUPERACIÓN (RTO)
+--------------------------------------
+  · RPO (Punto de recuperación): máximo 24 horas (con backup diario)
+  · RTO (Tiempo de recuperación): máximo 2 horas para restauración completa
+  · Para reducir RPO a horas: implementar backup cada 4 horas (cambiar cron)
+  · Para reducir RPO a minutos: implementar replicación de streaming de PostgreSQL
+    (requiere servidor secundario — fuera del alcance de v1.0)
+
+
+================================================================================
+11. CHECKLIST DE GO-LIVE
+================================================================================
+
+SEMANA ANTES DEL GO-LIVE
+-------------------------
+  [ ] Todos los ítems BLOQUEANTES del §8 están implementados y verificados
+  [ ] Script de backup configurado y ejecutado exitosamente (prueba manual)
+  [ ] Restauración desde backup probada en entorno de prueba
+  [ ] Datos maestros cargados y verificados (categorías, productos, proveedores,
+      clientes, saldos iniciales)
+  [ ] Contraseña del admin cambiada (no Admin123!)
+  [ ] Usuarios de producción creados con roles correctos
+  [ ] Usuarios QA (qa_manager, qa_sales, qa_warehouse) desactivados o eliminados
+  [ ] Certificado SSL válido y configurado
+  [ ] Firewall configurado (puertos 8080 y 5432 no accesibles desde internet)
+  [ ] Dominio DNS apuntando al servidor de producción
+  [ ] environment.prod.ts con la URL real del backend (no tudominio.com)
+
+DÍA DEL GO-LIVE
+----------------
+  [ ] SMOKE TEST BACKEND:
+      curl -f https://api.almacenes.miempresa.com/actuator/health
+      → Responde: {"status":"UP"}
+
+  [ ] SMOKE TEST LOGIN:
+      curl -X POST https://api.almacenes.miempresa.com/api/v1/auth/login \
+          -H "Content-Type: application/json" \
+          -d '{"username":"admin","password":"CONTRASEÑA_DE_PRODUCCION"}'
+      → Responde JSON con campo "token"
+
+  [ ] SMOKE TEST FRONTEND:
+      · Abrir https://almacenes.miempresa.com en el navegador
+      · La pantalla de login carga correctamente (sin errores en consola)
+      · Login con admin → sidebar muestra todos los módulos
+      · Navegar a Inventario → lista de productos carga
+      · Navegar a Compras → lista de proveedores carga
+      · Recargar la página en /inventory/products (F5) → no devuelve 404
+        (verifica la configuración try_files de nginx)
+
+  [ ] SMOKE TEST RBAC:
+      · Login con qa_warehouse → no debe ver "Compras" en sidebar
+      · Login con qa_sales → no debe ver "Reportes Analíticos" en sidebar
+      · Navegar directamente a /admin/users con qa_sales → redirige a /
+
+  [ ] SMOKE TEST BACKUP:
+      · Ejecutar manualmente el script de backup
+      · Verificar que se generó el archivo .sql.gz en /var/backups/almacenes/
+
+  [ ] SMOKE TEST CERTIFICADO SSL:
+      · Verificar que https:// carga sin warnings de seguridad
+      · Verificar que http:// redirige a https://
+      curl -I http://almacenes.miempresa.com → Location: https://...
+
+POST GO-LIVE (primera semana)
+------------------------------
+  [ ] Revisar logs del backend cada día: sudo journalctl -u almacenes-backend --since "1 day ago"
+  [ ] Verificar que los backups se están ejecutando: ls -lh /var/backups/almacenes/
+  [ ] Monitorear el uso de disco: df -h
+  [ ] Verificar que no hay errores 500 en el backend: grep "ERROR" /var/log/almacenes*.log
+  [ ] Capacitar a los usuarios finales con la guía rápida por rol
+
+
+================================================================================
+12. ALCANCE FUNCIONAL DECLARADO v1.0 Y RESTRICCIONES CONOCIDAS
+================================================================================
+
+ALCANCE v1.0
+  · Un solo almacén (no multi-warehouse)
+  · Sin gestión de ubicaciones físicas (sin zonas/pasillos/estantes)
+  · Sin trazabilidad de lotes ni números de serie
+  · Sin estrategia de picking automatizada (FIFO/FEFO)
+  · Sin módulo de devoluciones (workaround: movimiento manual de stock)
+  · Sin alertas automáticas push (workaround: revisar reporte de stock bajo
+    manualmente al inicio del turno)
+  · Sin inventario físico asistido por sistema (workaround: usar movimientos
+    de ajuste con motivo "AJUSTE INVENTARIO FÍSICO YYYY-MM-DD")
+  · Sin importación masiva de datos desde CSV/Excel (carga manual o via API)
+  · JWT almacenado en localStorage (no HttpOnly cookie) — riesgo XSS mitigado
+    con CSP y dado que la app no renderiza contenido HTML externo no controlado
+  · Sin manejo de sesiones concurrentes — JWT válido por 2 horas sin posibilidad
+    de invalidación anticipada (consecuencia de arquitectura stateless)
+
+PROCEDIMIENTO OPERATIVO WORKAROUNDS v1.0
+  · Devolución de cliente: registrar un movimiento IN con motivo
+    "DEVOLUCION CLIENTE - OV-NNN - MOTIVO"
+  · Devolución a proveedor: registrar un movimiento OUT con motivo
+    "DEVOLUCION PROVEEDOR - OC-NNN - MOTIVO"
+  · Inventario físico anual: comparar Kardex del sistema con conteo físico,
+    registrar movimiento de ajuste (IN si el sistema tiene menos, OUT si tiene
+    más) con motivo "AJUSTE INVENTARIO FÍSICO YYYY-MM-DD"
+  · Alertas de stock bajo: WAREHOUSEMAN debe revisar Reportes → Operativos →
+    Stock Bajo cada mañana al inicio de turno
+
+
+================================================================================
+13. DEUDA TÉCNICA DOCUMENTADA PARA v1.1+
+================================================================================
+
+Esta sección documenta las decisiones de diseño y funcionalidades que se han
+evaluado conscientemente y se difieren para versiones posteriores. No son bugs
+ni omisiones — son decisiones de alcance.
+
+MÓDULOS FUNCIONALES EN ROADMAP
+  · Módulo Returns: devoluciones de clientes y a proveedores. Prioridad alta
+    si el cliente tiene volumen de devoluciones > 5% de transacciones.
+  · Módulo Notifications: alertas automáticas por email/websocket para stock
+    bajo y órdenes vencidas.
+  · Módulo Locations: gestión de ubicaciones físicas (zonas, estantes, bins).
+    Prerrequisito para FIFO/FEFO automatizado.
+  · Módulo Shipping: soporte para despachos con número de guía/transportista.
+
+DECISIONES TÉCNICAS ACEPTADAS
+  · Sin Flyway para v1.0: el schema se mantiene con script SQL manual.
+    Prioridad alta para v1.1 cuando aparezca el primer cambio de schema.
+  · JWT en localStorage: alternativa es HttpOnly cookie + endpoint de refresh,
+    requiere cambios en frontend Y backend. Evaluar en v1.1 según el nivel
+    de exposición de la aplicación a internet.
+  · Sin tests E2E automatizados: la cobertura unitaria es excelente (89.89%
+    statements). Los tests E2E manuales están documentados por protocolo
+    Propuesta A-D. Automatizar con Cypress en v1.1.
+  · Sin Rate Limiting global (solo en login): agregar en v1.1 si hay exposición
+    a internet con Spring Security Rate Limiter o API Gateway.
+  · Tabla de auditoría general ausente: la trazabilidad actual por campos en
+    las entidades es suficiente para v1.0. Una tabla audit_log completa
+    (toda entidad, todos los campos) es v1.1+.
+
+LECCIONES TRANSVERSALES DOCUMENTADAS (L1-L35)
+  El archivo CLAUDE.md y memoria_tecnica_global_proyecto.md documentan 35
+  lecciones aprendidas durante el desarrollo, incluyendo patrones de bugs
+  recurrentes y sus soluciones. Estas lecciones deben consultarse antes de
+  iniciar cualquier módulo nuevo en v1.1.
+
+================================================================================
+FIN DEL DOCUMENTO
+Plan de salida a producción v1.0 — Sistema Almacenes
+Elaborado: 2026-06-17 | Próxima revisión: antes del go-live o al completar
+los ítems del §8 BLOQUEANTES
+================================================================================
