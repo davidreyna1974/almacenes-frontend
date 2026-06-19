@@ -117,7 +117,7 @@ export class AnalyticsDashboardComponent implements OnInit {
     ).subscribe({
       next: data => { this.profitData = data; this.cdr.markForCheck(); },
       error: () => this.snackBar.open('Error al calcular rentabilidad. Verifique el período.', 'Cerrar',
-        { duration: 5000, panelClass: ['snack-error'] }),
+        { duration: 5000, panelClass: ['snackbar-error'] }),
     });
   }
 
@@ -145,7 +145,7 @@ export class AnalyticsDashboardComponent implements OnInit {
         this.cdr.markForCheck();
       },
       error: () => this.snackBar.open('Error al cargar tendencia de ventas', 'Cerrar',
-        { duration: 5000, panelClass: ['snack-error'] }),
+        { duration: 5000, panelClass: ['snackbar-error'] }),
     });
   }
 
@@ -216,7 +216,7 @@ export class AnalyticsDashboardComponent implements OnInit {
     ).subscribe({
       next: items => { this.topItems = items; this.topQueried = true; this.cdr.markForCheck(); },
       error: () => this.snackBar.open('Error al cargar top productos', 'Cerrar',
-        { duration: 5000, panelClass: ['snack-error'] }),
+        { duration: 5000, panelClass: ['snackbar-error'] }),
     });
   }
 
@@ -244,7 +244,7 @@ export class AnalyticsDashboardComponent implements OnInit {
     ).subscribe({
       next: items => { this.abcItems = items; this.abcQueried = true; this.cdr.markForCheck(); },
       error: () => this.snackBar.open('Error al cargar clasificación ABC', 'Cerrar',
-        { duration: 5000, panelClass: ['snack-error'] }),
+        { duration: 5000, panelClass: ['snackbar-error'] }),
     });
   }
 
@@ -267,7 +267,7 @@ export class AnalyticsDashboardComponent implements OnInit {
     ).subscribe({
       next: items => { this.supplierItems = items; this.supplierQueried = true; this.cdr.markForCheck(); },
       error: () => this.snackBar.open('Error al cargar ventas por proveedor', 'Cerrar',
-        { duration: 5000, panelClass: ['snack-error'] }),
+        { duration: 5000, panelClass: ['snackbar-error'] }),
     });
   }
 
