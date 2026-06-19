@@ -2063,7 +2063,7 @@ Criterios de éxito:
   · qa_manager, qa_sales, qa_warehouse → inactivos (no pueden hacer login).
 
 ──────────────────────────────────────────────────────────────────────────────
-[35] OPS-B6 — Tests E2E (5-8 specs Cypress/Playwright) Estado: ⏳ PENDIENTE
+[35] OPS-B6 — Tests E2E (5-8 specs Cypress/Playwright) Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Instalar Cypress o Playwright en el proyecto frontend.
