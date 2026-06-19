@@ -805,7 +805,7 @@ NIVEL 1 — TRIVIALES   Brechas 1-6
 (sin impacto funcional — pueden hacerse en cualquier momento)
 ================================================================================
 ──────────────────────────────────────────────────────────────────────────────
-[1] OPS-B4 — Guía rápida de uso por rol               Estado: ⏳ PENDIENTE
+[1] OPS-B4 — Guía rápida de uso por rol               Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Crear docs/global/guia_rapida_usuario.md con secciones por rol:
