@@ -825,7 +825,7 @@ Criterios de éxito:
     crear OV → entregar) siguiendo la guía sin necesitar asistencia.
 
 ──────────────────────────────────────────────────────────────────────────────
-[2] OPS-I1 — Actualizar §5 de memoria_tecnica_global  Estado: ⏳ PENDIENTE
+[2] OPS-I1 — Actualizar §5 de memoria_tecnica_global  Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Archivo: docs/global/memoria_tecnica_global_proyecto.md (en ambos repos)
@@ -845,7 +845,7 @@ Criterios de éxito:
   · La sección refleja el estado actual: /admin/users funciona con CRUD completo.
 
 ──────────────────────────────────────────────────────────────────────────────
-[3] BACK-I1 — Log de contraseña en DataInitializer      Estado: ⏳ PENDIENTE
+[3] BACK-I1 — Log de contraseña en DataInitializer      Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Archivo: src/main/java/.../core/config/DataInitializer.java
@@ -879,7 +879,7 @@ Tests a ejecutar:
   · curl POST /api/v1/auth/login con admin/Admin123! → 200 + JWT válido.
 
 ──────────────────────────────────────────────────────────────────────────────
-[4] BACK-M2 — @Operation/@ApiResponse en endpoints     Estado: ⏳ PENDIENTE
+[4] BACK-M2 — @Operation/@ApiResponse en endpoints     Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Agregar anotaciones springdoc (@Operation, @ApiResponse, @Parameter) a todos
@@ -915,7 +915,7 @@ Tests a ejecutar:
   · En dev: abrir http://localhost:8080/swagger-ui/index.html y verificar documentación.
 
 ──────────────────────────────────────────────────────────────────────────────
-[5] BACK-M5 — ExecutiveReport: fecha default año 2000  Estado: ⏳ PENDIENTE
+[5] BACK-M5 — ExecutiveReport: fecha default año 2000  Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Archivo: ExecutiveReportServiceImpl.java línea 59.
@@ -959,7 +959,7 @@ FRONTEND — Brechas 18-32
 ================================================================================
 
 ──────────────────────────────────────────────────────────────────────────────
-[6] BACK-I9 — logback-spring.xml con rotación de logs  Estado: ⏳ PENDIENTE
+[6] BACK-I9 — logback-spring.xml con rotación de logs  Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Crear src/main/resources/logback-spring.xml con:
