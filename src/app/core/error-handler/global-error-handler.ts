@@ -1,5 +1,6 @@
 import { ErrorHandler, Injectable, inject, NgZone } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import * as Sentry from '@sentry/angular';
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
@@ -9,6 +10,7 @@ export class GlobalErrorHandler implements ErrorHandler {
   handleError(error: unknown): void {
     try {
       console.error('[GlobalErrorHandler]', error);
+      Sentry.captureException(error);
       this.zone.run(() => {
         this.snackBar.open(
           'Error inesperado. Por favor recarga la página.',

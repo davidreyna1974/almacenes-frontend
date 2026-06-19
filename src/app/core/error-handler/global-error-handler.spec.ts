@@ -4,6 +4,12 @@ import { NgZone } from '@angular/core';
 import { vi } from 'vitest';
 import { GlobalErrorHandler } from './global-error-handler';
 
+import * as Sentry from '@sentry/angular';
+
+vi.mock('@sentry/angular', () => ({
+  captureException: vi.fn(),
+}));
+
 describe('GlobalErrorHandler', () => {
   let handler: GlobalErrorHandler;
   let snackBarOpen: ReturnType<typeof vi.fn>;
@@ -31,6 +37,12 @@ describe('GlobalErrorHandler', () => {
       'Cerrar',
       expect.objectContaining({ panelClass: ['snackbar-error'] })
     );
+  });
+
+  it('should call Sentry.captureException on error', () => {
+    const err = new Error('sentry test');
+    handler.handleError(err);
+    expect(Sentry.captureException).toHaveBeenCalledWith(err);
   });
 
   it('should not throw if snackBar itself fails', () => {
