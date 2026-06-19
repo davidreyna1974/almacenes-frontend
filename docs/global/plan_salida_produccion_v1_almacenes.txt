@@ -745,10 +745,59 @@ REQUISITOS DEL SERVIDOR
   Nota: Java 17, PostgreSQL 16, Node.js 20 y nginx corren DENTRO de los
         contenedores Docker. No se instalan directamente en el host.
 
+SCRIPTS DE AUTOMATIZACIÓN (almacenes-backend/scripts/)
+-------------------------------------------------------
+  El repositorio del backend incluye scripts bash que automatizan la mayor
+  parte de los pasos manuales descritos a continuación. Se encuentran en:
+    /almacenes-backend/scripts/
+
+  Orden de ejecución en el primer despliegue:
+    01-prepare-server.sh  →  02-ssl.sh  →  03-deploy.sh
+        →  04-init-db.sh  →  05-firewall.sh  →  verify.sh
+
+  Resumen de cada script:
+
+    01-prepare-server.sh   (sudo bash 01-prepare-server.sh)
+      Instala Docker Engine + Docker Compose v2, agrega el usuario al grupo
+      docker, habilita Docker para inicio automático y crea /opt/almacenes/.
+      Equivale a los PASOS 1 y 2 del procedimiento manual.
+
+    02-ssl.sh              (sudo bash 02-ssl.sh almacenes.codigo2enter.com)
+      Verifica DNS, instala certbot, obtiene el certificado SSL con Let's
+      Encrypt, y configura la renovación automática via cron.
+      Equivale al PASO 1 del procedimiento manual.
+
+    03-deploy.sh           (bash 03-deploy.sh)
+      Solicita DB_PASSWORD interactivamente, genera JWT_SECRET automáticamente
+      (512 bits — openssl rand), crea .env con permisos 600, construye imágenes
+      Docker y levanta los contenedores. Espera a que el backend esté disponible.
+      Equivale a los PASOS 3 y 4 del procedimiento manual.
+
+    04-init-db.sh          (bash 04-init-db.sh)
+      Instala extensión unaccent, crea f_unaccent(text) inmutable y los 10
+      índices de rendimiento del sistema. Opcionalmente carga un script SQL.
+      Equivale al PASO 5 del procedimiento manual.
+
+    05-firewall.sh         (sudo bash 05-firewall.sh)
+      Configura ufw: permite 22/80/443, deniega 8080/5432, activa el firewall.
+      Incluye advertencia de SSH y confirmación explícita antes de activar.
+      Equivale al PASO 6 del procedimiento manual.
+
+    verify.sh              (bash verify.sh)
+      Ejecuta 8 smoke tests: contenedores activos, /actuator/health, HTTP→HTTPS
+      301, HTTPS 200, SSL válido, API accesible, SPA routing, puerto 8080 cerrado.
+
+  Instrucciones detalladas de uso y diagnóstico:
+    almacenes-backend/scripts/INSTRUCTIVO.md
+
+  NOTA: los PASOS 1-7 a continuación documentan el procedimiento en detalle
+  para comprensión y referencia; los scripts los automatizan en su totalidad.
+
 PASO 1 — OBTENER CERTIFICADO SSL
 ----------------------------------
   Antes de levantar Docker, obtener el certificado Let's Encrypt con certbot
   en modo standalone. El puerto 80 debe estar libre en el host.
+  → AUTOMATIZADO POR: 02-ssl.sh
 
   1.1 Instalar certbot:
       sudo apt-get install -y certbot
@@ -768,6 +817,7 @@ PASO 1 — OBTENER CERTIFICADO SSL
 
 PASO 2 — PREPARAR EL SERVIDOR
 --------------------------------
+  → AUTOMATIZADO POR: 01-prepare-server.sh
   2.1 Instalar Docker y Docker Compose:
       sudo apt-get update
       sudo apt-get install -y docker.io docker-compose-v2
@@ -780,6 +830,7 @@ PASO 2 — PREPARAR EL SERVIDOR
 
 PASO 3 — CONFIGURAR VARIABLES DE ENTORNO
 -----------------------------------------
+  → AUTOMATIZADO POR: 03-deploy.sh (solicita DB_PASSWORD interactivamente; JWT_SECRET se genera automáticamente)
   Crear /opt/almacenes/.env (docker-compose lo lee automáticamente):
 
       # Base de datos
@@ -800,6 +851,7 @@ PASO 3 — CONFIGURAR VARIABLES DE ENTORNO
 
 PASO 4 — DESPLEGAR EL STACK DOCKER
 -------------------------------------
+  → AUTOMATIZADO POR: 03-deploy.sh
   4.1 Copiar los archivos al servidor (o clonar los repositorios directamente):
       # Estructura esperada en /opt/almacenes/:
       #   docker-compose.yml
@@ -838,6 +890,7 @@ PASO 4 — DESPLEGAR EL STACK DOCKER
 
 PASO 5 — INICIALIZAR LA BASE DE DATOS
 ----------------------------------------
+  → AUTOMATIZADO POR: 04-init-db.sh
   5.1 Instalar extensión unaccent (OBLIGATORIO para búsquedas con acentos):
       docker compose exec db psql -U almacen_user -d almacen_db \
           -c "CREATE EXTENSION IF NOT EXISTS unaccent;"
@@ -878,6 +931,7 @@ PASO 5 — INICIALIZAR LA BASE DE DATOS
 
 PASO 6 — CONFIGURAR FIREWALL
 ------------------------------
+  → AUTOMATIZADO POR: 05-firewall.sh
       sudo ufw allow 22/tcp    # SSH
       sudo ufw allow 80/tcp    # HTTP → redirige a HTTPS dentro del contenedor
       sudo ufw allow 443/tcp   # HTTPS — servido por el contenedor frontend
