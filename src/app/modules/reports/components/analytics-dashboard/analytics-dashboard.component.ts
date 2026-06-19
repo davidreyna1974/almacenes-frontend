@@ -1,6 +1,7 @@
 import {
-  Component, OnInit, inject, ChangeDetectionStrategy, ChangeDetectorRef,
+  Component, OnInit, inject, DestroyRef, ChangeDetectionStrategy, ChangeDetectorRef,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl, Validators } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
@@ -41,6 +42,7 @@ export class AnalyticsDashboardComponent implements OnInit {
   private reportService = inject(ReportService);
   private snackBar      = inject(MatSnackBar);
   private cdr           = inject(ChangeDetectorRef);
+  private destroyRef    = inject(DestroyRef);
 
   // ── Tab 0: Rentabilidad ──────────────────────────────────────────────────
   profitFromCtrl = new FormControl<Date | null>(null, Validators.required);
@@ -113,6 +115,7 @@ export class AnalyticsDashboardComponent implements OnInit {
       this.toIsoDate(this.profitFromCtrl.value)!,
       this.toIsoDate(this.profitToCtrl.value)!,
     ).pipe(
+      takeUntilDestroyed(this.destroyRef),
       finalize(() => { this.profitLoading = false; this.cdr.markForCheck(); })
     ).subscribe({
       next: data => { this.profitData = data; this.cdr.markForCheck(); },
@@ -136,6 +139,7 @@ export class AnalyticsDashboardComponent implements OnInit {
       this.toIsoDate(this.trendToCtrl.value),
       this.trendGroupBy.value ?? 'MONTH',
     ).pipe(
+      takeUntilDestroyed(this.destroyRef),
       finalize(() => { this.trendLoading = false; this.cdr.markForCheck(); })
     ).subscribe({
       next: items => {
@@ -212,6 +216,7 @@ export class AnalyticsDashboardComponent implements OnInit {
       this.toIsoDate(this.topFromCtrl.value),
       this.toIsoDate(this.topToCtrl.value),
     ).pipe(
+      takeUntilDestroyed(this.destroyRef),
       finalize(() => { this.topLoading = false; this.cdr.markForCheck(); })
     ).subscribe({
       next: items => { this.topItems = items; this.topQueried = true; this.cdr.markForCheck(); },
@@ -240,6 +245,7 @@ export class AnalyticsDashboardComponent implements OnInit {
       this.toIsoDate(this.abcFromCtrl.value),
       this.toIsoDate(this.abcToCtrl.value),
     ).pipe(
+      takeUntilDestroyed(this.destroyRef),
       finalize(() => { this.abcLoading = false; this.cdr.markForCheck(); })
     ).subscribe({
       next: items => { this.abcItems = items; this.abcQueried = true; this.cdr.markForCheck(); },
@@ -263,6 +269,7 @@ export class AnalyticsDashboardComponent implements OnInit {
       this.toIsoDate(this.supplierFromCtrl.value),
       this.toIsoDate(this.supplierToCtrl.value),
     ).pipe(
+      takeUntilDestroyed(this.destroyRef),
       finalize(() => { this.supplierLoading = false; this.cdr.markForCheck(); })
     ).subscribe({
       next: items => { this.supplierItems = items; this.supplierQueried = true; this.cdr.markForCheck(); },

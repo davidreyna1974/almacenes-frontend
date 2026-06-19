@@ -1,6 +1,7 @@
 import {
-  Component, OnInit, inject, ChangeDetectionStrategy, ChangeDetectorRef,
+  Component, OnInit, inject, DestroyRef, ChangeDetectionStrategy, ChangeDetectorRef,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs/operators';
@@ -32,6 +33,7 @@ export class PendingReportComponent implements OnInit {
   private router        = inject(Router);
   private snackBar      = inject(MatSnackBar);
   private cdr           = inject(ChangeDetectorRef);
+  private destroyRef    = inject(DestroyRef);
 
   loading = false;
   data: PendingOperationsDTO | null = null;
@@ -44,6 +46,7 @@ export class PendingReportComponent implements OnInit {
     this.loading = true;
     this.cdr.markForCheck();
     this.reportService.getPendingOperations().pipe(
+      takeUntilDestroyed(this.destroyRef),
       finalize(() => { this.loading = false; this.cdr.markForCheck(); })
     ).subscribe({
       next: data => { this.data = data; this.cdr.markForCheck(); },
