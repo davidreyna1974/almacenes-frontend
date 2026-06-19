@@ -1600,7 +1600,7 @@ Tests a ejecutar:
   · Verificar en browser: crear OC con producto inexistente → snackbar de error.
 
 ──────────────────────────────────────────────────────────────────────────────
-[23] BACK-I6 — Login incorrecto siempre devuelve 401    Estado: ⏳ PENDIENTE
+[23] BACK-I6 — Login incorrecto siempre devuelve 401    Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · VERIFICACIÓN PRIMERO: GlobalExceptionHandler ya tiene handler para
