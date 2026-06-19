@@ -1041,7 +1041,7 @@ Tests a ejecutar:
   · Verificar bundle: strings del bundle deben incluir el dominio real.
 
 ──────────────────────────────────────────────────────────────────────────────
-[8] FRONT-B2 — angular.json optimization/sourceMap     Estado: ⏳ PENDIENTE
+[8] FRONT-B2 — angular.json optimization/sourceMap     Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Verificar angular.json → configurations → production:
@@ -1082,7 +1082,7 @@ Tests a ejecutar:
   · Verificar dist/: no existe *.map con contenido si sourceMap: false.
 
 ──────────────────────────────────────────────────────────────────────────────
-[9] FRONT-I5 — CSS .snack-error unificado              Estado: ⏳ PENDIENTE
+[9] FRONT-I5 — CSS .snack-error unificado              Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Estado actual verificado:
   · global.scss ya define .snackbar-error (línea 76).

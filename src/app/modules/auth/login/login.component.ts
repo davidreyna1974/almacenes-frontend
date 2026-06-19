@@ -1,4 +1,5 @@
-import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { ChangeDetectorRef, Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,6 +32,7 @@ export class LoginComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private snackBar = inject(MatSnackBar);
   private cdr = inject(ChangeDetectorRef);
+  private destroyRef = inject(DestroyRef);
 
   form: FormGroup = this.fb.group({
     username: ['', [Validators.required]],
@@ -68,7 +70,7 @@ export class LoginComponent implements OnInit {
       return;
     }
     this.loading = true;
-    this.authService.login(this.form.value).subscribe({
+    this.authService.login(this.form.value).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => this.router.navigate(['/']),
       error: (err) => {
         this.loading = false;
