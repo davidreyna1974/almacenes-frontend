@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './core/layout/main-layout/main-layout.component';
 import { LoginComponent } from './modules/auth/login/login.component';
 import { NotFoundComponent } from './modules/not-found/not-found.component';
+import { AccessDeniedComponent } from './modules/access-denied/access-denied.component';
 import { authGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
@@ -46,5 +47,6 @@ export const routes: Routes = [
       },
     ]
   },
+  { path: 'access-denied', component: AccessDeniedComponent },
   { path: '**', component: NotFoundComponent }
 ];

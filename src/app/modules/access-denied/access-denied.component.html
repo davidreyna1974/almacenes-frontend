@@ -1,0 +1,16 @@
+<div class="access-denied">
+  <mat-icon class="access-denied__icon">lock</mat-icon>
+  <h1 class="access-denied__code">403</h1>
+  <p class="access-denied__title">Acceso denegado</p>
+  <p class="access-denied__desc">No tienes permiso para acceder a esta sección.</p>
+  <div class="access-denied__actions">
+    <button mat-stroked-button color="primary" (click)="goBack()">
+      <mat-icon>arrow_back</mat-icon>
+      Volver
+    </button>
+    <button mat-flat-button color="primary" (click)="goHome()">
+      <mat-icon>home</mat-icon>
+      Ir al inicio
+    </button>
+  </div>
+</div>
