@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { MainLayoutComponent } from './core/layout/main-layout/main-layout.component';
 import { LoginComponent } from './modules/auth/login/login.component';
+import { NotFoundComponent } from './modules/not-found/not-found.component';
 import { authGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
@@ -45,5 +46,5 @@ export const routes: Routes = [
       },
     ]
   },
-  { path: '**', redirectTo: '' }
+  { path: '**', component: NotFoundComponent }
 ];
