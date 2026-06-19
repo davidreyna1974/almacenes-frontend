@@ -1120,7 +1120,7 @@ Tests a ejecutar:
   · Browser: operación exitosa → snackbar verde.
 
 ──────────────────────────────────────────────────────────────────────────────
-[10] FRONT-M4 — takeUntilDestroyed en LoginComponent    Estado: ⏳ PENDIENTE
+[10] FRONT-M4 — takeUntilDestroyed en LoginComponent    Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Archivo: src/app/modules/auth/login/login.component.ts
@@ -1152,7 +1152,7 @@ Tests a ejecutar:
   · Browser: hacer login con admin/Admin123! → dashboard carga.
 
 ──────────────────────────────────────────────────────────────────────────────
-[11] FRONT-M3 — trackBy en listas largas                Estado: ⏳ PENDIENTE
+[11] FRONT-M3 — trackBy en listas largas                Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Agregar trackBy a los *ngFor de tablas con listas de datos paginados.
