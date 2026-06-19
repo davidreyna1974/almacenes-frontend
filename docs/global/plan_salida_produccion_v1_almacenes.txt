@@ -1006,7 +1006,7 @@ NIVEL 2 — BAJOS   Brechas 7-14
 (cambios mínimos, archivos aislados, reversibles con git checkout)
 ================================================================================
 ──────────────────────────────────────────────────────────────────────────────
-[7] FRONT-B1 — URL real en environment.prod.ts         Estado: ⏳ PENDIENTE
+[7] FRONT-B1 — URL real en environment.prod.ts         Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Archivo: src/environments/environment.prod.ts
