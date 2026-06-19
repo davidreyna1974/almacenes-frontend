@@ -179,10 +179,11 @@ ADVERTENCIA SOBRE DOCUMENTACIÓN GLOBAL
 
 [BACK-B2] Sin Dockerfile ni docker-compose.yml
   El despliegue es enteramente manual. No hay forma reproducible de levantar
-  el stack (app + PostgreSQL + red) en un servidor nuevo. Cada despliegue
-  depende de documentación externa o memoria del operador.
-  Acción: crear al mínimo un Dockerfile multi-stage para el backend y un
-  docker-compose.yml que incluya el servicio de la app + PostgreSQL.
+  el stack (app + PostgreSQL + frontend + red) en un servidor nuevo. Cada
+  despliegue depende de documentación externa o memoria del operador.
+  Acción: crear Dockerfile multi-stage para el backend, Dockerfile multi-stage
+  para el frontend (Node.js build → nginx-alpine), y un docker-compose.yml con
+  los 3 servicios: db, backend y frontend.
   Ver §9 (Procedimiento de instalación) para los archivos concretos.
 
 [BACK-B3] Sin perfil de producción (application-prod.yaml)
@@ -389,16 +390,15 @@ ADVERTENCIA SOBRE DOCUMENTACIÓN GLOBAL
   La URL queda compilada en el bundle de Angular. Si se hace ng build sin
   reemplazar esta URL, TODAS las peticiones HTTP fallarán en producción.
   Angular no soporta configuración de URL en runtime sin un patrón específico.
-  Acción (opción 1 — simple): reemplazar el dominio ficticio con la URL real
-  del backend antes del build de producción.
-  Acción (opción 2 — recomendada para múltiples entornos): implementar un
-  APP_INITIALIZER que cargue la config desde src/assets/config.json en runtime:
-    {
-      "apiUrl": "https://api.miempresa.com/api/v1"
-    }
-  Este archivo no se commitea al repositorio. El servidor lo sirve con los
-  valores correctos del entorno. El frontend carga la config antes de
-  inicializar el módulo raíz.
+  Acción (opción 1 — simple, arquitectura Docker del §9): con nginx proxeando
+  /api/ al contenedor backend, el frontend y la API comparten el mismo dominio.
+  La URL puede ser una ruta relativa o la misma URL del frontend:
+    apiUrl: 'https://almacenes.miempresa.com/api/v1'
+  Ventaja adicional: al ser mismo origen, CORS no aplica (el browser no bloquea).
+  Acción (opción 2 — para múltiples entornos): implementar un APP_INITIALIZER
+  que cargue la config desde src/assets/config.json en runtime:
+    { "apiUrl": "https://almacenes.miempresa.com/api/v1" }
+  Este archivo no se commitea. El servidor lo sirve con los valores correctos.
 
 [FRONT-B2] angular.json — configuración de producción sin optimización explícita
   Archivo: angular.json, bloque "production"
@@ -481,12 +481,17 @@ ADVERTENCIA SOBRE DOCUMENTACIÓN GLOBAL
   Acción: agregar alias en global.scss: .snack-error { @extend .snackbar-error; }
   O unificar a 'snackbar-error' en los 4 componentes de Reports.
 
-[FRONT-I6] Sin configuración de nginx para SPA (crítico para producción)
-  No existe nginx.conf ni Dockerfile para el frontend. Una SPA Angular requiere
-  que el servidor web redirija todas las URLs al index.html para que el router
-  de Angular las procese. Sin esta configuración, cualquier recarga directa en
-  una ruta (ej: F5 en /inventory/products) devuelve 404 del servidor.
-  Ver §9 para el nginx.conf completo a crear.
+[FRONT-I6] Sin Dockerfile ni nginx.conf para el frontend (crítico para producción)
+  No existen Dockerfile ni nginx.conf para el frontend. Se requieren dos archivos:
+  · Dockerfile multi-stage: Stage 1 (Node.js) compila Angular con ng build
+    --configuration production; Stage 2 (nginx-alpine) sirve los archivos
+    estáticos resultantes.
+  · nginx.conf dentro de la imagen: escucha en 80 y 443, redirige HTTP→HTTPS,
+    aplica TLS 1.2/1.3, headers de seguridad (HSTS, CSP, etc.), usa try_files
+    /index.html para el router de Angular y proxea /api/ al servicio backend:8080
+    por la red Docker interna. Sin try_files, cualquier recarga directa (F5 en
+    /inventory/products) devuelve 404.
+  Ver §9 para los archivos concretos.
 
 [FRONT-I7] Ruta orders/:id en purchases y sales sin guard hijo explícito
   Archivos: purchases.routes.ts, sales.routes.ts
@@ -670,7 +675,7 @@ BLOQUEANTES — Deben resolverse ANTES del primer despliegue en producción
   8   FRONT-B2     Agregar optimization/sourceMap explícitos en   30 min
                    angular.json config producción
   9   FRONT-B3     Agregar canActivate+data.roles en inventory    1 hora
-  10  FRONT-I6     Crear nginx.conf para SPA + Dockerfile front   2 horas
+  10  FRONT-I6     Crear Dockerfile + nginx.conf frontend (Docker) 3 horas
   11  OPS-B1/B2    Configurar backup diario de PostgreSQL y       4 horas
                    documentar procedimiento de recuperación
   12  OPS-B3       Planificar e implementar carga inicial de datos Variable
@@ -732,49 +737,125 @@ REQUISITOS DEL SERVIDOR
   Disco:             mínimo 50 GB SSD (20 GB app + logs + 30 GB BD + crecimiento)
   Red:               1 IP pública fija + dominio con certificado SSL/TLS
   Software base:
-    · Java 17 (OpenJDK o Amazon Corretto)
-    · PostgreSQL 14+ con extensión unaccent
-    · Node.js 20+ (solo para build del frontend, puede ser en máquina separada)
-    · nginx 1.24+
-    · certbot (para certificados Let's Encrypt)
+    · Docker 24+ (motor de contenedores)
+    · Docker Compose v2 (en Linux: sudo apt-get install docker-compose-v2)
+    · certbot (solo para obtener el certificado SSL inicial — sin nginx en host)
+  Nota: Java 17, PostgreSQL 16, Node.js 20 y nginx corren DENTRO de los
+        contenedores Docker. No se instalan directamente en el host.
 
-PASO 1 — PREPARAR LA BASE DE DATOS
-------------------------------------
-  1.1 Instalar PostgreSQL:
-      sudo apt-get install postgresql-14
+PASO 1 — OBTENER CERTIFICADO SSL
+----------------------------------
+  Antes de levantar Docker, obtener el certificado Let's Encrypt con certbot
+  en modo standalone. El puerto 80 debe estar libre en el host.
 
-  1.2 Crear base de datos y usuario:
-      sudo -u postgres psql
-      CREATE USER almacen_user WITH PASSWORD 'contraseña_segura_de_produccion';
-      CREATE DATABASE almacen_db OWNER almacen_user;
-      \c almacen_db
-      GRANT ALL PRIVILEGES ON DATABASE almacen_db TO almacen_user;
+  1.1 Instalar certbot:
+      sudo apt-get install -y certbot
 
-  1.3 Instalar extensión unaccent (OBLIGATORIO para búsquedas):
-      \c almacen_db
-      CREATE EXTENSION IF NOT EXISTS unaccent;
+  1.2 Obtener el certificado SSL:
+      sudo certbot certonly --standalone -d almacenes.miempresa.com
+      # Certificados en: /etc/letsencrypt/live/almacenes.miempresa.com/
+      #   fullchain.pem  → certificado público
+      #   privkey.pem    → clave privada
 
-  1.4 Crear función f_unaccent (OBLIGATORIO, usada por los índices de búsqueda):
-      CREATE OR REPLACE FUNCTION f_unaccent(text)
-      RETURNS text
-      LANGUAGE sql IMMUTABLE PARALLEL SAFE STRICT AS
-      $func$
-        SELECT public.unaccent('public.unaccent', $1)
-      $func$;
+  1.3 Configurar renovación automática (cron detiene y reinicia el contenedor):
+      sudo crontab -e
+      # Agregar:
+      0 3 * * * certbot renew --quiet \
+          --pre-hook  "docker compose -f /opt/almacenes/docker-compose.yml stop frontend" \
+          --post-hook "docker compose -f /opt/almacenes/docker-compose.yml start frontend"
 
-  1.5 Crear el schema (HASTA QUE SE IMPLEMENTE FLYWAY — BACK-B1):
-      · Opción A: Ejecutar el sistema UNA VEZ con ddl-auto: create para que
-        Hibernate genere el schema, luego cambiar a validate.
-        ADVERTENCIA: ddl-auto: create DESTRUYE los datos existentes si los hay.
-        Solo usar en el primer arranque con BD vacía.
-      · Opción B (recomendada): generar el script DDL desde Maven:
-          mvn spring-boot:run -Dspring.jpa.hibernate.ddl-auto=create \
-              -Dspring.jpa.properties.javax.persistence.schema-generation.scripts.action=create \
-              -Dspring.jpa.properties.javax.persistence.schema-generation.scripts.create-target=schema.sql
-        Revisar schema.sql, ejecutarlo en producción: psql -U almacen_user -d almacen_db -f schema.sql
-        Luego cambiar a ddl-auto: validate para todos los despliegues siguientes.
+PASO 2 — PREPARAR EL SERVIDOR
+--------------------------------
+  2.1 Instalar Docker y Docker Compose:
+      sudo apt-get update
+      sudo apt-get install -y docker.io docker-compose-v2
+      sudo usermod -aG docker $USER
+      newgrp docker   # aplica el grupo sin cerrar sesión
 
-  1.6 Crear índices funcionales para búsqueda insensible a acentos:
+  2.2 Crear directorio de trabajo:
+      sudo mkdir -p /opt/almacenes
+      sudo chown $USER:$USER /opt/almacenes
+
+PASO 3 — CONFIGURAR VARIABLES DE ENTORNO
+-----------------------------------------
+  Crear /opt/almacenes/.env (docker-compose lo lee automáticamente):
+
+      # Base de datos
+      DB_PASSWORD=contraseña_segura_de_produccion
+
+      # JWT (generar con: openssl rand -hex 64)
+      JWT_SECRET=clave_hex_de_64_bytes_minimo_generada_con_openssl
+
+      # CORS — dominio del frontend (sin barra final)
+      CORS_ALLOWED_ORIGINS=https://almacenes.miempresa.com
+
+  Asegurar permisos restrictivos:
+      chmod 600 /opt/almacenes/.env
+
+  IMPORTANTE: NUNCA commitear .env al repositorio. Agregar .env al .gitignore.
+  IMPORTANTE: JWT_SECRET debe tener al menos 64 caracteres hexadecimales.
+              Generar con: openssl rand -hex 64
+
+PASO 4 — DESPLEGAR EL STACK DOCKER
+-------------------------------------
+  4.1 Copiar los archivos al servidor (o clonar los repositorios directamente):
+      # Estructura esperada en /opt/almacenes/:
+      #   docker-compose.yml
+      #   backend/   (código fuente del backend con su Dockerfile)
+      #   frontend/  (código fuente del frontend con Dockerfile y nginx.conf)
+      scp docker-compose.yml usuario@servidor:/opt/almacenes/
+      # Alternativa más limpia: git clone de ambos repos en /opt/almacenes/.
+
+  4.2 IMPORTANTE: actualizar environment.prod.ts con la URL real del API antes
+      de construir la imagen. Con nginx en el mismo contenedor proxeando /api/,
+      frontend y backend comparten dominio (mismo origen — CORS no aplica):
+      # src/environments/environment.prod.ts
+      # apiUrl: 'https://almacenes.miempresa.com/api/v1'
+
+  4.3 Construir las imágenes Docker (backend + frontend):
+      cd /opt/almacenes
+      docker compose build
+      # Backend:  Maven compila el JAR → JRE-alpine corre la app
+      # Frontend: Node.js compila Angular → nginx-alpine sirve los archivos
+      # Tiempo estimado: 3-5 min en primer build; ~1 min en rebuilds
+      #                  (capas de npm/maven se cachean automáticamente)
+
+  4.4 Levantar el stack completo:
+      docker compose up -d
+      # Orden garantizado por depends_on: db → backend → frontend
+
+  4.5 Verificar que los 3 servicios están corriendo:
+      docker compose ps
+      # Los 3 deben mostrar Status: running (healthy)
+
+  4.6 Verificar logs del arranque del backend:
+      docker compose logs -f backend
+      # Esperar: "Started AlmacenesApplication in X seconds"
+      # Esperar: "Tomcat started on port 8080"
+      # No debe aparecer: "Error creating bean" ni "Connection refused"
+
+PASO 5 — INICIALIZAR LA BASE DE DATOS
+----------------------------------------
+  5.1 Instalar extensión unaccent (OBLIGATORIO para búsquedas con acentos):
+      docker compose exec db psql -U almacen_user -d almacen_db \
+          -c "CREATE EXTENSION IF NOT EXISTS unaccent;"
+
+  5.2 Crear función f_unaccent (OBLIGATORIO — usada por los índices):
+      docker compose exec db psql -U almacen_user -d almacen_db -c "
+        CREATE OR REPLACE FUNCTION f_unaccent(text)
+        RETURNS text LANGUAGE sql IMMUTABLE PARALLEL SAFE STRICT AS
+        \$func\$ SELECT public.unaccent('public.unaccent', \$1) \$func\$;"
+
+  5.3 Crear el schema de la BD (HASTA QUE SE IMPLEMENTE FLYWAY — BACK-B1):
+      · Opción A: levantar el backend con ddl-auto: create (solo primer arranque
+        con BD vacía). ADVERTENCIA: DESTRUYE los datos existentes.
+      · Opción B (recomendada): generar el DDL con Maven en máquina de desarrollo,
+        copiar schema.sql al servidor y ejecutar:
+          docker compose exec -T db psql -U almacen_user -d almacen_db < schema.sql
+        Luego cambiar ddl-auto a validate para todos los despliegues siguientes.
+
+  5.4 Crear índices funcionales para búsqueda insensible a acentos:
+      docker compose exec db psql -U almacen_user -d almacen_db << 'SQL'
       CREATE INDEX IF NOT EXISTS idx_products_unaccent_name
           ON products (f_unaccent(lower(name)));
       CREATE INDEX IF NOT EXISTS idx_products_unaccent_sku
@@ -791,179 +872,25 @@ PASO 1 — PREPARAR LA BASE DE DATOS
       CREATE INDEX IF NOT EXISTS idx_purchase_orders_status ON purchase_orders (status);
       CREATE INDEX IF NOT EXISTS idx_stock_movements_product_id
           ON stock_movements (product_id);
-
-PASO 2 — CONFIGURAR VARIABLES DE ENTORNO
------------------------------------------
-  Crear el archivo /etc/almacenes/env.conf (permisos 600, propietario root):
-
-      # Base de datos
-      DB_HOST=localhost
-      DB_PORT=5432
-      DB_NAME=almacen_db
-      DB_USERNAME=almacen_user
-      DB_PASSWORD=contraseña_segura_de_produccion
-
-      # JWT (generar con: openssl rand -hex 64)
-      JWT_SECRET=clave_hex_de_64_bytes_minimo_generada_con_openssl
-
-      # CORS — dominio exacto del frontend en producción (sin barra final)
-      CORS_ALLOWED_ORIGINS=https://almacenes.miempresa.com
-
-      # Perfil de Spring
-      SPRING_PROFILES_ACTIVE=prod
-
-  Cargar en el servicio systemd: EnvironmentFile=/etc/almacenes/env.conf
-
-  IMPORTANTE: NUNCA commitear este archivo al repositorio de código.
-  IMPORTANTE: JWT_SECRET debe tener al menos 64 caracteres hexadecimales.
-              Generar con: openssl rand -hex 64
-
-PASO 3 — DESPLEGAR EL BACKEND
--------------------------------
-  3.1 Compilar el JAR de producción (en máquina de build):
-      mvn clean package -DskipTests -Pprod
-      # Genera: target/almacenes-0.0.1-SNAPSHOT.jar
-
-  3.2 Transferir al servidor:
-      scp target/almacenes-0.0.1-SNAPSHOT.jar usuario@servidor:/opt/almacenes/
-
-  3.3 Crear el servicio systemd (/etc/systemd/system/almacenes-backend.service):
-
-      [Unit]
-      Description=Almacenes Backend — Spring Boot
-      After=network.target postgresql.service
-
-      [Service]
-      User=almacenes
-      WorkingDirectory=/opt/almacenes
-      EnvironmentFile=/etc/almacenes/env.conf
-      ExecStart=/usr/bin/java -Xms512m -Xmx1g \
-          -Dspring.profiles.active=prod \
-          -jar /opt/almacenes/almacenes-0.0.1-SNAPSHOT.jar
-      SuccessExitStatus=143
-      TimeoutStopSec=10
-      Restart=on-failure
-      RestartSec=5
-
-      [Install]
-      WantedBy=multi-user.target
-
-  3.4 Activar y arrancar:
-      sudo systemctl daemon-reload
-      sudo systemctl enable almacenes-backend
-      sudo systemctl start almacenes-backend
-      sudo systemctl status almacenes-backend
-
-  3.5 Verificar el arranque:
-      sudo journalctl -u almacenes-backend -f
-      # Buscar: "Started AlmacenesApplication"
-      # Buscar: "Tomcat started on port(s): 8080"
-      # NO debe aparecer ningún: "Error creating bean" ni "Connection refused"
-
-  3.6 Verificar el health check (una vez implementado Actuator):
-      curl http://localhost:8080/actuator/health
-      # Debe responder: {"status":"UP"}
-
-PASO 4 — CONSTRUIR EL FRONTEND
---------------------------------
-  4.1 En máquina de build (con Node.js 20+):
-      cd frontend/almacenes
-      npm ci
-      # IMPORTANTE: actualizar environment.prod.ts con la URL real antes del build:
-      # apiUrl: 'https://api.almacenes.miempresa.com/api/v1'
-      ng build --configuration production
-      # Genera: dist/almacenes/browser/
-
-  4.2 Transferir los assets al servidor:
-      rsync -avz dist/almacenes/browser/ usuario@servidor:/var/www/almacenes/
-
-PASO 5 — CONFIGURAR NGINX
----------------------------
-  5.1 Crear /etc/nginx/sites-available/almacenes:
-
-      server {
-          listen 80;
-          server_name almacenes.miempresa.com;
-          return 301 https://$host$request_uri;
-      }
-
-      server {
-          listen 443 ssl http2;
-          server_name almacenes.miempresa.com;
-
-          ssl_certificate     /etc/letsencrypt/live/almacenes.miempresa.com/fullchain.pem;
-          ssl_certificate_key /etc/letsencrypt/live/almacenes.miempresa.com/privkey.pem;
-          ssl_protocols       TLSv1.2 TLSv1.3;
-          ssl_ciphers         HIGH:!aNULL:!MD5;
-
-          # Directorio del frontend compilado
-          root /var/www/almacenes;
-          index index.html;
-
-          # Headers de seguridad HTTP
-          add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-          add_header X-Frame-Options "DENY" always;
-          add_header X-Content-Type-Options "nosniff" always;
-          add_header Referrer-Policy "strict-origin-when-cross-origin" always;
-          add_header Content-Security-Policy "default-src 'self'; \
-              connect-src 'self' https://api.almacenes.miempresa.com; \
-              style-src 'self' 'unsafe-inline'; \
-              script-src 'self'; \
-              img-src 'self' data:; \
-              font-src 'self';" always;
-
-          # Cache para assets con hash (outputHashing: all en Angular)
-          location ~* \.(js|css|png|jpg|jpeg|gif|ico|woff|woff2|ttf|svg)$ {
-              expires 1y;
-              add_header Cache-Control "public, immutable";
-          }
-
-          # index.html nunca se cachea (siempre la versión más nueva)
-          location = /index.html {
-              add_header Cache-Control "no-cache, no-store, must-revalidate";
-          }
-
-          # CRÍTICO: redirigir todas las rutas al index.html para el router de Angular
-          location / {
-              try_files $uri $uri/ /index.html;
-          }
-
-          # Proxy al backend Spring Boot
-          location /api/ {
-              proxy_pass http://localhost:8080;
-              proxy_set_header Host $host;
-              proxy_set_header X-Real-IP $remote_addr;
-              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-              proxy_set_header X-Forwarded-Proto $scheme;
-              proxy_read_timeout 60s;
-              proxy_connect_timeout 10s;
-          }
-      }
-
-  5.2 Habilitar el sitio:
-      sudo ln -s /etc/nginx/sites-available/almacenes /etc/nginx/sites-enabled/
-      sudo nginx -t
-      sudo systemctl reload nginx
-
-  5.3 Obtener certificado SSL con Let's Encrypt:
-      sudo certbot --nginx -d almacenes.miempresa.com
-      # Certbot modifica automáticamente la configuración de nginx
+      SQL
 
 PASO 6 — CONFIGURAR FIREWALL
 ------------------------------
       sudo ufw allow 22/tcp    # SSH
-      sudo ufw allow 80/tcp    # HTTP (redirige a HTTPS)
-      sudo ufw allow 443/tcp   # HTTPS
-      sudo ufw deny 8080/tcp   # Puerto del backend — solo accesible via nginx proxy
-      sudo ufw deny 5432/tcp   # PostgreSQL — solo accesible localmente
+      sudo ufw allow 80/tcp    # HTTP → redirige a HTTPS dentro del contenedor
+      sudo ufw allow 443/tcp   # HTTPS — servido por el contenedor frontend
+      sudo ufw deny 8080/tcp   # Backend: solo accesible en red interna Docker
+      sudo ufw deny 5432/tcp   # PostgreSQL: solo accesible en red interna Docker
       sudo ufw enable
 
 PASO 7 — PRIMER ARRANQUE Y DATOS INICIALES
 -------------------------------------------
-  7.1 Verificar que la BD está vacía y que el schema fue creado correctamente.
+  7.1 Verificar que el schema fue creado:
+      docker compose exec db psql -U almacen_user -d almacen_db -c "\dt"
+      # Deben aparecer las tablas: users, products, categories, suppliers, etc.
 
-  7.2 Arrancar el backend. El DataInitializer creará automáticamente el usuario
-      admin con contraseña Admin123! si la tabla users está vacía.
+  7.2 El DataInitializer crea automáticamente el usuario admin (Admin123!)
+      si la tabla users está vacía al arrancar el backend.
       IMPORTANTE: cambiar la contraseña del admin INMEDIATAMENTE después del
       primer arranque.
 
@@ -981,11 +908,12 @@ PASO 7 — PRIMER ARRANQUE Y DATOS INICIALES
       5. Saldos iniciales de stock (movimientos IN por producto con
          motivo "SALDO INICIAL YYYY-MM-DD")
 
-DOCKERFILE (para referencia — implementar como parte de BACK-B2)
------------------------------------------------------------------
-  # Dockerfile para el backend (multi-stage)
+ARCHIVOS DOCKER (implementar como parte de BACK-B2 / FRONT-I6)
+---------------------------------------------------------------
 
-  # Stage 1: Build
+  ── Dockerfile del backend (almacenes-backend/Dockerfile) ──
+
+  # Stage 1: Compilar el JAR
   FROM maven:3.9-eclipse-temurin-17 AS build
   WORKDIR /app
   COPY pom.xml .
@@ -993,7 +921,7 @@ DOCKERFILE (para referencia — implementar como parte de BACK-B2)
   COPY src ./src
   RUN mvn clean package -DskipTests
 
-  # Stage 2: Runtime
+  # Stage 2: Runtime mínimo (sin Maven ni JDK)
   FROM eclipse-temurin:17-jre-alpine
   RUN addgroup -S almacenes && adduser -S almacenes -G almacenes
   WORKDIR /app
@@ -1002,10 +930,93 @@ DOCKERFILE (para referencia — implementar como parte de BACK-B2)
   EXPOSE 8080
   ENTRYPOINT ["java", "-Xms512m", "-Xmx1g", "-jar", "app.jar"]
 
-  # docker-compose.yml (backend + PostgreSQL)
+
+  ── Dockerfile del frontend (almacenes-frontend/Dockerfile) ──
+
+  # Stage 1: Compilar la app Angular
+  FROM node:20-alpine AS build
+  WORKDIR /app
+  COPY package*.json ./
+  RUN npm ci
+  COPY . .
+  RUN npx ng build --configuration production
+
+  # Stage 2: Servir con nginx (~20 MB — sin Node.js en producción)
+  FROM nginx:alpine
+  COPY --from=build /app/dist/almacenes/browser /usr/share/nginx/html
+  COPY nginx.conf /etc/nginx/conf.d/default.conf
+  EXPOSE 80 443
+  CMD ["nginx", "-g", "daemon off;"]
+
+
+  ── nginx.conf del frontend (almacenes-frontend/nginx.conf) ──
+  (se incluye en la imagen Docker del frontend vía COPY en el Dockerfile)
+
+  server {
+      listen 80;
+      server_name almacenes.miempresa.com;
+      return 301 https://$host$request_uri;
+  }
+
+  server {
+      listen 443 ssl http2;
+      server_name almacenes.miempresa.com;
+
+      # Certificados montados desde el host (volumen :ro en docker-compose.yml)
+      ssl_certificate     /etc/letsencrypt/live/almacenes.miempresa.com/fullchain.pem;
+      ssl_certificate_key /etc/letsencrypt/live/almacenes.miempresa.com/privkey.pem;
+      ssl_protocols       TLSv1.2 TLSv1.3;
+      ssl_ciphers         HIGH:!aNULL:!MD5;
+
+      root /usr/share/nginx/html;
+      index index.html;
+
+      # Headers de seguridad HTTP
+      add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+      add_header X-Frame-Options "DENY" always;
+      add_header X-Content-Type-Options "nosniff" always;
+      add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+      add_header Content-Security-Policy "default-src 'self'; \
+          connect-src 'self'; \
+          style-src 'self' 'unsafe-inline'; \
+          script-src 'self'; \
+          img-src 'self' data:; \
+          font-src 'self';" always;
+
+      # Cache para assets con hash de Angular (inmutables 1 año)
+      location ~* \.(js|css|png|jpg|jpeg|gif|ico|woff|woff2|ttf|svg)$ {
+          expires 1y;
+          add_header Cache-Control "public, immutable";
+      }
+
+      # index.html nunca se cachea
+      location = /index.html {
+          add_header Cache-Control "no-cache, no-store, must-revalidate";
+      }
+
+      # CRÍTICO: todas las rutas al index.html para el router de Angular
+      location / {
+          try_files $uri $uri/ /index.html;
+      }
+
+      # Proxy al backend — nombre del servicio Docker (red interna)
+      location /api/ {
+          proxy_pass http://backend:8080;
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+          proxy_read_timeout 60s;
+          proxy_connect_timeout 10s;
+      }
+  }
+
+
+  ── docker-compose.yml (directorio raíz /opt/almacenes/) ──
 
   version: '3.9'
   services:
+
     db:
       image: postgres:16-alpine
       environment:
@@ -1014,17 +1025,19 @@ DOCKERFILE (para referencia — implementar como parte de BACK-B2)
         POSTGRES_PASSWORD: ${DB_PASSWORD}
       volumes:
         - pgdata:/var/lib/postgresql/data
-        - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       healthcheck:
         test: ["CMD-SHELL", "pg_isready -U almacen_user -d almacen_db"]
         interval: 10s
         timeout: 5s
         retries: 5
+      restart: unless-stopped
 
     backend:
-      build: .
-      ports:
-        - "8080:8080"
+      build:
+        context: ./backend
+        dockerfile: Dockerfile
+      expose:
+        - "8080"         # Solo accesible en la red Docker interna; no expuesto al host
       environment:
         SPRING_PROFILES_ACTIVE: prod
         DB_HOST: db
@@ -1037,6 +1050,20 @@ DOCKERFILE (para referencia — implementar como parte de BACK-B2)
       depends_on:
         db:
           condition: service_healthy
+      restart: unless-stopped
+
+    frontend:
+      build:
+        context: ./frontend
+        dockerfile: Dockerfile
+      ports:
+        - "80:80"
+        - "443:443"
+      volumes:
+        - /etc/letsencrypt:/etc/letsencrypt:ro   # Certificados SSL del host (solo lectura)
+      depends_on:
+        - backend
+      restart: unless-stopped
 
   volumes:
     pgdata:
@@ -1156,12 +1183,13 @@ SEMANA ANTES DEL GO-LIVE
 
 DÍA DEL GO-LIVE
 ----------------
-  [ ] SMOKE TEST BACKEND:
-      curl -f https://api.almacenes.miempresa.com/actuator/health
+  [ ] SMOKE TEST BACKEND (desde el servidor — backend no expuesto al exterior):
+      docker compose -f /opt/almacenes/docker-compose.yml \
+          exec backend wget -qO- http://localhost:8080/actuator/health
       → Responde: {"status":"UP"}
 
-  [ ] SMOKE TEST LOGIN:
-      curl -X POST https://api.almacenes.miempresa.com/api/v1/auth/login \
+  [ ] SMOKE TEST LOGIN (vía nginx — mismo dominio que el frontend):
+      curl -X POST https://almacenes.miempresa.com/api/v1/auth/login \
           -H "Content-Type: application/json" \
           -d '{"username":"admin","password":"CONTRASEÑA_DE_PRODUCCION"}'
       → Responde JSON con campo "token"
@@ -1191,10 +1219,13 @@ DÍA DEL GO-LIVE
 
 POST GO-LIVE (primera semana)
 ------------------------------
-  [ ] Revisar logs del backend cada día: sudo journalctl -u almacenes-backend --since "1 day ago"
+  [ ] Revisar logs del backend cada día:
+      docker compose -f /opt/almacenes/docker-compose.yml logs --since 24h backend
+  [ ] Verificar errores 500 en el backend:
+      docker compose -f /opt/almacenes/docker-compose.yml logs backend | grep "ERROR"
   [ ] Verificar que los backups se están ejecutando: ls -lh /var/backups/almacenes/
   [ ] Monitorear el uso de disco: df -h
-  [ ] Verificar que no hay errores 500 en el backend: grep "ERROR" /var/log/almacenes*.log
+  [ ] Verificar estado de los 3 contenedores: docker compose -f /opt/almacenes/docker-compose.yml ps
   [ ] Capacitar a los usuarios finales con la guía rápida por rol
 
 
