@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { ActivatedRouteSnapshot, RouterStateSnapshot, provideRouter } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, provideRouter } from '@angular/router';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { Component } from '@angular/core';
@@ -28,6 +28,7 @@ describe('authGuard', () => {
         provideHttpClientTesting(),
         provideRouter([
           { path: 'login', component: DummyComponent },
+          { path: 'access-denied', component: DummyComponent },
           { path: '', component: DummyComponent },
         ]),
       ],
@@ -37,8 +38,10 @@ describe('authGuard', () => {
 
   afterEach(() => localStorage.clear());
 
-  it('should deny access when not authenticated', () => {
-    expect(runGuard()).toBe(false);
+  it('should redirect to /login when not authenticated', () => {
+    const result = runGuard();
+    expect(result).toBeInstanceOf(UrlTree);
+    expect((result as UrlTree).toString()).toContain('login');
   });
 
   it('should allow access when authenticated', () => {
@@ -51,8 +54,10 @@ describe('authGuard', () => {
     expect(runGuard({ roles: ['ROLE_ADMIN'] })).toBe(true);
   });
 
-  it('should deny access when role does not match', () => {
+  it('should redirect to /access-denied when role does not match', () => {
     localStorage.setItem('almacenes_token', FAKE_TOKEN);
-    expect(runGuard({ roles: ['ROLE_SALES'] })).toBe(false);
+    const result = runGuard({ roles: ['ROLE_SALES'] });
+    expect(result).toBeInstanceOf(UrlTree);
+    expect((result as UrlTree).toString()).toContain('access-denied');
   });
 });
