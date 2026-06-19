@@ -1,6 +1,7 @@
 import {
-  Component, OnInit, inject, ChangeDetectionStrategy, ChangeDetectorRef,
+  Component, OnInit, inject, DestroyRef, ChangeDetectionStrategy, ChangeDetectorRef,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -38,6 +39,7 @@ export class ExecutiveDashboardComponent implements OnInit {
   private snackBar      = inject(MatSnackBar);
   private router        = inject(Router);
   private cdr           = inject(ChangeDetectorRef);
+  private destroyRef    = inject(DestroyRef);
 
   fromCtrl = new FormControl<Date | null>(null);
   toCtrl   = new FormControl<Date | null>(null);
@@ -77,6 +79,7 @@ export class ExecutiveDashboardComponent implements OnInit {
       valuation: this.reportService.getInventoryValuation()
                    .pipe(catchError(() => of(null))),
     }).pipe(
+      takeUntilDestroyed(this.destroyRef),
       finalize(() => { this.loading = false; this.cdr.markForCheck(); })
     ).subscribe(({ exec, valuation }) => {
       this.execData      = exec;
