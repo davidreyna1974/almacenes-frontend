@@ -19,7 +19,12 @@ export const PURCHASES_ROUTES: Routes = [
         canActivate: [authGuard],
         data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER'] },
       },
-      { path: 'orders/:id', component: PurchaseOrderDetailPageComponent },
+      {
+        path: 'orders/:id',
+        component: PurchaseOrderDetailPageComponent,
+        canActivate: [authGuard],
+        data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN'] },
+      },
     ]
   }
 ];
