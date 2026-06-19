@@ -337,10 +337,34 @@ ADVERTENCIA SOBRE DOCUMENTACIÓN GLOBAL
   sin descripciones de respuestas posibles. Para v1.1, agregar @Operation con
   descripción y @ApiResponse para 200/400/404/422/429.
 
-[BACK-M3] Endpoints de lista sin paginación (findBySupplierId, findByProductId)
-  PurchaseOrderController y SaleOrderController tienen endpoints que retornan
-  List<> sin paginar. Con volumen alto de órdenes por proveedor/producto,
-  esto puede ser un problema de memoria. Paginar en v1.1.
+[BACK-M3] Endpoints auxiliares sin paginación — sin impacto real en v1.0
+  VERIFICADO EN CÓDIGO (2026-06-18): el finding original era parcialmente
+  incorrecto. Situación real:
+
+  · Endpoint principal de lista (/status/{status}) → SÍ paginado ✓
+    PurchaseOrderController línea 98: ResponseEntity<PageResponseDTO<...>>
+    SaleOrderController línea 34:     ResponseEntity<PageResponseDTO<...>>
+    Ambos aceptan ?page=0&size=20. Es el endpoint que alimenta las tabs
+    de la lista principal en el frontend.
+
+  · Endpoints auxiliares por filtro → NO paginados (retornan List<>)
+    GET /purchases/orders/supplier/{supplierId}
+    GET /purchases/orders/supplier/{supplierId}/status/{status}
+    GET /purchases/orders/product/{productId}
+    GET /sales/orders/client/{clientId}
+    GET /sales/orders/client/{clientId}/status/{status}
+    GET /sales/orders/product/{productId}
+    GET /sales/orders/product/{productId}/status/{status}
+
+  · Ningún componente del frontend los consume actualmente. Los métodos
+    getBySupplierId(), getByClientId() y getByProductId() están definidos
+    en los servicios Angular pero solo son llamados desde los archivos
+    .spec.ts — no hay ninguna pantalla que los invoque.
+
+  Riesgo real en v1.0: NULO. No hay peticiones sin paginar en producción.
+  Acción v1.1: si se conectan estos endpoints a alguna vista de historial
+  (órdenes de un proveedor, historial de un cliente), paginarlos en ese
+  momento antes de exponerlos en la UI.
 
 [BACK-M4] Sin @Cacheable en catálogos de lectura frecuente
   Categorías, estados y roles no cambian con frecuencia pero se consultan en
@@ -679,7 +703,8 @@ MEJORAS — v1.1 (sprint de calidad post-estabilización)
 ------------------------------------------------------
   BACK-M1  FetchType.LAZY en User.roles
   BACK-M2  @Operation/@ApiResponse en endpoints
-  BACK-M3  Paginación en findBySupplierId/findByProductId
+  BACK-M3  Paginar endpoints auxiliares /supplier, /client, /product al
+           conectarlos a una vista de historial (hoy sin consumidor en UI)
   BACK-M4  @Cacheable en catálogos
   BACK-M5  Default de fecha en dashboard ejecutivo
   FRONT-M1 withPreloading(PreloadAllModules)
