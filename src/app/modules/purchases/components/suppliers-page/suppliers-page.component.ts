@@ -116,4 +116,6 @@ export class SuppliersPageComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(saved => { if (saved) this.load(); });
   }
+
+  trackById(_: number, item: { id: number }): number { return item.id; }
 }

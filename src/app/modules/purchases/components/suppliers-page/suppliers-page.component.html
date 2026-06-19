@@ -36,7 +36,7 @@
     </div>
   } @else {
     <div class="catalog-page__table-wrapper">
-      <table mat-table [dataSource]="filtered" class="catalog-table">
+      <table mat-table [dataSource]="filtered" class="catalog-table" [trackBy]="trackById">
 
         <ng-container matColumnDef="rfc">
           <th mat-header-cell *matHeaderCellDef>RFC</th>

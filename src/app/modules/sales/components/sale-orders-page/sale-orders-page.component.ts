@@ -249,4 +249,6 @@ export class SaleOrdersPageComponent implements OnInit {
     };
     return map[status] ?? '';
   }
+
+  trackById(_: number, item: { id: number }): number { return item.id; }
 }

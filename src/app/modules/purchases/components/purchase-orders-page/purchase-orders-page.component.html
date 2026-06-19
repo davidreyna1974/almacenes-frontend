@@ -52,7 +52,7 @@
       </div>
     }
 
-    <mat-table [dataSource]="filteredOrders" class="orders-page__table">
+    <mat-table [dataSource]="filteredOrders" class="orders-page__table" [trackBy]="trackById">
 
       <ng-container matColumnDef="orderNumber">
         <mat-header-cell *matHeaderCellDef>N° Orden</mat-header-cell>
