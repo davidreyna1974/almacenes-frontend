@@ -799,8 +799,535 @@ COLUMNA ESTADO
 BACKEND — Brechas 1-17
 ================================================================================
 
+
+================================================================================
+NIVEL 1 — TRIVIALES   Brechas 1-6
+(sin impacto funcional — pueden hacerse en cualquier momento)
+================================================================================
 ──────────────────────────────────────────────────────────────────────────────
-[1] BACK-B1 — Script DDL inicial (schema SQL)           Estado: ⏳ PENDIENTE
+[1] OPS-B4 — Guía rápida de uso por rol               Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Crear docs/global/guia_rapida_usuario.md con secciones por rol:
+    - ADMIN: gestión de usuarios, acceso a todos los módulos.
+    - MANAGER: inventario, compras, ventas, reportes.
+    - WAREHOUSEMAN: ver inventario, recibir OC, entregar OV.
+    - SALES: crear OV, ver clientes, ver pendientes.
+  · Incluir capturas de pantalla o diagramas de flujo de los procesos más comunes.
+  · Documentar el workaround de devoluciones (movimiento IN/OUT manual con nota).
+
+Daño colateral posible:
+  · Ninguno — solo creación de documentación.
+
+Criterios de éxito:
+  · El documento existe y cubre los flujos principales de los 4 roles.
+  · Un operador nuevo puede ejecutar el flujo completo (crear OC → recibir →
+    crear OV → entregar) siguiendo la guía sin necesitar asistencia.
+
+──────────────────────────────────────────────────────────────────────────────
+[2] OPS-I1 — Actualizar §5 de memoria_tecnica_global  Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Archivo: docs/global/memoria_tecnica_global_proyecto.md (en ambos repos)
+  · En la sección §5 (usuarios del sistema): eliminar la nota obsoleta que dice
+    que /admin/users no existe. El Módulo 6 (Usuarios) fue implementado.
+  · Actualizar la lista de funcionalidades de gestión de usuarios para reflejar
+    el estado actual: CRUD de usuarios, cambio de contraseña, gestión de roles.
+
+Archivos afectados:
+  · docs/global/memoria_tecnica_global_proyecto.md (en frontend y backend repos)
+
+Daño colateral posible:
+  · Ninguno — solo actualización de documentación.
+
+Criterios de éxito:
+  · §5 de la memoria técnica global no contiene la nota obsoleta.
+  · La sección refleja el estado actual: /admin/users funciona con CRUD completo.
+
+──────────────────────────────────────────────────────────────────────────────
+[3] BACK-I1 — Log de contraseña en DataInitializer      Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Archivo: src/main/java/.../core/config/DataInitializer.java
+  · Eliminar línea 53: log.warn("  Usuario: admin | Password: Admin123!");
+  · Mantener las otras líneas de log.warn (mensaje de primer arranque es válido).
+  · Reemplazar con: log.warn("  Cambia la contraseña del admin inmediatamente.");
+
+Archivos afectados:
+  · DataInitializer.java (1 línea)
+
+Daño colateral posible:
+  · Ninguno — es solo un cambio de log. La lógica de creación del usuario
+    y el encoding de la contraseña no se modifican.
+
+Cómo evitarlo:
+  · Cambiar ÚNICAMENTE la línea del log, no la lógica de passwordEncoder.
+
+Checkpoint/rollback:
+  · Si se introduce un error: git diff DataInitializer.java para verificar.
+  · Rollback: git checkout HEAD DataInitializer.java
+
+Criterios de éxito:
+  · Al arrancar el backend con BD vacía, los logs de startup NO contienen
+    la cadena "Admin123!".
+  · El usuario admin se crea correctamente y el login funciona.
+
+Tests a ejecutar:
+  · mvn test -Dtest=DataInitializerTest (si existe) → 0 fallos.
+  · Suite completa: mvn test → 405 tests, 0 fallos.
+  · Arrancar con BD vacía, verificar logs, hacer login con admin/Admin123!
+  · curl POST /api/v1/auth/login con admin/Admin123! → 200 + JWT válido.
+
+──────────────────────────────────────────────────────────────────────────────
+[4] BACK-M2 — @Operation/@ApiResponse en endpoints     Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Agregar anotaciones springdoc (@Operation, @ApiResponse, @Parameter) a todos
+    los endpoints de los controllers del sistema (8 controllers).
+  · Esto es documentación — no cambia el comportamiento de la API.
+  · NOTA: Swagger estará deshabilitado en prod (BACK-I2). Estas anotaciones
+    benefician al equipo de desarrollo en el perfil dev.
+
+Archivos afectados:
+  · UserController.java, CategoryController.java, ProductController.java,
+    SupplierController.java, PurchaseOrderController.java, ClientController.java,
+    SaleOrderController.java, ReservationController.java, ReportController.java
+
+Daño colateral posible:
+  · Ninguno — las anotaciones springdoc son procesadas en tiempo de compilación
+    para generar la UI de Swagger; no modifican el runtime de la API.
+  · Riesgo menor: si una anotación mal formada causa error de compilación.
+
+Cómo evitarlo:
+  · Compilar después de cada archivo: mvn compile -q.
+  · Las anotaciones son opcionales — si una causa error, se elimina.
+
+Checkpoint/rollback:
+  · Eliminar las anotaciones si causan problemas de compilación.
+
+Criterios de éxito:
+  · mvn compile → 0 errores.
+  · GET /v3/api-docs (en dev) devuelve JSON con descripción de todos los endpoints.
+  · La Swagger UI (en dev) muestra todos los endpoints con sus descripciones.
+
+Tests a ejecutar:
+  · mvn test → todos los tests, 0 fallos.
+  · En dev: abrir http://localhost:8080/swagger-ui/index.html y verificar documentación.
+
+──────────────────────────────────────────────────────────────────────────────
+[5] BACK-M5 — ExecutiveReport: fecha default año 2000  Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Archivo: ExecutiveReportServiceImpl.java línea 59.
+  · Cambiar: LocalDateTime.of(2000, 1, 1, 0, 0)
+  · Por: LocalDate.now().minusMonths(12).atStartOfDay()  ← último año
+  · O mejor: LocalDate.now().withDayOfYear(1).atStartOfDay() ← inicio del año en curso
+  · Elegir según el criterio de negocio acordado con el cliente.
+  · Mismo patrón si la línea 145 (getSalesProfitability) tiene el mismo defecto.
+
+Archivos afectados:
+  · ExecutiveReportServiceImpl.java (1-2 líneas)
+
+Daño colateral posible:
+  · Si el cliente tiene datos históricos anteriores al año actual que son
+    relevantes para el dashboard ejecutivo, la nueva fecha default los excluirá.
+  · El frontend ya tiene controles de fecha (from/to) para sobrescribir el
+    default — el cambio solo afecta la vista inicial sin filtro.
+
+Cómo evitarlo:
+  · Confirmar con el cliente cuál es el período relevante para la vista inicial.
+  · Alternativa conservadora: usar LocalDate.now().minusMonths(12) (últimos 12 meses).
+  · Si el criterio no está claro: dejar el comentario "TODO: confirmar con cliente"
+    y usar un default razonable (12 meses).
+
+Checkpoint/rollback:
+  · git checkout HEAD -- ExecutiveReportServiceImpl.java
+
+Criterios de éxito:
+  · GET /api/v1/reports/executive (sin from/to) retorna datos del período correcto.
+  · El dashboard ejecutivo en el browser muestra datos del año actual por defecto.
+  · mvn test → todos los tests, 0 fallos.
+
+Tests a ejecutar:
+  · mvn test -Dtest=ExecutiveReportServiceTest (si existe) → 0 fallos.
+  · Suite completa: mvn test → todos los tests, 0 fallos.
+  · Browser (rol ADMIN): Reports → Dashboard Ejecutivo → verificar que los KPIs
+    muestran datos del período correcto sin seleccionar fechas.
+
+================================================================================
+FRONTEND — Brechas 18-32
+================================================================================
+
+──────────────────────────────────────────────────────────────────────────────
+[6] BACK-I9 — logback-spring.xml con rotación de logs  Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Crear src/main/resources/logback-spring.xml con:
+    - Appender CONSOLE: solo para perfil dev (patrón colorizado).
+    - Appender FILE: solo para perfil prod (logs en /var/log/almacenes/app.log).
+    - Appender FILE-ROLLING: rotación diaria, máximo 30 días, máximo 500MB total.
+    - Root logger: WARN en prod, INFO en dev.
+    - Logger com.codigo2enter: INFO en prod, DEBUG en dev.
+
+Archivos afectados:
+  · Nuevo: src/main/resources/logback-spring.xml
+
+Daño colateral posible:
+  · Si el directorio /var/log/almacenes/ no existe en el contenedor Docker,
+    el appender FILE falla silenciosamente o lanza error al arrancar.
+  · El RollingFileAppender puede consumir disco si los logs son muy verbosos
+    y el volumen Docker no está limitado.
+
+Cómo evitarlo:
+  · El Dockerfile del backend debe crear el directorio:
+      RUN mkdir -p /var/log/almacenes && chown almacenes:almacenes /var/log/almacenes
+  · En docker-compose.yml: montar /var/log/almacenes como volumen nombrado.
+  · Limitar el nivel de log a WARN o INFO (no DEBUG) en prod.
+
+Checkpoint/rollback:
+  · Eliminar logback-spring.xml y Spring Boot vuelve a su configuración de log
+    por defecto (console, INFO).
+
+Criterios de éxito:
+  · Backend arranca con perfil prod y los logs de aplicación van a archivo.
+  · El archivo de log existe y se puede leer: tail -f /var/log/almacenes/app.log.
+  · No hay logs con nivel DEBUG visibles en producción.
+  · mvn test → 405 tests, 0 fallos.
+
+Tests a ejecutar:
+  · mvn test → 405 tests, 0 fallos.
+  · Arrancar con perfil prod dentro del contenedor.
+  · docker compose exec backend cat /var/log/almacenes/app.log
+  · Hacer varias operaciones (login, crear producto) y verificar que aparecen en log.
+
+
+================================================================================
+NIVEL 2 — BAJOS   Brechas 7-14
+(cambios mínimos, archivos aislados, reversibles con git checkout)
+================================================================================
+──────────────────────────────────────────────────────────────────────────────
+[7] FRONT-B1 — URL real en environment.prod.ts         Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Archivo: src/environments/environment.prod.ts
+  · Cambiar el placeholder por: apiUrl: 'https://almacenes.codigo2enter.com/api/v1'
+  · Verificar que environment.ts (dev) sigue apuntando a 'http://localhost:8080/api/v1'.
+
+Archivos afectados:
+  · src/environments/environment.prod.ts (1 línea)
+
+Daño colateral posible:
+  · Si el dominio aún no resuelve (DNS no configurado), el build de producción
+    compilará correctamente pero el runtime fallará con "net::ERR_NAME_NOT_RESOLVED".
+  · Este es solo un riesgo de runtime en producción, no de build.
+
+Cómo evitarlo:
+  · Este cambio no puede probarse localmente (apunta al dominio de producción).
+  · Verificar en el build de producción que el archivo fue incluido:
+      ng build --configuration=production
+      grep -r "almacenes.codigo2enter.com" dist/
+
+Checkpoint/rollback:
+  · git checkout HEAD -- src/environments/environment.prod.ts
+
+Criterios de éxito:
+  · ng build --configuration=production → 0 errores.
+  · grep "almacenes.codigo2enter.com" dist/almacenes/browser/*.js → al menos 1 match.
+  · En producción: el login funciona y los requests van a https://almacenes.codigo2enter.com.
+
+Tests a ejecutar:
+  · ng test → 445 specs, 0 fallos (los tests usan el mock del servicio, no la URL real).
+  · ng build --configuration=production → 0 errores, 0 warnings críticos.
+  · Verificar bundle: strings del bundle deben incluir el dominio real.
+
+──────────────────────────────────────────────────────────────────────────────
+[8] FRONT-B2 — angular.json optimization/sourceMap     Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Verificar angular.json → configurations → production:
+      "optimization": true       (ya debería existir con ng new --strict)
+      "sourceMap": false         (no exponer mapa de fuentes en prod)
+      "outputHashing": "all"     (cache-busting en assets)
+      "namedChunks": false
+      "aot": true
+  · Si alguno falta o es incorrecto, corregirlo.
+
+Archivos afectados:
+  · angular.json (posiblemente 0-5 líneas)
+
+Daño colateral posible:
+  · sourceMap: false elimina la capacidad de depurar errores en producción.
+    Para usar Sentry (FRONT-M5), los source maps se envían a Sentry pero no
+    se exponen públicamente — en esa etapa se puede re-habilitar con:
+      "sourceMap": { "scripts": true, "hidden": true }
+  · Cambios en "outputHashing" pueden afectar cómo el servidor sirve los assets
+    (nginx ya está configurado con cache de 1 año para assets con hash).
+
+Cómo evitarlo:
+  · Verificar el estado actual antes de modificar: ng build --configuration=production
+    y revisar la salida.
+  · Si ya está correctamente configurado: no cambiar nada.
+
+Checkpoint/rollback:
+  · git checkout HEAD -- angular.json
+
+Criterios de éxito:
+  · ng build --configuration=production → bundle optimizado sin source maps públicos.
+  · Los archivos en dist/ tienen hash en el nombre (main.abc123.js).
+  · El bundle size es razonable (< 2MB para la app de este tamaño).
+
+Tests a ejecutar:
+  · ng test → 445 specs, 0 fallos.
+  · ng build --configuration=production → 0 errores.
+  · Verificar dist/: no existe *.map con contenido si sourceMap: false.
+
+──────────────────────────────────────────────────────────────────────────────
+[9] FRONT-I5 — CSS .snack-error unificado              Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Estado actual verificado:
+  · global.scss ya define .snackbar-error (línea 76).
+  · Los componentes usan 'snackbar-error' consistentemente.
+  · La brecha puede estar resuelta — verificar si algún componente usa
+    'snack-error' (sin 'bar') que no esté definido en global.scss.
+
+Cambios necesarios:
+  · Auditar todos los panelClass en el codebase:
+      grep -rn "panelClass" src/app/ | grep -v spec
+  · Si hay mezcla de 'snack-error' y 'snackbar-error': unificar a 'snackbar-error'.
+  · Si 'snack-error' aparece en algún componente pero no en global.scss: agregar
+    el alias .snack-error { @extend .snackbar-error; } en global.scss.
+  · Asegurar que también existe .snackbar-success en global.scss.
+
+Archivos afectados:
+  · global.scss (posiblemente 0 cambios si ya está correcto)
+  · Componentes con panelClass inconsistente (si los hay)
+
+Daño colateral posible:
+  · Si se renombra 'snackbar-error' a 'snack-error' sin actualizar todos los
+    componentes que lo usan, los snackbars de error quedan sin estilo.
+
+Cómo evitarlo:
+  · NUNCA renombrar — solo unificar hacia el nombre ya existente.
+  · Después de cualquier cambio: verificar visualmente los snackbars en browser.
+
+Criterios de éxito:
+  · Todos los snackbars de error aparecen con fondo rojo (#C62828).
+  · grep -rn "panelClass" src/app/ muestra un nombre consistente.
+
+Tests a ejecutar:
+  · ng test → suite completa, 0 fallos.
+  · Browser: provocar un error (login con contraseña incorrecta) → snackbar rojo.
+  · Browser: operación exitosa → snackbar verde.
+
+──────────────────────────────────────────────────────────────────────────────
+[10] FRONT-M4 — takeUntilDestroyed en LoginComponent    Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Archivo: src/app/modules/auth/login/login.component.ts
+  · Agregar private destroyRef = inject(DestroyRef) como campo de clase.
+  · En el subscribe de this.authService.login(...), agregar al pipe:
+      .pipe(takeUntilDestroyed(this.destroyRef))
+  · El riesgo real es mínimo (la pantalla de login se destruye al navegar, y el
+    subscribe generalmente se completa antes), pero es buena práctica.
+
+Archivos afectados:
+  · login.component.ts
+
+Daño colateral posible:
+  · Si el usuario navega a otra página MIENTRAS el login está en progreso
+    (improbable en condiciones normales), takeUntilDestroyed cancela el Observable
+    y el JWT no se almacena → el usuario no queda logueado.
+  · Este escenario es tan improbable que el riesgo es aceptable.
+
+Checkpoint/rollback:
+  · git checkout HEAD -- login.component.ts
+
+Criterios de éxito:
+  · Login funciona correctamente (usuario ingresa credenciales → navega al dashboard).
+  · ng test → suite completa, 0 fallos.
+
+Tests a ejecutar:
+  · ng test -t "LoginComponent" → tests específicos del componente.
+  · ng test → suite completa, 0 fallos.
+  · Browser: hacer login con admin/Admin123! → dashboard carga.
+
+──────────────────────────────────────────────────────────────────────────────
+[11] FRONT-M3 — trackBy en listas largas                Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Agregar trackBy a los *ngFor de tablas con listas de datos paginados.
+  · Componentes prioritarios (los que cargan más ítems):
+    - products-page.component: *ngFor de rows de la tabla → trackBy: trackById
+    - suppliers-page.component: ídem
+    - clients-page.component: ídem
+    - purchase-orders-page.component: ídem
+    - sale-orders-page.component: ídem
+  · Agregar el método en cada componente:
+      trackById(_: number, item: {id: number}) { return item.id; }
+
+Archivos afectados:
+  · 5-6 componentes de página (templates .html + lógica .ts)
+
+Daño colateral posible:
+  · Si el campo id no existe en algún DTO (ej. se llama 'orderId' en vez de 'id'),
+    el trackBy retorna undefined → Angular re-renderiza toda la lista siempre.
+  · Bajo ninguna circunstancia trackBy puede hacer que la lista muestre datos
+    incorrectos — solo afecta rendimiento de re-renderizado.
+
+Cómo evitarlo:
+  · Verificar el nombre del campo id en cada modelo TypeScript antes de implementar.
+
+Checkpoint/rollback:
+  · Los cambios son aditivos (solo agrega función y atributo trackBy).
+  · Si hay algún problema: eliminar el trackByFn del template.
+
+Criterios de éxito:
+  · Las listas de productos, proveedores, clientes y órdenes se renderizan
+    correctamente después del cambio.
+  · ng test → suite completa, 0 fallos.
+
+Tests a ejecutar:
+  · ng test → suite completa, 0 fallos.
+  · Browser: cargar lista de productos → filtrar → verificar que la lista
+    se actualiza correctamente.
+
+──────────────────────────────────────────────────────────────────────────────
+[12] FRONT-M1 — withPreloading(PreloadAllModules)       Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Archivo: src/app/app.config.ts
+  · En provideRouter(), agregar withPreloading(PreloadAllModules).
+  · Importar PreloadAllModules desde @angular/router.
+
+Archivos afectados:
+  · app.config.ts (1-2 líneas)
+
+Daño colateral posible:
+  · Precargar todos los módulos puede aumentar el tiempo inicial de carga de la
+    app (todos los chunks se descargan en background tras el primer load).
+  · En conexiones lentas puede generar tráfico extra innecesario.
+
+Cómo evitarlo:
+  · Alternativa: usar PreloadAllModules selectivo con @NgModule({ preload: true }).
+  · Para v1.0 con pocos módulos (7): PreloadAllModules es aceptable.
+  · Verificar que el bundle size y el tiempo de precarga son aceptables.
+
+Checkpoint/rollback:
+  · Eliminar withPreloading de app.config.ts.
+
+Criterios de éxito:
+  · ng build → bundle compila sin errores.
+  · En browser (Network tab): los chunks de módulos se descargan en background
+    tras el primer login.
+  · El tiempo de navegación entre módulos ya cargados es < 100ms.
+
+Tests a ejecutar:
+  · ng test → 445+ specs, 0 fallos.
+  · ng build --configuration=production → 0 errores.
+
+──────────────────────────────────────────────────────────────────────────────
+[13] BACK-I3 — Headers de seguridad HTTP en backend      Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Archivo: src/main/java/.../core/security/SecurityConfig.java
+  · En el método securityFilterChain, agregar configuración de headers:
+      http.headers(headers -> headers
+          .frameOptions(fo -> fo.deny())
+          .xssProtection(xss -> xss.disable())  // CSP es mejor práctica
+          .contentTypeOptions(Customizer.withDefaults())
+          .referrerPolicy(rp -> rp.policy(
+              ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
+          .httpStrictTransportSecurity(hsts -> hsts
+              .maxAgeInSeconds(31536000)
+              .includeSubDomains(true))
+      );
+  · NOTA: en producción, nginx ya emite estos headers. En el backend se agregan
+    como defensa en profundidad (aplican si el backend es accedido directamente
+    via Docker exec o herramientas internas).
+
+Archivos afectados:
+  · SecurityConfig.java
+
+Daño colateral posible:
+  · X-Frame-Options: DENY puede romper funcionalidades si algún componente
+    Angular usa iframes (este sistema no los usa — riesgo: NULO).
+  · HSTS en backend puede causar loops si se testea con HTTP (no HTTPS) en dev.
+  · Imports nuevos de Spring Security pueden causar conflictos de versión.
+
+Cómo evitarlo:
+  · Aplicar HSTS solo en el perfil prod (@Profile("prod") en la config de headers
+    o via propiedad condicional en application-prod.yaml).
+  · En dev: dejar los headers por defecto de Spring Security.
+  · Alternativa más segura: agregar los headers SOLO via nginx en producción
+    (ya están en nginx.conf del §9) y omitir este cambio en el backend.
+
+Checkpoint/rollback:
+  · Si los tests de seguridad fallan (RBAC tests, auth tests): git revert.
+  · Verificar con: curl -I http://localhost:8080/api/v1/auth/login
+
+Criterios de éxito:
+  · curl -I al backend retorna X-Frame-Options: DENY, X-Content-Type-Options: nosniff.
+  · Todos los tests de seguridad RBAC siguen en verde (endpoints protegidos siguen
+    protegidos, endpoints públicos siguen accesibles).
+  · No hay regresión en los 405 tests.
+
+Tests a ejecutar:
+  · mvn test -Dtest=CategoryControllerSecurityTest,ProductControllerSecurityTest,
+      UserControllerTest,ClientControllerTest,SaleOrderControllerTest → 0 fallos.
+  · Suite completa: mvn test → 405 tests, 0 fallos.
+  · curl -I http://localhost:8080/api/v1/auth/login (verificar headers presentes).
+
+──────────────────────────────────────────────────────────────────────────────
+[14] BACK-I10 — Logging de operaciones críticas         Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Agregar log.info("...") en los métodos críticos de negocio en los servicios:
+    - UserServiceImpl.login(): log quién inició sesión y desde qué IP.
+    - ProductServiceImpl.registerMovement(): log tipo de movimiento, cantidad,
+      producto, usuario que lo realizó.
+    - PurchaseOrderServiceImpl.approveOrder() / receiveOrder() / cancelOrder():
+      log el cambio de estado con quién lo aprobó.
+    - SaleOrderServiceImpl.approveOrder() / deliverOrder() / cancelOrder():
+      log el cambio de estado.
+  · Usar SLF4J (@Slf4j de Lombok si ya está disponible, o LoggerFactory).
+  · No loggear datos sensibles: contraseñas, tokens JWT, números de tarjeta.
+
+Archivos afectados:
+  · UserServiceImpl.java, ProductServiceImpl.java, PurchaseOrderServiceImpl.java,
+    SaleOrderServiceImpl.java (4 archivos, adición de log statements)
+
+Daño colateral posible:
+  · Si el logger introduce null pointer (ej. user.getUsername() cuando user es null),
+    puede lanzar NullPointerException — pero los métodos ya validan que la entidad
+    existe antes de llegar al punto del log.
+  · Logging excesivo puede afectar el rendimiento bajo carga alta.
+
+Cómo evitarlo:
+  · Loggear DESPUÉS de la operación exitosa (no antes).
+  · Usar lazy evaluation: log.info("Movimiento: {} {} uds de {}", type, qty, sku).
+  · Nivel INFO para operaciones exitosas, WARN para intentos fallidos.
+
+Checkpoint/rollback:
+  · Eliminar los log statements no cambia la lógica de negocio.
+  · Los tests no deben validar contenido de logs (son testes de comportamiento, no de output).
+
+Criterios de éxito:
+  · Hacer login → verificar en /var/log/almacenes/app.log una línea con el usuario.
+  · Registrar un movimiento de stock → verificar línea en log.
+  · Aprobar una OC → verificar línea en log.
+  · mvn test → todos los tests, 0 fallos.
+
+Tests a ejecutar:
+  · mvn test → todos los tests, 0 fallos (los logs no deben afectar lógica).
+  · Test manual en browser: ejecutar operación crítica y verificar en log.
+
+
+================================================================================
+NIVEL 3 — MEDIOS   Brechas 15-29
+(requieren atención, daño colateral controlable)
+================================================================================
+──────────────────────────────────────────────────────────────────────────────
+[15] BACK-B1 — Script DDL inicial (schema SQL)           Estado: ⏳ PENDIENTE
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Levantar el backend en dev con ddl-auto: create y BD vacía.
@@ -848,49 +1375,7 @@ Tests a ejecutar:
   · curl -s http://localhost:8080/actuator/health | verificar UP.
 
 ──────────────────────────────────────────────────────────────────────────────
-[2] BACK-B2 — Dockerfile del backend                    Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Crear backend/Dockerfile (multi-stage: maven:3.9-eclipse-temurin-17 + jre-alpine).
-  · El JAR se genera en /app/target/almacenes-*.jar.
-  · Usuario no-root: adduser almacenes, USER almacenes.
-  · ENTRYPOINT: java -Xms512m -Xmx1g -jar app.jar.
-  · Verificar que application-prod.yaml activa el perfil prod (BACK-B3 previo).
-
-Archivos afectados:
-  · Nuevo: backend/Dockerfile
-
-Daño colateral posible:
-  · El build de Maven dentro del contenedor puede fallar si pom.xml tiene
-    dependencias que requieren autenticación (repositorios privados).
-  · Diferencias de JVM entre desarrollo (JDK 17 de IntelliJ) y alpine
-    (eclipse-temurin-17-jre-alpine) pueden causar problemas de classpath.
-  · El tamaño de imagen puede ser grande si no se usa .dockerignore.
-
-Cómo evitarlo:
-  · Crear backend/.dockerignore con: target/, *.iml, .idea/, .git/
-  · Verificar que pom.xml no usa repositorios privados que requieran credenciales.
-  · Probar el build con: docker build -t almacenes-backend-test ./backend/
-
-Checkpoint/rollback:
-  · Si el build falla: corregir el Dockerfile sin afectar código Java.
-  · Rollback: eliminar el Dockerfile (el código no cambia).
-  · Si el contenedor arranca pero la app falla: revisar logs con
-    docker logs <container_id> antes de continuar.
-
-Criterios de éxito:
-  · docker build -t almacenes-backend ./backend/ → exit code 0.
-  · docker run -e SPRING_PROFILES_ACTIVE=prod ... almacenes-backend → arranca.
-  · /actuator/health → {"status":"UP"} desde dentro del contenedor.
-
-Tests a ejecutar:
-  · docker build -t test-backend ./backend/
-  · docker run --rm -e SPRING_PROFILES_ACTIVE=dev -p 8080:8080 test-backend &
-  · curl http://localhost:8080/actuator/health
-  · mvn test → sigue en 405 tests, 0 fallos (el Dockerfile no toca código Java).
-
-──────────────────────────────────────────────────────────────────────────────
-[3] BACK-B3 — application-prod.yaml                     Estado: ⏳ PENDIENTE
+[16] BACK-B3 — application-prod.yaml                     Estado: ⏳ PENDIENTE
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Crear src/main/resources/application-prod.yaml con:
@@ -943,105 +1428,67 @@ Tests a ejecutar:
   · curl http://localhost:8080/swagger-ui/index.html → debe retornar 404.
 
 ──────────────────────────────────────────────────────────────────────────────
-[4] BACK-B4* — show-sql en prod                         Estado: ✅ RESUELTA
+[17] BACK-B4* — show-sql en prod                         Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
   Resuelta junto con BACK-B3: spring.jpa.show-sql: false en application-prod.yaml.
   No requiere rama separada.
 
 ──────────────────────────────────────────────────────────────────────────────
-[5] BACK-I1 — Log de contraseña en DataInitializer      Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Archivo: src/main/java/.../core/config/DataInitializer.java
-  · Eliminar línea 53: log.warn("  Usuario: admin | Password: Admin123!");
-  · Mantener las otras líneas de log.warn (mensaje de primer arranque es válido).
-  · Reemplazar con: log.warn("  Cambia la contraseña del admin inmediatamente.");
-
-Archivos afectados:
-  · DataInitializer.java (1 línea)
-
-Daño colateral posible:
-  · Ninguno — es solo un cambio de log. La lógica de creación del usuario
-    y el encoding de la contraseña no se modifican.
-
-Cómo evitarlo:
-  · Cambiar ÚNICAMENTE la línea del log, no la lógica de passwordEncoder.
-
-Checkpoint/rollback:
-  · Si se introduce un error: git diff DataInitializer.java para verificar.
-  · Rollback: git checkout HEAD DataInitializer.java
-
-Criterios de éxito:
-  · Al arrancar el backend con BD vacía, los logs de startup NO contienen
-    la cadena "Admin123!".
-  · El usuario admin se crea correctamente y el login funciona.
-
-Tests a ejecutar:
-  · mvn test -Dtest=DataInitializerTest (si existe) → 0 fallos.
-  · Suite completa: mvn test → 405 tests, 0 fallos.
-  · Arrancar con BD vacía, verificar logs, hacer login con admin/Admin123!
-  · curl POST /api/v1/auth/login con admin/Admin123! → 200 + JWT válido.
-
-──────────────────────────────────────────────────────────────────────────────
-[6] BACK-I2 — Swagger deshabilitado en prod             Estado: ✅ RESUELTA
+[18] BACK-I2 — Swagger deshabilitado en prod             Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
   Resuelta junto con BACK-B3: springdoc.api-docs.enabled: false en prod.
   No requiere rama separada.
 
 ──────────────────────────────────────────────────────────────────────────────
-[7] BACK-I3 — Headers de seguridad HTTP en backend      Estado: ⏳ PENDIENTE
+[19] BACK-I8 — Spring Boot Actuator (/actuator/health)  Estado: ✅ RESUELTA
+──────────────────────────────────────────────────────────────────────────────
+  Resuelta junto con BACK-B3: management.endpoints en application-prod.yaml.
+  Verificar que SecurityConfig permite /actuator/health sin autenticación.
+  Si no: agregar .requestMatchers("/actuator/health").permitAll() en SecurityConfig.
+
+──────────────────────────────────────────────────────────────────────────────
+[20] BACK-I7 — Configurar HikariCP en application-prod  Estado: ⏳ PENDIENTE
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
-  · Archivo: src/main/java/.../core/security/SecurityConfig.java
-  · En el método securityFilterChain, agregar configuración de headers:
-      http.headers(headers -> headers
-          .frameOptions(fo -> fo.deny())
-          .xssProtection(xss -> xss.disable())  // CSP es mejor práctica
-          .contentTypeOptions(Customizer.withDefaults())
-          .referrerPolicy(rp -> rp.policy(
-              ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN))
-          .httpStrictTransportSecurity(hsts -> hsts
-              .maxAgeInSeconds(31536000)
-              .includeSubDomains(true))
-      );
-  · NOTA: en producción, nginx ya emite estos headers. En el backend se agregan
-    como defensa en profundidad (aplican si el backend es accedido directamente
-    via Docker exec o herramientas internas).
+  · En application-prod.yaml (ya creado en BACK-B3), agregar:
+      spring.datasource.hikari.maximum-pool-size: 10
+      spring.datasource.hikari.minimum-idle: 2
+      spring.datasource.hikari.connection-timeout: 30000
+      spring.datasource.hikari.idle-timeout: 600000
+      spring.datasource.hikari.max-lifetime: 1800000
+      spring.datasource.hikari.pool-name: AlmacenesHikariPool
+  · No modificar el pool en el perfil de desarrollo.
 
 Archivos afectados:
-  · SecurityConfig.java
+  · application-prod.yaml (solo configuración, sin código Java)
 
 Daño colateral posible:
-  · X-Frame-Options: DENY puede romper funcionalidades si algún componente
-    Angular usa iframes (este sistema no los usa — riesgo: NULO).
-  · HSTS en backend puede causar loops si se testea con HTTP (no HTTPS) en dev.
-  · Imports nuevos de Spring Security pueden causar conflictos de versión.
+  · maximum-pool-size: 10 con el plan de servidor (4 GB RAM) es conservador.
+    Si hay picos de concurrencia > 10 conexiones simultáneas, las peticiones
+    esperarán el connection-timeout (30s) antes de retornar error.
+  · Si el servidor PostgreSQL tiene max_connections < 10, el pool fallará.
 
 Cómo evitarlo:
-  · Aplicar HSTS solo en el perfil prod (@Profile("prod") en la config de headers
-    o via propiedad condicional en application-prod.yaml).
-  · En dev: dejar los headers por defecto de Spring Security.
-  · Alternativa más segura: agregar los headers SOLO via nginx en producción
-    (ya están en nginx.conf del §9) y omitir este cambio en el backend.
+  · Verificar max_connections del PostgreSQL: SELECT current_setting('max_connections').
+  · Comenzar con pool-size: 5 y aumentar si los reportes muestran contención.
+  · El connection-timeout de 30s es estándar — no reducirlo.
 
 Checkpoint/rollback:
-  · Si los tests de seguridad fallan (RBAC tests, auth tests): git revert.
-  · Verificar con: curl -I http://localhost:8080/api/v1/auth/login
+  · Eliminar las líneas de hikari de application-prod.yaml.
+  · El pool vuelve a los defaults de HikariCP (pool-size: 10 por defecto).
 
 Criterios de éxito:
-  · curl -I al backend retorna X-Frame-Options: DENY, X-Content-Type-Options: nosniff.
-  · Todos los tests de seguridad RBAC siguen en verde (endpoints protegidos siguen
-    protegidos, endpoints públicos siguen accesibles).
-  · No hay regresión en los 405 tests.
+  · Backend arranca con SPRING_PROFILES_ACTIVE=prod y logs muestran
+    "AlmacenesHikariPool - Start completed".
+  · No hay errores de connection timeout en condiciones normales.
 
 Tests a ejecutar:
-  · mvn test -Dtest=CategoryControllerSecurityTest,ProductControllerSecurityTest,
-      UserControllerTest,ClientControllerTest,SaleOrderControllerTest → 0 fallos.
-  · Suite completa: mvn test → 405 tests, 0 fallos.
-  · curl -I http://localhost:8080/api/v1/auth/login (verificar headers presentes).
+  · mvn test → 405 tests, 0 fallos (configuración no afecta tests).
+  · Arrancar con perfil prod y verificar en logs el nombre del pool.
+  · Ejecutar 5-10 requests concurrentes al API y verificar ausencia de errores.
 
 ──────────────────────────────────────────────────────────────────────────────
-[8] BACK-I4 — Handler DataIntegrityViolationException   Estado: ⏳ PENDIENTE
+[21] BACK-I4 — Handler DataIntegrityViolationException   Estado: ⏳ PENDIENTE
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Archivo: src/main/java/.../core/exception/GlobalExceptionHandler.java
@@ -1091,7 +1538,7 @@ Tests a ejecutar:
   · curl POST /api/v1/auth/users con username duplicado → verificar 409.
 
 ──────────────────────────────────────────────────────────────────────────────
-[9] BACK-I5 — ~17 RuntimeException sin tipar            Estado: ⏳ PENDIENTE
+[22] BACK-I5 — ~17 RuntimeException sin tipar            Estado: ⏳ PENDIENTE
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Reemplazar todas las ocurrencias de new RuntimeException() encontradas
@@ -1153,7 +1600,7 @@ Tests a ejecutar:
   · Verificar en browser: crear OC con producto inexistente → snackbar de error.
 
 ──────────────────────────────────────────────────────────────────────────────
-[10] BACK-I6 — Login incorrecto siempre devuelve 401    Estado: ⏳ PENDIENTE
+[23] BACK-I6 — Login incorrecto siempre devuelve 401    Estado: ⏳ PENDIENTE
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · VERIFICACIÓN PRIMERO: GlobalExceptionHandler ya tiene handler para
@@ -1199,141 +1646,463 @@ Tests a ejecutar:
   · Repetir 5 veces → verificar que el 6to intento devuelve 429 (no 500).
 
 ──────────────────────────────────────────────────────────────────────────────
-[11] BACK-I7 — Configurar HikariCP en application-prod  Estado: ⏳ PENDIENTE
+[24] FRONT-B3 — canActivate+data.roles en Inventory     Estado: ⏳ PENDIENTE
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
-  · En application-prod.yaml (ya creado en BACK-B3), agregar:
-      spring.datasource.hikari.maximum-pool-size: 10
-      spring.datasource.hikari.minimum-idle: 2
-      spring.datasource.hikari.connection-timeout: 30000
-      spring.datasource.hikari.idle-timeout: 600000
-      spring.datasource.hikari.max-lifetime: 1800000
-      spring.datasource.hikari.pool-name: AlmacenesHikariPool
-  · No modificar el pool en el perfil de desarrollo.
+  · Archivo: src/app/modules/inventory/inventory.routes.ts
+  · Agregar canActivate: [authGuard] y data: { roles: [...] } a cada ruta:
+    - /inventory/products   → todos los roles (ADMIN, MANAGER, WAREHOUSEMAN, SALES)
+    - /inventory/categories → todos los roles
+    - /inventory/low-stock  → todos los roles
+  · NOTA: el guard solo verifica que el usuario tiene el rol para VER la pantalla.
+    La escritura (crear/editar/desactivar) ya está controlada dentro de los
+    componentes con canWrite(). El guard es la segunda línea de defensa para el acceso.
 
 Archivos afectados:
-  · application-prod.yaml (solo configuración, sin código Java)
+  · inventory.routes.ts (agregar canActivate+data a 3 rutas)
 
 Daño colateral posible:
-  · maximum-pool-size: 10 con el plan de servidor (4 GB RAM) es conservador.
-    Si hay picos de concurrencia > 10 conexiones simultáneas, las peticiones
-    esperarán el connection-timeout (30s) antes de retornar error.
-  · Si el servidor PostgreSQL tiene max_connections < 10, el pool fallará.
+  · Si data.roles incluye un rol incorrecto (typo: 'ROLE_WAREHUSE' en vez de
+    'ROLE_WAREHOUSEMAN'), ese rol quedará bloqueado de acceder a inventario.
+  · Si authGuard tiene un bug donde verifica estrictamente y un rol válido no
+    coincide por case sensitivity, el módulo queda inaccesible.
 
 Cómo evitarlo:
-  · Verificar max_connections del PostgreSQL: SELECT current_setting('max_connections').
-  · Comenzar con pool-size: 5 y aumentar si los reportes muestran contención.
-  · El connection-timeout de 30s es estándar — no reducirlo.
+  · Copiar los nombres de roles EXACTAMENTE como están en los demás archivos
+    de rutas (app.routes.ts): 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'.
+  · Probar con los 4 roles en browser INMEDIATAMENTE después del cambio.
 
 Checkpoint/rollback:
-  · Eliminar las líneas de hikari de application-prod.yaml.
-  · El pool vuelve a los defaults de HikariCP (pool-size: 10 por defecto).
+  · git checkout HEAD -- src/app/modules/inventory/inventory.routes.ts
 
 Criterios de éxito:
-  · Backend arranca con SPRING_PROFILES_ACTIVE=prod y logs muestran
-    "AlmacenesHikariPool - Start completed".
-  · No hay errores de connection timeout en condiciones normales.
+  · Los 4 roles acceden a /inventory/products, /categories, /low-stock sin redirección.
+  · Un usuario no autenticado que navega directamente a /inventory/products
+    es redirigido al login.
 
 Tests a ejecutar:
-  · mvn test → 405 tests, 0 fallos (configuración no afecta tests).
-  · Arrancar con perfil prod y verificar en logs el nombre del pool.
-  · Ejecutar 5-10 requests concurrentes al API y verificar ausencia de errores.
+  · ng test → 445 specs, 0 fallos.
+  · Browser test SEC obligatorio con los 4 roles:
+    - Navegar directamente a /inventory/products sin autenticación → redirige a /login.
+    - Login con cada rol → navegar a /inventory/products → accesible.
 
 ──────────────────────────────────────────────────────────────────────────────
-[12] BACK-I8 — Spring Boot Actuator (/actuator/health)  Estado: ✅ RESUELTA
-──────────────────────────────────────────────────────────────────────────────
-  Resuelta junto con BACK-B3: management.endpoints en application-prod.yaml.
-  Verificar que SecurityConfig permite /actuator/health sin autenticación.
-  Si no: agregar .requestMatchers("/actuator/health").permitAll() en SecurityConfig.
-
-──────────────────────────────────────────────────────────────────────────────
-[13] BACK-I9 — logback-spring.xml con rotación de logs  Estado: ⏳ PENDIENTE
+[25] FRONT-I1 — takeUntilDestroyed en Reports           Estado: ⏳ PENDIENTE
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
-  · Crear src/main/resources/logback-spring.xml con:
-    - Appender CONSOLE: solo para perfil dev (patrón colorizado).
-    - Appender FILE: solo para perfil prod (logs en /var/log/almacenes/app.log).
-    - Appender FILE-ROLLING: rotación diaria, máximo 30 días, máximo 500MB total.
-    - Root logger: WARN en prod, INFO en dev.
-    - Logger com.codigo2enter: INFO en prod, DEBUG en dev.
+  · Componentes afectados (3 con subscribe sin cleanup):
+    - analytics-dashboard.component.ts (3 subscribe)
+    - executive-dashboard.component.ts (1 subscribe)
+    - pending-report.component.ts (1 subscribe)
+  · Para cada componente: agregar en el constructor/clase:
+      private destroyRef = inject(DestroyRef);
+    y agregar en cada subscribe del pipe:
+      .pipe(takeUntilDestroyed(this.destroyRef))
+  · operational-report.component.ts ya tiene takeUntilDestroyed — no tocar.
 
 Archivos afectados:
-  · Nuevo: src/main/resources/logback-spring.xml
+  · analytics-dashboard.component.ts
+  · executive-dashboard.component.ts
+  · pending-report.component.ts
 
 Daño colateral posible:
-  · Si el directorio /var/log/almacenes/ no existe en el contenedor Docker,
-    el appender FILE falla silenciosamente o lanza error al arrancar.
-  · El RollingFileAppender puede consumir disco si los logs son muy verbosos
-    y el volumen Docker no está limitado.
+  · Si se agrega takeUntilDestroyed en un inject fuera del constructor (ej. en
+    un método ngOnInit), Angular lanza error: "inject() must be called from an
+    injection context". Solución: declarar el destroyRef como campo de clase.
+  · Si se usa Subscription.add() en lugar de takeUntilDestroyed, el cleanup no
+    ocurre — verificar que se usa el operador RxJS, no el método de suscripción.
 
 Cómo evitarlo:
-  · El Dockerfile del backend debe crear el directorio:
-      RUN mkdir -p /var/log/almacenes && chown almacenes:almacenes /var/log/almacenes
-  · En docker-compose.yml: montar /var/log/almacenes como volumen nombrado.
-  · Limitar el nivel de log a WARN o INFO (no DEBUG) en prod.
+  · Seguir exactamente el patrón de operational-report.component.ts (ya funciona).
+  · private destroyRef = inject(DestroyRef) como campo de clase, no en constructor.
 
 Checkpoint/rollback:
-  · Eliminar logback-spring.xml y Spring Boot vuelve a su configuración de log
-    por defecto (console, INFO).
+  · Si un componente deja de funcionar: git checkout HEAD -- <componente>.
 
 Criterios de éxito:
-  · Backend arranca con perfil prod y los logs de aplicación van a archivo.
-  · El archivo de log existe y se puede leer: tail -f /var/log/almacenes/app.log.
-  · No hay logs con nivel DEBUG visibles en producción.
-  · mvn test → 405 tests, 0 fallos.
+  · ng test → 445+ specs, 0 fallos.
+  · Navegar a Reports → Analytics, luego navegar a otra pantalla → no hay mensajes
+    de suscripción activa en consola (memory leak eliminado).
 
 Tests a ejecutar:
-  · mvn test → 405 tests, 0 fallos.
-  · Arrancar con perfil prod dentro del contenedor.
-  · docker compose exec backend cat /var/log/almacenes/app.log
-  · Hacer varias operaciones (login, crear producto) y verificar que aparecen en log.
+  · ng test --include=src/app/modules/reports/**/*.spec.ts → 0 fallos.
+  · ng test → suite completa, 0 fallos.
+  · Browser: abrir Reports → Dashboard Ejecutivo → navegar a Inventario → no
+    hay errores en consola del browser (F12 → Console).
 
 ──────────────────────────────────────────────────────────────────────────────
-[14] BACK-I10 — Logging de operaciones críticas         Estado: ⏳ PENDIENTE
+[26] FRONT-I3 — Página 404 personalizada                Estado: ⏳ PENDIENTE
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
-  · Agregar log.info("...") en los métodos críticos de negocio en los servicios:
-    - UserServiceImpl.login(): log quién inició sesión y desde qué IP.
-    - ProductServiceImpl.registerMovement(): log tipo de movimiento, cantidad,
-      producto, usuario que lo realizó.
-    - PurchaseOrderServiceImpl.approveOrder() / receiveOrder() / cancelOrder():
-      log el cambio de estado con quién lo aprobó.
-    - SaleOrderServiceImpl.approveOrder() / deliverOrder() / cancelOrder():
-      log el cambio de estado.
-  · Usar SLF4J (@Slf4j de Lombok si ya está disponible, o LoggerFactory).
-  · No loggear datos sensibles: contraseñas, tokens JWT, números de tarjeta.
+  · Crear src/app/modules/not-found/not-found.component.ts (mensaje 404,
+    botón "Volver al inicio", paleta de colores del sistema).
+  · Agregar en app.routes.ts como último elemento:
+      { path: '**', component: NotFoundComponent }
+  · El wildcard route debe ser el ÚLTIMO en app.routes.ts.
 
 Archivos afectados:
-  · UserServiceImpl.java, ProductServiceImpl.java, PurchaseOrderServiceImpl.java,
-    SaleOrderServiceImpl.java (4 archivos, adición de log statements)
+  · Nuevo: src/app/modules/not-found/ (componente + template + scss)
+  · app.routes.ts (1 línea al final)
 
 Daño colateral posible:
-  · Si el logger introduce null pointer (ej. user.getUsername() cuando user es null),
-    puede lanzar NullPointerException — pero los métodos ya validan que la entidad
-    existe antes de llegar al punto del log.
-  · Logging excesivo puede afectar el rendimiento bajo carga alta.
+  · Si la ruta wildcard '**' se agrega ANTES de otras rutas, captura todo el
+    tráfico y ninguna ruta funciona → app completamente rota.
+  · Si app.routes.ts ya tiene una ruta '**' (poco probable), duplicarla causa
+    error de compilación.
 
 Cómo evitarlo:
-  · Loggear DESPUÉS de la operación exitosa (no antes).
-  · Usar lazy evaluation: log.info("Movimiento: {} {} uds de {}", type, qty, sku).
-  · Nivel INFO para operaciones exitosas, WARN para intentos fallidos.
+  · Verificar que '**' es el ÚLTIMO elemento del array de rutas en app.routes.ts.
+  · ng serve y navegar a /ruta-inexistente → debe mostrar el 404 personalizado.
+  · Navegar a /inventory/products → debe seguir funcionando.
 
 Checkpoint/rollback:
-  · Eliminar los log statements no cambia la lógica de negocio.
-  · Los tests no deben validar contenido de logs (son testes de comportamiento, no de output).
+  · Eliminar el componente y la línea en app.routes.ts.
 
 Criterios de éxito:
-  · Hacer login → verificar en /var/log/almacenes/app.log una línea con el usuario.
-  · Registrar un movimiento de stock → verificar línea en log.
-  · Aprobar una OC → verificar línea en log.
-  · mvn test → todos los tests, 0 fallos.
+  · Navegar a /cualquier-ruta-inexistente → muestra página 404 con botón de inicio.
+  · Todas las rutas existentes siguen funcionando.
+  · ng test → 445+ specs, 0 fallos.
 
 Tests a ejecutar:
-  · mvn test → todos los tests, 0 fallos (los logs no deben afectar lógica).
-  · Test manual en browser: ejecutar operación crítica y verificar en log.
+  · ng test --include=src/app/modules/not-found/*.spec.ts → 0 fallos.
+  · ng test → suite completa, 0 fallos.
+  · Browser: /ruta-inexistente → 404. /inventory/products → lista de productos.
 
 ──────────────────────────────────────────────────────────────────────────────
-[15] BACK-M1 — FetchType.LAZY en User.roles             Estado: ⏳ PENDIENTE
+[27] FRONT-I2 — GlobalErrorHandler de Angular           Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Crear src/app/core/error-handler/global-error-handler.ts que implemente
+    ErrorHandler de @angular/core.
+  · El handler captura errores no atrapados en la app y los loggea/reporta.
+  · Para v1.0 sin Sentry: loggear en console.error con contexto y mostrar
+    un snackbar genérico "Error inesperado. Por favor recarga la página."
+  · Registrar en app.config.ts: { provide: ErrorHandler, useClass: GlobalErrorHandler }
+
+Archivos afectados:
+  · Nuevo: src/app/core/error-handler/global-error-handler.ts
+  · src/app/app.config.ts (registrar el provider)
+
+Daño colateral posible:
+  · Si el GlobalErrorHandler lanza un error en su propio handleError(), se crea
+    un loop infinito → la app se congela.
+  · Si el handler rethrows el error, el ErrorHandler de Angular puede llamarlo
+    de nuevo en loop.
+
+Cómo evitarlo:
+  · Envolver toda la lógica del handler en try/catch.
+  · NO relanzar el error (no throw en handleError).
+  · En Vitest: mockear MatSnackBar para que el test no necesite el módulo de Material.
+
+Checkpoint/rollback:
+  · Eliminar global-error-handler.ts y revertir app.config.ts.
+  · Angular vuelve a usar el ErrorHandler por defecto (solo console.error).
+
+Criterios de éxito:
+  · Un error no atrapado en un componente (ej. TypeError) genera un snackbar visible.
+  · No hay loop infinito de errores.
+  · ng test → 445+ specs, 0 fallos.
+
+Tests a ejecutar:
+  · ng test --include=src/app/core/error-handler/*.spec.ts → 0 fallos.
+  · ng test → suite completa, 0 fallos.
+  · Browser: provocar un error manual en console y verificar snackbar.
+
+──────────────────────────────────────────────────────────────────────────────
+[28] FRONT-I4 — Página de acceso denegado (403)         Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Crear src/app/modules/access-denied/access-denied.component.ts (mensaje 403,
+    botón "Volver", icono de candado con paleta del sistema).
+  · Registrar en app.routes.ts: { path: 'access-denied', component: AccessDeniedComponent }
+  · Actualizar error.interceptor.ts: cuando detecta 403, redirigir a /access-denied
+    en lugar de mostrar solo un snackbar.
+  · Actualizar authGuard: cuando el rol no tiene acceso, redirigir a /access-denied.
+
+Archivos afectados:
+  · Nuevo: src/app/modules/access-denied/ (componente)
+  · app.routes.ts (1 línea)
+  · error.interceptor.ts (cambio de snackbar a router.navigate)
+  · auth.guard.ts (cambio de redirección)
+
+Daño colateral posible:
+  · Si error.interceptor.ts redirige a /access-denied para TODOS los 403, incluidos
+    los 403 de endpoints de datos con catchError (ej. forkJoin de Reports que ya
+    usa catchError(() => of(null))), puede interrumpir el flujo correcto.
+  · La redirección a /access-denied en error.interceptor DEBE ser solo para
+    403 en navegación, no para 403 en llamadas de datos que ya tienen manejo.
+
+Cómo evitarlo:
+  · En error.interceptor.ts: diferenciar 403 de navegación principal vs 403 de
+    llamadas de datos con catchError. Alternativa: solo redirigir desde authGuard
+    (no desde el interceptor) para 403.
+  · Probar con los 4 roles que el acceso directo por URL a rutas no autorizadas
+    muestra /access-denied y no un snackbar.
+
+Checkpoint/rollback:
+  · Eliminar el componente y revertir error.interceptor.ts y auth.guard.ts.
+
+Criterios de éxito:
+  · SALES navega directamente a /purchases → muestra página de acceso denegado.
+  · Los forkJoin de Reports con catchError siguen funcionando (no redirigen).
+  · ng test → suite completa, 0 fallos.
+
+Tests a ejecutar:
+  · ng test --include=src/app/core/auth/*.spec.ts → 0 fallos.
+  · ng test → suite completa, 0 fallos.
+  · Browser con rol SALES: navegar a /purchases → debe mostrar acceso-denegado.
+  · Browser con rol ADMIN: navegar a /reports/executive → debe cargar normalmente.
+
+──────────────────────────────────────────────────────────────────────────────
+[29] FRONT-I7 — Guards explícitos en orders/:id         Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Estado actual verificado:
+  · purchases.routes.ts: { path: 'orders/:id', component: PurchaseOrderDetailPageComponent }
+    SIN canActivate ni data.roles.
+  · sales.routes.ts: { path: 'orders/:id', component: SaleOrderDetailPageComponent }
+    SIN canActivate ni data.roles.
+  · orders/new SÍ tiene canActivate y data.roles en ambos módulos.
+
+Cambios necesarios:
+  · Agregar en purchases.routes.ts:
+      { path: 'orders/:id', component: ..., canActivate: [authGuard],
+        data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN'] } }
+  · Agregar en sales.routes.ts:
+      { path: 'orders/:id', component: ..., canActivate: [authGuard],
+        data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'] } }
+
+Archivos afectados:
+  · purchases.routes.ts, sales.routes.ts
+
+Daño colateral posible:
+  · Si el rol en data.roles no coincide exactamente con el JWT del usuario,
+    el usuario legítimo no puede acceder a ver el detalle de su propia orden.
+  · WAREHOUSEMAN necesita acceder a purchases/orders/:id para la recepción
+    de mercancía — incluirlo en la lista de roles.
+
+Cómo evitarlo:
+  · Verificar con WAREHOUSEMAN en browser que puede navegar a una OC existente.
+  · Verificar que SALES puede ver su propia OV: sales/orders/:id.
+
+Checkpoint/rollback:
+  · git checkout HEAD -- purchases.routes.ts sales.routes.ts
+
+Criterios de éxito:
+  · Los 4 roles autorizados acceden a orders/:id correctamente.
+  · Un usuario no autenticado que navega directamente a /purchases/orders/1
+    es redirigido al login (no a una página en blanco o error 401 en consola).
+  · SALES no puede acceder a /purchases/orders/:id (debe redirigir a access-denied).
+
+Tests a ejecutar:
+  · ng test → suite completa, 0 fallos.
+  · Browser SEC test: navegar sin autenticar a /purchases/orders/1 → login.
+  · Browser RBAC test: SALES → /purchases/orders/1 → acceso denegado.
+  · Browser happy path: WAREHOUSEMAN → /purchases/orders/1 → ver detalle de OC.
+
+
+================================================================================
+NIVEL 4 — ALTOS   Brechas 30-35
+(pueden afectar funcionalidad existente de forma amplia)
+================================================================================
+──────────────────────────────────────────────────────────────────────────────
+[30] BACK-B2 — Dockerfile del backend                    Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Crear backend/Dockerfile (multi-stage: maven:3.9-eclipse-temurin-17 + jre-alpine).
+  · El JAR se genera en /app/target/almacenes-*.jar.
+  · Usuario no-root: adduser almacenes, USER almacenes.
+  · ENTRYPOINT: java -Xms512m -Xmx1g -jar app.jar.
+  · Verificar que application-prod.yaml activa el perfil prod (BACK-B3 previo).
+
+Archivos afectados:
+  · Nuevo: backend/Dockerfile
+
+Daño colateral posible:
+  · El build de Maven dentro del contenedor puede fallar si pom.xml tiene
+    dependencias que requieren autenticación (repositorios privados).
+  · Diferencias de JVM entre desarrollo (JDK 17 de IntelliJ) y alpine
+    (eclipse-temurin-17-jre-alpine) pueden causar problemas de classpath.
+  · El tamaño de imagen puede ser grande si no se usa .dockerignore.
+
+Cómo evitarlo:
+  · Crear backend/.dockerignore con: target/, *.iml, .idea/, .git/
+  · Verificar que pom.xml no usa repositorios privados que requieran credenciales.
+  · Probar el build con: docker build -t almacenes-backend-test ./backend/
+
+Checkpoint/rollback:
+  · Si el build falla: corregir el Dockerfile sin afectar código Java.
+  · Rollback: eliminar el Dockerfile (el código no cambia).
+  · Si el contenedor arranca pero la app falla: revisar logs con
+    docker logs <container_id> antes de continuar.
+
+Criterios de éxito:
+  · docker build -t almacenes-backend ./backend/ → exit code 0.
+  · docker run -e SPRING_PROFILES_ACTIVE=prod ... almacenes-backend → arranca.
+  · /actuator/health → {"status":"UP"} desde dentro del contenedor.
+
+Tests a ejecutar:
+  · docker build -t test-backend ./backend/
+  · docker run --rm -e SPRING_PROFILES_ACTIVE=dev -p 8080:8080 test-backend &
+  · curl http://localhost:8080/actuator/health
+  · mvn test → sigue en 405 tests, 0 fallos (el Dockerfile no toca código Java).
+
+──────────────────────────────────────────────────────────────────────────────
+[31] FRONT-I6 — Dockerfile + nginx.conf del frontend    Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Crear frontend/Dockerfile (multi-stage: node:20-alpine → nginx:alpine).
+  · Crear frontend/nginx.conf (ya documentado en §9 del plan).
+  · Crear frontend/.dockerignore: node_modules/, dist/, .git/
+  · Verificar que el output de ng build está en dist/almacenes/browser/ y
+    ajustar el COPY del Dockerfile si el path difiere.
+
+Archivos afectados:
+  · Nuevos: frontend/Dockerfile, frontend/nginx.conf, frontend/.dockerignore
+
+Daño colateral posible:
+  · Si el output path de ng build no es /dist/almacenes/browser, nginx sirve
+    una carpeta vacía → la app no carga (404 en todos los assets).
+  · Si nginx.conf no incluye try_files, las rutas Angular devuelven 404 en F5.
+  · La compilación de Angular dentro del contenedor puede fallar si package.json
+    tiene dependencias con scripts post-install que requieren permisos de root.
+
+Cómo evitarlo:
+  · Verificar el output path: ng build --configuration=production y revisar dist/.
+  · Probar el Dockerfile localmente antes del primer despliegue:
+      docker build -t test-frontend ./frontend/
+      docker run -p 8080:80 test-frontend
+      curl http://localhost:8080/ → debe retornar el HTML de Angular.
+      curl http://localhost:8080/inventory/products → debe retornar el mismo HTML.
+
+Checkpoint/rollback:
+  · Eliminar Dockerfile, nginx.conf y .dockerignore del directorio frontend.
+  · El despliegue manual (ng build + copiar dist) sigue siendo posible.
+
+Criterios de éxito:
+  · docker build -t almacenes-frontend ./frontend/ → exit code 0.
+  · docker run -p 8080:80 almacenes-frontend → nginx arranca.
+  · curl http://localhost:8080/ → HTML con <app-root>.
+  · curl http://localhost:8080/login → mismo HTML (SPA routing).
+  · ng test → 445 specs, 0 fallos.
+
+Tests a ejecutar:
+  · docker build && docker run y verificar las 3 URLs arriba.
+  · ng test → 445 specs, 0 fallos (el Dockerfile no toca código Angular).
+
+──────────────────────────────────────────────────────────────────────────────
+[32] OPS-B1/B2 — Backup diario y recuperación          Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · El script de backup ya está documentado en §10 del plan.
+  · Crear /opt/almacenes/scripts/backup.sh en el servidor de producción.
+  · Configurar /etc/cron.d/almacenes-backup (backup diario a las 2 AM).
+  · Configurar almacenamiento remoto (S3 o SFTP) para copia offsite.
+  · Documentar el procedimiento de restauración en docs/global/.
+
+Archivos afectados:
+  · Nuevo: script de backup en el servidor (no en el repositorio de código)
+  · Nuevo: docs/global/procedimiento_backup_restauracion.md (en el repositorio)
+
+Daño colateral posible:
+  · Si el cron de backup falla silenciosamente y no hay monitoreo, el primer
+    desastre ocurre sin backup disponible.
+  · pg_dump ejecutado con BD bajo carga puede causar bloqueos de tabla.
+
+Cómo evitarlo:
+  · El script debe loggear cada ejecución con timestamp y resultado.
+  · Configurar alertas si el archivo de backup no se actualiza en 25 horas.
+  · pg_dump con --no-synchronized-snapshots para minimizar bloqueos.
+
+Criterios de éxito:
+  · El cron ejecuta el backup exitosamente en el primer ciclo nocturno.
+  · El archivo .sql.gz existe en /var/backups/almacenes/ y pesa > 0 bytes.
+  · La restauración en un contenedor de prueba recrea la BD correctamente.
+
+Tests a ejecutar:
+  · Ejecutar backup.sh manualmente → verificar archivo generado.
+  · Restaurar en contenedor de prueba → levantar backend → login funciona.
+
+──────────────────────────────────────────────────────────────────────────────
+[33] OPS-B3 — Carga inicial de datos                   Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Coordinar con el cliente el inventario inicial: categorías, productos,
+    proveedores, clientes y saldos de stock.
+  · Según volumen: carga manual por UI (< 50 registros) o script API REST.
+  · Documentar el orden de carga: 1-Categorías, 2-Productos, 3-Proveedores,
+    4-Clientes, 5-Saldos iniciales (movimientos IN con motivo "SALDO INICIAL").
+
+Daño colateral posible:
+  · Cargar datos en orden incorrecto (productos antes de categorías) causa
+    error de FK violation → productos sin categoría.
+  · Saldos iniciales incorrectos alteran todo el Kardex futuro.
+
+Criterios de éxito:
+  · Todos los datos maestros del cliente están en el sistema antes del go-live.
+  · Los saldos de stock en el sistema coinciden con el inventario físico del almacén.
+
+──────────────────────────────────────────────────────────────────────────────
+[34] OPS-B5 — Cambiar contraseñas antes del go-live    Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Antes del go-live: cambiar la contraseña del usuario admin desde la UI
+    (PUT /api/v1/auth/me/password) con una contraseña segura (≥ 20 caracteres).
+  · Desactivar los usuarios qa_manager, qa_sales, qa_warehouse en el módulo Usuarios.
+  · Guardar la contraseña de admin de producción en un gestor de contraseñas
+    (Bitwarden, 1Password o similar) — NUNCA en el repositorio.
+  · Los usuarios QA tienen sus contraseñas documentadas en el repositorio
+    (memoria_tecnica_global §5) — esto es aceptable para dev/test pero no prod.
+
+Daño colateral posible:
+  · Si el admin olvida la nueva contraseña y no hay respaldo, la recuperación
+    requiere acceso directo a la BD: UPDATE users SET password=... WHERE username='admin'.
+
+Criterios de éxito:
+  · Login con Admin123! → RECHAZADO (contraseña cambiada).
+  · Login con la nueva contraseña → aceptado.
+  · qa_manager, qa_sales, qa_warehouse → inactivos (no pueden hacer login).
+
+──────────────────────────────────────────────────────────────────────────────
+[35] OPS-B6 — Tests E2E (5-8 specs Cypress/Playwright) Estado: ⏳ PENDIENTE
+──────────────────────────────────────────────────────────────────────────────
+Cambios necesarios:
+  · Instalar Cypress o Playwright en el proyecto frontend.
+  · Implementar mínimo 6 specs (documentados en §7 del plan):
+    1. Login con cada rol → sidebar correcto.
+    2. Crear producto → aparece en lista.
+    3. Crear OC → aprobar → recibir → verificar stock aumentó.
+    4. Crear OV → aprobar → entregar → verificar stock decrementó.
+    5. Acceso por URL no autorizada → redirección.
+    6. Crear OV con stock insuficiente → error visible.
+
+Archivos afectados:
+  · Nuevos: cypress/ o e2e/ (estructura de specs E2E)
+  · package.json (dependencia de Cypress o Playwright)
+
+Daño colateral posible:
+  · Los E2E tests crean datos reales en la BD de prueba — limpiarlos después.
+  · Si los tests E2E se corren contra la BD de producción accidentalmente,
+    crean datos de prueba en prod → prefijos [QA] / TEST_ obligatorios (L33).
+
+Cómo evitarlo:
+  · Configurar una BD de prueba separada para los E2E.
+  · Los datos creados en E2E tienen prefijo TEST_ y se limpian en afterEach.
+
+Criterios de éxito:
+  · 6/6 specs E2E pasan con backend y frontend levantados en entorno de prueba.
+  · Los datos de prueba se limpian correctamente después de cada spec.
+
+Tests a ejecutar:
+  · npx cypress run (o npx playwright test) → 6/6 specs PASS.
+  · ng test → suite unitaria sigue en 0 fallos.
+
+
+================================================================================
+NIVEL 5 — CRÍTICOS   Brechas 36-39
+(mayor riesgo de daño colateral — ejecutar con máxima precaución)
+================================================================================
+──────────────────────────────────────────────────────────────────────────────
+[36] BACK-M1 — FetchType.LAZY en User.roles             Estado: ⏳ PENDIENTE
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Archivo: src/main/java/.../modules/auth/model/User.java
@@ -1384,532 +2153,7 @@ Tests a ejecutar:
     se filtra correctamente → todas las operaciones de escritura/lectura funcionan.
 
 ──────────────────────────────────────────────────────────────────────────────
-[16] BACK-M2 — @Operation/@ApiResponse en endpoints     Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Agregar anotaciones springdoc (@Operation, @ApiResponse, @Parameter) a todos
-    los endpoints de los controllers del sistema (8 controllers).
-  · Esto es documentación — no cambia el comportamiento de la API.
-  · NOTA: Swagger estará deshabilitado en prod (BACK-I2). Estas anotaciones
-    benefician al equipo de desarrollo en el perfil dev.
-
-Archivos afectados:
-  · UserController.java, CategoryController.java, ProductController.java,
-    SupplierController.java, PurchaseOrderController.java, ClientController.java,
-    SaleOrderController.java, ReservationController.java, ReportController.java
-
-Daño colateral posible:
-  · Ninguno — las anotaciones springdoc son procesadas en tiempo de compilación
-    para generar la UI de Swagger; no modifican el runtime de la API.
-  · Riesgo menor: si una anotación mal formada causa error de compilación.
-
-Cómo evitarlo:
-  · Compilar después de cada archivo: mvn compile -q.
-  · Las anotaciones son opcionales — si una causa error, se elimina.
-
-Checkpoint/rollback:
-  · Eliminar las anotaciones si causan problemas de compilación.
-
-Criterios de éxito:
-  · mvn compile → 0 errores.
-  · GET /v3/api-docs (en dev) devuelve JSON con descripción de todos los endpoints.
-  · La Swagger UI (en dev) muestra todos los endpoints con sus descripciones.
-
-Tests a ejecutar:
-  · mvn test → todos los tests, 0 fallos.
-  · En dev: abrir http://localhost:8080/swagger-ui/index.html y verificar documentación.
-
-──────────────────────────────────────────────────────────────────────────────
-[17] BACK-M5 — ExecutiveReport: fecha default año 2000  Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Archivo: ExecutiveReportServiceImpl.java línea 59.
-  · Cambiar: LocalDateTime.of(2000, 1, 1, 0, 0)
-  · Por: LocalDate.now().minusMonths(12).atStartOfDay()  ← último año
-  · O mejor: LocalDate.now().withDayOfYear(1).atStartOfDay() ← inicio del año en curso
-  · Elegir según el criterio de negocio acordado con el cliente.
-  · Mismo patrón si la línea 145 (getSalesProfitability) tiene el mismo defecto.
-
-Archivos afectados:
-  · ExecutiveReportServiceImpl.java (1-2 líneas)
-
-Daño colateral posible:
-  · Si el cliente tiene datos históricos anteriores al año actual que son
-    relevantes para el dashboard ejecutivo, la nueva fecha default los excluirá.
-  · El frontend ya tiene controles de fecha (from/to) para sobrescribir el
-    default — el cambio solo afecta la vista inicial sin filtro.
-
-Cómo evitarlo:
-  · Confirmar con el cliente cuál es el período relevante para la vista inicial.
-  · Alternativa conservadora: usar LocalDate.now().minusMonths(12) (últimos 12 meses).
-  · Si el criterio no está claro: dejar el comentario "TODO: confirmar con cliente"
-    y usar un default razonable (12 meses).
-
-Checkpoint/rollback:
-  · git checkout HEAD -- ExecutiveReportServiceImpl.java
-
-Criterios de éxito:
-  · GET /api/v1/reports/executive (sin from/to) retorna datos del período correcto.
-  · El dashboard ejecutivo en el browser muestra datos del año actual por defecto.
-  · mvn test → todos los tests, 0 fallos.
-
-Tests a ejecutar:
-  · mvn test -Dtest=ExecutiveReportServiceTest (si existe) → 0 fallos.
-  · Suite completa: mvn test → todos los tests, 0 fallos.
-  · Browser (rol ADMIN): Reports → Dashboard Ejecutivo → verificar que los KPIs
-    muestran datos del período correcto sin seleccionar fechas.
-
-================================================================================
-FRONTEND — Brechas 18-32
-================================================================================
-
-──────────────────────────────────────────────────────────────────────────────
-[18] FRONT-B1 — URL real en environment.prod.ts         Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Archivo: src/environments/environment.prod.ts
-  · Cambiar el placeholder por: apiUrl: 'https://almacenes.codigo2enter.com/api/v1'
-  · Verificar que environment.ts (dev) sigue apuntando a 'http://localhost:8080/api/v1'.
-
-Archivos afectados:
-  · src/environments/environment.prod.ts (1 línea)
-
-Daño colateral posible:
-  · Si el dominio aún no resuelve (DNS no configurado), el build de producción
-    compilará correctamente pero el runtime fallará con "net::ERR_NAME_NOT_RESOLVED".
-  · Este es solo un riesgo de runtime en producción, no de build.
-
-Cómo evitarlo:
-  · Este cambio no puede probarse localmente (apunta al dominio de producción).
-  · Verificar en el build de producción que el archivo fue incluido:
-      ng build --configuration=production
-      grep -r "almacenes.codigo2enter.com" dist/
-
-Checkpoint/rollback:
-  · git checkout HEAD -- src/environments/environment.prod.ts
-
-Criterios de éxito:
-  · ng build --configuration=production → 0 errores.
-  · grep "almacenes.codigo2enter.com" dist/almacenes/browser/*.js → al menos 1 match.
-  · En producción: el login funciona y los requests van a https://almacenes.codigo2enter.com.
-
-Tests a ejecutar:
-  · ng test → 445 specs, 0 fallos (los tests usan el mock del servicio, no la URL real).
-  · ng build --configuration=production → 0 errores, 0 warnings críticos.
-  · Verificar bundle: strings del bundle deben incluir el dominio real.
-
-──────────────────────────────────────────────────────────────────────────────
-[19] FRONT-B2 — angular.json optimization/sourceMap     Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Verificar angular.json → configurations → production:
-      "optimization": true       (ya debería existir con ng new --strict)
-      "sourceMap": false         (no exponer mapa de fuentes en prod)
-      "outputHashing": "all"     (cache-busting en assets)
-      "namedChunks": false
-      "aot": true
-  · Si alguno falta o es incorrecto, corregirlo.
-
-Archivos afectados:
-  · angular.json (posiblemente 0-5 líneas)
-
-Daño colateral posible:
-  · sourceMap: false elimina la capacidad de depurar errores en producción.
-    Para usar Sentry (FRONT-M5), los source maps se envían a Sentry pero no
-    se exponen públicamente — en esa etapa se puede re-habilitar con:
-      "sourceMap": { "scripts": true, "hidden": true }
-  · Cambios en "outputHashing" pueden afectar cómo el servidor sirve los assets
-    (nginx ya está configurado con cache de 1 año para assets con hash).
-
-Cómo evitarlo:
-  · Verificar el estado actual antes de modificar: ng build --configuration=production
-    y revisar la salida.
-  · Si ya está correctamente configurado: no cambiar nada.
-
-Checkpoint/rollback:
-  · git checkout HEAD -- angular.json
-
-Criterios de éxito:
-  · ng build --configuration=production → bundle optimizado sin source maps públicos.
-  · Los archivos en dist/ tienen hash en el nombre (main.abc123.js).
-  · El bundle size es razonable (< 2MB para la app de este tamaño).
-
-Tests a ejecutar:
-  · ng test → 445 specs, 0 fallos.
-  · ng build --configuration=production → 0 errores.
-  · Verificar dist/: no existe *.map con contenido si sourceMap: false.
-
-──────────────────────────────────────────────────────────────────────────────
-[20] FRONT-B3 — canActivate+data.roles en Inventory     Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Archivo: src/app/modules/inventory/inventory.routes.ts
-  · Agregar canActivate: [authGuard] y data: { roles: [...] } a cada ruta:
-    - /inventory/products   → todos los roles (ADMIN, MANAGER, WAREHOUSEMAN, SALES)
-    - /inventory/categories → todos los roles
-    - /inventory/low-stock  → todos los roles
-  · NOTA: el guard solo verifica que el usuario tiene el rol para VER la pantalla.
-    La escritura (crear/editar/desactivar) ya está controlada dentro de los
-    componentes con canWrite(). El guard es la segunda línea de defensa para el acceso.
-
-Archivos afectados:
-  · inventory.routes.ts (agregar canActivate+data a 3 rutas)
-
-Daño colateral posible:
-  · Si data.roles incluye un rol incorrecto (typo: 'ROLE_WAREHUSE' en vez de
-    'ROLE_WAREHOUSEMAN'), ese rol quedará bloqueado de acceder a inventario.
-  · Si authGuard tiene un bug donde verifica estrictamente y un rol válido no
-    coincide por case sensitivity, el módulo queda inaccesible.
-
-Cómo evitarlo:
-  · Copiar los nombres de roles EXACTAMENTE como están en los demás archivos
-    de rutas (app.routes.ts): 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'.
-  · Probar con los 4 roles en browser INMEDIATAMENTE después del cambio.
-
-Checkpoint/rollback:
-  · git checkout HEAD -- src/app/modules/inventory/inventory.routes.ts
-
-Criterios de éxito:
-  · Los 4 roles acceden a /inventory/products, /categories, /low-stock sin redirección.
-  · Un usuario no autenticado que navega directamente a /inventory/products
-    es redirigido al login.
-
-Tests a ejecutar:
-  · ng test → 445 specs, 0 fallos.
-  · Browser test SEC obligatorio con los 4 roles:
-    - Navegar directamente a /inventory/products sin autenticación → redirige a /login.
-    - Login con cada rol → navegar a /inventory/products → accesible.
-
-──────────────────────────────────────────────────────────────────────────────
-[21] FRONT-I6 — Dockerfile + nginx.conf del frontend    Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Crear frontend/Dockerfile (multi-stage: node:20-alpine → nginx:alpine).
-  · Crear frontend/nginx.conf (ya documentado en §9 del plan).
-  · Crear frontend/.dockerignore: node_modules/, dist/, .git/
-  · Verificar que el output de ng build está en dist/almacenes/browser/ y
-    ajustar el COPY del Dockerfile si el path difiere.
-
-Archivos afectados:
-  · Nuevos: frontend/Dockerfile, frontend/nginx.conf, frontend/.dockerignore
-
-Daño colateral posible:
-  · Si el output path de ng build no es /dist/almacenes/browser, nginx sirve
-    una carpeta vacía → la app no carga (404 en todos los assets).
-  · Si nginx.conf no incluye try_files, las rutas Angular devuelven 404 en F5.
-  · La compilación de Angular dentro del contenedor puede fallar si package.json
-    tiene dependencias con scripts post-install que requieren permisos de root.
-
-Cómo evitarlo:
-  · Verificar el output path: ng build --configuration=production y revisar dist/.
-  · Probar el Dockerfile localmente antes del primer despliegue:
-      docker build -t test-frontend ./frontend/
-      docker run -p 8080:80 test-frontend
-      curl http://localhost:8080/ → debe retornar el HTML de Angular.
-      curl http://localhost:8080/inventory/products → debe retornar el mismo HTML.
-
-Checkpoint/rollback:
-  · Eliminar Dockerfile, nginx.conf y .dockerignore del directorio frontend.
-  · El despliegue manual (ng build + copiar dist) sigue siendo posible.
-
-Criterios de éxito:
-  · docker build -t almacenes-frontend ./frontend/ → exit code 0.
-  · docker run -p 8080:80 almacenes-frontend → nginx arranca.
-  · curl http://localhost:8080/ → HTML con <app-root>.
-  · curl http://localhost:8080/login → mismo HTML (SPA routing).
-  · ng test → 445 specs, 0 fallos.
-
-Tests a ejecutar:
-  · docker build && docker run y verificar las 3 URLs arriba.
-  · ng test → 445 specs, 0 fallos (el Dockerfile no toca código Angular).
-
-──────────────────────────────────────────────────────────────────────────────
-[22] FRONT-I1 — takeUntilDestroyed en Reports           Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Componentes afectados (3 con subscribe sin cleanup):
-    - analytics-dashboard.component.ts (3 subscribe)
-    - executive-dashboard.component.ts (1 subscribe)
-    - pending-report.component.ts (1 subscribe)
-  · Para cada componente: agregar en el constructor/clase:
-      private destroyRef = inject(DestroyRef);
-    y agregar en cada subscribe del pipe:
-      .pipe(takeUntilDestroyed(this.destroyRef))
-  · operational-report.component.ts ya tiene takeUntilDestroyed — no tocar.
-
-Archivos afectados:
-  · analytics-dashboard.component.ts
-  · executive-dashboard.component.ts
-  · pending-report.component.ts
-
-Daño colateral posible:
-  · Si se agrega takeUntilDestroyed en un inject fuera del constructor (ej. en
-    un método ngOnInit), Angular lanza error: "inject() must be called from an
-    injection context". Solución: declarar el destroyRef como campo de clase.
-  · Si se usa Subscription.add() en lugar de takeUntilDestroyed, el cleanup no
-    ocurre — verificar que se usa el operador RxJS, no el método de suscripción.
-
-Cómo evitarlo:
-  · Seguir exactamente el patrón de operational-report.component.ts (ya funciona).
-  · private destroyRef = inject(DestroyRef) como campo de clase, no en constructor.
-
-Checkpoint/rollback:
-  · Si un componente deja de funcionar: git checkout HEAD -- <componente>.
-
-Criterios de éxito:
-  · ng test → 445+ specs, 0 fallos.
-  · Navegar a Reports → Analytics, luego navegar a otra pantalla → no hay mensajes
-    de suscripción activa en consola (memory leak eliminado).
-
-Tests a ejecutar:
-  · ng test --include=src/app/modules/reports/**/*.spec.ts → 0 fallos.
-  · ng test → suite completa, 0 fallos.
-  · Browser: abrir Reports → Dashboard Ejecutivo → navegar a Inventario → no
-    hay errores en consola del browser (F12 → Console).
-
-──────────────────────────────────────────────────────────────────────────────
-[23] FRONT-I2 — GlobalErrorHandler de Angular           Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Crear src/app/core/error-handler/global-error-handler.ts que implemente
-    ErrorHandler de @angular/core.
-  · El handler captura errores no atrapados en la app y los loggea/reporta.
-  · Para v1.0 sin Sentry: loggear en console.error con contexto y mostrar
-    un snackbar genérico "Error inesperado. Por favor recarga la página."
-  · Registrar en app.config.ts: { provide: ErrorHandler, useClass: GlobalErrorHandler }
-
-Archivos afectados:
-  · Nuevo: src/app/core/error-handler/global-error-handler.ts
-  · src/app/app.config.ts (registrar el provider)
-
-Daño colateral posible:
-  · Si el GlobalErrorHandler lanza un error en su propio handleError(), se crea
-    un loop infinito → la app se congela.
-  · Si el handler rethrows el error, el ErrorHandler de Angular puede llamarlo
-    de nuevo en loop.
-
-Cómo evitarlo:
-  · Envolver toda la lógica del handler en try/catch.
-  · NO relanzar el error (no throw en handleError).
-  · En Vitest: mockear MatSnackBar para que el test no necesite el módulo de Material.
-
-Checkpoint/rollback:
-  · Eliminar global-error-handler.ts y revertir app.config.ts.
-  · Angular vuelve a usar el ErrorHandler por defecto (solo console.error).
-
-Criterios de éxito:
-  · Un error no atrapado en un componente (ej. TypeError) genera un snackbar visible.
-  · No hay loop infinito de errores.
-  · ng test → 445+ specs, 0 fallos.
-
-Tests a ejecutar:
-  · ng test --include=src/app/core/error-handler/*.spec.ts → 0 fallos.
-  · ng test → suite completa, 0 fallos.
-  · Browser: provocar un error manual en console y verificar snackbar.
-
-──────────────────────────────────────────────────────────────────────────────
-[24] FRONT-I3 — Página 404 personalizada                Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Crear src/app/modules/not-found/not-found.component.ts (mensaje 404,
-    botón "Volver al inicio", paleta de colores del sistema).
-  · Agregar en app.routes.ts como último elemento:
-      { path: '**', component: NotFoundComponent }
-  · El wildcard route debe ser el ÚLTIMO en app.routes.ts.
-
-Archivos afectados:
-  · Nuevo: src/app/modules/not-found/ (componente + template + scss)
-  · app.routes.ts (1 línea al final)
-
-Daño colateral posible:
-  · Si la ruta wildcard '**' se agrega ANTES de otras rutas, captura todo el
-    tráfico y ninguna ruta funciona → app completamente rota.
-  · Si app.routes.ts ya tiene una ruta '**' (poco probable), duplicarla causa
-    error de compilación.
-
-Cómo evitarlo:
-  · Verificar que '**' es el ÚLTIMO elemento del array de rutas en app.routes.ts.
-  · ng serve y navegar a /ruta-inexistente → debe mostrar el 404 personalizado.
-  · Navegar a /inventory/products → debe seguir funcionando.
-
-Checkpoint/rollback:
-  · Eliminar el componente y la línea en app.routes.ts.
-
-Criterios de éxito:
-  · Navegar a /cualquier-ruta-inexistente → muestra página 404 con botón de inicio.
-  · Todas las rutas existentes siguen funcionando.
-  · ng test → 445+ specs, 0 fallos.
-
-Tests a ejecutar:
-  · ng test --include=src/app/modules/not-found/*.spec.ts → 0 fallos.
-  · ng test → suite completa, 0 fallos.
-  · Browser: /ruta-inexistente → 404. /inventory/products → lista de productos.
-
-──────────────────────────────────────────────────────────────────────────────
-[25] FRONT-I4 — Página de acceso denegado (403)         Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Crear src/app/modules/access-denied/access-denied.component.ts (mensaje 403,
-    botón "Volver", icono de candado con paleta del sistema).
-  · Registrar en app.routes.ts: { path: 'access-denied', component: AccessDeniedComponent }
-  · Actualizar error.interceptor.ts: cuando detecta 403, redirigir a /access-denied
-    en lugar de mostrar solo un snackbar.
-  · Actualizar authGuard: cuando el rol no tiene acceso, redirigir a /access-denied.
-
-Archivos afectados:
-  · Nuevo: src/app/modules/access-denied/ (componente)
-  · app.routes.ts (1 línea)
-  · error.interceptor.ts (cambio de snackbar a router.navigate)
-  · auth.guard.ts (cambio de redirección)
-
-Daño colateral posible:
-  · Si error.interceptor.ts redirige a /access-denied para TODOS los 403, incluidos
-    los 403 de endpoints de datos con catchError (ej. forkJoin de Reports que ya
-    usa catchError(() => of(null))), puede interrumpir el flujo correcto.
-  · La redirección a /access-denied en error.interceptor DEBE ser solo para
-    403 en navegación, no para 403 en llamadas de datos que ya tienen manejo.
-
-Cómo evitarlo:
-  · En error.interceptor.ts: diferenciar 403 de navegación principal vs 403 de
-    llamadas de datos con catchError. Alternativa: solo redirigir desde authGuard
-    (no desde el interceptor) para 403.
-  · Probar con los 4 roles que el acceso directo por URL a rutas no autorizadas
-    muestra /access-denied y no un snackbar.
-
-Checkpoint/rollback:
-  · Eliminar el componente y revertir error.interceptor.ts y auth.guard.ts.
-
-Criterios de éxito:
-  · SALES navega directamente a /purchases → muestra página de acceso denegado.
-  · Los forkJoin de Reports con catchError siguen funcionando (no redirigen).
-  · ng test → suite completa, 0 fallos.
-
-Tests a ejecutar:
-  · ng test --include=src/app/core/auth/*.spec.ts → 0 fallos.
-  · ng test → suite completa, 0 fallos.
-  · Browser con rol SALES: navegar a /purchases → debe mostrar acceso-denegado.
-  · Browser con rol ADMIN: navegar a /reports/executive → debe cargar normalmente.
-
-──────────────────────────────────────────────────────────────────────────────
-[26] FRONT-I5 — CSS .snack-error unificado              Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Estado actual verificado:
-  · global.scss ya define .snackbar-error (línea 76).
-  · Los componentes usan 'snackbar-error' consistentemente.
-  · La brecha puede estar resuelta — verificar si algún componente usa
-    'snack-error' (sin 'bar') que no esté definido en global.scss.
-
-Cambios necesarios:
-  · Auditar todos los panelClass en el codebase:
-      grep -rn "panelClass" src/app/ | grep -v spec
-  · Si hay mezcla de 'snack-error' y 'snackbar-error': unificar a 'snackbar-error'.
-  · Si 'snack-error' aparece en algún componente pero no en global.scss: agregar
-    el alias .snack-error { @extend .snackbar-error; } en global.scss.
-  · Asegurar que también existe .snackbar-success en global.scss.
-
-Archivos afectados:
-  · global.scss (posiblemente 0 cambios si ya está correcto)
-  · Componentes con panelClass inconsistente (si los hay)
-
-Daño colateral posible:
-  · Si se renombra 'snackbar-error' a 'snack-error' sin actualizar todos los
-    componentes que lo usan, los snackbars de error quedan sin estilo.
-
-Cómo evitarlo:
-  · NUNCA renombrar — solo unificar hacia el nombre ya existente.
-  · Después de cualquier cambio: verificar visualmente los snackbars en browser.
-
-Criterios de éxito:
-  · Todos los snackbars de error aparecen con fondo rojo (#C62828).
-  · grep -rn "panelClass" src/app/ muestra un nombre consistente.
-
-Tests a ejecutar:
-  · ng test → suite completa, 0 fallos.
-  · Browser: provocar un error (login con contraseña incorrecta) → snackbar rojo.
-  · Browser: operación exitosa → snackbar verde.
-
-──────────────────────────────────────────────────────────────────────────────
-[27] FRONT-I7 — Guards explícitos en orders/:id         Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Estado actual verificado:
-  · purchases.routes.ts: { path: 'orders/:id', component: PurchaseOrderDetailPageComponent }
-    SIN canActivate ni data.roles.
-  · sales.routes.ts: { path: 'orders/:id', component: SaleOrderDetailPageComponent }
-    SIN canActivate ni data.roles.
-  · orders/new SÍ tiene canActivate y data.roles en ambos módulos.
-
-Cambios necesarios:
-  · Agregar en purchases.routes.ts:
-      { path: 'orders/:id', component: ..., canActivate: [authGuard],
-        data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN'] } }
-  · Agregar en sales.routes.ts:
-      { path: 'orders/:id', component: ..., canActivate: [authGuard],
-        data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'] } }
-
-Archivos afectados:
-  · purchases.routes.ts, sales.routes.ts
-
-Daño colateral posible:
-  · Si el rol en data.roles no coincide exactamente con el JWT del usuario,
-    el usuario legítimo no puede acceder a ver el detalle de su propia orden.
-  · WAREHOUSEMAN necesita acceder a purchases/orders/:id para la recepción
-    de mercancía — incluirlo en la lista de roles.
-
-Cómo evitarlo:
-  · Verificar con WAREHOUSEMAN en browser que puede navegar a una OC existente.
-  · Verificar que SALES puede ver su propia OV: sales/orders/:id.
-
-Checkpoint/rollback:
-  · git checkout HEAD -- purchases.routes.ts sales.routes.ts
-
-Criterios de éxito:
-  · Los 4 roles autorizados acceden a orders/:id correctamente.
-  · Un usuario no autenticado que navega directamente a /purchases/orders/1
-    es redirigido al login (no a una página en blanco o error 401 en consola).
-  · SALES no puede acceder a /purchases/orders/:id (debe redirigir a access-denied).
-
-Tests a ejecutar:
-  · ng test → suite completa, 0 fallos.
-  · Browser SEC test: navegar sin autenticar a /purchases/orders/1 → login.
-  · Browser RBAC test: SALES → /purchases/orders/1 → acceso denegado.
-  · Browser happy path: WAREHOUSEMAN → /purchases/orders/1 → ver detalle de OC.
-
-──────────────────────────────────────────────────────────────────────────────
-[28] FRONT-M1 — withPreloading(PreloadAllModules)       Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Archivo: src/app/app.config.ts
-  · En provideRouter(), agregar withPreloading(PreloadAllModules).
-  · Importar PreloadAllModules desde @angular/router.
-
-Archivos afectados:
-  · app.config.ts (1-2 líneas)
-
-Daño colateral posible:
-  · Precargar todos los módulos puede aumentar el tiempo inicial de carga de la
-    app (todos los chunks se descargan en background tras el primer load).
-  · En conexiones lentas puede generar tráfico extra innecesario.
-
-Cómo evitarlo:
-  · Alternativa: usar PreloadAllModules selectivo con @NgModule({ preload: true }).
-  · Para v1.0 con pocos módulos (7): PreloadAllModules es aceptable.
-  · Verificar que el bundle size y el tiempo de precarga son aceptables.
-
-Checkpoint/rollback:
-  · Eliminar withPreloading de app.config.ts.
-
-Criterios de éxito:
-  · ng build → bundle compila sin errores.
-  · En browser (Network tab): los chunks de módulos se descargan en background
-    tras el primer login.
-  · El tiempo de navegación entre módulos ya cargados es < 100ms.
-
-Tests a ejecutar:
-  · ng test → 445+ specs, 0 fallos.
-  · ng build --configuration=production → 0 errores.
-
-──────────────────────────────────────────────────────────────────────────────
-[29] FRONT-M2 — OnPush en MainLayoutComponent           Estado: ⏳ PENDIENTE
+[37] FRONT-M2 — OnPush en MainLayoutComponent           Estado: ⏳ PENDIENTE
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Archivo: src/app/core/layout/main-layout/main-layout.component.ts
@@ -1950,79 +2194,7 @@ Tests a ejecutar:
     colapsa/expande → chip de usuario visible → logout.
 
 ──────────────────────────────────────────────────────────────────────────────
-[30] FRONT-M3 — trackBy en listas largas                Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Agregar trackBy a los *ngFor de tablas con listas de datos paginados.
-  · Componentes prioritarios (los que cargan más ítems):
-    - products-page.component: *ngFor de rows de la tabla → trackBy: trackById
-    - suppliers-page.component: ídem
-    - clients-page.component: ídem
-    - purchase-orders-page.component: ídem
-    - sale-orders-page.component: ídem
-  · Agregar el método en cada componente:
-      trackById(_: number, item: {id: number}) { return item.id; }
-
-Archivos afectados:
-  · 5-6 componentes de página (templates .html + lógica .ts)
-
-Daño colateral posible:
-  · Si el campo id no existe en algún DTO (ej. se llama 'orderId' en vez de 'id'),
-    el trackBy retorna undefined → Angular re-renderiza toda la lista siempre.
-  · Bajo ninguna circunstancia trackBy puede hacer que la lista muestre datos
-    incorrectos — solo afecta rendimiento de re-renderizado.
-
-Cómo evitarlo:
-  · Verificar el nombre del campo id en cada modelo TypeScript antes de implementar.
-
-Checkpoint/rollback:
-  · Los cambios son aditivos (solo agrega función y atributo trackBy).
-  · Si hay algún problema: eliminar el trackByFn del template.
-
-Criterios de éxito:
-  · Las listas de productos, proveedores, clientes y órdenes se renderizan
-    correctamente después del cambio.
-  · ng test → suite completa, 0 fallos.
-
-Tests a ejecutar:
-  · ng test → suite completa, 0 fallos.
-  · Browser: cargar lista de productos → filtrar → verificar que la lista
-    se actualiza correctamente.
-
-──────────────────────────────────────────────────────────────────────────────
-[31] FRONT-M4 — takeUntilDestroyed en LoginComponent    Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Archivo: src/app/modules/auth/login/login.component.ts
-  · Agregar private destroyRef = inject(DestroyRef) como campo de clase.
-  · En el subscribe de this.authService.login(...), agregar al pipe:
-      .pipe(takeUntilDestroyed(this.destroyRef))
-  · El riesgo real es mínimo (la pantalla de login se destruye al navegar, y el
-    subscribe generalmente se completa antes), pero es buena práctica.
-
-Archivos afectados:
-  · login.component.ts
-
-Daño colateral posible:
-  · Si el usuario navega a otra página MIENTRAS el login está en progreso
-    (improbable en condiciones normales), takeUntilDestroyed cancela el Observable
-    y el JWT no se almacena → el usuario no queda logueado.
-  · Este escenario es tan improbable que el riesgo es aceptable.
-
-Checkpoint/rollback:
-  · git checkout HEAD -- login.component.ts
-
-Criterios de éxito:
-  · Login funciona correctamente (usuario ingresa credenciales → navega al dashboard).
-  · ng test → suite completa, 0 fallos.
-
-Tests a ejecutar:
-  · ng test -t "LoginComponent" → tests específicos del componente.
-  · ng test → suite completa, 0 fallos.
-  · Browser: hacer login con admin/Admin123! → dashboard carga.
-
-──────────────────────────────────────────────────────────────────────────────
-[32] FRONT-M5 — Integración Sentry                      Estado: ⏳ PENDIENTE
+[38] FRONT-M5 — Integración Sentry                      Estado: ⏳ PENDIENTE
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Crear cuenta en Sentry.io (gratuito para proyectos pequeños).
@@ -2070,177 +2242,38 @@ PROCESOS OPERATIVOS — Brechas 33-39
 ================================================================================
 
 ──────────────────────────────────────────────────────────────────────────────
-[33] OPS-B1/B2 — Backup diario y recuperación          Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · El script de backup ya está documentado en §10 del plan.
-  · Crear /opt/almacenes/scripts/backup.sh en el servidor de producción.
-  · Configurar /etc/cron.d/almacenes-backup (backup diario a las 2 AM).
-  · Configurar almacenamiento remoto (S3 o SFTP) para copia offsite.
-  · Documentar el procedimiento de restauración en docs/global/.
-
-Archivos afectados:
-  · Nuevo: script de backup en el servidor (no en el repositorio de código)
-  · Nuevo: docs/global/procedimiento_backup_restauracion.md (en el repositorio)
-
-Daño colateral posible:
-  · Si el cron de backup falla silenciosamente y no hay monitoreo, el primer
-    desastre ocurre sin backup disponible.
-  · pg_dump ejecutado con BD bajo carga puede causar bloqueos de tabla.
-
-Cómo evitarlo:
-  · El script debe loggear cada ejecución con timestamp y resultado.
-  · Configurar alertas si el archivo de backup no se actualiza en 25 horas.
-  · pg_dump con --no-synchronized-snapshots para minimizar bloqueos.
-
-Criterios de éxito:
-  · El cron ejecuta el backup exitosamente en el primer ciclo nocturno.
-  · El archivo .sql.gz existe en /var/backups/almacenes/ y pesa > 0 bytes.
-  · La restauración en un contenedor de prueba recrea la BD correctamente.
-
-Tests a ejecutar:
-  · Ejecutar backup.sh manualmente → verificar archivo generado.
-  · Restaurar en contenedor de prueba → levantar backend → login funciona.
-
-──────────────────────────────────────────────────────────────────────────────
-[34] OPS-B3 — Carga inicial de datos                   Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Coordinar con el cliente el inventario inicial: categorías, productos,
-    proveedores, clientes y saldos de stock.
-  · Según volumen: carga manual por UI (< 50 registros) o script API REST.
-  · Documentar el orden de carga: 1-Categorías, 2-Productos, 3-Proveedores,
-    4-Clientes, 5-Saldos iniciales (movimientos IN con motivo "SALDO INICIAL").
-
-Daño colateral posible:
-  · Cargar datos en orden incorrecto (productos antes de categorías) causa
-    error de FK violation → productos sin categoría.
-  · Saldos iniciales incorrectos alteran todo el Kardex futuro.
-
-Criterios de éxito:
-  · Todos los datos maestros del cliente están en el sistema antes del go-live.
-  · Los saldos de stock en el sistema coinciden con el inventario físico del almacén.
-
-──────────────────────────────────────────────────────────────────────────────
-[35] OPS-B4 — Guía rápida de uso por rol               Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Crear docs/global/guia_rapida_usuario.md con secciones por rol:
-    - ADMIN: gestión de usuarios, acceso a todos los módulos.
-    - MANAGER: inventario, compras, ventas, reportes.
-    - WAREHOUSEMAN: ver inventario, recibir OC, entregar OV.
-    - SALES: crear OV, ver clientes, ver pendientes.
-  · Incluir capturas de pantalla o diagramas de flujo de los procesos más comunes.
-  · Documentar el workaround de devoluciones (movimiento IN/OUT manual con nota).
-
-Daño colateral posible:
-  · Ninguno — solo creación de documentación.
-
-Criterios de éxito:
-  · El documento existe y cubre los flujos principales de los 4 roles.
-  · Un operador nuevo puede ejecutar el flujo completo (crear OC → recibir →
-    crear OV → entregar) siguiendo la guía sin necesitar asistencia.
-
-──────────────────────────────────────────────────────────────────────────────
-[36] OPS-B5 — Cambiar contraseñas antes del go-live    Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Antes del go-live: cambiar la contraseña del usuario admin desde la UI
-    (PUT /api/v1/auth/me/password) con una contraseña segura (≥ 20 caracteres).
-  · Desactivar los usuarios qa_manager, qa_sales, qa_warehouse en el módulo Usuarios.
-  · Guardar la contraseña de admin de producción en un gestor de contraseñas
-    (Bitwarden, 1Password o similar) — NUNCA en el repositorio.
-  · Los usuarios QA tienen sus contraseñas documentadas en el repositorio
-    (memoria_tecnica_global §5) — esto es aceptable para dev/test pero no prod.
-
-Daño colateral posible:
-  · Si el admin olvida la nueva contraseña y no hay respaldo, la recuperación
-    requiere acceso directo a la BD: UPDATE users SET password=... WHERE username='admin'.
-
-Criterios de éxito:
-  · Login con Admin123! → RECHAZADO (contraseña cambiada).
-  · Login con la nueva contraseña → aceptado.
-  · qa_manager, qa_sales, qa_warehouse → inactivos (no pueden hacer login).
-
-──────────────────────────────────────────────────────────────────────────────
-[37] OPS-B6 — Tests E2E (5-8 specs Cypress/Playwright) Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Instalar Cypress o Playwright en el proyecto frontend.
-  · Implementar mínimo 6 specs (documentados en §7 del plan):
-    1. Login con cada rol → sidebar correcto.
-    2. Crear producto → aparece en lista.
-    3. Crear OC → aprobar → recibir → verificar stock aumentó.
-    4. Crear OV → aprobar → entregar → verificar stock decrementó.
-    5. Acceso por URL no autorizada → redirección.
-    6. Crear OV con stock insuficiente → error visible.
-
-Archivos afectados:
-  · Nuevos: cypress/ o e2e/ (estructura de specs E2E)
-  · package.json (dependencia de Cypress o Playwright)
-
-Daño colateral posible:
-  · Los E2E tests crean datos reales en la BD de prueba — limpiarlos después.
-  · Si los tests E2E se corren contra la BD de producción accidentalmente,
-    crean datos de prueba en prod → prefijos [QA] / TEST_ obligatorios (L33).
-
-Cómo evitarlo:
-  · Configurar una BD de prueba separada para los E2E.
-  · Los datos creados en E2E tienen prefijo TEST_ y se limpian en afterEach.
-
-Criterios de éxito:
-  · 6/6 specs E2E pasan con backend y frontend levantados en entorno de prueba.
-  · Los datos de prueba se limpian correctamente después de cada spec.
-
-Tests a ejecutar:
-  · npx cypress run (o npx playwright test) → 6/6 specs PASS.
-  · ng test → suite unitaria sigue en 0 fallos.
-
-──────────────────────────────────────────────────────────────────────────────
-[38] OPS-B7 — Smoke tests post-deploy                  Estado: ✅ RESUELTA
+[39] OPS-B7 — Smoke tests post-deploy                  Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
   Resuelta: scripts/verify.sh (creado en la sesión 2026-06-18) implementa
   los 8 smoke tests post-deploy documentados en §9. No requiere acción adicional.
-
-──────────────────────────────────────────────────────────────────────────────
-[39] OPS-I1 — Actualizar §5 de memoria_tecnica_global  Estado: ⏳ PENDIENTE
-──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Archivo: docs/global/memoria_tecnica_global_proyecto.md (en ambos repos)
-  · En la sección §5 (usuarios del sistema): eliminar la nota obsoleta que dice
-    que /admin/users no existe. El Módulo 6 (Usuarios) fue implementado.
-  · Actualizar la lista de funcionalidades de gestión de usuarios para reflejar
-    el estado actual: CRUD de usuarios, cambio de contraseña, gestión de roles.
-
-Archivos afectados:
-  · docs/global/memoria_tecnica_global_proyecto.md (en frontend y backend repos)
-
-Daño colateral posible:
-  · Ninguno — solo actualización de documentación.
-
-Criterios de éxito:
-  · §5 de la memoria técnica global no contiene la nota obsoleta.
-  · La sección refleja el estado actual: /admin/users funciona con CRUD completo.
 
 ================================================================================
 RESUMEN DE SECUENCIA Y DEPENDENCIAS
 ================================================================================
 
-  Las brechas deben implementarse en el orden numérico del §8, con las
-  siguientes dependencias críticas que NO pueden alterarse:
+  Las brechas se ejecutan en orden numérico (de menor a mayor riesgo),
+  respetando las siguientes dependencias técnicas que NO pueden alterarse:
 
-  BACK-B1 → BACK-B3  (schema primero, luego validate en prod.yaml)
-  BACK-B3 → BACK-I2  (Swagger se deshabilita en prod.yaml)
-  BACK-B3 → BACK-I8  (actuator se habilita en prod.yaml)
-  BACK-I4 → BACK-I5  (handler genérico antes de limpiar RuntimeExceptions)
-  FRONT-I2 → FRONT-M5 (GlobalErrorHandler como base de la integración Sentry)
-  FRONT-I4 → FRONT-I7 (página 403 debe existir antes de redirigir a ella)
-  BACK-B2 + FRONT-I6 → OPS-B1/B2 (contenedores deben existir para backup vía Docker)
+  [15] BACK-B1 → [16] BACK-B3   (schema primero, luego ddl-auto: validate en prod.yaml)
+  [16] BACK-B3 → [17] BACK-B4   (✅ ya resuelta dentro de B3 — sin acción adicional)
+  [16] BACK-B3 → [18] BACK-I2   (✅ ya resuelta dentro de B3 — sin acción adicional)
+  [16] BACK-B3 → [19] BACK-I8   (✅ ya resuelta dentro de B3 — sin acción adicional)
+  [16] BACK-B3 → [20] BACK-I7   (HikariCP se agrega al yaml creado en BACK-B3)
+  [21] BACK-I4 → [22] BACK-I5   (handler genérico antes de limpiar RuntimeExceptions)
+  [27] FRONT-I2 → [38] FRONT-M5 (GlobalErrorHandler como base de la integración Sentry)
+  [28] FRONT-I4 → [29] FRONT-I7 (página 403 debe existir antes de redirigir a ella)
+  [30] BACK-B2 + [31] FRONT-I6 → [32] OPS-B1/B2
+                                  (contenedores Docker necesarios para backup vía pg_dump)
 
-  Brechas que pueden implementarse en paralelo (sin dependencia entre sí):
-  · BACK-I9 y BACK-I10 (logging)
-  · FRONT-M3 y FRONT-M4 (mejoras independientes)
-  · OPS-B3, OPS-B4, OPS-I1 (documentación operativa)
+  Brechas independientes que pueden hacerse en cualquier orden relativo dentro de su nivel:
+  · [1] OPS-B4 y [2] OPS-I1: documentación pura — pueden ejecutarse en paralelo con cualquier brecha
+  · [3]–[6]: triviales backend, sin dependencias entre sí
+  · [7]–[14]: nivel bajo, todos independientes entre sí
+  · [21] BACK-I4 y [23] BACK-I6: pueden invertirse si BACK-I5 no está en progreso
+  · [24] FRONT-B3 y [25] FRONT-I1: independientes entre sí
+  · [26] FRONT-I3 y [27] FRONT-I2: independientes entre sí (ambas crean componentes nuevos)
+  · [33] OPS-B3 y [34] OPS-B5 y [35] OPS-B6: independientes entre sí
+
 
 ================================================================================
 9. PROCEDIMIENTO DE INSTALACIÓN EN PRODUCCIÓN
