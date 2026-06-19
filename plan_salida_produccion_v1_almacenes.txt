@@ -386,18 +386,18 @@ ADVERTENCIA SOBRE DOCUMENTACIÓN GLOBAL
 
 [FRONT-B1] environment.prod.ts tiene URL de API placeholder (dominio ficticio)
   Archivo: src/environments/environment.prod.ts
-  Contenido actual: apiUrl: 'https://api.tudominio.com/api/v1'
+  Contenido actual: apiUrl: 'https://almacenes.codigo2enter.com/api/v1'
   La URL queda compilada en el bundle de Angular. Si se hace ng build sin
   reemplazar esta URL, TODAS las peticiones HTTP fallarán en producción.
   Angular no soporta configuración de URL en runtime sin un patrón específico.
   Acción (opción 1 — simple, arquitectura Docker del §9): con nginx proxeando
   /api/ al contenedor backend, el frontend y la API comparten el mismo dominio.
   La URL puede ser una ruta relativa o la misma URL del frontend:
-    apiUrl: 'https://almacenes.miempresa.com/api/v1'
+    apiUrl: 'https://almacenes.codigo2enter.com/api/v1'
   Ventaja adicional: al ser mismo origen, CORS no aplica (el browser no bloquea).
   Acción (opción 2 — para múltiples entornos): implementar un APP_INITIALIZER
   que cargue la config desde src/assets/config.json en runtime:
-    { "apiUrl": "https://almacenes.miempresa.com/api/v1" }
+    { "apiUrl": "https://almacenes.codigo2enter.com/api/v1" }
   Este archivo no se commitea. El servidor lo sirve con los valores correctos.
 
 [FRONT-B2] angular.json — configuración de producción sin optimización explícita
@@ -752,8 +752,8 @@ PASO 1 — OBTENER CERTIFICADO SSL
       sudo apt-get install -y certbot
 
   1.2 Obtener el certificado SSL:
-      sudo certbot certonly --standalone -d almacenes.miempresa.com
-      # Certificados en: /etc/letsencrypt/live/almacenes.miempresa.com/
+      sudo certbot certonly --standalone -d almacenes.codigo2enter.com
+      # Certificados en: /etc/letsencrypt/live/almacenes.codigo2enter.com/
       #   fullchain.pem  → certificado público
       #   privkey.pem    → clave privada
 
@@ -787,7 +787,7 @@ PASO 3 — CONFIGURAR VARIABLES DE ENTORNO
       JWT_SECRET=clave_hex_de_64_bytes_minimo_generada_con_openssl
 
       # CORS — dominio del frontend (sin barra final)
-      CORS_ALLOWED_ORIGINS=https://almacenes.miempresa.com
+      CORS_ALLOWED_ORIGINS=https://almacenes.codigo2enter.com
 
   Asegurar permisos restrictivos:
       chmod 600 /opt/almacenes/.env
@@ -810,7 +810,7 @@ PASO 4 — DESPLEGAR EL STACK DOCKER
       de construir la imagen. Con nginx en el mismo contenedor proxeando /api/,
       frontend y backend comparten dominio (mismo origen — CORS no aplica):
       # src/environments/environment.prod.ts
-      # apiUrl: 'https://almacenes.miempresa.com/api/v1'
+      # apiUrl: 'https://almacenes.codigo2enter.com/api/v1'
 
   4.3 Construir las imágenes Docker (backend + frontend):
       cd /opt/almacenes
@@ -894,7 +894,7 @@ PASO 7 — PRIMER ARRANQUE Y DATOS INICIALES
       IMPORTANTE: cambiar la contraseña del admin INMEDIATAMENTE después del
       primer arranque.
 
-  7.3 Entrar a https://almacenes.miempresa.com con admin/Admin123! y desde
+  7.3 Entrar a https://almacenes.codigo2enter.com con admin/Admin123! y desde
       el módulo Usuarios cambiar la contraseña del admin por una segura.
 
   7.4 Crear los usuarios de producción desde el módulo Usuarios (ADMIN) con
@@ -954,17 +954,17 @@ ARCHIVOS DOCKER (implementar como parte de BACK-B2 / FRONT-I6)
 
   server {
       listen 80;
-      server_name almacenes.miempresa.com;
+      server_name almacenes.codigo2enter.com;
       return 301 https://$host$request_uri;
   }
 
   server {
       listen 443 ssl http2;
-      server_name almacenes.miempresa.com;
+      server_name almacenes.codigo2enter.com;
 
       # Certificados montados desde el host (volumen :ro en docker-compose.yml)
-      ssl_certificate     /etc/letsencrypt/live/almacenes.miempresa.com/fullchain.pem;
-      ssl_certificate_key /etc/letsencrypt/live/almacenes.miempresa.com/privkey.pem;
+      ssl_certificate     /etc/letsencrypt/live/almacenes.codigo2enter.com/fullchain.pem;
+      ssl_certificate_key /etc/letsencrypt/live/almacenes.codigo2enter.com/privkey.pem;
       ssl_protocols       TLSv1.2 TLSv1.3;
       ssl_ciphers         HIGH:!aNULL:!MD5;
 
@@ -1179,7 +1179,7 @@ SEMANA ANTES DEL GO-LIVE
   [ ] Certificado SSL válido y configurado
   [ ] Firewall configurado (puertos 8080 y 5432 no accesibles desde internet)
   [ ] Dominio DNS apuntando al servidor de producción
-  [ ] environment.prod.ts con la URL real del backend (no tudominio.com)
+  [ ] environment.prod.ts con la URL real: https://almacenes.codigo2enter.com/api/v1
 
 DÍA DEL GO-LIVE
 ----------------
@@ -1189,13 +1189,13 @@ DÍA DEL GO-LIVE
       → Responde: {"status":"UP"}
 
   [ ] SMOKE TEST LOGIN (vía nginx — mismo dominio que el frontend):
-      curl -X POST https://almacenes.miempresa.com/api/v1/auth/login \
+      curl -X POST https://almacenes.codigo2enter.com/api/v1/auth/login \
           -H "Content-Type: application/json" \
           -d '{"username":"admin","password":"CONTRASEÑA_DE_PRODUCCION"}'
       → Responde JSON con campo "token"
 
   [ ] SMOKE TEST FRONTEND:
-      · Abrir https://almacenes.miempresa.com en el navegador
+      · Abrir https://almacenes.codigo2enter.com en el navegador
       · La pantalla de login carga correctamente (sin errores en consola)
       · Login con admin → sidebar muestra todos los módulos
       · Navegar a Inventario → lista de productos carga
@@ -1215,7 +1215,7 @@ DÍA DEL GO-LIVE
   [ ] SMOKE TEST CERTIFICADO SSL:
       · Verificar que https:// carga sin warnings de seguridad
       · Verificar que http:// redirige a https://
-      curl -I http://almacenes.miempresa.com → Location: https://...
+      curl -I http://almacenes.codigo2enter.com → Location: https://...
 
 POST GO-LIVE (primera semana)
 ------------------------------
