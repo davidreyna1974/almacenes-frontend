@@ -8,22 +8,18 @@ export const authGuard: CanActivateFn = (route) => {
 
   const state = authService.getTokenState();
   if (state === 'expired') {
-    router.navigate(['/login'], { queryParams: { reason: 'expired' } });
-    return false;
+    return router.createUrlTree(['/login'], { queryParams: { reason: 'expired' } });
   }
   if (state === 'invalid') {
-    router.navigate(['/login'], { queryParams: { reason: 'invalid' } });
-    return false;
+    return router.createUrlTree(['/login'], { queryParams: { reason: 'invalid' } });
   }
   if (state === 'missing') {
-    router.navigate(['/login']);
-    return false;
+    return router.createUrlTree(['/login']);
   }
 
   const requiredRoles: string[] = route.data?.['roles'] ?? [];
   if (requiredRoles.length > 0 && !requiredRoles.some(r => authService.hasRole(r))) {
-    router.navigate(['/access-denied']);
-    return false;
+    return router.createUrlTree(['/access-denied']);
   }
 
   return true;
