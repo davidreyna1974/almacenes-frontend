@@ -1192,7 +1192,7 @@ Tests a ejecutar:
     se actualiza correctamente.
 
 ──────────────────────────────────────────────────────────────────────────────
-[12] FRONT-M1 — withPreloading(PreloadAllModules)       Estado: ⏳ PENDIENTE
+[12] FRONT-M1 — withPreloading(PreloadAllModules)       Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Archivo: src/app/app.config.ts
@@ -1226,7 +1226,7 @@ Tests a ejecutar:
   · ng build --configuration=production → 0 errores.
 
 ──────────────────────────────────────────────────────────────────────────────
-[13] BACK-I3 — Headers de seguridad HTTP en backend      Estado: ⏳ PENDIENTE
+[13] BACK-I3 — Headers de seguridad HTTP en backend      Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Archivo: src/main/java/.../core/security/SecurityConfig.java
@@ -1278,7 +1278,7 @@ Tests a ejecutar:
   · curl -I http://localhost:8080/api/v1/auth/login (verificar headers presentes).
 
 ──────────────────────────────────────────────────────────────────────────────
-[14] BACK-I10 — Logging de operaciones críticas         Estado: ⏳ PENDIENTE
+[14] BACK-I10 — Logging de operaciones críticas         Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Agregar log.info("...") en los métodos críticos de negocio en los servicios:
@@ -1327,7 +1327,7 @@ NIVEL 3 — MEDIOS   Brechas 15-29
 (requieren atención, daño colateral controlable)
 ================================================================================
 ──────────────────────────────────────────────────────────────────────────────
-[15] BACK-B1 — Script DDL inicial (schema SQL)           Estado: ⏳ PENDIENTE
+[15] BACK-B1 — Script DDL inicial (schema SQL)           Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Levantar el backend en dev con ddl-auto: create y BD vacía.
@@ -1375,7 +1375,7 @@ Tests a ejecutar:
   · curl -s http://localhost:8080/actuator/health | verificar UP.
 
 ──────────────────────────────────────────────────────────────────────────────
-[16] BACK-B3 — application-prod.yaml                     Estado: ⏳ PENDIENTE
+[16] BACK-B3 — application-prod.yaml                     Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Crear src/main/resources/application-prod.yaml con:
@@ -1447,7 +1447,7 @@ Tests a ejecutar:
   Si no: agregar .requestMatchers("/actuator/health").permitAll() en SecurityConfig.
 
 ──────────────────────────────────────────────────────────────────────────────
-[20] BACK-I7 — Configurar HikariCP en application-prod  Estado: ⏳ PENDIENTE
+[20] BACK-I7 — Configurar HikariCP en application-prod  Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · En application-prod.yaml (ya creado en BACK-B3), agregar:
@@ -1488,7 +1488,7 @@ Tests a ejecutar:
   · Ejecutar 5-10 requests concurrentes al API y verificar ausencia de errores.
 
 ──────────────────────────────────────────────────────────────────────────────
-[21] BACK-I4 — Handler DataIntegrityViolationException   Estado: ⏳ PENDIENTE
+[21] BACK-I4 — Handler DataIntegrityViolationException   Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Archivo: src/main/java/.../core/exception/GlobalExceptionHandler.java
@@ -1538,7 +1538,7 @@ Tests a ejecutar:
   · curl POST /api/v1/auth/users con username duplicado → verificar 409.
 
 ──────────────────────────────────────────────────────────────────────────────
-[22] BACK-I5 — ~17 RuntimeException sin tipar            Estado: ⏳ PENDIENTE
+[22] BACK-I5 — ~17 RuntimeException sin tipar            Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Reemplazar todas las ocurrencias de new RuntimeException() encontradas
@@ -1646,7 +1646,7 @@ Tests a ejecutar:
   · Repetir 5 veces → verificar que el 6to intento devuelve 429 (no 500).
 
 ──────────────────────────────────────────────────────────────────────────────
-[24] FRONT-B3 — canActivate+data.roles en Inventory     Estado: ⏳ PENDIENTE
+[24] FRONT-B3 — canActivate+data.roles en Inventory     Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Archivo: src/app/modules/inventory/inventory.routes.ts
@@ -1687,7 +1687,7 @@ Tests a ejecutar:
     - Login con cada rol → navegar a /inventory/products → accesible.
 
 ──────────────────────────────────────────────────────────────────────────────
-[25] FRONT-I1 — takeUntilDestroyed en Reports           Estado: ⏳ PENDIENTE
+[25] FRONT-I1 — takeUntilDestroyed en Reports           Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Componentes afectados (3 con subscribe sin cleanup):
@@ -1731,7 +1731,7 @@ Tests a ejecutar:
     hay errores en consola del browser (F12 → Console).
 
 ──────────────────────────────────────────────────────────────────────────────
-[26] FRONT-I3 — Página 404 personalizada                Estado: ⏳ PENDIENTE
+[26] FRONT-I3 — Página 404 personalizada                Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Crear src/app/modules/not-found/not-found.component.ts (mensaje 404,
@@ -1769,7 +1769,7 @@ Tests a ejecutar:
   · Browser: /ruta-inexistente → 404. /inventory/products → lista de productos.
 
 ──────────────────────────────────────────────────────────────────────────────
-[27] FRONT-I2 — GlobalErrorHandler de Angular           Estado: ⏳ PENDIENTE
+[27] FRONT-I2 — GlobalErrorHandler de Angular           Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Crear src/app/core/error-handler/global-error-handler.ts que implemente
@@ -1809,7 +1809,7 @@ Tests a ejecutar:
   · Browser: provocar un error manual en console y verificar snackbar.
 
 ──────────────────────────────────────────────────────────────────────────────
-[28] FRONT-I4 — Página de acceso denegado (403)         Estado: ⏳ PENDIENTE
+[28] FRONT-I4 — Página de acceso denegado (403)         Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Crear src/app/modules/access-denied/access-denied.component.ts (mensaje 403,
@@ -1854,7 +1854,7 @@ Tests a ejecutar:
   · Browser con rol ADMIN: navegar a /reports/executive → debe cargar normalmente.
 
 ──────────────────────────────────────────────────────────────────────────────
-[29] FRONT-I7 — Guards explícitos en orders/:id         Estado: ⏳ PENDIENTE
+[29] FRONT-I7 — Guards explícitos en orders/:id         Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Estado actual verificado:
   · purchases.routes.ts: { path: 'orders/:id', component: PurchaseOrderDetailPageComponent }
@@ -1905,7 +1905,7 @@ NIVEL 4 — ALTOS   Brechas 30-35
 (pueden afectar funcionalidad existente de forma amplia)
 ================================================================================
 ──────────────────────────────────────────────────────────────────────────────
-[30] BACK-B2 — Dockerfile del backend                    Estado: ⏳ PENDIENTE
+[30] BACK-B2 — Dockerfile del backend                    Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Crear backend/Dockerfile (multi-stage: maven:3.9-eclipse-temurin-17 + jre-alpine).
@@ -1947,7 +1947,7 @@ Tests a ejecutar:
   · mvn test → sigue en 405 tests, 0 fallos (el Dockerfile no toca código Java).
 
 ──────────────────────────────────────────────────────────────────────────────
-[31] FRONT-I6 — Dockerfile + nginx.conf del frontend    Estado: ⏳ PENDIENTE
+[31] FRONT-I6 — Dockerfile + nginx.conf del frontend    Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Crear frontend/Dockerfile (multi-stage: node:20-alpine → nginx:alpine).
@@ -2102,7 +2102,7 @@ NIVEL 5 — CRÍTICOS   Brechas 36-39
 (mayor riesgo de daño colateral — ejecutar con máxima precaución)
 ================================================================================
 ──────────────────────────────────────────────────────────────────────────────
-[36] BACK-M1 — FetchType.LAZY en User.roles             Estado: ⏳ PENDIENTE
+[36] BACK-M1 — FetchType.LAZY en User.roles             Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Archivo: src/main/java/.../modules/auth/model/User.java
@@ -2153,7 +2153,7 @@ Tests a ejecutar:
     se filtra correctamente → todas las operaciones de escritura/lectura funcionan.
 
 ──────────────────────────────────────────────────────────────────────────────
-[37] FRONT-M2 — OnPush en MainLayoutComponent           Estado: ⏳ PENDIENTE
+[37] FRONT-M2 — OnPush en MainLayoutComponent           Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Archivo: src/app/core/layout/main-layout/main-layout.component.ts
@@ -2194,7 +2194,7 @@ Tests a ejecutar:
     colapsa/expande → chip de usuario visible → logout.
 
 ──────────────────────────────────────────────────────────────────────────────
-[38] FRONT-M5 — Integración Sentry                      Estado: ⏳ PENDIENTE
+[38] FRONT-M5 — Integración Sentry                      Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · Crear cuenta en Sentry.io (gratuito para proyectos pequeños).
