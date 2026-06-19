@@ -41,7 +41,7 @@
     </div>
   } @else {
     <div class="catalog-page__table-wrapper">
-      <table mat-table [dataSource]="orders" class="catalog-table">
+      <table mat-table [dataSource]="orders" class="catalog-table" [trackBy]="trackById">
 
         <!-- N° Orden -->
         <ng-container matColumnDef="orderNumber">

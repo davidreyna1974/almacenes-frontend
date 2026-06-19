@@ -283,4 +283,6 @@ export class ProductsPageComponent implements OnInit {
   getStatusLabel(status: string): string {
     return PRODUCT_STATUSES.find(s => s.value === status)?.label ?? status;
   }
+
+  trackById(_: number, item: { id: number }): number { return item.id; }
 }

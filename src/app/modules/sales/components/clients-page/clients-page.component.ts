@@ -137,4 +137,6 @@ export class ClientsPageComponent implements OnInit {
   onRowClick(item: ClientDTO): void {
     this.openDetail(item);
   }
+
+  trackById(_: number, item: { id: number }): number { return item.id; }
 }
