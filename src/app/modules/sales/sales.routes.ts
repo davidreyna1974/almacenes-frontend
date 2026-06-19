@@ -20,7 +20,12 @@ export const SALES_ROUTES: Routes = [
         canActivate: [authGuard],
         data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_SALES'] },
       },
-      { path: 'orders/:id',   component: SaleOrderDetailPageComponent },
+      {
+        path: 'orders/:id',
+        component: SaleOrderDetailPageComponent,
+        canActivate: [authGuard],
+        data: { roles: ['ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_WAREHOUSEMAN', 'ROLE_SALES'] },
+      },
       { path: 'reservations', component: ReservationsPageComponent },
     ]
   }
