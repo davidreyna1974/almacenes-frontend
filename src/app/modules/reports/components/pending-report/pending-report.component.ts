@@ -48,7 +48,7 @@ export class PendingReportComponent implements OnInit {
     ).subscribe({
       next: data => { this.data = data; this.cdr.markForCheck(); },
       error: () => this.snackBar.open('Error al cargar operaciones pendientes', 'Cerrar',
-        { duration: 5000, panelClass: ['snack-error'] }),
+        { duration: 5000, panelClass: ['snackbar-error'] }),
     });
   }
 

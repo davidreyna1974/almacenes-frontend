@@ -95,7 +95,7 @@ export class OperationalReportComponent implements OnInit {
     ).subscribe({
       next: items => { this.stockItems = items; this.cdr.markForCheck(); },
       error: () => this.snackBar.open('Error al cargar stock bajo', 'Cerrar',
-        { duration: 5000, panelClass: ['snack-error'] }),
+        { duration: 5000, panelClass: ['snackbar-error'] }),
     });
   }
 
@@ -153,7 +153,7 @@ export class OperationalReportComponent implements OnInit {
     ).subscribe({
       next: data => { this.kardexData = data; this.cdr.markForCheck(); },
       error: () => this.snackBar.open('Producto no encontrado o error al consultar el Kardex', 'Cerrar',
-        { duration: 5000, panelClass: ['snack-error'] }),
+        { duration: 5000, panelClass: ['snackbar-error'] }),
     });
   }
 
@@ -183,7 +183,7 @@ export class OperationalReportComponent implements OnInit {
     ).subscribe({
       next: data => { this.movSummary = data; this.cdr.markForCheck(); },
       error: () => this.snackBar.open('Error al cargar resumen de movimientos', 'Cerrar',
-        { duration: 5000, panelClass: ['snack-error'] }),
+        { duration: 5000, panelClass: ['snackbar-error'] }),
     });
   }
 
@@ -204,7 +204,7 @@ export class OperationalReportComponent implements OnInit {
     ).subscribe({
       next: items => { this.turnoverItems = items; this.turnoverQueried = true; this.cdr.markForCheck(); },
       error: () => this.snackBar.open('Error al cargar rotación de inventario', 'Cerrar',
-        { duration: 5000, panelClass: ['snack-error'] }),
+        { duration: 5000, panelClass: ['snackbar-error'] }),
     });
   }
 

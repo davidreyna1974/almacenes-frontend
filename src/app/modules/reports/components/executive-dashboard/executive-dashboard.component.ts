@@ -84,7 +84,7 @@ export class ExecutiveDashboardComponent implements OnInit {
       if (valuation && valuation.categories?.length) this.buildDonut(valuation);
       if (!exec && !valuation) {
         this.snackBar.open('Error al cargar el dashboard ejecutivo', 'Cerrar',
-          { duration: 5000, panelClass: ['snack-error'] });
+          { duration: 5000, panelClass: ['snackbar-error'] });
       }
       this.cdr.markForCheck();
     });
