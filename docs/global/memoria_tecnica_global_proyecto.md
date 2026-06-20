@@ -1437,5 +1437,72 @@ limpia sistemáticamente.
 
 ---
 
+## 11. Puesta en producción
+
+### Arquitectura de despliegue
+
+3 servicios Docker en un único servidor Ubuntu 24.04 LTS:
+
+| Servicio | Imagen | Exposición |
+|---|---|---|
+| `db` | postgres:16 | Solo red interna Docker (`expose`, sin `ports`) |
+| `backend` | Spring Boot JAR | Solo red interna Docker (`expose`, sin `ports`) |
+| `frontend` | nginx + Angular build | Puertos 80 y 443 al exterior |
+
+nginx (en el contenedor `frontend`) termina TLS, sirve la SPA Angular y proxea `/api/` al backend.
+
+**Empresa**: codigoCodigoEnter  
+**Dominio**: `almacenes.codigo2enter.com`  
+**Servidor**: Ubuntu 24.04 LTS con acceso SSH y Docker instalado
+
+### Secuencia de despliegue a producción
+
+Documentada en detalle en `almacenes-backend/scripts/INSTRUCTIVO_puesta_produccion_almacenes.md`.
+
+| Script | Qué hace | Cuándo ejecutar |
+|---|---|---|
+| `01-prepare-server.sh` | Instala Docker, git, dependencias del SO | Una sola vez al configurar el servidor |
+| `02-ssl.sh` | Obtiene certificado Let's Encrypt (certbot standalone) | Una sola vez; renovación automática vía cron |
+| `03-deploy.sh` | Clona repos, genera `.env` y `docker-compose.yml`, construye imágenes, inicializa BD (extensión unaccent + schema.sql + roles + f_unaccent + 10 índices), levanta los 3 servicios | Primer despliegue y cada re-despliegue |
+| `04-firewall.sh` | Configura ufw: permite 22/80/443, deniega 8080/5432 | Una sola vez tras el primer despliegue |
+| `05-verify.sh` | 8 smoke tests: contenedores, actuator/health, HTTP→301, HTTPS→200, SSL, API, SPA routing, puerto 8080 bloqueado | Tras cada despliegue |
+| `maint-db.sh` | Utilidad opcional: re-crear índices, re-instalar f_unaccent, cargar dump en staging | Solo en mantenimiento puntual |
+
+**Prerequisito externo**: registro DNS del dominio `almacenes.codigo2enter.com` apuntando a la IP del servidor (requerido por Let's Encrypt y por `03-deploy.sh`).
+
+### Despliegue beta local (sin DNS ni Let's Encrypt)
+
+Para validar el despliegue completo en una VM Ubuntu local antes de tocar el servidor de producción. Documentado en `almacenes-backend/scripts_beta/instructivo_beta.md`.
+
+| Componente | Detalle |
+|---|---|
+| Hipervisor | Lima (macOS, usa Apple Virtualization.framework) |
+| VM | Ubuntu 24.04 LTS, 4 GiB RAM, 2 CPU, 30 GiB disco |
+| Dominio simulado | `almacenes.codigo2enter.com` vía `/etc/hosts` |
+| Certificado | Autofirmado (openssl req -x509) en mismo path que Let's Encrypt |
+| Puertos en Mac | `127.0.0.1:10080` → VM:80 · `127.0.0.1:10443` → VM:443 |
+| Scripts exclusivos beta | `02-ssl-local.sh` (reemplaza `02-ssl.sh`) · `05-verify-local.sh` (reemplaza `05-verify.sh`) |
+| Scripts idénticos a producción | `01-prepare-server.sh`, `03-deploy.sh`, `04-firewall.sh` |
+
+El directorio `scripts_beta/` es autocontenido: contiene todos los scripts necesarios.
+
+### Checklist pre-producción (L28)
+
+Antes de cualquier despliegue al servidor real, verificar las cabeceras de seguridad HTTP:
+
+```
+[ ] CSP (Content-Security-Policy) configurada en nginx.conf del contenedor frontend
+[ ] HSTS (Strict-Transport-Security) habilitado en nginx.conf
+[ ] X-Frame-Options: DENY en nginx.conf
+[ ] X-Content-Type-Options: nosniff en nginx.conf
+[ ] Swagger UI deshabilitado en perfil prod (springdoc.api-docs.enabled=false)
+[ ] CORS_ALLOWED_ORIGINS apunta al dominio real (no localhost)
+[ ] Re-ejecutar pruebas de seguridad (CYBER-13/CYBER-18) contra el dominio de producción
+```
+
+Ver L28 en §9 para el detalle completo de cada cabecera.
+
+---
+
 *Memoria técnica global — Sistema de Gestión de Almacenes*  
 *Actualizar al finalizar cada módulo del frontend si hay nuevas decisiones transversales*
