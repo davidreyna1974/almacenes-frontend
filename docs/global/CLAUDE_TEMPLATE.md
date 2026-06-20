@@ -800,6 +800,46 @@ ng build --configuration=production
 
 ---
 
+## Puesta en producción
+
+### Arquitectura de despliegue
+
+3 servicios Docker en un servidor Ubuntu 24.04 LTS:
+- `db` — postgres:16, solo red interna Docker (expose, sin ports)
+- `backend` — Spring Boot JAR, solo red interna Docker
+- `frontend` — nginx + Angular build, puertos 80/443 al exterior
+
+nginx termina TLS, sirve la SPA Angular y proxea `/api/` al backend.
+
+### Scripts de despliegue (en `almacenes-backend/scripts/`)
+
+Documentación completa en `scripts/INSTRUCTIVO_puesta_produccion_almacenes.md`.
+
+| Script | Cuándo |
+|---|---|
+| `01-prepare-server.sh` | Una sola vez al configurar el servidor |
+| `02-ssl.sh` | Una sola vez (Let's Encrypt + cron de renovación) |
+| `03-deploy.sh` | Primer despliegue y cada re-despliegue |
+| `04-firewall.sh` | Una sola vez tras el primer despliegue |
+| `05-verify.sh` | Tras cada despliegue (8 smoke tests) |
+| `maint-db.sh` | Solo mantenimiento puntual (opcional) |
+
+### Beta local (`almacenes-backend/scripts_beta/`)
+
+Para validar el despliegue sin DNS real usando Lima (VM Ubuntu en Mac).
+Documentación en `scripts_beta/instructivo_beta.md`. Directorio autocontenido.
+
+### Checklist pre-producción (L28)
+
+```
+[ ] CSP, HSTS, X-Frame-Options, X-Content-Type-Options en nginx.conf del frontend
+[ ] Swagger UI deshabilitado en perfil prod del backend
+[ ] CORS_ALLOWED_ORIGINS apunta al dominio real
+[ ] Re-ejecutar pruebas de seguridad contra el dominio de producción
+```
+
+---
+
 ## Estado inicial
 
 **Fase**: inicialización — pendiente de implementación.
