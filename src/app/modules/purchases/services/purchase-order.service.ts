@@ -24,9 +24,11 @@ export class PurchaseOrderService {
     return this.http.get<PurchaseOrderResponse>(`${this.api}/${id}`);
   }
 
-  getByStatus(status: string, page = 0, size = 20): Observable<PageResponse<PurchaseOrderResponse>> {
+  getByStatus(status: string, page = 0, size = 20, search = ''): Observable<PageResponse<PurchaseOrderResponse>> {
+    const params: Record<string, string | number> = { page, size };
+    if (search.trim()) params['search'] = search.trim();
     return this.http.get<PageResponse<PurchaseOrderResponse>>(
-      `${this.api}/status/${status}`, { params: { page, size } }
+      `${this.api}/status/${status}`, { params }
     );
   }
 

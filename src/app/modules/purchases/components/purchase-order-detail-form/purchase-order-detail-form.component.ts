@@ -67,11 +67,11 @@ export class PurchaseOrderDetailFormComponent implements OnInit, OnChanges {
         this.cdr.markForCheck();
       });
 
-    // subtotal reactivo
+    // subtotal reactivo — solo cuando ambos valores son válidos (BUG-M3-18)
     this.form.valueChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(v => {
       const q = v.quantity  ?? 0;
       const p = v.unitPrice ?? 0;
-      this.subtotal = q * p;
+      this.subtotal = (q >= 1 && p > 0) ? q * p : 0;
       this.cdr.markForCheck();
     });
 
@@ -90,6 +90,8 @@ export class PurchaseOrderDetailFormComponent implements OnInit, OnChanges {
         unitPrice: this.detail.unitPrice,
       });
       this.form.get('productSearch')!.disable();
+      // inicializar subtotal con los valores reales (BUG-M3-19)
+      this.subtotal = (this.detail.quantity ?? 0) * (this.detail.unitPrice ?? 0);
     }
   }
 

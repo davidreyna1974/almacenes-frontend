@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { debounceTime } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -84,22 +84,6 @@ export class PurchaseOrdersPageComponent implements OnInit {
     return this.currentPage?.content ?? [];
   }
 
-  private normalize(s: string): string {
-    return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
-  }
-
-  private applySearch(term: string): void {
-    const q = this.normalize(term.trim());
-    const src = this.currentPage?.content ?? [];
-    this.filteredOrders = q
-      ? src.filter(o =>
-          this.normalize(o.orderNumber).includes(q) ||
-          this.normalize(o.supplierName).includes(q) ||
-          this.normalize(o.createdByUsername).includes(q))
-      : [...src];
-    this.cdr.markForCheck();
-  }
-
   ngOnInit(): void {
     setTimeout(() => this.layoutService.collapse(), 0);
     const cols = ['orderNumber', 'supplierName', 'createdByUsername', 'createdAt', 'status', 'actions'];
@@ -107,9 +91,12 @@ export class PurchaseOrdersPageComponent implements OnInit {
     this.displayedColumns = cols;
 
     this.searchCtrl.valueChanges.pipe(
-      debounceTime(300),
+      debounceTime(350),
+      distinctUntilChanged(),
       takeUntilDestroyed(this.destroyRef),
-    ).subscribe(q => this.applySearch(q ?? ''));
+    ).subscribe(q => {
+      this.loadTab(this.activeTab, 0, this.currentPage?.size ?? 20, q ?? '');
+    });
 
     // Restaurar tab si se viene del detalle con ?tab=
     const tabParam = this.route.snapshot.queryParamMap.get('tab') as TabStatus | null;
@@ -123,16 +110,17 @@ export class PurchaseOrdersPageComponent implements OnInit {
     }
   }
 
-  loadTab(status: TabStatus, page = 0, size = 20): void {
+  loadTab(status: TabStatus, page = 0, size = 20, search = ''): void {
     this.pendingRequests++;
     this.cdr.markForCheck();
-    this.orderService.getByStatus(status, page, size)
+    this.orderService.getByStatus(status, page, size, search)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: pageData => {
           this.pages.set(status, pageData);
+          this.filteredOrders = pageData.content;
           this.pendingRequests--;
-          this.applySearch(this.searchCtrl.value ?? '');
+          this.cdr.markForCheck();
         },
         error: err => {
           this.snackBar.open(err.error?.message ?? 'Error al cargar órdenes', 'Cerrar',
@@ -157,15 +145,12 @@ export class PurchaseOrdersPageComponent implements OnInit {
   onTabChange(index: number): void {
     this.activeTab = this.tabs[index].status;
     this.searchCtrl.setValue('', { emitEvent: false });
-    if (!this.pages.has(this.activeTab)) {
-      this.loadTab(this.activeTab);
-    } else {
-      this.applySearch('');
-    }
+    this.filteredOrders = [];
+    this.loadTab(this.activeTab);
   }
 
   onPage(event: PageEvent): void {
-    this.loadTab(this.activeTab, event.pageIndex, event.pageSize);
+    this.loadTab(this.activeTab, event.pageIndex, event.pageSize, this.searchCtrl.value ?? '');
   }
 
   countFor(status: TabStatus): number {

@@ -395,6 +395,77 @@ verificaciones. No basta con que el código compile y los tests unitarios pasen.
 
 ---
 
+## ⚠️ Protocolo obligatorio de verificación en 4 fases (permanente, todos los módulos)
+
+> **Origen (2026-06-22)**: La primera ejecución de casos de prueba encontró bugs, se
+> corrigieron, y la segunda ejecución encontró nuevos bugs — algunos causados por los fixes,
+> otros que pasaron desapercibidos. Causa raíz: las fases de "probar" y "corregir" estaban
+> mezcladas en la misma sesión, lo que invalida los casos ya ejecutados cada vez que se
+> modifica código. Este protocolo es la respuesta sistémica y aplica a CUALQUIER ronda de
+> verificación futura (no solo nuevos módulos, sino también re-ejecuciones de módulos
+> existentes y verificaciones post-fix).
+>
+> Documento completo: `docs/pruebas/protocolo_verificacion_4_fases.md`
+> Estado de la sesión activa: `docs/pruebas/estado_sesion_activa.md`
+
+### Regla fundamental (inamovible)
+
+> **Una ronda de pruebas solo es válida si se ejecuta íntegra sobre una versión congelada
+> del código, sin modificaciones entre el primer y el último caso.**
+>
+> Si durante una ronda se encuentra un bug y se corrige, la ronda se invalida y debe
+> reiniciarse desde cero.
+
+### Las 4 fases
+
+**FASE 1 — Inventario (código congelado)**
+- Ejecutar TODOS los casos de prueba de TODOS los módulos sin tocar código
+- Documentar cada bug encontrado con estado `⚠️ ABIERTO` en el documento de casos
+- No corregir nada mientras dura esta fase — el objetivo es conocer el estado real del sistema
+
+**FASE 2 — Corrección + gatekeeper automatizado**
+- Corregir todos los bugs del inventario en ciclo de desarrollo normal
+- Por cada fix: ejecutar `ng test --no-watch` + backend `mvn test` → 0 fallos antes de continuar
+- Documentar el **blast radius** de cada fix:
+  - Fix en un componente local → solo ese módulo necesita re-prueba en Fase 3
+  - Fix en interceptor, guard, SecurityConfig, servicio global → **todos los módulos** en Fase 3
+
+**FASE 3 — Re-ejecución completa desde cero**
+- Ejecutar TODOS los casos de TODOS los módulos con blast radius ≥ 1 en una sola sesión continua
+- Mismo orden, misma versión del código, de principio a fin
+- Si se encuentra un bug nuevo → documentar, NO corregir, terminar la fase → volver a Fase 2
+- La fase solo está completa cuando todos los casos terminan en ✅ PASS o N/A sin haber tocado código
+
+**FASE 4 — Certificación**
+- `ng test --no-watch --code-coverage` → cobertura ≥ 70%, 0 fallos
+- Backend `mvn test` → 0 fallos (o solo los preexistentes documentados con justificación)
+- Actualizar `docs/pruebas/estado_sesion_activa.md` con resultado CERTIFICADO
+- Actualizar el resumen de cobertura en cada documento de casos afectado
+- Hacer commit con mensaje `chore(qa): verificación completa 4 fases — <fecha>`
+
+### Concepto de blast radius (obligatorio documentar por fix)
+
+| Tipo de cambio | Blast radius | Módulos a re-probar en Fase 3 |
+|---|---|---|
+| CSS/SCSS de un componente | Local | Solo el módulo del componente |
+| Lógica de un componente/servicio del módulo | Local | Solo el módulo afectado |
+| Interceptor HTTP | Global | Todos los módulos |
+| AuthGuard / AuthService | Global | Todos los módulos |
+| SecurityConfig backend | Global | Todos los módulos |
+| JWT/token handling | Global | Todos los módulos |
+| Servicio global compartido | Global | Todos los módulos |
+| GlobalExceptionHandler backend | Global | Todos los módulos |
+
+### Estado de la sesión activa
+
+El archivo `docs/pruebas/estado_sesion_activa.md` es un documento vivo que se actualiza
+al completar cada módulo/fase. **Leer siempre al iniciar una sesión de pruebas** para
+saber exactamente dónde continuar. Si la sesión se interrumpe (límite de uso de Claude Code,
+cierre de ventana, etc.), el estado queda persistido en ese archivo y la siguiente sesión
+retoma sin pérdida de contexto.
+
+---
+
 ## Identidad visual y paleta de colores
 
 ### Nombre del sistema

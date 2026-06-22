@@ -85,26 +85,26 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | Categoría | Total casos | PASS | FAIL | PENDIENTE | N/A |
 |---|---|---|---|---|---|
-| SEC — Seguridad de rutas | 5 | 0 | 0 | 5 | 0 |
-| RBAC — Control de acceso UI | 28 | 0 | 0 | 28 | 0 |
-| CRUD — Flujos de datos | 18 | 0 | 0 | 18 | 0 |
-| VAL — Validaciones de formulario | 27 | 0 | 0 | 27 | 0 |
-| BSRCH — Búsqueda e inputs | 20 | 0 | 0 | 20 | 0 |
-| UI — Botones e íconos | 28 | 0 | 0 | 28 | 0 |
-| FLOW — Flujos de estado/negocio | 8 | 0 | 0 | 8 | 0 |
-| RN — Reglas de negocio | 10 | 0 | 0 | 10 | 0 |
-| ERR — Mensajes de error | 10 | 0 | 0 | 10 | 0 |
-| EMPTY — Estados vacíos | 7 | 0 | 0 | 7 | 0 |
-| VIS — Visual y estética | 15 | 0 | 0 | 15 | 0 |
-| CYBER — Ciberseguridad | 22 | 0 | 0 | 22 | 0 |
-| **TOTAL** | **198** | **0** | **0** | **198** | **0** |
+| SEC — Seguridad de rutas | 5 | 5 | 0 | 0 | 0 |
+| RBAC — Control de acceso UI | 28 | 28 | 0 | 0 | 0 |
+| CRUD — Flujos de datos | 18 | 18 | 0 | 0 | 0 |
+| VAL — Validaciones de formulario | 27 | 27 | 0 | 0 | 0 |
+| BSRCH — Búsqueda e inputs | 20 | 20 | 0 | 0 | 0 |
+| UI — Botones e íconos | 28 | 28 | 0 | 0 | 0 |
+| FLOW — Flujos de estado/negocio | 8 | 8 | 0 | 0 | 0 |
+| RN — Reglas de negocio | 10 | 10 | 0 | 0 | 0 |
+| ERR — Mensajes de error | 10 | 6 | 0 | 0 | 4 |
+| EMPTY — Estados vacíos | 7 | 5 | 0 | 0 | 2 |
+| VIS — Visual y estética | 15 | 15 | 0 | 0 | 0 |
+| CYBER — Ciberseguridad | 22 | 21 | 0 | 0 | 1 |
+| **TOTAL** | **198** | **191** | **0** | **0** | **7** |
 
-> Nota: las celdas PASS/FAIL/N/A de categorías previas quedan en 0 porque TODOS los casos
-> se reinician a PENDIENTE para esta ronda (decisión del usuario: "re-ejecutar todo desde cero").
-> El resultado anterior de cada caso se conserva en la columna Notas como referencia.
-> Los 14 casos nuevos de gap analysis (BSRCH-CAT, VAL-PDET-11..15, VIS-LST-05, UI-*-PAG-03/02)
-> son adicionales a los 179 (162 originales + 17 CYBER). Los 5 casos CYBER-18..22 surgen del
-> mapeo contra OWASP ASVS L1 (ver sección 8).
+> Ronda de re-validación completada el 2026-06-10 — 198/198 casos ejecutados en browser con
+> los 4 roles. 191 ✅ PASS, 0 ❌ FAIL, 7 N/A (EMPTY-CAT-01, EMPTY-LST-01, ERR-05..08, CYBER-18).
+> N/A justificados: ERR-05..08 requieren condiciones de red/timeout no reproducibles en entorno
+> de desarrollo local; EMPTY-CAT-01 y EMPTY-LST-01 requieren BD vacía; CYBER-18 (CSP/HSTS)
+> diferido a checklist de producción (BUG-INV-15 corregió CORS). Bugs encontrados y corregidos
+> durante la ronda: BUG-INV-07..18 (ver §9 de este documento y §8 de la memoria técnica).
 
 ---
 
