@@ -266,12 +266,23 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
   }
 
   removePendingDetail(row: PurchaseOrderDetailRequest & { productName?: string; productSku?: string }): void {
-    const idx = this.pendingDetailRows.indexOf(row);
-    if (idx !== -1) {
-      this.pendingDetailRows = this.pendingDetailRows.filter((_, i) => i !== idx);
-      this.pendingDetails    = this.pendingDetails.filter((_, i) => i !== idx);
-      this.cdr.markForCheck();
-    }
+    this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Eliminar línea',
+        message: `¿Eliminar "${row.productName ?? 'este producto'}" de la orden?`,
+        confirmLabel: 'Eliminar',
+        confirmColor: 'warn',
+      },
+      disableClose: true,
+    }).afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(ok => {
+      if (!ok) return;
+      const idx = this.pendingDetailRows.indexOf(row);
+      if (idx !== -1) {
+        this.pendingDetailRows = this.pendingDetailRows.filter((_, i) => i !== idx);
+        this.pendingDetails    = this.pendingDetails.filter((_, i) => i !== idx);
+        this.cdr.markForCheck();
+      }
+    });
   }
 
   onDetailSave(dto: PurchaseOrderDetailRequest | PurchaseOrderDetailUpdateRequest): void {

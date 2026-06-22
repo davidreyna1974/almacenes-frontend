@@ -5,7 +5,7 @@
 **Roles con acceso:** ADMIN, MANAGER, WAREHOUSEMAN, SALES (restricciones por subruta — ver §SEC)  
 **Roles sin acceso:** Ninguno (todos acceden a al menos /reports/pending)  
 **Fecha de creación:** 2026-06-15  
-**Última actualización:** 2026-06-16 (cierre browser — 10 casos verificados/reclasificados en browser; 82 PASS + 12 N/A = 94 total)  
+**Última actualización:** 2026-06-21 (re-ejecución completa browser — 4 roles; 82 PASS + 12 N/A = 94 total — sin cambios respecto a 2026-06-16)  
 
 ---
 

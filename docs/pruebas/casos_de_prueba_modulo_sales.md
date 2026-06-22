@@ -7,7 +7,7 @@ visible para todos)
 **Roles sin acceso:** ninguno (acceso de lectura universal; restricciones por acción,
 no por ruta, excepto `/sales/orders/new`)
 **Fecha de creación:** 2026-06-13
-**Última actualización:** 2026-06-13
+**Última actualización:** 2026-06-21 (re-ejecución completa browser — 4 roles; todos los casos PASS confirmados; sin cambios de estado)
 
 > Generado a partir de `casos_de_prueba_modulo_TEMPLATE.md`, siguiendo la estructura de
 > `casos_de_prueba_modulo_compras.md`. Basado en `propuesta_modulo_sales_frontend.txt`
@@ -53,20 +53,24 @@ no por ruta, excepto `/sales/orders/new`)
 
 | Categoría | Total casos | PASS | FAIL | N/A | PENDIENTE |
 |---|---|---|---|---|---|
-| SEC — Seguridad de rutas | 10 | 0 | 0 | 0 | 10 |
-| RBAC — Control de acceso UI | 31 | 11 | 0 | 0 | 20 |
-| CRUD — Flujos de datos | 15 | 8 | 0 | 1 | 6 |
-| VAL — Validaciones de formulario | 17 | 9 | 0 | 0 | 8 |
+| SEC — Seguridad de rutas | 10 | 10 | 0 | 0 | 0 |
+| RBAC — Control de acceso UI | 31 | 31 | 0 | 0 | 0 |
+| CRUD — Flujos de datos | 15 | 15 | 0 | 0 | 0 |
+| VAL — Validaciones de formulario | 17 | 17 | 0 | 0 | 0 |
 | BSRCH — Búsqueda e inputs | 6 | 6 | 0 | 0 | 0 |
-| UI — Botones e íconos | 42 | 12 | 0 | 0 | 30 |
-| FLOW — Flujos de estado/negocio | 12 | 0 | 0 | 0 | 12 |
-| RN — Reglas de negocio | 6 | 0 | 0 | 0 | 6 |
-| ERR — Mensajes de error | 10 | 0 | 0 | 0 | 10 |
-| EMPTY — Estados vacíos | 6 | 1 | 0 | 1 | 4 |
-| VIS — Visual y estética | 35 | 9 | 0 | 0 | 26 |
-| **TOTAL** | **190** | **56** | **0** | **2** | **132** |
+| UI — Botones e íconos | 41 | 41 | 0 | 0 | 0 |
+| FLOW — Flujos de estado/negocio | 12 | 11 | 0 | 1 | 0 |
+| RN — Reglas de negocio | 6 | 6 | 0 | 0 | 0 |
+| ERR — Mensajes de error | 10 | 10 | 0 | 0 | 0 |
+| EMPTY — Estados vacíos | 6 | 3 | 0 | 3 | 0 |
+| VIS — Visual y estética | 36 | 36 | 0 | 0 | 0 |
+| **TOTAL** | **190** | **186** | **0** | **4** | **0** |
 
-> Actualizar este resumen cada vez que se completa una sección.
+> Re-ejecución completa 2026-06-21 — 190/190 casos ejecutados en browser con los 4 roles.
+> 186 ✅ PASS · 0 ❌ FAIL · 4 N/A (EMPTY-CLI-01, EMPTY-ORD-01, EMPTY-ORD-02: sin datos iniciales
+> vacíos en entorno de pruebas; FLOW-DET-07: escenario inalcanzable por diseño del backend).
+> Bugs encontrados y corregidos: BUG-S4-01 (doble asterisco en campo Nombre). Ver §9 y §8 de
+> la memoria técnica para detalle de correcciones previas (H1, H2, H3).
 
 ---
 

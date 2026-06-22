@@ -1504,5 +1504,49 @@ Ver L28 en §9 para el detalle completo de cada cabecera.
 
 ---
 
+---
+
+## 11. Protocolo de verificación en 4 fases (establecido 2026-06-22)
+
+> Ver documento completo: `docs/pruebas/protocolo_verificacion_4_fases.md` (frontend)
+> Estado de sesión activa: `docs/pruebas/estado_sesion_activa.md` (frontend)
+
+### Por qué existe
+
+Durante el desarrollo se ejecutaron dos rondas de casos de prueba. La primera ronda encontró
+bugs que se corrigieron. La segunda ronda encontró nuevos bugs — algunos causados por los
+propios fixes, otros que la primera ronda pasó por alto. Causa raíz: las fases de "probar"
+y "corregir" se mezclaron en la misma sesión, invalidando los PASS anteriores al fix.
+
+### Regla fundamental
+
+Una ronda de pruebas solo es válida si se ejecuta íntegra sobre una versión congelada del
+código, sin modificaciones entre el primer y el último caso. Si se corrige un bug durante
+la ronda, la ronda se invalida y debe reiniciarse.
+
+### Las 4 fases (resumen)
+
+| Fase | Nombre | Qué se hace | Entregable |
+|---|---|---|---|
+| 1 | Inventario | Ejecutar TODOS los casos de TODOS los módulos sin tocar código | Lista de bugs con estado ABIERTO |
+| 2 | Corrección | Aplicar fixes + `ng test` + `mvn test` como gatekeeper | Código corregido, 0 fallos en gatekeepers |
+| 3 | Re-ejecución | Re-ejecutar los módulos afectados por el blast radius de los fixes | Documentos de casos 100% PASS/N/A |
+| 4 | Certificación | `ng test --coverage` + `mvn test` + commit de certificación | Sistema certificado en esa versión |
+
+### Concepto de blast radius
+
+Cada fix tiene un blast radius que determina qué módulos hay que re-probar en Fase 3:
+- Fix local (un componente/servicio de un módulo) → solo ese módulo
+- Fix global (interceptor, guard, SecurityConfig, GlobalExceptionHandler, CORS) → todos los módulos
+
+### Manejo de interrupciones de sesión
+
+El archivo `docs/pruebas/estado_sesion_activa.md` actúa como "punto de guardado" para
+las sesiones de prueba. Se actualiza al completar cada módulo/categoría. Si Claude Code
+se interrumpe por límite de uso, la siguiente sesión lee ese archivo y retoma exactamente
+donde se quedó, sin pérdida de contexto.
+
+---
+
 *Memoria técnica global — Sistema de Gestión de Almacenes*  
 *Actualizar al finalizar cada módulo del frontend si hay nuevas decisiones transversales*
