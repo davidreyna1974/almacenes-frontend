@@ -87,8 +87,8 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 | SEC — Seguridad de rutas | 6 | 6 | 0 | 0 |
 | RBAC — Control de acceso UI | 19 | 19 | 0 | 0 |
 | CRUD — Flujos de datos | 21 | 21 | 0 | 0 |
-| VAL — Validaciones de formulario | 19 | 16 | 1 | 0 |
-| BSRCH — Búsqueda e inputs | 12 | 11 | 1 | 0 |
+| VAL — Validaciones de formulario | 19 | 17 | 0 | 0 |
+| BSRCH — Búsqueda e inputs | 12 | 12 | 0 | 0 |
 | UI — Botones e íconos | 24 | 23 | 1 | 0 |
 | FLOW — Flujos de estado | 12 | 11 | 0 | 0 |
 | RN — Reglas de negocio | 8 | 8 | 0 | 0 |
@@ -96,7 +96,7 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 | EMPTY — Estados vacíos | 8 | 7 | 0 | 0 |
 | VIS — Visual y estética | 14 | 12 | 1 | 0 |
 | CYBER — Ciberseguridad | 15 | 13 | 2 | 0 |
-| **TOTAL** | **170** | **163** | **2** | **0** |
+| **TOTAL** | **170** | **165** | **0** | **0** |
 
 > **Fase 2 — Corrección 2026-06-22 (Protocolo 4 fases, Ronda 3):**
 > Se aplicaron los 6 fixes autorizados. Estado tras correcciones:
@@ -109,6 +109,29 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 > CYBER-02 (✅ PASS — BUG-INV-13 resuelto como efecto de BUG-INV-09).
 > BUG-M3-19 parte 1 (subtotal $0 en edición) y parte 2 (confirm dialog en creación): código corregido,
 > pendientes de verificación en browser (Fase 3). Ver §10 para detalle de cada bug.
+>
+> **Fase 3 → Fase 2 reinicio — 2026-06-22 (bug encontrado en Fase 3):**
+> BSRCH-ORD-01 ❌ FAIL: BUG-M3-15b — native query `searchByStatus` ignoraba `:search` por falta de `CAST(:search AS text)`. Fix aplicado al patrón del módulo Inventario. Fase 3 reiniciada tras gatekeeper.
+>
+> **Fase 3 reinicio COMPLETADA — 2026-06-22 (bundle fresco, código congelado):**
+> Tras corregir BUG-M3-15b y BUG-BUILD-01 (gatekeeper: `ng build` 0 errores + 456 specs 0 fallos +
+> `mvn test` exit 0), se reinició la extensión de navegador y se re-ejecutó la **zona del blast radius**
+> de los fixes de esta ronda (todos locales al módulo Compras), sobre el bundle recompilado:
+> - **Lista de órdenes — búsqueda server-side (BUG-M3-15/15b):** BSRCH-ORD-01..05 → ✅ PASS.
+>   Accent-insensitive con `f_unaccent` confirmado server-side; limpiar búsqueda y estado vacío correctos.
+> - **Formulario de línea (BUG-M3-18 subtotal / BUG-M3-19):** VAL-LIN-05 → ✅ PASS (cantidad -1 →
+>   "Mínimo 1", Subtotal $0.00, no negativo). BUG-M3-19 parte 1 (subtotal inicial $960 al editar) y
+>   parte 2 (diálogo de confirmación al eliminar línea en modo creación) → ✅ verificados en browser.
+> - **Lista de proveedores (BUG-BUILD-01 trackById):** el fix de tipado no rompió el render —
+>   116 filas, columnas RFC/Razón social/Contacto/Teléfono, sin errores de consola. Búsqueda
+>   accent-insensitive re-verificada con tecleo real: "logistica" → 1 fila ("Distribuidora Logística
+>   del Centro S.A."), "zzznoexiste" → empty-state, limpiar → lista restaurada (116). BSRCH-SUP-03/04/05 → ✅ PASS.
+>
+> El resto de categorías (SEC, RBAC, CRUD de proveedores/cabecera, FLOW, RN, ERR, VIS, CYBER) NO fue tocado
+> por ningún fix de esta ronda → se conserva su estado ✅ PASS / N/A de la verificación 2026-06-11/12/21.
+>
+> **Resultado Fase 3: 165 ✅ PASS · 5 N/A · 0 ❌ FAIL · 0 ⚠️ ABIERTO · 0 ⏳ PENDIENTE — código congelado,
+> sin modificaciones de fuente entre el primer y el último caso.** Listo para Fase 4 (certificación).
 
 ---
 
@@ -251,11 +274,11 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| BSRCH-ORD-01 | Buscar por N° de orden parcial | ADMIN | Órdenes en la pestaña activa | Filtra correctamente | ⏳ PENDIENTE | (Re-test 2026-06-11: ⚠️ ABIERTO — BUG-M3-15 búsqueda client-side sobre los 20 registros de la página.) (2026-06-22: BUG-M3-15 ✅ CORREGIDO — búsqueda server-side via backend searchByStatus + f_unaccent. Pendiente de re-verificación en browser en Fase 3.) |
-| BSRCH-ORD-02 | Buscar por proveedor sin acento | ADMIN | Proveedor con acento en su nombre | Encuentra (accent insensitive) | ✅ PASS | (Re-test 2026-06-11: buscar "logistica" (sin acento) en pestaña "Recibidas" encuentra OC-2026-0068, proveedor "Distribuidora Logística del...". El normalize() con NFD funciona correctamente para accent-insensitive. Sujeto a la misma limitación de BUG-M3-15: solo busca en la página cargada.) |
-| BSRCH-ORD-03 | Buscar por usuario creador | ADMIN | Órdenes de distintos usuarios | Filtra por username | ✅ PASS | (Re-test 2026-06-11: buscar "test_mgr" en pestaña "Recibidas" filtra correctamente a OC-2026-0062, creada por "test_mgr". Sujeto a la misma limitación de BUG-M3-15: solo busca en la página cargada.) |
-| BSRCH-ORD-04 | Limpiar búsqueda con botón X | ADMIN | Campo con valor | Lista restaurada; botón X visible solo con texto | ✅ PASS | (Re-test 2026-06-11: con texto en el campo aparece el botón X; al hacer click se vacía el campo, el botón X desaparece y la lista vuelve a mostrar las 20 órdenes de la página 1 sin necesidad de recargar.) |
-| BSRCH-ORD-05 | Búsqueda sin resultados | ADMIN | Término inexistente | Estado vacío con 'Sin resultados para "X"' | ✅ PASS | (Re-test 2026-06-11: buscar "zzz999nonexistent" muestra estado vacío con ícono y texto 'Sin resultados para "zzz999nonexistent"'. El paginador "1 – 20 of 47" permanece visible debajo del estado vacío — visualmente algo confuso dado BUG-M3-15, pero el mensaje en sí es correcto.) |
+| BSRCH-ORD-01 | Buscar por N° de orden parcial | ADMIN | Órdenes en la pestaña activa | Filtra correctamente | ✅ PASS | Fase 3 reinicio 2026-06-22 (bundle fresco): "0160" → 1 fila (OC-2026-0160), paginador "1–1 of 1", badge "Pendientes 1". Server-side. BUG-M3-15b corregido y verificado. |
+| BSRCH-ORD-02 | Buscar por proveedor sin acento | ADMIN | Proveedor con acento en su nombre | Encuentra (accent insensitive) | ✅ PASS | Fase 3 2026-06-22: "agroquimica" (sin acento) → 1 fila "Agroquímica y Fertilizantes del Valle S.A." (OC-2026-0160), paginador "1–1 of 1". f_unaccent server-side confirmado. |
+| BSRCH-ORD-03 | Buscar por usuario creador | ADMIN | Órdenes de distintos usuarios | Filtra por username | ✅ PASS | Fase 3 2026-06-22: "admin" → 2 filas (ambas PENDING creadas por admin), paginador "1–2 of 2". |
+| BSRCH-ORD-04 | Limpiar búsqueda con botón X | ADMIN | Campo con valor | Lista restaurada; botón X visible solo con texto | ✅ PASS | Fase 3 2026-06-22: botón X (close) limpió el campo y restauró la lista completa (2 filas, "1–2 of 2"); con el campo vacío el botón X desaparece. |
+| BSRCH-ORD-05 | Búsqueda sin resultados | ADMIN | Término inexistente | Estado vacío con 'Sin resultados para "X"' | ✅ PASS | Fase 3 2026-06-22: "zzznoexiste999" → 0 filas, empty-state 'Sin resultados para "zzznoexiste999"' + ícono receipt_long. |
 
 ### 3c. RBAC en lista
 
@@ -417,7 +440,7 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 | VAL-LIN-02 | Escribir en autocomplete sin seleccionar opción | Texto escrito, sin clic en opción | Botón "Agregar" deshabilitado (no hay selectedProduct) | ✅ PASS | Al escribir "LUBR" sin hacer clic en una opción, "Agregar línea" permaneció deshabilitado. (Re-test 2026-06-11) |
 | VAL-LIN-03 | Cantidad vacía | Campo borrado | Error "Obligatorio" | N/A — no reproducible vía UI | El campo "Cantidad*" siempre tiene valor por defecto "1" al abrir el formulario y el spinner numérico no permite dejarlo vacío fácilmente; cmd+a + Delete deja el campo en "1" nuevamente. No se pudo forzar el estado vacío. (Re-test 2026-06-11) |
 | VAL-LIN-04 | Cantidad = 0 | Campo con 0 | Error "Mínimo 1" | ✅ PASS | Al escribir "0" apareció "Mínimo 1" en rojo bajo el campo y "Agregar línea" quedó deshabilitado. (Re-test 2026-06-11) |
-| VAL-LIN-05 | Cantidad negativa | Campo con -1 | Error "Mínimo 1" y subtotal $0 | ⏳ PENDIENTE | (Re-test 2026-06-11: ⚠️ ABIERTO — subtotal negativo "-$1,900.00" con cantidad inválida.) (2026-06-22: BUG-M3-18 ✅ CORREGIDO — cálculo del subtotal ahora guarda con `(q >= 1 && p > 0) ? q * p : 0`. Pendiente de re-verificación en browser en Fase 3.) |
+| VAL-LIN-05 | Cantidad negativa | Campo con -1 | Error "Mínimo 1" y subtotal $0 | ✅ PASS | (Re-test 2026-06-11: ⚠️ ABIERTO — subtotal negativo "-$1,900.00" con cantidad inválida.) (2026-06-22 Fase 3 reinicio, bundle fresco: editar línea de OC-2026-0160, cantidad -1 → error "Mínimo 1" bajo el campo, **Subtotal: $0.00** (no negativo), botón "Guardar cambios" deshabilitado. BUG-M3-18 ✅ CORREGIDO y verificado en browser.) |
 | VAL-LIN-06 | Precio unitario vacío | Campo borrado | Error "Obligatorio" | N/A — no reproducible vía UI | Igual que VAL-LIN-03: el spinner numérico de "Precio unitario" no permite quedar vacío de forma persistente con cmd+a+tipeo; al escribir un nuevo valor reemplaza el anterior. (Re-test 2026-06-11) |
 | VAL-LIN-07 | Precio = 0 | Campo con 0 | Error "Debe ser mayor a cero" | ✅ PASS | Al escribir "0" en Precio unitario apareció "Debe ser mayor a cero" en rojo y "Agregar línea" quedó deshabilitado. (Re-test 2026-06-11) |
 | VAL-LIN-08 | Precio negativo | Campo con -1 | Error "Debe ser mayor a cero" | ✅ PASS | Mismo comportamiento que VAL-LIN-07 verificado con valores negativos en el flujo combinado de validación. (Re-test 2026-06-11) |
@@ -554,10 +577,11 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 | BUG-M3-12 | Editar línea de detalle mostraba "[undefined] — undefined" | purchase-order-detail-form | ✅ Corregido |
 | BUG-M3-13 | panelClass 'snack-error'/'snack-success' no coincidía con CSS `.snackbar-error`/`.snackbar-success` — snackbars sin color | 4 componentes de purchases | ✅ Corregido |
 | BUG-M3-14 | WAREHOUSEMAN podía acceder a `/purchases/orders/new` por URL directa — ruta sin `canActivate`+`data.roles` | purchases.routes.ts | ✅ Corregido |
-| BUG-M3-15 | El campo "Buscar" de `purchase-orders-page` (N° orden / proveedor / usuario) solo filtraba client-side sobre los 20 registros de la página actualmente cargada (`applySearch()` filtraba `currentPage.content`). | purchase-orders-page.component.ts (`applySearch`, ex-líneas 91-101) | ✅ CORREGIDO (2026-06-22) — Búsqueda server-side: backend searchByStatus native query con f_unaccent; frontend getByStatus(search) + debounceTime(350) + paginador se actualiza correctamente. Ver BSRCH-ORD-01 ⏳ pendiente re-verificación en Fase 3. |
+| BUG-M3-15 | El campo "Buscar" de `purchase-orders-page` (N° orden / proveedor / usuario) solo filtraba client-side sobre los 20 registros de la página actualmente cargada (`applySearch()` filtraba `currentPage.content`). | purchase-orders-page.component.ts (`applySearch`, ex-líneas 91-101) | ✅ CORREGIDO (2026-06-22) — Búsqueda server-side implementada. Ver BUG-M3-15b — la implementación tenía un defecto en la native query. |
+| BUG-M3-15b | **Regresión de BUG-M3-15 (encontrada en Fase 3 — 2026-06-22):** La native query `searchByStatus` en `PurchaseOrderRepository` usaba `ILIKE '%' \|\| f_unaccent(:search) \|\| '%'` sin `CAST(:search AS text)`. Hibernate no enlazaba el parámetro correctamente → la búsqueda ignoraba el término y devolvía TODOS los resultados del estado (verificado: "XYZXYZXYZ999" devolvió los 2 PENDING). | `PurchaseOrderRepository.java` (nativeQuery `searchByStatus`) | ✅ CORREGIDO y VERIFICADO (2026-06-22 Fase 3) — Patrón corregido al estándar del módulo Inventario: `lower(col) LIKE '%' \|\| f_unaccent(lower(CAST(:search AS text))) \|\| '%'`. Verificado en browser (bundle fresco): BSRCH-ORD-01 "0160" → 1 fila exacta; BSRCH-ORD-02 "agroquimica" sin acento → encuentra "Agroquímica…" (f_unaccent server-side); BSRCH-ORD-05 término inexistente → empty-state. ✅ PASS. |
 | BUG-M3-16 | El diálogo "Cancelar orden" no incluía campo de texto para el motivo. El backend `cancelOrder(Long id)` no tiene parámetro motivo — el resultado esperado del caso UI-ORD-03 estaba desactualizado. | N/A | DISEÑO CONFIRMADO (2026-06-22) — Sin corrección de código. El caso UI-ORD-03 actualizado a resultado correcto. |
 | BUG-M3-17 | En modo creación (`/purchases/orders/new`) el panel "Historial de estado" no se renderiza. El historial de estado solo existe para órdenes ya creadas. | N/A | DISEÑO CONFIRMADO (2026-06-22) — Sin corrección de código. El caso VIS-DET-05 actualizado a N/A para modo creación. |
-| BUG-M3-18 | En el formulario "Agregar línea"/"Editar línea", al escribir una cantidad negativa el "Subtotal" mostraba un valor negativo aunque el formulario estuviera inválido. | purchase-order-detail-form.component.ts (cálculo de subtotal) | ✅ CORREGIDO (2026-06-22) — Guard: `(q >= 1 && p > 0) ? q * p : 0`. Ver VAL-LIN-05 ⏳ pendiente re-verificación en Fase 3. |
+| BUG-M3-18 | En el formulario "Agregar línea"/"Editar línea", al escribir una cantidad negativa el "Subtotal" mostraba un valor negativo aunque el formulario estuviera inválido. | purchase-order-detail-form.component.ts (cálculo de subtotal) | ✅ CORREGIDO y VERIFICADO (2026-06-22 Fase 3) — Guard: `(q >= 1 && p > 0) ? q * p : 0`. Ver VAL-LIN-05 ✅ PASS — cantidad -1 → subtotal $0.00 confirmado en browser. |
 | BUG-M3-20 | **(Hallazgo global, afecta TODA la app — Inventory, Purchases, Auth)** Los snackbars de éxito/error NO mostraban los colores de fondo verde (#2E7D32) / rojo (#C62828) especificados en CLAUDE.md, a pesar de que `panelClass: 'snackbar-success'`/`'snackbar-error'` se aplicaba correctamente. Causa raíz: `src/styles/global.scss` usaba `--mdc-snackbar-container-color`/`--mdc-snackbar-supporting-text-color`, pero Angular Material 21 espera `--mat-snack-bar-container-color`/`--mat-snack-bar-supporting-text-color` (sin infijo "mdc"). **Corrección aplicada 2026-06-21:** variables actualizadas en `global.scss` para `.snackbar-success` y `.snackbar-error`. Verificado en browser: fondo verde en snackbars de éxito y fondo rojo en snackbars de error. | `src/styles/global.scss` (`.snackbar-success`, `.snackbar-error`) | ✅ CORREGIDO (2026-06-21) |
 | BUG-M3-23 | El backend devuelve **HTTP 500 Internal Server Error** (en vez de 400/422/409) para errores de validación de negocio en `purchases`: (a) `GET /purchases/orders/status/{status}` con un valor de enum inválido → 500; (b) transiciones de estado inválidas (`approve`/`receive`/`cancel`) → 500; (c) `addDetail` con producto duplicado → 500. En todos los casos el mensaje de negocio era correcto y NO se filtraban datos sensibles (CYBER-10 ✅), y el estado de la orden NO cambiaba — pero el código HTTP era semánticamente incorrecto. Mismo patrón sistémico que BUG-INV-16. | `PurchaseOrderServiceImpl` (manejo de excepciones de regla de negocio / enum inválido) | ✅ CORREGIDO (2026-06-11) — ver detalle de verificación abajo |
 
@@ -574,7 +598,7 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 | **Criterio de éxito** | Los 10 puntos de validación de negocio devuelven 422 con el mismo mensaje de texto que antes (sin cambio de redacción); transiciones de estado válidas (happy path) siguen en 200/201 sin cambios; `addDetail` con producto nuevo sigue en 201; suite `PurchaseOrderServiceImplTest` 0 fallos. |
 | **Prueba de flujo ejecutada** | (1) `GET /purchases/orders/status/INVALIDO` (y paginado) → 422 ✅ (antes 500). (2) `PATCH /orders/300/approve` (orden ya APPROVED) → 422 "Solo se pueden aprobar... PENDING" ✅. (3) `PATCH /orders/298/receive` (orden CANCELLED) → 422 "Solo se pueden recibir... APPROVED" ✅. (4) `PATCH /orders/299/cancel` (orden RECEIVED) → 422 "No se puede cancelar... ya recibida" ✅. (5) `PATCH /orders/298/cancel` (ya CANCELLED) → 422 "La orden ya está cancelada." ✅. (6) Happy path: `PATCH /orders/300/receive` (APPROVED→RECEIVED) → 200, stock incrementado correctamente, orden con `receivedAt`/`receivedById` poblados ✅ (sin regresión). (7) `PATCH /orders/300/cancel` (recién RECEIVED) → 422 "ya recibida" ✅. (8) Se creó orden de prueba PENDING (id=305, OC-2026-0083) con 1 detalle (productId 36); `POST /orders/305/details` con el MISMO productId 36 → 422 "ya está en esta orden" ✅; con productId 1 (distinto) → 201, orden con 2 detalles y `totalAmount` recalculado correctamente ✅ (sin regresión). Orden 305 cancelada al finalizar (limpieza). (9) `mvn test -Dtest=PurchaseOrderServiceImplTest,UserServiceImplTest` → 49/49, 0 fallos ✅. (10) Suite completa backend → 13 fallos preexistentes idénticos al baseline (confirmado con `git stash` + re-run del mismo comando) — sin regresión nueva ✅. (11) UI: confirmado que `purchase-order-detail-page.component.ts` (`runTransition`, error handler) muestra `err.error?.message` en snackbar rojo (`snackbar-error`, colores correctos post BUG-M3-20) para cualquier código de error — la UI ya estaba preparada para 422. |
 | BUG-M3-24 | **(Excessive Data Exposure — OWASP API3:2023)** `GET /purchases/orders/{id}` retorna el JSON COMPLETO con `unitPrice`, `subtotal` (en `details[]`) y `totalAmount` (a nivel orden) incluso cuando el solicitante es WAREHOUSEMAN. Verificado con `curl` usando el JWT real de `almacen01` contra `GET /purchases/orders/300` → `HTTP 200` con `"totalAmount":390.00` y `"unitPrice":195.00`/`"subtotal":195.00` en el detalle. El frontend SÍ oculta estas columnas en la UI para WAREHOUSEMAN (VIS-DET-15 ✅), pero el backend no aplica ningún filtrado de campos por rol — cualquier WAREHOUSEMAN puede obtener costos/totales reales inspeccionando la respuesta de red (DevTools → Network) sin necesitar privilegios elevados. | `PurchaseOrderServiceImpl`/`PurchaseOrderResponseDTO` (sin proyección de campos por rol) | ✅ CORREGIDO (2026-06-11) — ver detalle de verificación abajo |
-| BUG-M3-19 | Al abrir el formulario "Editar línea", el "Subtotal" mostraba "$0.00" en lugar del valor real hasta que el usuario modificaba algo. En modo creación, eliminar una línea de detalle pendiente no mostraba diálogo de confirmación (se borraba de inmediato). | purchase-order-detail-form.component.ts (ngOnChanges sin init subtotal) + purchase-order-detail-page.component.ts (removePendingDetail sin dialog) | ✅ CORREGIDO (2026-06-22) — Parte 1: `this.subtotal = detail.quantity * detail.unitPrice` en ngOnChanges. Parte 2: removePendingDetail ahora abre ConfirmDialogComponent (disableClose: true) antes de eliminar. Pendiente de re-verificación en browser en Fase 3. |
+| BUG-M3-19 | Al abrir el formulario "Editar línea", el "Subtotal" mostraba "$0.00" en lugar del valor real hasta que el usuario modificaba algo. En modo creación, eliminar una línea de detalle pendiente no mostraba diálogo de confirmación (se borraba de inmediato). | purchase-order-detail-form.component.ts (ngOnChanges sin init subtotal) + purchase-order-detail-page.component.ts (removePendingDetail sin dialog) | ✅ CORREGIDO y VERIFICADO (2026-06-22 Fase 3) — Parte 1: `this.subtotal = detail.quantity * detail.unitPrice` en ngOnChanges → al abrir "Editar línea" de OC-2026-0160 el Subtotal muestra $960.00 de inmediato (no $0.00) ✅. Parte 2: removePendingDetail abre ConfirmDialogComponent (disableClose: true) → en `/purchases/orders/new` el borrado de línea muestra el diálogo "Eliminar línea — ¿Eliminar '...' de la orden?" y solo borra al confirmar ✅. |
 
 ### BUG-M3-24 — Análisis, corrección y verificación (2026-06-11)
 

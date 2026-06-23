@@ -41,6 +41,7 @@ testem.log
 __screenshots__/
 *.png
 .playwright-mcp/
+/test-results/
 
 # System files
 .DS_Store
