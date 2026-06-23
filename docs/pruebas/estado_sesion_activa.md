@@ -11,13 +11,32 @@
 
 | Campo | Valor |
 |---|---|
-| **Ronda activa** | **Ronda 4 estricta ⛔ INVALIDADA por BUG-M3-23** → Fase 2 completada → **pendiente reiniciar Fase 3 estricta (Ronda 5)** |
+| **Ronda activa** | **Ronda 5 estricta EN CURSO (Fase 3, Compras)** — iniciada 2026-06-23 sobre bundle congelado post-fix BUG-M3-23. |
 | **Protocolo** | 4 fases (ver `protocolo_verificacion_4_fases.md`) |
-| **Fecha de inicio** | 2026-06-22 |
-| **Fase actual** | **FASE 2 COMPLETADA (BUG-M3-23, 2026-06-23)** — fix aplicado + gatekeeper OK + verificado en browser. Próximo: **Fase 3 estricta desde cero (Ronda 5)** sobre el nuevo bundle congelado. |
+| **Fecha de inicio** | 2026-06-22 (Ronda 5 iniciada 2026-06-23) |
+| **Disciplina de documentación incremental** | A petición del usuario (2026-06-23): para no perder contexto ante el límite de uso semanal o cualquier interrupción, este archivo se actualiza **después de cada categoría completada** de la Ronda 5 (no en un único checkpoint). No hay acceso programático al % de uso, por lo que se persiste el progreso de forma continua. La siguiente sesión retoma con "Contexto de recuperación rápida" + la tabla de progreso de la Ronda 5. |
+| **Fase actual** | **FASE 3 ESTRICTA (Ronda 5) EN CURSO.** Congelamiento verificado: frontend+backend en develop, git limpio, 0/0 vs origin (fix BUG-M3-23 pusheado `f7b8e42`); backend 200; frontend 200; 4 usuarios QA autentican 200; dev server sirve bundle fresco (confirmado por VIS-GEN-12). |
 | **Fix BUG-M3-23** | Rama `fix/compras-confirm-dialog-disableclose`. Se agregó `disableClose: true` a los 8 `ConfirmDialogComponent` de transición de estado en 3 componentes: `purchase-order-detail-page` (approve/receive/cancel/removeDetail), `purchase-orders-page` (approve/receive/cancel), `supplier-dialog` (onDeactivate). Gatekeeper: `ng build` prod → 0 errores AOT ✅; `ng test --no-watch` → 456 tests, 0 fallos ✅; `mvn test` → N/A (fix frontend-only, backend sin cambios). Verificado en browser: el diálogo Aprobar ahora permanece abierto tras click en backdrop y tras ESC. **Blast radius: LOCAL (solo Compras)**. |
 | **Regla de congelamiento** | Si se encuentra un bug nuevo durante una ronda → se documenta como ⚠️ ABIERTO, **NO se corrige**, se termina la fase y se vuelve a Fase 2 (ronda invalidada). |
-| **Siguiente acción** | **Reiniciar Fase 3 estricta (Ronda 5)**: congelar el nuevo bundle (commit/merge del fix, dev server sirviendo código nuevo), re-ejecutar los 170 casos de Compras en una sola sesión continua. VIS-GEN-12 debe volver a PASS. Al terminar sin bugs: Fase 4 (`ng build` + `ng test --no-watch --coverage` ≥70% + `mvn test` + commit `chore(qa)`). |
+| **Siguiente acción** | **Continuar Ronda 5 estricta** re-ejecutando los 170 casos de Compras en sesión continua. Categorías pendientes tras el linchpin: SEC, RBAC, CRUD, VAL, BSRCH, UI, FLOW, RN, ERR, EMPTY, resto de VIS, CYBER. Al terminar sin bugs: Fase 4 (`ng build` + `ng test --no-watch --coverage` ≥70% + `mvn test` + commit `chore(qa)`). Si aparece un bug nuevo → documentar ⚠️ ABIERTO, NO corregir, invalidar ronda, volver a Fase 2. |
+
+### Progreso Ronda 5 (estricta, Compras) — actualizar tras cada categoría
+
+| Categoría | Total | PASS | FAIL/ABIERTO | N/A | Estado |
+|---|:---:|:---:|:---:|:---:|:---:|
+| SEC | 6 | 6 | 0 | 0 | ✅ completa — SALES→`/access-denied` (SEC-01/02/03/04), WAREHOUSEMAN `/orders/new`→`/access-denied` (SEC-05), sin token→`/login` (SEC-06). Drift doc: redirige a `/access-denied` no a home (mejora, no defecto) |
+| RBAC | 19 | — | — | — | ⏳ pendiente |
+| CRUD | 21 | — | — | — | ⏳ pendiente |
+| VAL | 19 | — | — | — | ⏳ pendiente |
+| BSRCH | 12 | — | — | — | ⏳ pendiente |
+| UI | 24 | — | — | — | ⏳ pendiente |
+| FLOW | 12 | — | — | — | ⏳ pendiente |
+| RN | 8 | — | — | — | ⏳ pendiente |
+| ERR | 12 | — | — | — | ⏳ pendiente |
+| EMPTY | 8 | — | — | — | ⏳ pendiente |
+| VIS | 14 | 1 | 0 | 0 | 🔄 en curso — **VIS-GEN-12 ✅ PASS** (BUG-M3-23 verificado: diálogo Aprobar permanece abierto tras click en backdrop **y** ESC, en orders-page **y** detail-page; cerrado con Cancelar sin cambiar estado) |
+| CYBER | 15 | — | — | — | ⏳ pendiente |
+| **TOTAL** | **170** | **7** | **0** | **0** | 🔄 Ronda 5 en curso (SEC ✅ + VIS-GEN-12 ✅) |
 
 ---
 
@@ -288,3 +307,4 @@
 | 2026-06-22 | **Fase 3 reinicio COMPLETADA (Compras, blast radius).** Navegador reconectado sobre bundle fresco. Alcance acordado con el usuario: "Solo zonas tocadas por los fixes". Re-ejecutado en browser: BSRCH-ORD-01..05 (búsqueda server-side `f_unaccent`, BUG-M3-15/15b) ✅; VAL-LIN-05 (subtotal $0.00 con cantidad -1, BUG-M3-18) ✅; BUG-M3-19 p1 (subtotal $960 al editar) + p2 (confirm dialog al eliminar línea en creación) ✅; lista proveedores tras fix trackById (BUG-BUILD-01): 116 filas sin errores de consola, búsqueda "logistica"→1 fila (accent-insensitive, tecleo real), "zzznoexiste"→empty-state, limpiar→restaura lista ✅. **0 bugs nuevos, código congelado de principio a fin.** Resultado Compras: 165 PASS · 5 N/A · 0 FAIL · 0 ABIERTO · 0 PENDIENTE. → Listo para Fase 4. |
 | 2026-06-22 | **Fase 4 CERTIFICADA + integración de fixes a develop.** Frontend `ng test` 456 specs 0 fallos, cobertura 88.94% statements; backend `mvn clean test` 405 tests 0 fallos. Se integraron a develop dos fixes de Fase 2 que estaban sin mergear: backend BUG-M3-15b (`fix/purchases-m3-15b-search-cast` → merge `d231270`) y frontend BUG-BUILD-01 (`fix/trackby-strict-templates-build` → merge `6b5b1d6`); doc QA en `chore(qa)` `c323cfc` → merge `0236f27`. Push a `origin/develop` en ambos repos. Limpieza de duplicados de Finder en backend (`Dockerfile 2`, etc.). |
 | 2026-06-22 | **Limpieza L33 de datos QA (proveedores).** Desactivados 101 proveedores de prueba vía `DELETE /api/v1/purchases/suppliers/{id}` (soft-delete): 1 XSS (`XSSTST999AA1`), 50 `AINT*` (integración), 50 `MGBR*` (RBAC). Verificación post-limpieza: 19 proveedores activos, todos reales, 0 coincidencias QA. |
+| 2026-06-23 | **Ronda 5 estricta INICIADA + PAUSA solicitada por el usuario.** Push de `f7b8e42` (fix BUG-M3-23) a `origin/develop` → ambos repos 0/0 vs origin. Congelamiento verificado (backend 200, frontend 200, 4 usuarios QA 200, bundle fresco). Se activó **disciplina de documentación incremental** (actualizar este archivo tras cada categoría). **Progreso Ronda 5: 7/170 PASS** → VIS-GEN-12 ✅ (BUG-M3-23 verificado en orders-page + detail-page: diálogo Aprobar no cierra con backdrop ni ESC) y **categoría SEC 6/6 ✅** (SALES/WH → `/access-denied`; sin token → `/login`). **⏸️ PAUSA aquí.** Próxima categoría a ejecutar: **RBAC (19 casos)**. Retomar con los pasos de "Contexto de recuperación rápida": re-obtener los 4 tokens JWT, abrir tab nuevo en http://localhost:4200, y continuar la tabla "Progreso Ronda 5". Nota: el localStorage del navegador quedó sin token tras SEC-06 (estado limpio). |
