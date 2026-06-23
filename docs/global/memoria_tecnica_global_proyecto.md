@@ -1405,6 +1405,53 @@ limpia sistemáticamente.
 
 ---
 
+### L36: Protocolo de verificación en 4 fases — gatekeeper `ng build`, congelamiento de bundle, y lectura estricta de la Fase 3 (BUG-BUILD-01)
+
+**Origen (2026-06-22)**: una primera ronda de casos de prueba encontró bugs, se corrigieron,
+y la segunda ronda encontró nuevos bugs — algunos causados por los fixes. Causa raíz: las fases
+de "probar" y "corregir" estaban mezcladas. La respuesta sistémica es el
+`docs/pruebas/protocolo_verificacion_4_fases.md` (Fase 1 inventario → Fase 2 corrección +
+gatekeeper → Fase 3 re-ejecución sobre código congelado → Fase 4 certificación). Aplica a
+TODAS las rondas de verificación de TODOS los módulos.
+
+**Reglas obligatorias — MANDATORIAS**:
+
+```
+[ ] Una ronda solo es válida si se ejecuta íntegra sobre código congelado, sin
+    modificaciones de fuente entre el primer y el último caso. Un bug nuevo en Fase 3 se
+    documenta (NO se corrige), se termina la fase y se vuelve a Fase 2 (la ronda se invalida).
+[ ] Gatekeeper de Fase 2/4: `ng build` (0 errores AOT) + `ng test --no-watch` (0 fallos) +
+    `mvn test` (0 fallos nuevos). `ng build` NO es opcional — el runner Vitest (Angular 21,
+    @angular/build:unit-test) NO aplica el type-check AOT estricto de templates
+    (strictTemplates); 456 specs pueden pasar con el build de producción ROTO (BUG-BUILD-01:
+    errores TS2322 en trackById por DTOs con id: number | null). El flag de cobertura es
+    `--coverage`, NO `--code-coverage`.
+[ ] Precondición de congelamiento antes del primer caso: git limpio en develop en ambos
+    repos sin nada por delante de origin; backend 200; dev server 200; 4 usuarios QA
+    autentican; y el dev server sirve el código ACTUAL (no un bundle stale — un ng serve
+    viejo con HMR que no recompiló INVALIDA toda la ronda). Ante duda: kill ng serve +
+    rm -rf .angular/cache + reinicio limpio + reiniciar la extensión del navegador.
+[ ] Lectura estricta vs. por blast radius: la nota de cierre de cada ronda DEBE declarar
+    cuál Fase 3 se aplicó. "Por blast radius" = solo zonas tocadas por los fixes (rápida).
+    "Estricta" = TODOS los casos del módulo en una sola sesión continua. Solo una Fase 3
+    ESTRICTA habilita declarar el módulo CERTIFICADO bajo Propuesta D.
+```
+
+**Catálogo de técnicas de verificación por categoría** (SEC/RBAC/CRUD/VAL/BSRCH/UI/FLOW/RN/
+ERR/EMPTY/VIS/CYBER): documentado en `docs/pruebas/protocolo_verificacion_4_fases.md`,
+reutilizable en todos los módulos. Claves: **tecleo real** (no inyección JS de eventos `input`,
+que tiene carrera con `debounceTime`) para búsquedas/formularios; **`getComputedStyle()` con RGB
+exacto** para VIS (no inspección visual); **ausencia en el DOM** (no `display:none`) para datos
+sensibles por rol; **`curl` con JWT por rol** para probar la redacción server-side (L29);
+identificar **arquitectura de búsqueda server-side vs client-side** antes de probar BSRCH;
+**agrupar casos por rol** para minimizar re-logins.
+
+**Por qué**: separar estrictamente "probar" de "corregir" es la única forma de obtener un
+documento de casos que refleje una ejecución coherente sobre una única versión del sistema.
+El gatekeeper `ng build` cierra el hueco entre "los tests pasan" y "el producto compila".
+
+---
+
 ## 10. Roadmap
 
 ### Backend — pendiente

@@ -67,12 +67,21 @@ resumen de cobertura actualizado, lista de bugs con estado `⚠️ ABIERTO`.
 
 **Reglas**:
 - Cada fix se aplica en su propia `fix/<nombre>` branch
-- Por cada fix, ANTES de mergear:
+- Por cada fix, ANTES de mergear, el **gatekeeper automatizado obligatorio** (los tres, en orden):
+  - `ng build` → 0 errores (frontend) — **NO omitir** (ver lección BUG-BUILD-01 abajo)
   - `ng test --no-watch` → 0 fallos (frontend)
   - `mvn test -Djacoco.skip=true` → 0 fallos nuevos respecto al baseline (backend)
 - Documentar el **blast radius** de cada fix (ver tabla abajo)
 - Actualizar el historial de bugs del documento de casos con estado `✅ CORREGIDO`
 - No marcar casos individuales como PASS todavía — eso se hace en Fase 3
+
+> **⚠️ Lección BUG-BUILD-01 (gatekeeper DEBE incluir `ng build`):** el runner de tests
+> de Angular 21 es **Vitest** (`@angular/build:unit-test`), cuya compilación **NO aplica el
+> type-check AOT estricto de templates (`strictTemplates`)** que sí aplican `ng build` y
+> `ng serve`. Resultado real observado: 456 specs pasaban (`ng test` verde) pero el build de
+> producción estaba **roto** (errores TS2322 en `trackById` por DTOs con `id: number | null`).
+> Un gatekeeper que solo corre `ng test` deja pasar código que no compila en producción.
+> Por eso `ng build` es obligatorio y va **primero**.
 
 **Blast radius — qué determina qué módulos hay que re-probar en Fase 3**:
 
@@ -131,15 +140,21 @@ caso en ⏳ PENDIENTE.
 **Pasos**:
 
 ```bash
-# Frontend
-ng test --no-watch --code-coverage
+# Frontend — el builder @angular/build:unit-test usa --coverage (NO --code-coverage)
+ng build                       # primero: 0 errores AOT (strictTemplates) — gatekeeper de build
+ng test --no-watch --coverage
 # → Resultado esperado: X specs, 0 failures; statements ≥ 70%
 
 # Backend
 cd /Users/davidreynapineda/Documents/Proyecto\ desarrollo/codigo/backend/almacenes
-./mvnw test -Djacoco.skip=true
+./mvnw test -Djacoco.skip=true   # o `mvn clean test` si target/ quedó corrupto (ver nota JaCoCo)
 # → Resultado esperado: 0 nuevos fallos (respecto al baseline documentado)
 ```
+
+> **Nota — flag de cobertura**: el builder `@angular/build:unit-test` (Angular 21, Vitest)
+> usa `--coverage`, **no** `--code-coverage` (este último lanza `Unknown argument: code-coverage`).
+> **Nota — JaCoCo corrupto**: si `mvn test` falla con `wrong name: com 2/codigo2enter...`, las
+> clases en `target/` quedaron corruptas; resolver con `mvn clean test`.
 
 **Documentar en `estado_sesion_activa.md`**:
 - Fecha de certificación
@@ -157,8 +172,97 @@ Fase 1 (inventario), Fase 2 (correcciones), Fase 3 (re-ejecución),
 Fase 4 (certificación) completadas. X casos verificados, 0 bugs abiertos.
 ng test: X specs, 0 fallos. Cobertura: X%.
 
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 ```
+
+---
+
+## Verificación de congelamiento — precondiciones de TODA ronda (Fase 1 y Fase 3)
+
+Antes de ejecutar el **primer** caso de una ronda, confirmar que el código está congelado
+y que el browser ejecuta exactamente ese código (no un bundle stale). Si cualquiera falla,
+la ronda no debe iniciarse.
+
+```
+[ ] 1. git status en ambos repos (frontend + backend) → working tree limpio en `develop`,
+       nada por delante de origin (todo el código bajo prueba está mergeado y empujado)
+[ ] 2. Backend arriba: POST /api/v1/auth/login admin/Admin123! → HTTP 200 con token
+[ ] 3. Dev server arriba: GET http://localhost:4200 → HTTP 200
+[ ] 4. Los 4 usuarios QA autentican: admin / qa_manager / qa_warehouse / qa_sales → HTTP 200
+[ ] 5. El dev server sirve el código ACTUAL, no un bundle stale (ver lección abajo)
+```
+
+> **⚠️ Lección bundle stale (invalida toda la ronda):** un `ng serve` viejo cuyo HMR no
+> recompiló sirve código obsoleto — el navegador prueba código que ya no existe en `develop`,
+> y todos los PASS de la ronda son falsos. Ante cualquier duda sobre la frescura del bundle:
+> - **Verificación de runtime**: inspeccionar en consola que una función del bundle coincide
+>   con la fuente (p.ej. `componenteInstancia.getByStatus.toString()` contiene el fix esperado), **o**
+> - **Reinicio limpio (recomendado para certificación estricta)**: `kill` del proceso `ng serve`
+>   + `rm -rf .angular/cache` + `ng serve` desde cero, y reiniciar la extensión del navegador.
+>
+> El reinicio limpio es la opción más segura cuando hubo fixes en la fase previa.
+
+---
+
+## Lectura estricta vs. alcance por blast radius de la Fase 3
+
+La Fase 3 admite dos lecturas, y debe declararse explícitamente cuál se está aplicando, porque
+cambia el significado de la certificación:
+
+| Lectura | Qué re-ejecuta | Cuándo es suficiente | Riesgo |
+|---|---|---|---|
+| **Por blast radius** (pragmática) | Solo las zonas alcanzadas por los fixes de la ronda (fix local → solo ese módulo; fix global → los 5 módulos) | Iteración rápida post-fix; el resto del módulo no fue tocado y ya tenía PASS reciente | Un cambio de comportamiento fuera de la zona del fix no se detecta |
+| **Estricta** (literal del protocolo) | TODOS los casos del módulo (o de todos los módulos del blast radius) de principio a fin, en una sola sesión continua, sobre el mismo bundle congelado | Certificación formal de cierre de módulo; auditoría; "done" según Propuesta D | Costosa en tiempo y sesiones — usar `estado_sesion_activa.md` para sobrevivir interrupciones |
+
+> **Regla de declaración**: en el documento de casos, la nota de cierre de la ronda DEBE
+> indicar cuál lectura se aplicó. Una ronda "por blast radius" **no** puede declararse como
+> certificación estricta. Para declarar un módulo CERTIFICADO bajo Propuesta D se requiere
+> una Fase 3 de **lectura estricta**.
+
+---
+
+## Catálogo de técnicas de verificación en browser (reutilizable en todos los módulos)
+
+Estas técnicas se destilaron de la certificación del módulo Compras y aplican a Inventario,
+Reports, Sales y Usuarios. Cada categoría de caso (SEC, RBAC, CRUD, VAL, BSRCH, UI, FLOW, RN,
+ERR, EMPTY, VIS, CYBER) tiene una técnica de verificación preferida:
+
+| Categoría | Técnica de verificación preferida | Herramienta |
+|---|---|---|
+| `SEC` | Navegación directa por URL con el rol MENOS privilegiado → confirmar redirect (no basta ocultar el item del sidebar) | `navigate` + observar URL final |
+| `RBAC` (UI) | Login con cada rol; verificar presencia/ausencia en el **DOM** (no `display:none`) de botones/columnas/títulos | `read_page` / `javascript_tool` querySelector |
+| `RBAC` (campos sensibles) | `curl` del endpoint con el JWT de cada rol → confirmar campo `null`/redactado en el JSON (no solo oculto en UI) — patrón L29 | `Bash` + curl |
+| `CRUD` | Flujo completo en browser: crear/editar/desactivar + confirmar recarga de lista y snackbar | `computer` (tecleo real) |
+| `VAL` | Validación inline bajo el campo tras `blur`; estado `[disabled]` del botón guardar | `read_page` + `javascript_tool` |
+| `BSRCH` | **Tecleo real** (no inyección JS de eventos `input`): parcial, case-insensitive, accent-insensitive (`f_unaccent`), sin resultados, limpiar | `computer` typing |
+| `UI` | Cada botón/ícono uno a uno; en filas clickeables confirmar `$event.stopPropagation()` | `computer` click + observar |
+| `FLOW` | Máquina de estados completa: cada transición y su bloqueo; confirmar badge + historial | `computer` + `read_page` |
+| `RN` | Para cada regla del `*ServiceImpl`: el componente muestra el dato correcto, valida preventivo, y muestra el error del backend | browser + `curl` para forzar el rechazo |
+| `ERR` | Snackbar visible con color correcto (verde #2E7D32 / rojo #C62828) y mensaje del backend | `javascript_tool` getComputedStyle |
+| `EMPTY` | Distinguir "sin datos" vs "sin resultados de búsqueda" (mensajes distintos) | `read_page` |
+| `VIS` | Colores/espaciado/truncado vía `getComputedStyle()` con valores RGB exactos, no inspección visual | `javascript_tool` getComputedStyle |
+| `CYBER` | `curl` directo a la API (SQLi, XSS almacenado, bypass de rol, transición inválida, JWT manipulado, CORS); mapear a OWASP ASVS L1 | `Bash` + curl + DevTools |
+
+### Técnicas transversales (lecciones de ejecución)
+
+1. **Tecleo real vs. inyección JS** — disparar eventos `input` por JS sobre inputs de
+   Angular Material reactive-forms da lecturas del DOM engañosas (carrera con `debounceTime`).
+   El **tecleo real** con la herramienta `computer` es fiable para búsquedas y formularios.
+2. **`getComputedStyle()` con RGB exacto** — para casos VIS, comparar el valor RGB real
+   (`rgb(107,60,107)` = `#6B3C6B`) en vez de "se ve morado". Documentar el RGB en la nota del caso.
+3. **Ausencia en el DOM, no `display:none`** — para datos sensibles por rol, confirmar que
+   el elemento **no está en el DOM** (`querySelector(...) === null`), no solo oculto por CSS.
+4. **`curl` con JWT por rol para redacción de campos** — la única forma de probar que el
+   **backend** redacta (no solo el frontend oculta) es pedir el endpoint con cada JWT y leer el JSON.
+5. **Arquitectura de búsqueda: server-side vs. client-side** — identificar cuál usa cada lista
+   antes de probar BSRCH. Server-side (`?search=` → native query `f_unaccent`) se prueba con
+   términos que excedan la página actual; client-side filtra solo lo ya cargado.
+6. **Agrupar por rol para minimizar re-logins** — ejecutar todos los casos de un rol antes de
+   cambiar de usuario (ADMIN → MANAGER → WAREHOUSEMAN → SALES). Re-obtener tokens al inicio de cada módulo.
+7. **Datos de prueba prefijados y limpiados (L33)** — todo dato creado durante la ronda se
+   prefija (`[QA] `/`TEST_`) y se desactiva/elimina antes de cerrar el módulo.
+8. **Evitar diálogos nativos del navegador** — no disparar `alert/confirm/prompt`; bloquean
+   la extensión. Usar `console.log` + `read_console_messages` para depurar.
 
 ---
 
@@ -206,4 +310,5 @@ Un módulo está certificado cuando:
 |---|---|---|---|---|
 | Ronda 1 | 2026-06-08 | 2026-06-13 | ⚠️ Incompleta | Fases mezcladas; bugs corregidos durante testing — invalida los PASS previos al fix |
 | Ronda 2 | 2026-06-21 | 2026-06-21 | ⚠️ Parcial | Re-ejecución de módulos seleccionados; 6 bugs abiertos en Compras sin corregir |
-| Ronda 3 | 2026-06-22 | — | 🔄 En curso | Protocolo 4 fases aplicado por primera vez. Ver `estado_sesion_activa.md` |
+| Ronda 3 | 2026-06-22 | 2026-06-22 | ✅ Compras (alcance por blast radius) | Protocolo 4 fases aplicado por primera vez. Fase 3 **por blast radius** de los fixes BUG-M3-15b/BUG-BUILD-01 (no estricta). Frontend 456 specs/88.94%, backend 405 tests. |
+| Ronda 4 | 2026-06-22 | — | 🔄 En curso | Compras — Fase 3 de **lectura estricta**: re-ejecución de los 170 casos en una sola sesión continua sobre código congelado. Ver `estado_sesion_activa.md` |
