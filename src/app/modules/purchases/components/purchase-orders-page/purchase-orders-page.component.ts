@@ -177,6 +177,7 @@ export class PurchaseOrdersPageComponent implements OnInit {
         message: `¿Aprobar la orden ${order.orderNumber}? Los detalles quedarán bloqueados.`,
         confirmLabel: 'Aprobar',
       },
+      disableClose: true,
     }).afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(ok => {
       if (!ok) return;
       this.executeTransition(() => this.orderService.approve(order.id),
@@ -191,6 +192,7 @@ export class PurchaseOrdersPageComponent implements OnInit {
         message: `¿Confirmar recepción de la orden ${order.orderNumber}? Se incrementará el stock de todos los productos.`,
         confirmLabel: 'Recibir',
       },
+      disableClose: true,
     }).afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(ok => {
       if (!ok) return;
       this.executeTransition(() => this.orderService.receive(order.id),
@@ -206,6 +208,7 @@ export class PurchaseOrdersPageComponent implements OnInit {
         confirmLabel: 'Cancelar orden',
         confirmColor: 'warn',
       },
+      disableClose: true,
     }).afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(ok => {
       if (!ok) return;
       this.executeTransition(() => this.orderService.cancel(order.id),

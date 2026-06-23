@@ -198,6 +198,7 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
     }
     this.dialog.open(ConfirmDialogComponent, {
       data: { title: 'Aprobar orden', message: `¿Aprobar la orden ${this.order.orderNumber}? Los detalles quedarán bloqueados.`, confirmLabel: 'Aprobar' },
+      disableClose: true,
     }).afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(ok => {
       if (!ok) return;
       this.runTransition(() => this.orderService.approve(this.order!.id), 'Orden aprobada.');
@@ -207,6 +208,7 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
   receive(): void {
     this.dialog.open(ConfirmDialogComponent, {
       data: { title: 'Recibir mercancía', message: `¿Confirmar recepción? Se incrementará el stock de todos los productos de la orden.`, confirmLabel: 'Recibir' },
+      disableClose: true,
     }).afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(ok => {
       if (!ok) return;
       this.runTransition(
@@ -220,6 +222,7 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
   cancel(): void {
     this.dialog.open(ConfirmDialogComponent, {
       data: { title: 'Cancelar orden', message: `¿Cancelar la orden ${this.order!.orderNumber}? Esta acción es irreversible.`, confirmLabel: 'Cancelar orden', confirmColor: 'warn' },
+      disableClose: true,
     }).afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(ok => {
       if (!ok) return;
       this.runTransition(() => this.orderService.cancel(this.order!.id), 'Orden cancelada.');
@@ -330,6 +333,7 @@ export class PurchaseOrderDetailPageComponent implements OnInit {
     }
     this.dialog.open(ConfirmDialogComponent, {
       data: { title: 'Eliminar línea', message: `¿Eliminar "${detail.productName}" de la orden?`, confirmLabel: 'Eliminar', confirmColor: 'warn' },
+      disableClose: true,
     }).afterClosed().pipe(takeUntilDestroyed(this.destroyRef)).subscribe(ok => {
       if (!ok) return;
       this.loading = true;
