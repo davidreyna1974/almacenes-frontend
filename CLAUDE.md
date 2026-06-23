@@ -425,7 +425,10 @@ verificaciones. No basta con que el código compile y los tests unitarios pasen.
 
 **FASE 2 — Corrección + gatekeeper automatizado**
 - Corregir todos los bugs del inventario en ciclo de desarrollo normal
-- Por cada fix: ejecutar `ng test --no-watch` + backend `mvn test` → 0 fallos antes de continuar
+- Por cada fix: gatekeeper obligatorio en orden → `ng build` (0 errores AOT) + `ng test --no-watch`
+  (0 fallos) + backend `mvn test` (0 fallos nuevos) antes de continuar.
+  ⚠️ **`ng build` NO es opcional** (BUG-BUILD-01): el runner Vitest no aplica el type-check AOT
+  estricto de templates (`strictTemplates`) — 456 specs pueden pasar con el build de producción roto.
 - Documentar el **blast radius** de cada fix:
   - Fix en un componente local → solo ese módulo necesita re-prueba en Fase 3
   - Fix en interceptor, guard, SecurityConfig, servicio global → **todos los módulos** en Fase 3
@@ -435,9 +438,20 @@ verificaciones. No basta con que el código compile y los tests unitarios pasen.
 - Mismo orden, misma versión del código, de principio a fin
 - Si se encuentra un bug nuevo → documentar, NO corregir, terminar la fase → volver a Fase 2
 - La fase solo está completa cuando todos los casos terminan en ✅ PASS o N/A sin haber tocado código
+- **Lectura estricta vs. por blast radius**: la nota de cierre de la ronda DEBE declarar cuál se
+  aplicó. "Por blast radius" = solo zonas tocadas por los fixes (iteración rápida). "Estricta" =
+  TODOS los casos del módulo en una sola sesión continua sobre el bundle congelado. **Solo una
+  Fase 3 estricta habilita declarar el módulo CERTIFICADO** bajo Propuesta D.
+- **Antes del primer caso**: completar la verificación de congelamiento (git limpio en develop en
+  ambos repos sin nada por delante de origin, backend 200, dev server 200, 4 usuarios QA autentican,
+  y el dev server sirve el código actual — no un bundle stale; ante duda, reinicio limpio).
+- El **catálogo de técnicas de verificación por categoría** (tecleo real vs. inyección JS,
+  `getComputedStyle` con RGB exacto, ausencia en DOM, `curl` con JWT por rol para redacción
+  server-side, server-side vs client-side search) está en `docs/pruebas/protocolo_verificacion_4_fases.md`.
 
 **FASE 4 — Certificación**
-- `ng test --no-watch --code-coverage` → cobertura ≥ 70%, 0 fallos
+- `ng build` → 0 errores AOT; `ng test --no-watch --coverage` → cobertura ≥ 70%, 0 fallos
+  (el builder `@angular/build:unit-test` usa `--coverage`, **no** `--code-coverage`)
 - Backend `mvn test` → 0 fallos (o solo los preexistentes documentados con justificación)
 - Actualizar `docs/pruebas/estado_sesion_activa.md` con resultado CERTIFICADO
 - Actualizar el resumen de cobertura en cada documento de casos afectado
@@ -937,8 +951,8 @@ ng serve
 # Ejecutar tests unitarios
 ng test
 
-# Ejecutar tests con cobertura
-ng test --code-coverage
+# Ejecutar tests con cobertura (Angular 21 / @angular/build:unit-test usa --coverage)
+ng test --no-watch --coverage
 
 # Build de producción
 ng build --configuration=production

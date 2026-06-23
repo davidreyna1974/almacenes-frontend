@@ -28,6 +28,18 @@
 
 **Estados:** `✅ PASS` | `❌ FAIL` | `⏳ PENDIENTE` | `N/A`
 
+> **Protocolo de ejecución**: toda ronda de verificación de este documento sigue el
+> `docs/pruebas/protocolo_verificacion_4_fases.md` (Fase 1 inventario → Fase 2 corrección +
+> gatekeeper → Fase 3 re-ejecución sobre código congelado → Fase 4 certificación). Antes de
+> ejecutar el primer caso, completar la **verificación de congelamiento** (precondiciones) de
+> ese protocolo. El catálogo de **técnicas de verificación por categoría** (tecleo real,
+> `getComputedStyle` RGB, ausencia en DOM, `curl` por rol, server-side vs client-side search)
+> también vive en ese documento — usarlo como guía de CÓMO probar cada categoría.
+>
+> **Lectura estricta vs. por blast radius**: la nota de cierre de cada ronda DEBE declarar
+> cuál lectura de la Fase 3 se aplicó. Solo una Fase 3 de **lectura estricta** (todos los casos
+> en una sola sesión continua sobre código congelado) habilita declarar el módulo CERTIFICADO.
+
 ---
 
 ## ⚠️ Lecciones MANDATORIAS (L29-L33) — aplicar desde el diseño inicial
@@ -332,6 +344,34 @@
 
 ---
 
+## 6. Validaciones de ciberseguridad (CYBER)
+
+> Cubren OWASP Top 10 / ASVS v4 L1 aplicable al stack Angular + Spring Boot + JWT + PostgreSQL,
+> con foco en los endpoints y campos sensibles del módulo. Ejecutar con DevTools
+> (Network/Console/Application→LocalStorage) y `curl` contra `http://localhost:8080/api/v1/...`.
+> Mapear cada caso a su requisito ASVS L1 en una tabla previa (ver módulo Compras §9.0 como ejemplo).
+> ⚠️ Si algún caso falla, documentar el bug con estado `⚠️ ABIERTO` — NO corregir sin autorización.
+
+| ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
+|---|---|---|---|---|---|---|
+| CYBER-01 | El JWT decodificado no contiene contraseña ni datos sensibles en el payload | [ROL] | Sesión activa | Claims limitados a `sub`, `roles`, `iat`, `exp` | ⏳ PENDIENTE | |
+| CYBER-02 | Rol sin acceso con JWT manipulado (incluye `ROLE_ADMIN` falso) → backend rechaza | [ROL_SIN_ACCESO] | Editar JWT en localStorage | HTTP 401 (firma inválida); frontend redirige a login sin renderizar UI privilegiada | ⏳ PENDIENTE | L30 — JwtAuthenticationEntryPoint |
+| CYBER-03 | Eliminar el JWT de localStorage con sesión activa y recargar | [ROL] | Sesión activa | Redirige a `/login`; peticiones siguientes → 401 | ⏳ PENDIENTE | |
+| CYBER-04 | Inyección SQL en búsquedas: `' OR '1'='1`, `'; DROP TABLE x;--` | [ROL] | Campos de búsqueda | Sin error 500; texto literal; tablas intactas | ⏳ PENDIENTE | |
+| CYBER-05 | XSS almacenado: crear registro con `<script>alert(1)</script>` | [ROL_ESCRITURA] | Formulario de creación | Se guarda como texto; al listar se muestra escapado, sin ejecutar | ⏳ PENDIENTE | |
+| CYBER-06 | XSS reflejado vía query param `?search=<img src=x onerror=alert(1)>` | [ROL] | URL manual | Valor tratado como texto; ningún script ejecuta | ⏳ PENDIENTE | |
+| CYBER-07 | Response JSON NO incluye campos sensibles para rol sin permiso (L29) | [ROL_SIN_ACCESO] | DevTools → Network | Campos sensibles `null` en el JSON (no solo ocultos en UI) | ⏳ PENDIENTE | redacción server-side |
+| CYBER-08 | Acceso directo a la API sin token (`curl` sin Authorization) | (sin JWT) | Backend corriendo | HTTP 401 Unauthorized | ⏳ PENDIENTE | |
+| CYBER-09 | Rol con permiso limitado intenta operación de escritura no autorizada vía `curl` | [ROL_LIMITADO] | JWT válido del rol | HTTP 403 Forbidden | ⏳ PENDIENTE | |
+| CYBER-10 | Mensajes de error sin stack traces, rutas, ni nombres de tablas/clases | [ROL] | Forzar error | Mensaje de negocio legible; sin trazas Java/SQL | ⏳ PENDIENTE | |
+| CYBER-11 | JWT expirado/manipulado durante edición → 401, redirige a login | [ROL] | JWT firma inválida | HTTP 401; redirect `/login?reason=expired`; sin corromper datos | ⏳ PENDIENTE | |
+| CYBER-12 | Transición de estado inválida forzada vía API (si aplica máquina de estados) | [ROL] | Estado no permitido | HTTP 422/409; estado NO cambia | ⏳ PENDIENTE | N/A si el módulo no tiene máquina de estados |
+| CYBER-13 | CORS no permite `Allow-Origin: *` con `Allow-Credentials: true` | — | `curl -I` con Origin arbitrario | CORS restringido (lista explícita, sin wildcard) | ⏳ PENDIENTE | global — BUG-INV-15 |
+| CYBER-14 | Caracteres HTML especiales (`"`,`<`,`>`,`&`) no rompen layout ni inyectan atributos | [ROL_ESCRITURA] | Campo con `"><svg onload=alert(1)>` | Texto literal; sin alteración del DOM | ⏳ PENDIENTE | |
+| CYBER-15 | Validación server-side independiente del cliente (`curl` con payload inválido) | [ROL] | Request manual evitando Validators de Angular | HTTP 400/422; backend rechaza con Bean Validation | ⏳ PENDIENTE | |
+
+---
+
 ## Historial de bugs encontrados en este módulo
 
 | Bug ID | Descripción | Dónde se encontró | Estado |
@@ -349,10 +389,14 @@
 Antes de declarar el módulo **done**, verificar que se cumplen las 4 condiciones:
 
 ```
-[ ] 1. Todos los casos de este documento tienen estado ✅ PASS — ninguna fila ⏳ PENDIENTE
-[ ] 2. ng test --no-watch → 0 fallos; cobertura ≥ 70% statements
-[ ] 3. Prueba browser completada con CADA ROL que tiene acceso al módulo
-[ ] 4. Memoria técnica §10 actualizada con resultado final
+[ ] 1. Todos los casos de este documento tienen estado ✅ PASS o N/A — ninguna fila ⏳ PENDIENTE
+[ ] 2. ng build → 0 errores AOT (gatekeeper de build — BUG-BUILD-01); ng test --no-watch
+       --coverage → 0 fallos, cobertura ≥ 70% statements (flag es --coverage, no --code-coverage)
+[ ] 3. Prueba browser completada con CADA ROL que tiene acceso al módulo, en una Fase 3 de
+       lectura ESTRICTA (todos los casos, una sola sesión continua, código congelado)
+[ ] 4. Backend mvn test → 0 fallos nuevos respecto al baseline
+[ ] 5. Memoria técnica §10 actualizada con resultado final; estado_sesion_activa.md actualizado;
+       commit chore(qa) de certificación en develop
 ```
 
 ### Checklist adicional — Lecciones L29-L33 (mandatorio)
