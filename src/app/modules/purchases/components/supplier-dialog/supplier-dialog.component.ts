@@ -88,6 +88,7 @@ export class SupplierDialogComponent {
         confirmLabel: 'Desactivar',
         confirmColor: 'warn',
       },
+      disableClose: true,
     });
 
     confirmRef.afterClosed()

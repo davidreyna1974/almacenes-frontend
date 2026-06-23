@@ -11,11 +11,13 @@
 
 | Campo | Valor |
 |---|---|
-| **Ronda activa** | Ronda 3 |
+| **Ronda activa** | **Ronda 4 estricta ⛔ INVALIDADA por BUG-M3-23** → Fase 2 completada → **pendiente reiniciar Fase 3 estricta (Ronda 5)** |
 | **Protocolo** | 4 fases (ver `protocolo_verificacion_4_fases.md`) |
 | **Fecha de inicio** | 2026-06-22 |
-| **Fase actual** | FASE 3 COMPLETADA (Compras) → lista para FASE 4 (certificación) |
-| **Siguiente acción** | Fase 4 de Compras: `ng test --code-coverage` (≥70%, 0 fallos) + `mvn test` (0 fallos) + commit `chore(qa): verificación completa 4 fases — 2026-06-22`. Pendiente de menor prioridad: merge de `fix/trackby-strict-templates-build` (cf5eefb) a develop con `--no-ff`; limpieza L33 de datos QA residuales (proveedor XSS, AINT*/MGBR*) |
+| **Fase actual** | **FASE 2 COMPLETADA (BUG-M3-23, 2026-06-23)** — fix aplicado + gatekeeper OK + verificado en browser. Próximo: **Fase 3 estricta desde cero (Ronda 5)** sobre el nuevo bundle congelado. |
+| **Fix BUG-M3-23** | Rama `fix/compras-confirm-dialog-disableclose`. Se agregó `disableClose: true` a los 8 `ConfirmDialogComponent` de transición de estado en 3 componentes: `purchase-order-detail-page` (approve/receive/cancel/removeDetail), `purchase-orders-page` (approve/receive/cancel), `supplier-dialog` (onDeactivate). Gatekeeper: `ng build` prod → 0 errores AOT ✅; `ng test --no-watch` → 456 tests, 0 fallos ✅; `mvn test` → N/A (fix frontend-only, backend sin cambios). Verificado en browser: el diálogo Aprobar ahora permanece abierto tras click en backdrop y tras ESC. **Blast radius: LOCAL (solo Compras)**. |
+| **Regla de congelamiento** | Si se encuentra un bug nuevo durante una ronda → se documenta como ⚠️ ABIERTO, **NO se corrige**, se termina la fase y se vuelve a Fase 2 (ronda invalidada). |
+| **Siguiente acción** | **Reiniciar Fase 3 estricta (Ronda 5)**: congelar el nuevo bundle (commit/merge del fix, dev server sirviendo código nuevo), re-ejecutar los 170 casos de Compras en una sola sesión continua. VIS-GEN-12 debe volver a PASS. Al terminar sin bugs: Fase 4 (`ng build` + `ng test --no-watch --coverage` ≥70% + `mvn test` + commit `chore(qa)`). |
 
 ---
 
@@ -65,7 +67,73 @@
 
 ---
 
-## FASE 3 — Re-ejecución completa (estado: ✅ COMPLETADA — Compras, 2026-06-22)
+## FASE 3 — Re-ejecución ESTRICTA (Ronda 4 — Compras) — ⛔ INVALIDADA (BUG-M3-23, 2026-06-23)
+
+> **⛔ RONDA INVALIDADA.** Durante la re-ejecución estricta (continuada el 2026-06-23 sobre el
+> mismo bundle congelado) se encontró un bug nuevo en VIS-GEN-12 → **BUG-M3-23**. Conforme al
+> protocolo de 4 fases (regla fundamental: una ronda solo es válida si se ejecuta íntegra sin
+> hallazgos que obliguen a tocar código), **la ronda queda invalidada y NO se corrigió durante
+> la ronda**. Próximo paso: **Fase 2** (corregir BUG-M3-23 + gatekeeper `ng build` + `ng test
+> --no-watch` + `mvn test`), y luego **reiniciar la Fase 3 estricta desde cero**.
+>
+> **BUG-M3-23 — diálogos de confirmación de transición de estado sin `disableClose: true`.**
+> En `purchase-order-detail-page.component.ts` los métodos `approve()` (L199), `receive()`
+> (L208), `cancel()` (L220) y `removeDetail()` (L331) abren `ConfirmDialogComponent` SIN
+> `disableClose: true`. Verificado en browser: el diálogo "Aprobar orden" (backdrop modal
+> `cdk-overlay-dark-backdrop`) **se cierra al hacer click fuera** (la orden queda "Pendiente"
+> porque `afterClosed` devuelve `undefined`). Viola **L31** ("todo MatDialog que pueda generar
+> cambios de estado se abre con `disableClose: true` por defecto"). Único diálogo correcto:
+> `removePendingDetail()` (L276). **Blast radius del fix: LOCAL** (solo componente
+> `purchase-order-detail-page`) → en la próxima Fase 3 solo Compras necesita re-prueba.
+> El PASS previo de VIS-GEN-12 (Re-test 2026-06-11) fue una observación incorrecta: la lectura
+> estricta de la Ronda 4 lo detectó. Es exactamente el tipo de defecto que el protocolo busca.
+
+> **Ronda 4 (lectura estricta)**: a diferencia de Ronda 3 (blast radius), aquí se re-ejecutan
+> TODOS los casos de Compras (170) en una sola sesión continua sobre el bundle congelado
+> (HEAD `8847c17`, app src = `cf5eefb`). Único modo que habilita declarar el módulo CERTIFICADO
+> bajo Propuesta D. Ningún cambio de fuente entre el primer y el último caso.
+>
+> **Técnicas aplicadas** (catálogo en `protocolo_verificacion_4_fases.md`): tecleo real para
+> BSRCH/VAL; `getComputedStyle()` RGB exacto para VIS; presencia/ausencia en DOM para RBAC/datos
+> sensibles; `fetch`/`curl` con JWT por rol para SEC/CYBER/redacción de campos (L29); agrupación
+> por rol para minimizar re-logins.
+
+### Progreso Ronda 4 (estricta) por categoría — Compras
+
+> Estado al momento de la invalidación (todos los casos ejecutados ANTES de encontrar
+> BUG-M3-23 fueron PASS; el hallazgo aparece en VIS). La ronda se reinicia desde cero tras Fase 2.
+
+| Categoría | Total | PASS | FAIL/ABIERTO | N/A | Estado |
+|---|:---:|:---:|:---:|:---:|:---:|
+| SEC | 6 | 6 | 0 | 0 | ✅ completa |
+| RBAC | 19 | 19 | 0 | 0 | ✅ proveedores (01–11) + órdenes (RBAC-ORD-01..08, RBAC-DET) + pasadas MANAGER/WAREHOUSEMAN |
+| CRUD | 21 | 21 | 0 | 0 | ✅ proveedores + órdenes (CRUD-DET-01/02 create UI) + líneas (CRUD-LIN-01..09) |
+| VAL | 19 | 19 | 0 | 0 | ✅ proveedores + detalle + líneas (03/06 N/A donde aplica) |
+| BSRCH | 12 | 12 | 0 | 0 | ✅ proveedores + órdenes (server-side f_unaccent) + líneas |
+| UI | 24 | 24 | 0 | 0 | ✅ proveedores + órdenes (UI-ORD-02..07) + detalle (UI-DET-01..10) + líneas (UI-LIN-01..08) |
+| FLOW | 12 | 12 | 0 | 0 | ✅ FLOW-DET-01..08 (aprobar/recibir/cancelar/editar, diálogos confirmar+cancelar) |
+| RN | 8 | 8 | 0 | 0 | ✅ RN-DET-01/02/03 (campos disabled por estado) + RN backend |
+| ERR | 12 | 12 | 0 | 0 | ✅ ERR-05 (fallback genérico, fuente) ..ERR-12 (403, interceptor) |
+| EMPTY | 8 | 7 | 0 | 1 | ✅ proveedores + órdenes (1 N/A) |
+| VIS | 14 | 13 | **1** | 0 | ⛔ **VIS-GEN-12 ⚠️ ABIERTO (BUG-M3-23)**; resto ✅ (VIS-ORD/DET/GEN con RGB exacto) |
+| CYBER | 15 | 15 | 0 | 0 | ✅ completa (01–15) |
+| **TOTAL** | **170** | **168** | **1** | **1** | ⛔ **INVALIDADA por BUG-M3-23** — 168 PASS antes del hallazgo, pero la ronda NO certifica. Reiniciar Fase 3 tras corregir en Fase 2. |
+
+**Observaciones de la Ronda 4 (no invalidantes — drift documental, no defectos):**
+1. **Destino de redirect SEC (SEC-01..05)**: el doc dice "redirige a home" pero el código
+   congelado redirige a `/access-denied` (página 403 dedicada: ícono `lock`, "403 Acceso
+   denegado", botones "Volver"/"Ir al inicio"). El control de acceso bloquea correctamente
+   (no se alcanza la ruta protegida) — es una mejora de UX/seguridad, no un defecto.
+   SEC-06 (sin token) sí redirige a `/login` como documentado. → actualizar texto del doc.
+2. **L25 en SupplierFormComponent**: el botón "Guardar cambios" en edición usa
+   `[disabled]="form.invalid || loading"` sin la guarda `!form.dirty` que exige L25. Es
+   comportamiento preexistente del bundle congelado, no aseverado por ningún caso de Compras
+   en alcance ni regresión de esta ronda → se registra como deuda técnica/observación honesta
+   (no invalida la ronda).
+
+---
+
+## FASE 3 — Re-ejecución por blast radius (Ronda 3 — ✅ COMPLETADA — Compras, 2026-06-22)
 
 > Fase 2 completada 2026-06-22. Todos los fixes son locales al módulo Compras.
 > Alcance de re-ejecución acordado con el usuario: **"Solo zonas tocadas por los fixes"** —
