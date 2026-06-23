@@ -117,5 +117,5 @@ export class SuppliersPageComponent implements OnInit {
       .subscribe(saved => { if (saved) this.load(); });
   }
 
-  trackById(_: number, item: { id: number }): number { return item.id; }
+  trackById(_: number, item: SupplierDTO): number | null { return item.id; }
 }

@@ -138,5 +138,5 @@ export class ClientsPageComponent implements OnInit {
     this.openDetail(item);
   }
 
-  trackById(_: number, item: { id: number }): number { return item.id; }
+  trackById(_: number, item: ClientDTO): number | null { return item.id; }
 }
