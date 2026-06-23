@@ -6,6 +6,7 @@
 > 3. Agregar/eliminar filas según las pantallas y funcionalidades del módulo
 > 4. Ejecutar cada caso en el browser con el JWT del rol indicado **antes de declarar cualquier componente terminado**
 > 5. Un componente/módulo está "done" ÚNICAMENTE cuando **toda la columna Estado está llena** y **ningún caso está ⏳ PENDIENTE**
+> 6. La ejecución sigue el **Protocolo 4 fases** — ver sección "Cómo usar" y el archivo `protocolo_verificacion_4_fases.md`
 
 ---
 
@@ -23,66 +24,137 @@
 1. Cada caso tiene un ID único (`CATEGORIA-PANTALLA-NNN`)
 2. Ejecutar cada caso en el browser con el JWT del rol indicado
 3. Actualizar la columna **Estado** con el resultado real observado en el browser
-4. Si el estado es ❌ FAIL: registrar el bug en §8 de la memoria técnica con referencia al ID
+4. Si el estado es ❌ FAIL: registrar el bug en §8 de la memoria técnica con referencia al ID — **documentar únicamente, no corregir sin autorización**
 5. Un componente solo está "done" cuando **toda la columna Estado está llena** y **ningún caso está ⏳ PENDIENTE**
 
 **Estados:** `✅ PASS` | `❌ FAIL` | `⏳ PENDIENTE` | `N/A`
 
-> **Protocolo de ejecución**: toda ronda de verificación de este documento sigue el
-> `docs/pruebas/protocolo_verificacion_4_fases.md` (Fase 1 inventario → Fase 2 corrección +
-> gatekeeper → Fase 3 re-ejecución sobre código congelado → Fase 4 certificación). Antes de
-> ejecutar el primer caso, completar la **verificación de congelamiento** (precondiciones) de
-> ese protocolo. El catálogo de **técnicas de verificación por categoría** (tecleo real,
-> `getComputedStyle` RGB, ausencia en DOM, `curl` por rol, server-side vs client-side search)
-> también vive en ese documento — usarlo como guía de CÓMO probar cada categoría.
->
-> **Lectura estricta vs. por blast radius**: la nota de cierre de cada ronda DEBE declarar
-> cuál lectura de la Fase 3 se aplicó. Solo una Fase 3 de **lectura estricta** (todos los casos
-> en una sola sesión continua sobre código congelado) habilita declarar el módulo CERTIFICADO.
+**Usuarios QA permanentes (L35)** — usar siempre estos, nunca crear usuarios efímeros:
+- `admin` / `Admin123!` → ROLE_ADMIN
+- `qa_manager` / `QaManager123!` → ROLE_MANAGER
+- `qa_warehouse` / `QaWarehouse123!` → ROLE_WAREHOUSEMAN
+- `qa_sales` / `QaSales123!` → ROLE_SALES
 
 ---
 
-## ⚠️ Lecciones MANDATORIAS (L29-L33) — aplicar desde el diseño inicial
+## ⚠️ Protocolo obligatorio de ejecución — 4 fases (permanente)
 
-> Originadas en la revisión de bugs del módulo Inventario (2026-06-11/12). Ver detalle
-> completo en `memoria_tecnica_global_proyecto.md` §9. No son opcionales — su
-> cumplimiento se verifica en los casos marcados con `(L29)`..`(L33)` a lo largo de
-> este documento y en el checklist de cierre.
+> Toda ronda de verificación de este documento sigue el protocolo completo documentado en
+> `docs/pruebas/protocolo_verificacion_4_fases.md`. Referencia rápida:
 
-- **L29** — Matriz de campos sensibles × roles documentada en la memoria técnica
-  (Sección 4) ANTES de implementar cualquier endpoint de lectura; tests de redacción
-  por rol escritos PRIMERO.
+**FASE 1 — Inventario (código congelado)**
+- Ejecutar TODOS los casos sin tocar código. Documentar bugs como `⚠️ ABIERTO`. No corregir nada.
+
+**FASE 2 — Corrección + gatekeeper**
+- Corregir bugs del inventario. Gatekeeper obligatorio por cada fix (en orden):
+  1. `ng build` → 0 errores AOT (**no omitir** — BUG-BUILD-01: el runner de tests no aplica AOT estricto)
+  2. `ng test --no-watch` → 0 fallos
+  3. `mvn test` → 0 fallos nuevos
+- Documentar el **blast radius** de cada fix (local vs global).
+
+**FASE 3 — Re-ejecución sobre código congelado**
+- Re-ejecutar TODOS los casos del blast radius en una sola sesión continua sin modificar código.
+- Si se encuentra un bug nuevo → documentar ⚠️ ABIERTO, NO corregir, volver a Fase 2.
+- **Verificación de congelamiento antes del primer caso**: git limpio en develop 0/0 vs origin en ambos repos; backend 200; dev server 200 con bundle fresco (reinicio limpio si hay duda); 4 usuarios QA autentican.
+
+**FASE 4 — Certificación**
+- `ng build --configuration=production` → 0 errores AOT
+- `ng test --no-watch --coverage` → 0 fallos, ≥ 70% statements (flag `--coverage`, NO `--code-coverage`)
+- `mvn test` → 0 fallos nuevos
+- Commit `chore(qa): verificación completa 4 fases [Módulo] — YYYY-MM-DD`
+- Actualizar `docs/pruebas/estado_sesion_activa.md` con resultado CERTIFICADO
+
+> **Lectura estricta vs. por blast radius**: la nota de cierre de cada ronda DEBE declarar cuál
+> se aplicó. **Solo una Fase 3 de lectura estricta** (todos los casos en una sola sesión continua
+> sobre código congelado, de principio a fin sin tocar código) habilita declarar el módulo
+> **CERTIFICADO** bajo Propuesta D.
+>
+> **Catálogo de técnicas de verificación** (tecleo real, `getComputedStyle` RGB exacto, ausencia
+> en DOM, `curl` con JWT por rol, server-side vs client-side search, monkey-patch `alert()` para XSS)
+> en `protocolo_verificacion_4_fases.md` — usarlo como guía de CÓMO probar cada categoría.
+>
+> **`docs/pruebas/estado_sesion_activa.md`** — leer al iniciar cada sesión de pruebas para saber
+> exactamente en qué fase y categoría se debe continuar. Actualizar al completar cada categoría.
+
+---
+
+## ⚠️ Lecciones MANDATORIAS (L29-L35) — aplicar desde el diseño inicial
+
+> Ver detalle completo en `memoria_tecnica_global_proyecto.md` §9 (L29-L33) y §5 (L35).
+> No son opcionales — su cumplimiento se verifica en los casos marcados con `(L29)`..`(L35)`
+> a lo largo de este documento y en el checklist de cierre.
+
+- **L29** — Matriz de campos sensibles × roles documentada en la memoria técnica (Sección 4)
+  ANTES de implementar cualquier endpoint de lectura; tests de redacción por rol escritos PRIMERO.
+  La redacción se aplica server-side (no solo ocultando en UI).
 - **L30** — 401 (no autenticado) vs 403 (sin permiso) explícitos; cualquier endpoint de
   autenticación nuevo implementa rate limiting/lockout desde el primer commit.
-- **L31** — Todo `MatDialog.open(...)` con formulario usa `disableClose: true` por
-  defecto; toda lista con filtros resetea el paginador a la página 0 de forma
-  centralizada.
+- **L31** — Todo `MatDialog.open(...)` con formulario usa `disableClose: true` por defecto
+  (excepción documentada si es puramente informativo); toda lista con filtros resetea el
+  paginador a la página 0 de forma centralizada.
 - **L32** — Headers de tabla usan el mixin/placeholder SCSS compartido
-  (`%catalog-table-header` o equivalente) — no se copian manualmente los estilos.
-- **L33** — `forkJoin` con fuentes dependientes del rol usa `catchError` por
-  observable; datos de prueba de seguridad se prefijan (`[QA]`/`TEST_`) y se limpian
-  antes de cerrar el módulo.
+  (`@include mixins.catalog-table-header`) — nunca copiar manualmente los estilos.
+- **L33** — `forkJoin` con fuentes RBAC-dependientes usa `catchError` por observable; datos
+  de prueba de seguridad se prefijan `[QA]`/`TEST_` y se desactivan/eliminan antes de cerrar.
+- **L34** — Patrón de acciones en tabla: click en `mat-row` abre detalle/edición; botón
+  "Desactivar" vive DENTRO del formulario. No usar columna `actions` con íconos redundantes
+  salvo excepción documentada.
+- **L35** — Usar los usuarios QA permanentes (`admin`, `qa_manager`, `qa_warehouse`,
+  `qa_sales`) para verificar RBAC. No crear usuarios efímeros con contraseñas aleatorias.
+
+---
+
+## Metodología y criterios de diseño de casos
+
+> Completar esta sección al crear el documento del módulo, antes de escribir los casos.
+> Nombrar explícitamente qué técnicas ISTQB CTFL y qué requisitos OWASP ASVS v4 L1 aplican.
+
+- **Equivalence Partitioning (ISTQB CTFL)** — los casos `VAL-*` dividen el dominio de cada
+  campo en clases válidas e inválidas (vacío, formato incorrecto, duplicado en backend, tipo
+  incorrecto). Ejemplo: [campo_vacío] vs [formato_inválido] vs [duplicado] son 3 clases distintas.
+- **Boundary Value Analysis (ISTQB CTFL)** — los casos con `Validators.min`/`maxLength`
+  verifican el valor límite exacto y el valor fuera del límite. Ejemplo: cantidad=0 vs 1,
+  precio=-5 vs 0 vs 0.01, RFC=11/12/13/14 caracteres.
+- **State Transition Testing / Decision Table Testing (ISTQB CTFL)** — si el módulo tiene
+  una máquina de estados, documentar aquí la tabla de decisión estado × acción × rol.
+  Ejemplo para una entidad con estados PENDING/APPROVED/RECEIVED/CANCELLED:
+
+  | Estado \ Acción | Aprobar | Recibir | Cancelar | Editar |
+  |---|---|---|---|---|
+  | PENDING | [roles permitidos] | — | [roles permitidos] | ✅ |
+  | APPROVED | — | [roles permitidos] | [roles permitidos] | ❌ |
+  | RECEIVED | — | — | — | ❌ |
+  | CANCELLED | — | — | — | ❌ |
+
+  Las celdas "—" son transiciones inválidas; verificar en CYBER-12 que el backend las rechaza.
+
+- **OWASP ASVS v4 — Nivel 1 (L1)** — la sección CYBER se diseña mapeando cada caso contra
+  un requisito ASVS L1. Ver tabla de mapeo al inicio de la sección CYBER de este documento.
+  Campos sensibles del módulo: [listar aquí — precios, costos, límites de crédito, etc.].
 
 ---
 
 ## Resumen de cobertura
 
-| Categoría | Total casos | PASS | FAIL | PENDIENTE |
-|---|---|---|---|---|
-| SEC — Seguridad de rutas | 0 | 0 | 0 | 0 |
-| RBAC — Control de acceso UI | 0 | 0 | 0 | 0 |
-| CRUD — Flujos de datos | 0 | 0 | 0 | 0 |
-| VAL — Validaciones de formulario | 0 | 0 | 0 | 0 |
-| BSRCH — Búsqueda e inputs | 0 | 0 | 0 | 0 |
-| UI — Botones e íconos | 0 | 0 | 0 | 0 |
-| FLOW — Flujos de estado/negocio | 0 | 0 | 0 | 0 |
-| RN — Reglas de negocio | 0 | 0 | 0 | 0 |
-| ERR — Mensajes de error | 0 | 0 | 0 | 0 |
-| EMPTY — Estados vacíos | 0 | 0 | 0 | 0 |
-| VIS — Visual y estética | 0 | 0 | 0 | 0 |
-| **TOTAL** | **0** | **0** | **0** | **0** |
+| Categoría | Total casos | PASS | FAIL | N/A | PENDIENTE |
+|---|---|---|---|---|---|
+| SEC — Seguridad de rutas | 0 | 0 | 0 | 0 | 0 |
+| RBAC — Control de acceso UI | 0 | 0 | 0 | 0 | 0 |
+| CRUD — Flujos de datos | 0 | 0 | 0 | 0 | 0 |
+| VAL — Validaciones de formulario | 0 | 0 | 0 | 0 | 0 |
+| BSRCH — Búsqueda e inputs | 0 | 0 | 0 | 0 | 0 |
+| UI — Botones e íconos | 0 | 0 | 0 | 0 | 0 |
+| FLOW — Flujos de estado/negocio | 0 | 0 | 0 | 0 | 0 |
+| RN — Reglas de negocio | 0 | 0 | 0 | 0 | 0 |
+| ERR — Mensajes de error | 0 | 0 | 0 | 0 | 0 |
+| EMPTY — Estados vacíos | 0 | 0 | 0 | 0 | 0 |
+| VIS — Visual y estética | 0 | 0 | 0 | 0 | 0 |
+| CYBER — Ciberseguridad | 0 | 0 | 0 | 0 | 0 |
+| **TOTAL** | **0** | **0** | **0** | **0** | **0** |
 
-> Actualizar este resumen cada vez que se completa una sección.
+> Actualizar este resumen al completar cada categoría.
+> En la próxima ronda de verificación, resetear PASS → PENDIENTE (tanto los casos originales
+> como los nuevos); solo N/A permanece si la condición sigue siendo no aplicable.
 
 ---
 
@@ -349,8 +421,39 @@
 > Cubren OWASP Top 10 / ASVS v4 L1 aplicable al stack Angular + Spring Boot + JWT + PostgreSQL,
 > con foco en los endpoints y campos sensibles del módulo. Ejecutar con DevTools
 > (Network/Console/Application→LocalStorage) y `curl` contra `http://localhost:8080/api/v1/...`.
-> Mapear cada caso a su requisito ASVS L1 en una tabla previa (ver módulo Compras §9.0 como ejemplo).
 > ⚠️ Si algún caso falla, documentar el bug con estado `⚠️ ABIERTO` — NO corregir sin autorización.
+>
+> **Técnicas de verificación CYBER** (del catálogo en `protocolo_verificacion_4_fases.md`):
+> - JWT: `atob(token.split('.')[1])` en consola del navegador para decodificar el payload
+> - XSS stored: monkey-patch `window.alert = () => { window._alertCalled = true; }` antes de cargar
+> - XSS reflected: verificar `document.querySelectorAll('[innerHTML]').length === 0`
+> - SQLi: `' OR '1'='1` y `'; DROP TABLE x;--` en campos de búsqueda — sin error 500
+> - Campos sensibles server-side: `curl -H "Authorization: Bearer JWT_ROL_SIN_ACCESO" GET /endpoint`
+>   → campos sensibles deben ser `null` en el JSON (no solo ocultos en UI)
+> - CORS: `curl -I -H "Origin: http://evil.com" http://localhost:8080/api/v1/[endpoint]` →
+>   sin `Access-Control-Allow-Origin: http://evil.com`; con `Origin: http://localhost:4200` →
+>   `Access-Control-Allow-Origin: http://localhost:4200` (específico, no wildcard `*`)
+
+### Mapeo OWASP ASVS v4 L1 — completar al diseñar los casos
+
+| Caso | Requisito ASVS L1 | Descripción del requisito |
+|---|---|---|
+| CYBER-01 | V3.5.1 | JWT no contiene datos sensibles en el payload |
+| CYBER-02 | V3.5.3 | JWT con firma manipulada → 401 (no 200 ni 403) |
+| CYBER-03 | V3.2.3 | Sesión inválida → redirige a login; peticiones → 401 |
+| CYBER-04 | V5.3.4 | Parámetros no se interpretan como SQL (parameterized queries) |
+| CYBER-05 | V5.3.3 | Output encoding — XSS almacenado no ejecuta script |
+| CYBER-06 | V5.3.3 | Output encoding — XSS reflejado vía query param no ejecuta script |
+| CYBER-07 | V4.2.1 | Campos sensibles son `null` en respuesta JSON para rol sin acceso (server-side, no solo UI) |
+| CYBER-08 | V4.1.1 | Sin token → 401 Unauthorized (no 200 ni 403) |
+| CYBER-09 | V4.1.2 | Token de rol limitado → 403 Forbidden en operaciones de escritura no autorizadas |
+| CYBER-10 | V7.4.1 | Mensajes de error sin stack traces, paths, ni nombres de tablas/clases |
+| CYBER-11 | V3.5.3 | JWT expirado/manipulado → 401; redirect a login; sin datos corruptos |
+| CYBER-12 | V4.2.2 | Transición de estado inválida forzada vía API → 422; estado NO cambia |
+| CYBER-13 | V14.4.8 | CORS no permite `Allow-Origin: *` con `Allow-Credentials: true` |
+| CYBER-14 | V5.3.1 | Caracteres HTML especiales tratados como texto literal; sin inyección de atributos |
+| CYBER-15 | V5.1.3 | Validación server-side independiente del cliente: Bean Validation activo |
+| [CYBER-NN] | [Req. adicional específico del módulo] | [Descripción] |
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
@@ -384,33 +487,47 @@
 
 ---
 
+## Historial de rondas de verificación
+
+> Actualizar esta tabla al iniciar y al cerrar cada ronda. Es el historial permanente del módulo.
+
+| Ronda | Fecha | Tipo Fase 3 | Casos ejecutados | Bugs encontrados | Resultado | Commit |
+|---|---|---|---|---|---|---|
+| Ronda 1 | [YYYY-MM-DD] | [blast radius / estricta] | [N] / [TOTAL] | [N bugs] | [✅ CERTIFICADA / ⛔ INVALIDADA / 🔄 En curso] | [hash] |
+
+---
+
 ## Checklist de cierre (Propuesta D)
 
-Antes de declarar el módulo **done**, verificar que se cumplen las 4 condiciones:
+Antes de declarar el módulo **done** (CERTIFICADO), verificar que se cumplen las 5 condiciones:
 
 ```
 [ ] 1. Todos los casos de este documento tienen estado ✅ PASS o N/A — ninguna fila ⏳ PENDIENTE
-[ ] 2. ng build → 0 errores AOT (gatekeeper de build — BUG-BUILD-01); ng test --no-watch
-       --coverage → 0 fallos, cobertura ≥ 70% statements (flag es --coverage, no --code-coverage)
-[ ] 3. Prueba browser completada con CADA ROL que tiene acceso al módulo, en una Fase 3 de
-       lectura ESTRICTA (todos los casos, una sola sesión continua, código congelado)
-[ ] 4. Backend mvn test → 0 fallos nuevos respecto al baseline
-[ ] 5. Memoria técnica §10 actualizada con resultado final; estado_sesion_activa.md actualizado;
-       commit chore(qa) de certificación en develop
+[ ] 2. ng build --configuration=production → 0 errores AOT
+       (⚠️ NO omitir — BUG-BUILD-01: el runner de tests no aplica AOT estricto de templates)
+[ ] 3. ng test --no-watch --coverage → 0 fallos, cobertura ≥ 70% statements
+       (flag es --coverage, NO --code-coverage)
+[ ] 4. Fase 3 de lectura ESTRICTA completada: todos los casos en una sola sesión continua
+       sobre código congelado, sin ningún cambio de código entre el primer y el último caso.
+       (Lectura por blast radius NO habilita declarar el módulo CERTIFICADO)
+[ ] 5. Backend mvn test → 0 fallos nuevos respecto al baseline
+[ ] 6. Memoria técnica §10 actualizada; estado_sesion_activa.md actualizado (CERTIFICADO);
+       Historial de rondas de este documento actualizado; commit chore(qa) en develop
 ```
 
-### Checklist adicional — Lecciones L29-L33 (mandatorio)
+### Checklist adicional — Lecciones L29-L35 (mandatorio)
 
 ```
 [ ] L29 — Matriz de campos sensibles × roles documentada en la Sección 4 de la memoria
-    técnica del módulo, con tests de redacción por rol para cada campo afectado
-[ ] L30 — Endpoints de autenticación nuevos (si aplica) implementan rate limiting/
-    lockout; CYBER-02 y CYBER-19 (cuando aplique) ejecutados con resultado PASS
+    técnica, con redacción server-side verificada vía curl por rol (CYBER-07 PASS)
+[ ] L30 — 401 vs 403 correctos; endpoints de autenticación nuevos implementan rate
+    limiting/lockout desde el primer commit (CYBER-02/08/09 PASS)
 [ ] L31 — Todos los MatDialog con formulario usan disableClose: true (o excepción
-    documentada); todas las listas con filtro resetean el paginador a página 0
-[ ] L32 — Todos los headers de tabla usan el mixin SCSS compartido (sin reglas
-    .mat-mdc-header-cell duplicadas manualmente)
-[ ] L33 — Todo forkJoin con fuentes RBAC-dependientes usa catchError por observable
-    (sección 2g en PASS o N/A); no quedan registros activos con datos de prueba de
-    seguridad sin prefijo [QA]/TEST_ o sin desactivar
+    documentada); todas las listas con filtro resetean el paginador a página 0 (VIS-GEN-05 PASS)
+[ ] L32 — Todos los headers de tabla usan el mixin SCSS compartido (VIS-GEN-07 PASS)
+[ ] L33 — forkJoin con fuentes RBAC-dependientes usa catchError (RBAC-[F]-FJ-* PASS/N/A);
+    no quedan registros activos con prefijo [QA]/TEST_ sin desactivar
+[ ] L34 — Patrón mat-row click correcto; sin columna de íconos redundante salvo excepción
+    documentada
+[ ] L35 — Verificación RBAC realizada con usuarios QA permanentes (no efímeros)
 ```

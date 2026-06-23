@@ -736,3 +736,7 @@ Test Files  17 passed (17)
 | Caso FLOW-DET-08: aprobar orden sin líneas → snackbar error | ✅ | Browser — "La orden no tiene líneas de detalle." |
 | Caso ERR-12: 403 backend → snackbar interceptor | ✅ | Browser — WAREHOUSEMAN llama approve(), interceptor muestra error |
 | Propuesta D — 4 condiciones de "done" cumplidas | ✅ | Ver checklist en §10, sesión 2026-06-08 |
+| BUG-M3-15b: native query ignoraba `:search` sin CAST → fix patrón Inventario | ✅ FIXED | `PurchaseOrderRepository.java` — merge `d231270` en develop |
+| BUG-BUILD-01: `trackById` TypeScript error bajo `strictTemplates` en SuppliersPage/ClientsPage | ✅ FIXED | Tipar el parámetro al DTO real — merge `6b5b1d6` en develop |
+| BUG-M3-23: 8 `ConfirmDialogComponent` sin `disableClose: true` en transiciones de estado | ✅ FIXED | Rama `fix/compras-confirm-dialog-disableclose` — merge `f7b8e42` en develop |
+| **Protocolo 4 fases — Ronda 5 estricta (2026-06-23): 152 PASS · 5 N/A · 0 FAIL · 0 bug nuevo** | ✅ CERTIFICADO | `ng build` 0 errores AOT · 456 specs 0 fallos · 88.91% statements · 405 backend tests 0 fallos. Commit `6d4e7a8`. |

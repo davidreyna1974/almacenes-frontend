@@ -47,11 +47,11 @@
 
 | Módulo | Casos totales | PASS | FAIL/ABIERTO | N/A | PENDIENTE | Estado Fase 1 |
 |---|:---:|:---:|:---:|:---:|:---:|:---:|
-| Auth / Usuarios | 91 | 90 | 0 | 1 | 0 | ✅ Inventariado |
-| Inventario | 198 | 191 | 0 | 7 | 0 | ✅ Inventariado |
-| Compras | 170 | 159 | 6 | 5 | 0 | ✅ Inventariado |
-| Ventas | 190 | 186 | 0 | 4 | 0 | ✅ Inventariado |
-| Reportes | 94 | 82 | 0 | 12 | 0 | ✅ Inventariado |
+| Auth / Usuarios | 106 | 0 | 0 | 3 | 103 | ⏳ Reset 2026-06-23 (+15 CYBER) |
+| Inventario | 198 | 0 | 0 | 7 | 191 | ⏳ Reset 2026-06-23 |
+| Compras | 170 | 152 | 0 | 5 | 0 | ✅ CERTIFICADO (Ronda 5, 2026-06-23) |
+| Ventas | 205 | 0 | 0 | 5 | 200 | ⏳ Reset 2026-06-23 (+15 CYBER) |
+| Reportes | 109 | 0 | 0 | 13 | 96 | ⏳ Reset 2026-06-23 (+15 CYBER) |
 
 ---
 
@@ -311,3 +311,4 @@
 | 2026-06-23 | **Ronda 5 estricta INICIADA + PAUSA solicitada por el usuario.** Push de `f7b8e42` (fix BUG-M3-23) a `origin/develop` → ambos repos 0/0 vs origin. Congelamiento verificado (backend 200, frontend 200, 4 usuarios QA 200, bundle fresco). Se activó **disciplina de documentación incremental** (actualizar este archivo tras cada categoría). **Progreso Ronda 5: 7/170 PASS** → VIS-GEN-12 ✅ (BUG-M3-23 verificado en orders-page + detail-page: diálogo Aprobar no cierra con backdrop ni ESC) y **categoría SEC 6/6 ✅** (SALES/WH → `/access-denied`; sin token → `/login`). **⏸️ PAUSA aquí.** Próxima categoría a ejecutar: **RBAC (19 casos)**. Retomar con los pasos de "Contexto de recuperación rápida": re-obtener los 4 tokens JWT, abrir tab nuevo en http://localhost:4200, y continuar la tabla "Progreso Ronda 5". Nota: el localStorage del navegador quedó sin token tras SEC-06 (estado limpio). |
 | 2026-06-23 | **Ronda 5 — categorías VIS (13 PASS + 1 N/A) y CYBER (15/15 PASS) completadas — 0 bugs.** VIS: SUP/ORD/DET/GEN verificados con `getComputedStyle()` RGB exacto; badges PENDING via `document.styleSheets`; Total/precio ausentes del DOM en WAREHOUSEMAN; GEN-05 N/A (desktop-only). CYBER: JWT claims (sub/roles/iat/exp only), firma manipulada→401, removeItem→/login, SQLi→0/422, XSS stored/reflected→alert() NOT called, innerHTML:0, WH campos sensibles null, sin token→401, WH→403 endpoints admin, sin stack traces, expirado→401, transición inválida→422, CORS evil.com bloqueado (localhost:4200 specific), chars especiales texto literal, server-side qty:-5→400. Técnica CYBER-05 alternativa: proveedor RFC XSST260623ZZ9 (companyName `<script>alert(1)</script>`) retornó 409 en creación (ya existía de rondas previas); verificación via `innerHTML elements: 0` + monkey-patch `alert()` → no triggered. **Ronda 5 estricta: 152/170 PASS · 0 FAIL · 5 N/A · 0 bugs nuevos. Fase 3 COMPLETA. Siguiente: Fase 4.** |
 | 2026-06-23 | **Fase 4 CERTIFICADA (Ronda 5).** `ng build` prod → 0 errores AOT ✅ (3 warnings de budget/NG8102/NG8107, no bloquean). `ng test --no-watch --coverage` → 37 test files · 456 specs · 0 fallos · **88.91% statements** · 85.66% branches · 81.47% functions · 93.74% lines (≥70% ✅). `mvn test` → **405 tests · 0 fallos · BUILD SUCCESS** ✅. Commit `chore(qa): verificación completa 4 fases Ronda 5 — 2026-06-23` + push a origin/develop. **Módulo Compras CERTIFICADO bajo Propuesta D.** |
+| 2026-06-23 | **Homologación de documentos de prueba — todos los módulos.** Analizado el proceso de validación de Compras (criterios, estrategias, mejoras, correcciones, buenas prácticas, Protocolo 4 fases) y propagado a los 6 documentos restantes: `inventario`, `sales`, `reports`, `usuarios`, `TEMPLATE` y `compras` (actualización documental). Cambios aplicados en cada documento: (1) Protocolo 4 fases completo (Fase 1–4 + verificación de congelamiento + gatekeeper + lectura estricta); (2) Lecciones L29-L35 (incluyendo L34: patrón mat-row, L35: usuarios QA permanentes); (3) Sección CYBER con 15 casos adaptados por módulo (mapeados contra OWASP ASVS v4 L1); (4) Reset masivo de todos los estados PASS → PENDIENTE para nueva ronda; (5) Historial de rondas de verificación; (6) Checklist de cierre actualizado con 6 condiciones (incluyendo `ng build` como paso obligatorio separado). Totales con CYBER: Inventario=198, Sales=205, Reports=109, Usuarios=106. |

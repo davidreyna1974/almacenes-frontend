@@ -7,14 +7,10 @@
 **Roles con movimientos de stock:** ADMIN, MANAGER, WAREHOUSEMAN
 **Roles con desactivar productos:** ADMIN
 **Fecha de creación:** 2026-06-08
-**Última actualización:** 2026-06-10 — RONDA DE RE-VALIDACIÓN COMPLETA: los 162 casos previos se reinician a
-⏳ PENDIENTE para re-ejecución íntegra en browser con los 4 roles; se agrega la sección 8
-"Validaciones de ciberseguridad (CYBER)" con 17 casos nuevos. Adicionalmente se agregan 14 casos
-nuevos de cobertura funcional (gap analysis): BSRCH-CAT-01..06 (búsqueda de categorías, sin
-casos previos pese a existir el campo), VAL-PDET-11..15 (longitud máxima SKU/Nombre/Descripción
-y categoría/proveedor obligatorios), VIS-LST-05 (verificación de columnas numéricas de stock
-bajo) y UI-PROD-PAG-03 / UI-CAT-PAG-02 (cambio de tamaño de página). La columna Notas conserva el
-resultado de la verificación anterior (2026-06-09) como referencia histórica.
+**Última actualización:** 2026-06-23 — Estados reseteados a ⏳ PENDIENTE para nueva ronda
+de verificación bajo Protocolo 4 fases. Historial de rondas anteriores conservado en la
+columna Notas y en la sección "Historial de rondas" al final del documento. Se agregan:
+sección "Protocolo 4 fases", L34/L35 en lecciones, "Historial de rondas" y "Checklist cierre".
 
 **Verificación contra backend (2026-06-10)** — antes de cerrar este DRAFT se verificaron contra
 el código fuente del backend los 4 puntos pendientes de los nuevos casos CYBER-18..22:
@@ -30,13 +26,6 @@ el código fuente del backend los 4 puntos pendientes de los nuevos casos CYBER-
 - CYBER-22: se confirmó que `JwtUtils.parseClaims()` usa `parseSignedClaims()` (JJWT 0.12.x), que
   rechaza tokens `alg=none`/sin firma — se espera PASS.
 
-> ⚠️ **DOCUMENTO BORRADOR — pendiente de autorización del usuario antes de iniciar la ejecución
-> en browser.** No se ejecutará ninguna validación hasta recibir aprobación explícita.
->
-> Si durante la re-ejecución se detecta un bug (nuevo o de regresión), se documentará en la
-> columna Notas y en el Historial de bugs (§9) con estado `⚠️ ABIERTO` — **no se corregirá**
-> hasta que el usuario lo autorice explícitamente.
-
 ---
 
 ## Cómo usar este documento
@@ -49,6 +38,28 @@ el código fuente del backend los 4 puntos pendientes de los nuevos casos CYBER-
 5. Un componente solo está "done" cuando **toda la columna Estado está llena** y **ningún caso está ⏳ PENDIENTE**
 
 **Estados:** `✅ PASS` | `❌ FAIL` | `⏳ PENDIENTE` | `N/A`
+
+**Usuarios QA permanentes (L35)**:
+- `admin` / `Admin123!` · `qa_manager` / `QaManager123!` · `qa_warehouse` / `QaWarehouse123!` · `qa_sales` / `QaSales123!`
+
+---
+
+## ⚠️ Protocolo obligatorio de ejecución — 4 fases (permanente)
+
+> Toda ronda de verificación de este documento sigue el protocolo completo en
+> `docs/pruebas/protocolo_verificacion_4_fases.md`. Referencia rápida:
+
+**FASE 1 — Inventario (código congelado)**: ejecutar TODOS los casos sin tocar código. Documentar bugs como `⚠️ ABIERTO`. No corregir nada.
+
+**FASE 2 — Corrección + gatekeeper**: por cada fix, en orden: `ng build` (0 errores AOT) → `ng test --no-watch` (0 fallos) → `mvn test` (0 fallos nuevos). Documentar blast radius.
+
+**FASE 3 — Re-ejecución congelada**: re-ejecutar todos los casos del blast radius en una sola sesión sin modificar código. Si aparece bug nuevo → ⚠️ ABIERTO, NO corregir, volver a Fase 2.
+- Verificación de congelamiento antes del primer caso: git limpio 0/0 vs origin en ambos repos; backend 200; dev server 200 con bundle fresco; 4 usuarios QA autentican.
+
+**FASE 4 — Certificación**: `ng build` 0 errores + `ng test --coverage` 0 fallos ≥70% statements + `mvn test` 0 fallos + commit `chore(qa)` + actualizar `estado_sesion_activa.md`.
+
+> **Solo una Fase 3 de lectura estricta** (todos los casos, una sola sesión, código congelado de principio a fin) habilita declarar el módulo **CERTIFICADO** bajo Propuesta D.
+> **`estado_sesion_activa.md`** — leer al iniciar cada sesión; actualizar al completar cada categoría.
 
 ---
 
@@ -85,26 +96,26 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | Categoría | Total casos | PASS | FAIL | PENDIENTE | N/A |
 |---|---|---|---|---|---|
-| SEC — Seguridad de rutas | 5 | 5 | 0 | 0 | 0 |
-| RBAC — Control de acceso UI | 28 | 28 | 0 | 0 | 0 |
-| CRUD — Flujos de datos | 18 | 18 | 0 | 0 | 0 |
-| VAL — Validaciones de formulario | 27 | 27 | 0 | 0 | 0 |
-| BSRCH — Búsqueda e inputs | 20 | 20 | 0 | 0 | 0 |
-| UI — Botones e íconos | 28 | 28 | 0 | 0 | 0 |
-| FLOW — Flujos de estado/negocio | 8 | 8 | 0 | 0 | 0 |
-| RN — Reglas de negocio | 10 | 10 | 0 | 0 | 0 |
-| ERR — Mensajes de error | 10 | 6 | 0 | 0 | 4 |
-| EMPTY — Estados vacíos | 7 | 5 | 0 | 0 | 2 |
-| VIS — Visual y estética | 15 | 15 | 0 | 0 | 0 |
-| CYBER — Ciberseguridad | 22 | 21 | 0 | 0 | 1 |
-| **TOTAL** | **198** | **191** | **0** | **0** | **7** |
+| SEC — Seguridad de rutas | 5 | 0 | 0 | 5 | 0 |
+| RBAC — Control de acceso UI | 28 | 0 | 0 | 28 | 0 |
+| CRUD — Flujos de datos | 18 | 0 | 0 | 18 | 0 |
+| VAL — Validaciones de formulario | 27 | 0 | 0 | 27 | 0 |
+| BSRCH — Búsqueda e inputs | 20 | 0 | 0 | 20 | 0 |
+| UI — Botones e íconos | 28 | 0 | 0 | 28 | 0 |
+| FLOW — Flujos de estado/negocio | 8 | 0 | 0 | 8 | 0 |
+| RN — Reglas de negocio | 10 | 0 | 0 | 10 | 0 |
+| ERR — Mensajes de error | 10 | 0 | 0 | 6 | 4 |
+| EMPTY — Estados vacíos | 7 | 0 | 0 | 5 | 2 |
+| VIS — Visual y estética | 15 | 0 | 0 | 15 | 0 |
+| CYBER — Ciberseguridad | 22 | 0 | 0 | 21 | 1 |
+| **TOTAL** | **198** | **0** | **0** | **191** | **7** |
 
-> Ronda de re-validación completada el 2026-06-10 — 198/198 casos ejecutados en browser con
-> los 4 roles. 191 ✅ PASS, 0 ❌ FAIL, 7 N/A (EMPTY-CAT-01, EMPTY-LST-01, ERR-05..08, CYBER-18).
-> N/A justificados: ERR-05..08 requieren condiciones de red/timeout no reproducibles en entorno
-> de desarrollo local; EMPTY-CAT-01 y EMPTY-LST-01 requieren BD vacía; CYBER-18 (CSP/HSTS)
-> diferido a checklist de producción (BUG-INV-15 corregió CORS). Bugs encontrados y corregidos
-> durante la ronda: BUG-INV-07..18 (ver §9 de este documento y §8 de la memoria técnica).
+> **Estado actual: ⏳ PENDIENTE** — reset el 2026-06-23 para nueva ronda de verificación bajo
+> Protocolo 4 fases. Ronda anterior completada el 2026-06-11: 191 ✅ PASS, 0 ❌ FAIL, 7 N/A.
+> N/A justificados (se conservan): ERR-05..08 requieren condiciones de red/timeout no
+> reproducibles en entorno local; EMPTY-CAT-01 y EMPTY-LST-01 requieren BD vacía; CYBER-18
+> (CSP/HSTS) diferido a checklist de producción. Ver "Historial de rondas" al final del documento.
+> En la próxima ronda de verificación, resetear PASS → PENDIENTE antes del primer caso.
 
 ---
 
@@ -116,11 +127,11 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| SEC-01 | Sin sesión — acceso directo a `/inventory/products` | (sin JWT) | Token expirado / sin login | Redirige a `/login` | ✅ PASS | Re-test 2026-06-10: `localStorage.clear()` + navegar a `/inventory/products` → redirige a `/login` |
-| SEC-02 | Sin sesión — acceso directo a `/inventory/categories` | (sin JWT) | Token expirado / sin login | Redirige a `/login` | ✅ PASS | Re-test 2026-06-10: sin token, navegar a `/inventory/categories` → redirige a `/login` |
-| SEC-03 | Sin sesión — acceso directo a `/inventory/low-stock` | (sin JWT) | Token expirado / sin login | Redirige a `/login` | ✅ PASS | Re-test 2026-06-10: sin token, navegar a `/inventory/low-stock` → redirige a `/login` |
-| SEC-04 | SALES accede a `/inventory/products` — lectura permitida | SALES | Sesión SALES activa | Carga la página; lista visible; sin botón "Nuevo producto" | ✅ PASS | Re-test 2026-06-12 (BUG-INV-12 corregido): login `ventas01` — sin redirect, lista de 108 productos visible, sin botón "Nuevo producto", SIN snackbar de error, filtro "Categoría" poblado con todas las categorías, filtro "Proveedor" oculto (rol sin acceso a `/purchases/**`) |
-| SEC-05 | SALES accede a `/inventory/categories` — lectura permitida | SALES | Sesión SALES activa | Carga la página; lista visible; sin botón "Nueva categoría" | ✅ PASS | Re-test 2026-06-10: login `ventas01` — sin redirect, lista de categorías visible, sin botón "Nueva categoría" ni mensaje de error |
+| SEC-01 | Sin sesión — acceso directo a `/inventory/products` | (sin JWT) | Token expirado / sin login | Redirige a `/login` | ⏳ PENDIENTE | Re-test 2026-06-10: `localStorage.clear()` + navegar a `/inventory/products` → redirige a `/login` |
+| SEC-02 | Sin sesión — acceso directo a `/inventory/categories` | (sin JWT) | Token expirado / sin login | Redirige a `/login` | ⏳ PENDIENTE | Re-test 2026-06-10: sin token, navegar a `/inventory/categories` → redirige a `/login` |
+| SEC-03 | Sin sesión — acceso directo a `/inventory/low-stock` | (sin JWT) | Token expirado / sin login | Redirige a `/login` | ⏳ PENDIENTE | Re-test 2026-06-10: sin token, navegar a `/inventory/low-stock` → redirige a `/login` |
+| SEC-04 | SALES accede a `/inventory/products` — lectura permitida | SALES | Sesión SALES activa | Carga la página; lista visible; sin botón "Nuevo producto" | ⏳ PENDIENTE | Re-test 2026-06-12 (BUG-INV-12 corregido): login `ventas01` — sin redirect, lista de 108 productos visible, sin botón "Nuevo producto", SIN snackbar de error, filtro "Categoría" poblado con todas las categorías, filtro "Proveedor" oculto (rol sin acceso a `/purchases/**`) |
+| SEC-05 | SALES accede a `/inventory/categories` — lectura permitida | SALES | Sesión SALES activa | Carga la página; lista visible; sin botón "Nueva categoría" | ⏳ PENDIENTE | Re-test 2026-06-10: login `ventas01` — sin redirect, lista de categorías visible, sin botón "Nueva categoría" ni mensaje de error |
 
 ---
 
@@ -130,42 +141,42 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VIS-PROD-01 | Título "Productos" visible | ADMIN | Encabezado "Productos" presente | ✅ PASS | Re-test 2026-06-10: breadcrumb "Inventario → Productos" presente en la topbar (no hay h1 separado; el breadcrumb es el encabezado de página en este layout) |
-| VIS-PROD-02 | Columnas tabla: SKU, Nombre, Categoría, Proveedor, Stock, Precio, Estado | ADMIN | Todas las columnas visibles | ✅ PASS | Re-test 2026-06-10: columnas Código, Nombre, Categoría, Proveedor, Stock, Precio, Costo unit., Estado confirmadas en `get_page_text` |
-| VIS-PROD-03 | Columna "Costo unitario" visible para ADMIN | ADMIN | Columna presente en la tabla | ✅ PASS | Re-test 2026-06-10: columna "Costo unit." presente con valores ($180.00, $220.00, etc.) |
-| VIS-PROD-04 | Columna "Acciones" visible para WAREHOUSEMAN | WAREHOUSEMAN | Ícono de movimiento en cada fila | ✅ PASS | Login `almacen01` — columna "Acciones" con ícono `swap_vert` presente en cada fila |
-| VIS-PROD-05 | Barra de búsqueda y filtros visibles | ADMIN | Campos búsqueda, categoría, estado, proveedor presentes | ✅ PASS | Re-test 2026-06-10: "Buscar por código o nombre", Categoría, Estado, Proveedor todos presentes |
-| VIS-PROD-06 | `StockBadge` muestra colores semánticos | ADMIN | Verde (ok), naranja (bajo), rojo (sin stock) | ✅ PASS | Re-test 2026-06-10: zoom confirma verde (#E8F5E9, stock=5/10), naranja (#FFF3E0, PINT-BAR5G-049 stock=6), rojo (#FFEBEE, BLAN-SEC10-045 stock=0) |
-| VIS-PROD-07 | `mat-progress-bar` visible durante carga | ADMIN | Barra en parte superior mientras carga | ✅ PASS | Re-test 2026-06-10: confirmado por code review — `products-page.component.html` línea 72-74: `@if (loading) { <mat-progress-bar mode="indeterminate" class="catalog-page__progress" /> }` |
+| VIS-PROD-01 | Título "Productos" visible | ADMIN | Encabezado "Productos" presente | ⏳ PENDIENTE | Re-test 2026-06-10: breadcrumb "Inventario → Productos" presente en la topbar (no hay h1 separado; el breadcrumb es el encabezado de página en este layout) |
+| VIS-PROD-02 | Columnas tabla: SKU, Nombre, Categoría, Proveedor, Stock, Precio, Estado | ADMIN | Todas las columnas visibles | ⏳ PENDIENTE | Re-test 2026-06-10: columnas Código, Nombre, Categoría, Proveedor, Stock, Precio, Costo unit., Estado confirmadas en `get_page_text` |
+| VIS-PROD-03 | Columna "Costo unitario" visible para ADMIN | ADMIN | Columna presente en la tabla | ⏳ PENDIENTE | Re-test 2026-06-10: columna "Costo unit." presente con valores ($180.00, $220.00, etc.) |
+| VIS-PROD-04 | Columna "Acciones" visible para WAREHOUSEMAN | WAREHOUSEMAN | Ícono de movimiento en cada fila | ⏳ PENDIENTE | Login `almacen01` — columna "Acciones" con ícono `swap_vert` presente en cada fila |
+| VIS-PROD-05 | Barra de búsqueda y filtros visibles | ADMIN | Campos búsqueda, categoría, estado, proveedor presentes | ⏳ PENDIENTE | Re-test 2026-06-10: "Buscar por código o nombre", Categoría, Estado, Proveedor todos presentes |
+| VIS-PROD-06 | `StockBadge` muestra colores semánticos | ADMIN | Verde (ok), naranja (bajo), rojo (sin stock) | ⏳ PENDIENTE | Re-test 2026-06-10: zoom confirma verde (#E8F5E9, stock=5/10), naranja (#FFF3E0, PINT-BAR5G-049 stock=6), rojo (#FFEBEE, BLAN-SEC10-045 stock=0) |
+| VIS-PROD-07 | `mat-progress-bar` visible durante carga | ADMIN | Barra en parte superior mientras carga | ⏳ PENDIENTE | Re-test 2026-06-10: confirmado por code review — `products-page.component.html` línea 72-74: `@if (loading) { <mat-progress-bar mode="indeterminate" class="catalog-page__progress" /> }` |
 
 ### 1b. Búsqueda y filtros (BSRCH)
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| BSRCH-PROD-01 | Buscar por SKU exacto | ADMIN | Productos en BD | Filtra correctamente | ✅ PASS | Re-test 2026-06-10: "LUBR" → 2 resultados (LUBR-ACE20-035, LUBR-SOL-036) |
-| BSRCH-PROD-02 | Buscar por nombre (case insensitive) | ADMIN | Productos en BD | Encuentra el producto | ✅ PASS | Re-test 2026-06-10: "lubr" (minúsculas) → mismos 2 resultados que "LUBR"; "aceite" → 1 resultado |
-| BSRCH-PROD-03 | Buscar con acento / sin acento (accent insensitive) | ADMIN | Producto con nombre acentuado | Encuentra el producto | ✅ PASS | RESUELTO — Re-test 2026-06-10: búsqueda "galon" devuelve 3 resultados incluyendo productos con "Galón" en el nombre. Fix `f_unaccent()` confirmado funcionando (BUG-INV-06 → ✅ RESUELTO) |
-| BSRCH-PROD-04 | Filtrar por categoría | ADMIN | Varias categorías en BD | Solo muestra productos de esa categoría | ✅ PASS | Re-test 2026-06-10: filtro "Cat-Int-12406" → 2 de 2 resultados (SKU-CANCEL-13082, SKU-SO-12823) |
-| BSRCH-PROD-05 | Filtrar por estado (AVAILABLE / DISCONTINUED / OUT_OF_STOCK) | ADMIN | Productos con distintos estados | Lista filtrada por estado | ✅ PASS | Re-test 2026-06-10: filtro "Sin stock" → 3 resultados (ELEC-PRO-043, BLAN-SEC10-045, COMP-SSD1T-044), todos "Sin stock" |
-| BSRCH-PROD-06 | Filtrar por proveedor | ADMIN | Productos con distintos proveedores | Lista filtrada por proveedor | ✅ PASS | Re-test 2026-06-10: "Constructora y Suministros del Bajío S.A." → 6 de 6 resultados |
-| BSRCH-PROD-07 | Término sin resultados muestra estado vacío | ADMIN | Término inexistente | Ícono + "Sin resultados para …" | ✅ PASS | Re-test 2026-06-10: "zzz999" → "Sin resultados / Ningún registro coincide con los filtros aplicados" + icono |
-| BSRCH-PROD-08 | Botón "Limpiar filtros" restaura la lista completa | ADMIN | Filtros activos | Lista sin filtros; contador de filtros activos = 0 | ✅ PASS | Re-test 2026-06-10: con filtro de proveedor activo, click en `filter_alt_off` restaura la lista completa de 108 productos sin filtros |
+| BSRCH-PROD-01 | Buscar por SKU exacto | ADMIN | Productos en BD | Filtra correctamente | ⏳ PENDIENTE | Re-test 2026-06-10: "LUBR" → 2 resultados (LUBR-ACE20-035, LUBR-SOL-036) |
+| BSRCH-PROD-02 | Buscar por nombre (case insensitive) | ADMIN | Productos en BD | Encuentra el producto | ⏳ PENDIENTE | Re-test 2026-06-10: "lubr" (minúsculas) → mismos 2 resultados que "LUBR"; "aceite" → 1 resultado |
+| BSRCH-PROD-03 | Buscar con acento / sin acento (accent insensitive) | ADMIN | Producto con nombre acentuado | Encuentra el producto | ⏳ PENDIENTE | RESUELTO — Re-test 2026-06-10: búsqueda "galon" devuelve 3 resultados incluyendo productos con "Galón" en el nombre. Fix `f_unaccent()` confirmado funcionando (BUG-INV-06 → ✅ RESUELTO) |
+| BSRCH-PROD-04 | Filtrar por categoría | ADMIN | Varias categorías en BD | Solo muestra productos de esa categoría | ⏳ PENDIENTE | Re-test 2026-06-10: filtro "Cat-Int-12406" → 2 de 2 resultados (SKU-CANCEL-13082, SKU-SO-12823) |
+| BSRCH-PROD-05 | Filtrar por estado (AVAILABLE / DISCONTINUED / OUT_OF_STOCK) | ADMIN | Productos con distintos estados | Lista filtrada por estado | ⏳ PENDIENTE | Re-test 2026-06-10: filtro "Sin stock" → 3 resultados (ELEC-PRO-043, BLAN-SEC10-045, COMP-SSD1T-044), todos "Sin stock" |
+| BSRCH-PROD-06 | Filtrar por proveedor | ADMIN | Productos con distintos proveedores | Lista filtrada por proveedor | ⏳ PENDIENTE | Re-test 2026-06-10: "Constructora y Suministros del Bajío S.A." → 6 de 6 resultados |
+| BSRCH-PROD-07 | Término sin resultados muestra estado vacío | ADMIN | Término inexistente | Ícono + "Sin resultados para …" | ⏳ PENDIENTE | Re-test 2026-06-10: "zzz999" → "Sin resultados / Ningún registro coincide con los filtros aplicados" + icono |
+| BSRCH-PROD-08 | Botón "Limpiar filtros" restaura la lista completa | ADMIN | Filtros activos | Lista sin filtros; contador de filtros activos = 0 | ⏳ PENDIENTE | Re-test 2026-06-10: con filtro de proveedor activo, click en `filter_alt_off` restaura la lista completa de 108 productos sin filtros |
 
 ### 1c. RBAC en lista (RBAC)
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RBAC-PROD-01 | Botón "Nuevo producto" visible | ADMIN | Visible | ✅ PASS | Re-test 2026-06-10: botón "+ Nuevo producto" visible en la esquina superior derecha |
-| RBAC-PROD-02 | Botón "Nuevo producto" visible | MANAGER | Visible | ✅ PASS | Re-test 2026-06-10: login `manager01` — botón "Nuevo producto" visible |
-| RBAC-PROD-03 | Botón "Nuevo producto" AUSENTE | WAREHOUSEMAN | Ausente del DOM | ✅ PASS | Re-test 2026-06-10: login `almacen01` — botón "Nuevo producto" ausente del DOM |
-| RBAC-PROD-04 | Botón "Nuevo producto" AUSENTE | SALES | Ausente del DOM | ✅ PASS | Re-test 2026-06-10: login `ventas01` — botón "Nuevo producto" ausente del DOM |
-| RBAC-PROD-05 | Columna "Costo unitario" visible | ADMIN | Columna presente | ✅ PASS | Re-test 2026-06-10: columna "Costo unit." presente con valores para ADMIN |
-| RBAC-PROD-06 | Columna "Costo unitario" visible | MANAGER | Columna presente | ✅ PASS | Re-test 2026-06-10: login `manager01` — columna "Costo unit." presente con valores |
-| RBAC-PROD-07 | Columna "Costo unitario" AUSENTE del DOM | WAREHOUSEMAN | Columna no renderizada | ✅ PASS | Re-test 2026-06-10: login `almacen01` — headers sin "Costo unit." |
-| RBAC-PROD-08 | Columna "Costo unitario" AUSENTE del DOM | SALES | Columna no renderizada | ✅ PASS | Re-test 2026-06-10: login `ventas01` — headers Código/Nombre/Categoría/Proveedor/Stock/Precio/Estado, sin "Costo unit." |
-| RBAC-PROD-09 | Ícono "Registrar movimiento" visible | ADMIN | Ícono en cada fila | ✅ PASS | Re-test 2026-06-10: ícono `swap_vert` presente en la columna de acciones de cada fila |
-| RBAC-PROD-10 | Ícono "Registrar movimiento" visible | WAREHOUSEMAN | Ícono en cada fila | ✅ PASS | Re-test 2026-06-10: login `almacen01` — ícono `swap_vert` presente en cada fila |
-| RBAC-PROD-11 | Ícono "Registrar movimiento" AUSENTE | SALES | Columna acciones sin ícono | ✅ PASS | Re-test 2026-06-10: login `ventas01` — sin columna "Acciones" ni ícono `swap_vert` (displayedColumns no incluye 'actions' para SALES) |
+| RBAC-PROD-01 | Botón "Nuevo producto" visible | ADMIN | Visible | ⏳ PENDIENTE | Re-test 2026-06-10: botón "+ Nuevo producto" visible en la esquina superior derecha |
+| RBAC-PROD-02 | Botón "Nuevo producto" visible | MANAGER | Visible | ⏳ PENDIENTE | Re-test 2026-06-10: login `manager01` — botón "Nuevo producto" visible |
+| RBAC-PROD-03 | Botón "Nuevo producto" AUSENTE | WAREHOUSEMAN | Ausente del DOM | ⏳ PENDIENTE | Re-test 2026-06-10: login `almacen01` — botón "Nuevo producto" ausente del DOM |
+| RBAC-PROD-04 | Botón "Nuevo producto" AUSENTE | SALES | Ausente del DOM | ⏳ PENDIENTE | Re-test 2026-06-10: login `ventas01` — botón "Nuevo producto" ausente del DOM |
+| RBAC-PROD-05 | Columna "Costo unitario" visible | ADMIN | Columna presente | ⏳ PENDIENTE | Re-test 2026-06-10: columna "Costo unit." presente con valores para ADMIN |
+| RBAC-PROD-06 | Columna "Costo unitario" visible | MANAGER | Columna presente | ⏳ PENDIENTE | Re-test 2026-06-10: login `manager01` — columna "Costo unit." presente con valores |
+| RBAC-PROD-07 | Columna "Costo unitario" AUSENTE del DOM | WAREHOUSEMAN | Columna no renderizada | ⏳ PENDIENTE | Re-test 2026-06-10: login `almacen01` — headers sin "Costo unit." |
+| RBAC-PROD-08 | Columna "Costo unitario" AUSENTE del DOM | SALES | Columna no renderizada | ⏳ PENDIENTE | Re-test 2026-06-10: login `ventas01` — headers Código/Nombre/Categoría/Proveedor/Stock/Precio/Estado, sin "Costo unit." |
+| RBAC-PROD-09 | Ícono "Registrar movimiento" visible | ADMIN | Ícono en cada fila | ⏳ PENDIENTE | Re-test 2026-06-10: ícono `swap_vert` presente en la columna de acciones de cada fila |
+| RBAC-PROD-10 | Ícono "Registrar movimiento" visible | WAREHOUSEMAN | Ícono en cada fila | ⏳ PENDIENTE | Re-test 2026-06-10: login `almacen01` — ícono `swap_vert` presente en cada fila |
+| RBAC-PROD-11 | Ícono "Registrar movimiento" AUSENTE | SALES | Columna acciones sin ícono | ⏳ PENDIENTE | Re-test 2026-06-10: login `ventas01` — sin columna "Acciones" ni ícono `swap_vert` (displayedColumns no incluye 'actions' para SALES) |
 
 ### 1d. Botones e íconos de acción (UI)
 
@@ -173,21 +184,21 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| UI-PROD-01 | Click en fila abre diálogo de detalle | ADMIN | Lista cargada | Diálogo `ProductDetailDialog` abre sin navegar | ✅ PASS | Re-test 2026-06-10: click en fila HMAN-DES-013 abre diálogo "Editar producto" sin cambiar la URL (`/inventory/products`) |
-| UI-PROD-02 | Click en fila (WAREHOUSEMAN) abre diálogo en modo lectura | WAREHOUSEMAN | Lista cargada | Diálogo abre; campos deshabilitados; sin botón Guardar | ✅ PASS | Login `almacen01` — click en fila HMAN-DES-013 abre "Ver producto" con campos como texto (no inputs editables) y único botón "Cerrar" |
-| UI-PROD-03 | Ícono movimiento → clic abre `MovementDialog` sin navegar | ADMIN | Lista cargada | Diálogo de movimiento abre; página permanece | ✅ PASS | Re-test 2026-06-10: click en `swap_vert` de HMAN-DES-013 abre "Registrar movimiento de stock" con Stock físico/Reservado/Disponible para salida, sin navegar |
-| UI-PROD-04 | Ícono movimiento → confirmar movimiento → stock se actualiza | ADMIN | MovementDialog abierto con tipo IN | Snackbar verde; lista recarga con nuevo stock | ✅ PASS | Re-test 2026-06-10: Entrada (IN) +5 sobre HMAN-DES-013, snackbar verde "Movimiento registrado correctamente.", stock 90→95 |
-| UI-PROD-05 | Ícono movimiento → cancelar → stock NO cambia | ADMIN | MovementDialog abierto | Cerrar sin guardar; stock sin cambios | ✅ PASS | Re-test 2026-06-10: con Cantidad=5 y Motivo llenados, click en "Cancelar" cierra el diálogo sin cambios; stock de HMAN-DES-013 permaneció en 90 |
-| UI-PROD-PAG-01 | Paginador visible cuando hay > pageSize productos | BD con >20 productos | Paginador con total y opciones 10/20/50 | ✅ PASS | Re-test 2026-06-10: 108 productos, "1-20 of 108", selector "Items per page" con opciones 10/20/50 confirmadas |
-| UI-PROD-PAG-02 | Cambio de página carga página siguiente | Paginador visible | Filas cambian al ir a pág 2 | ✅ PASS | Re-test 2026-06-10: click en flecha "siguiente" → "21-40 of 108" con filas distintas (HMAN-JLL-012, COMP-LT15-003, etc.) |
-| UI-PROD-PAG-03 | Cambiar tamaño de página (10/20/50) recarga la lista con el nuevo tamaño | Paginador visible, >50 productos | Selector "Items por página" cambia a 10/50; tabla muestra el número correcto de filas; vuelve a página 0 | ✅ PASS | Corregido y re-test 2026-06-11/12 (BUG-INV-10): estando en página 3 ("41-60 of 108", size=20), al cambiar "Items per page" a 10 la tabla muestra correctamente 10 filas y el rango vuelve a "1-10 of 108" (página 0). Navegación normal entre páginas (sin cambiar tamaño) sigue preservando el índice — "Siguiente" desde "1-10" → "11-20 of 108" ✅ |
+| UI-PROD-01 | Click en fila abre diálogo de detalle | ADMIN | Lista cargada | Diálogo `ProductDetailDialog` abre sin navegar | ⏳ PENDIENTE | Re-test 2026-06-10: click en fila HMAN-DES-013 abre diálogo "Editar producto" sin cambiar la URL (`/inventory/products`) |
+| UI-PROD-02 | Click en fila (WAREHOUSEMAN) abre diálogo en modo lectura | WAREHOUSEMAN | Lista cargada | Diálogo abre; campos deshabilitados; sin botón Guardar | ⏳ PENDIENTE | Login `almacen01` — click en fila HMAN-DES-013 abre "Ver producto" con campos como texto (no inputs editables) y único botón "Cerrar" |
+| UI-PROD-03 | Ícono movimiento → clic abre `MovementDialog` sin navegar | ADMIN | Lista cargada | Diálogo de movimiento abre; página permanece | ⏳ PENDIENTE | Re-test 2026-06-10: click en `swap_vert` de HMAN-DES-013 abre "Registrar movimiento de stock" con Stock físico/Reservado/Disponible para salida, sin navegar |
+| UI-PROD-04 | Ícono movimiento → confirmar movimiento → stock se actualiza | ADMIN | MovementDialog abierto con tipo IN | Snackbar verde; lista recarga con nuevo stock | ⏳ PENDIENTE | Re-test 2026-06-10: Entrada (IN) +5 sobre HMAN-DES-013, snackbar verde "Movimiento registrado correctamente.", stock 90→95 |
+| UI-PROD-05 | Ícono movimiento → cancelar → stock NO cambia | ADMIN | MovementDialog abierto | Cerrar sin guardar; stock sin cambios | ⏳ PENDIENTE | Re-test 2026-06-10: con Cantidad=5 y Motivo llenados, click en "Cancelar" cierra el diálogo sin cambios; stock de HMAN-DES-013 permaneció en 90 |
+| UI-PROD-PAG-01 | Paginador visible cuando hay > pageSize productos | BD con >20 productos | Paginador con total y opciones 10/20/50 | ⏳ PENDIENTE | Re-test 2026-06-10: 108 productos, "1-20 of 108", selector "Items per page" con opciones 10/20/50 confirmadas |
+| UI-PROD-PAG-02 | Cambio de página carga página siguiente | Paginador visible | Filas cambian al ir a pág 2 | ⏳ PENDIENTE | Re-test 2026-06-10: click en flecha "siguiente" → "21-40 of 108" con filas distintas (HMAN-JLL-012, COMP-LT15-003, etc.) |
+| UI-PROD-PAG-03 | Cambiar tamaño de página (10/20/50) recarga la lista con el nuevo tamaño | Paginador visible, >50 productos | Selector "Items por página" cambia a 10/50; tabla muestra el número correcto de filas; vuelve a página 0 | ⏳ PENDIENTE | Corregido y re-test 2026-06-11/12 (BUG-INV-10): estando en página 3 ("41-60 of 108", size=20), al cambiar "Items per page" a 10 la tabla muestra correctamente 10 filas y el rango vuelve a "1-10 of 108" (página 0). Navegación normal entre páginas (sin cambiar tamaño) sigue preservando el índice — "Siguiente" desde "1-10" → "11-20 of 108" ✅ |
 
 ### 1e. Estados vacíos (EMPTY)
 
 | ID | Descripción | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|
-| EMPTY-PROD-01 | Búsqueda sin resultados | Ícono + 'Sin resultados para "…"' | ✅ PASS | Re-test 2026-06-10: búsqueda "zzz999" muestra ícono + "Sin resultados / Ningún registro coincide con los filtros aplicados." |
-| EMPTY-PROD-02 | Filtro activo sin resultados | Mensaje + botón "Limpiar filtros" visible | ✅ PASS | Re-test 2026-06-10: con búsqueda "zzz999" activa (sin resultados), botón `filter_alt_off` ("Limpiar filtros") visible junto a los filtros |
+| EMPTY-PROD-01 | Búsqueda sin resultados | Ícono + 'Sin resultados para "…"' | ⏳ PENDIENTE | Re-test 2026-06-10: búsqueda "zzz999" muestra ícono + "Sin resultados / Ningún registro coincide con los filtros aplicados." |
+| EMPTY-PROD-02 | Filtro activo sin resultados | Mensaje + botón "Limpiar filtros" visible | ⏳ PENDIENTE | Re-test 2026-06-10: con búsqueda "zzz999" activa (sin resultados), botón `filter_alt_off` ("Limpiar filtros") visible junto a los filtros |
 
 ---
 
@@ -197,15 +208,15 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RBAC-PDET-01 | Título "Nuevo producto" al crear | ADMIN | "Nuevo producto" como título | ✅ PASS | Verificado en browser 2026-06-10: diálogo "Nuevo producto" con SKU/Nombre/Precio/Costo/Stock inicial/Stock mínimo/Estado/Categoría/Proveedor/Descripción |
-| RBAC-PDET-02 | Título "Editar producto" al editar | ADMIN | "Editar producto" como título | ✅ PASS | Verificado en browser 2026-06-10: diálogo de HMAN-DES-013 muestra "Editar producto" |
-| RBAC-PDET-03 | Título "Ver producto" para WAREHOUSEMAN | WAREHOUSEMAN | "Ver producto" como título | ✅ PASS | Re-test 2026-06-10: login `almacen01` — título "Ver producto" presente en el diálogo |
-| RBAC-PDET-04 | Campos editables y botón Guardar visible | ADMIN | Todos los inputs habilitados; "Guardar" presente | ✅ PASS | Verificado en browser 2026-06-10: campos SKU/Nombre/Precio/Costo/Categoría/Proveedor/Descripción editables, "Guardar cambios" presente |
-| RBAC-PDET-05 | Campos deshabilitados y sin botón Guardar | WAREHOUSEMAN | inputs `disabled:true`; sin "Guardar" | ✅ PASS | Re-test 2026-06-10: login `almacen01` — campos como texto (no inputs), solo botón "Cerrar" |
-| RBAC-PDET-06 | Botón "Desactivar" visible solo para ADMIN | ADMIN | Visible | ✅ PASS | Verificado en browser 2026-06-10: botón "Desactivar" rojo visible en diálogo de edición de HMAN-DES-013 |
-| RBAC-PDET-07 | Botón "Desactivar" AUSENTE para MANAGER | MANAGER | Ausente del DOM | ✅ PASS | Re-test 2026-06-10: login `manager01` — diálogo "Editar producto" de HMAN-DES-013 con campos editables, "Cancelar"/"Guardar cambios", sin botón "Desactivar" |
-| RBAC-PDET-08 | Campo "Costo unitario" visible para ADMIN | ADMIN | Campo presente y editable | ✅ PASS | Verificado en browser 2026-06-10: campo "Costo unitario" presente con valor $180, editable |
-| RBAC-PDET-09 | Campo "Costo unitario" AUSENTE para WAREHOUSEMAN | WAREHOUSEMAN | Campo no renderizado | ✅ PASS | Re-test 2026-06-10: login `almacen01` — campo "Costo unitario" no renderizado en vista "Ver producto" |
+| RBAC-PDET-01 | Título "Nuevo producto" al crear | ADMIN | "Nuevo producto" como título | ⏳ PENDIENTE | Verificado en browser 2026-06-10: diálogo "Nuevo producto" con SKU/Nombre/Precio/Costo/Stock inicial/Stock mínimo/Estado/Categoría/Proveedor/Descripción |
+| RBAC-PDET-02 | Título "Editar producto" al editar | ADMIN | "Editar producto" como título | ⏳ PENDIENTE | Verificado en browser 2026-06-10: diálogo de HMAN-DES-013 muestra "Editar producto" |
+| RBAC-PDET-03 | Título "Ver producto" para WAREHOUSEMAN | WAREHOUSEMAN | "Ver producto" como título | ⏳ PENDIENTE | Re-test 2026-06-10: login `almacen01` — título "Ver producto" presente en el diálogo |
+| RBAC-PDET-04 | Campos editables y botón Guardar visible | ADMIN | Todos los inputs habilitados; "Guardar" presente | ⏳ PENDIENTE | Verificado en browser 2026-06-10: campos SKU/Nombre/Precio/Costo/Categoría/Proveedor/Descripción editables, "Guardar cambios" presente |
+| RBAC-PDET-05 | Campos deshabilitados y sin botón Guardar | WAREHOUSEMAN | inputs `disabled:true`; sin "Guardar" | ⏳ PENDIENTE | Re-test 2026-06-10: login `almacen01` — campos como texto (no inputs), solo botón "Cerrar" |
+| RBAC-PDET-06 | Botón "Desactivar" visible solo para ADMIN | ADMIN | Visible | ⏳ PENDIENTE | Verificado en browser 2026-06-10: botón "Desactivar" rojo visible en diálogo de edición de HMAN-DES-013 |
+| RBAC-PDET-07 | Botón "Desactivar" AUSENTE para MANAGER | MANAGER | Ausente del DOM | ⏳ PENDIENTE | Re-test 2026-06-10: login `manager01` — diálogo "Editar producto" de HMAN-DES-013 con campos editables, "Cancelar"/"Guardar cambios", sin botón "Desactivar" |
+| RBAC-PDET-08 | Campo "Costo unitario" visible para ADMIN | ADMIN | Campo presente y editable | ⏳ PENDIENTE | Verificado en browser 2026-06-10: campo "Costo unitario" presente con valor $180, editable |
+| RBAC-PDET-09 | Campo "Costo unitario" AUSENTE para WAREHOUSEMAN | WAREHOUSEMAN | Campo no renderizado | ⏳ PENDIENTE | Re-test 2026-06-10: login `almacen01` — campo "Costo unitario" no renderizado en vista "Ver producto" |
 
 ### 2b. Validaciones del formulario (VAL)
 
@@ -213,39 +224,39 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VAL-PDET-01 | Campo SKU vacío → error inline | Formulario nuevo | Error "SKU requerido" bajo el campo | ✅ PASS | Re-test 2026-06-10: blur en SKU vacío → "El SKU es obligatorio." |
-| VAL-PDET-02 | Campo Nombre vacío → error inline | Formulario nuevo | Error "Nombre requerido" | ✅ PASS | Re-test 2026-06-10: blur en Nombre vacío → "El nombre es obligatorio." |
-| VAL-PDET-03 | Precio ≤ 0 → error | Precio = 0 | Error "Debe ser mayor a cero" | ✅ PASS | Re-test 2026-06-10: Precio=0, blur → "El precio debe ser mayor a 0." |
-| VAL-PDET-04 | Stock mínimo negativo → error | Valor negativo | Error de validación visible | ✅ PASS | Re-test 2026-06-10: Stock mínimo=-1, blur → "El stock mínimo no puede ser negativo." (BUG-INV-02 confirmado corregido) |
-| VAL-PDET-05 | Formulario inválido → botón Guardar deshabilitado | Campos inválidos | `disabled:true` en el DOM | ✅ PASS | Re-test 2026-06-10: con SKU/Nombre/Precio/Costo/Categoría/Proveedor inválidos o vacíos, "Crear producto" permanece gris/deshabilitado |
-| VAL-PDET-06 | Formulario de edición recién cargado → Guardar deshabilitado | Sin modificaciones | `disabled:true` (form.dirty = false) | ✅ PASS | Verificado en browser 2026-06-10: "Guardar cambios" gris/deshabilitado al abrir diálogo de edición de HMAN-DES-013 |
-| VAL-PDET-07 | Modificar un campo → Guardar se activa | Modificar nombre | `disabled:false` | ✅ PASS | Verificado en browser 2026-06-10: al modificar SKU el botón "Guardar cambios" se activa (color púrpura) |
-| VAL-PDET-08 | Guardar exitoso → Guardar se desactiva | Guardar con éxito | `disabled:true` (markAsPristine) | ✅ PASS | Re-test 2026-06-10: tras guardar exitosamente (CRUD-PDET-02), al reabrir el diálogo de edición "Guardar cambios" está deshabilitado/gris (form pristine); se activa solo al modificar un campo (form.dirty) |
-| VAL-PDET-09 | SKU duplicado → snackbar error con mensaje del backend | SKU ya existe | Snackbar rojo con mensaje 409/422 del backend | ✅ PASS | Re-test 2026-06-10: al editar QA-CRUD-001 cambiando SKU a "ELEC-PRO-043" (ya en uso) y guardar, PUT /api/v1/inventory/products/854 → 409, snackbar rojo "El SKU 'ELEC-PRO-043' ya está en uso por otro producto.", diálogo permaneció abierto. SKU revertido a QA-CRUD-001 tras la prueba |
-| VAL-PDET-10 | Campo Stock no es editable en el formulario | Formulario de edición | Campo "Stock actual" ausente o `disabled:true` — se registra vía movimientos | ✅ PASS | Verificado en browser 2026-06-10: campo "Stock físico (solo lectura)" disabled con ícono de candado + hint "El stock físico solo puede modificarse mediante Registrar movimiento." |
-| VAL-PDET-11 | Campo SKU > 50 caracteres → error o input no acepta más | Escribir 51+ caracteres en SKU | Error "Máximo 50 caracteres" o `maxlength` en el DOM impide escribir más | ✅ PASS | Verificado en browser 2026-06-10: se escribieron 66 caracteres en SKU, el input quedó truncado a 50 (`maxLength=50` confirmado vía DOM) |
-| VAL-PDET-12 | Campo Nombre > 150 caracteres → error o input no acepta más | Escribir 151+ caracteres en Nombre | Error "Máximo 150 caracteres" o `maxlength` en el DOM impide escribir más | ✅ PASS | Verificado en browser 2026-06-10: atributo `maxLength=150` confirmado en input "Nombre" vía DOM |
-| VAL-PDET-13 | Campo Descripción > 500 caracteres → error o input no acepta más | Escribir 501+ caracteres en Descripción | Error "Máximo 500 caracteres" o `maxlength` en el DOM impide escribir más | ✅ PASS | Verificado en browser 2026-06-10: atributo `maxLength=500` confirmado en textarea "Descripción" vía DOM |
-| VAL-PDET-14 | Guardar sin seleccionar Categoría → formulario inválido | Formulario nuevo, categoría sin seleccionar, resto completo | Botón "Guardar" deshabilitado o error "Categoría requerida" | ✅ PASS | Re-test 2026-06-11/12: al hacer blur en "Categoría*" sin seleccionar, aparece "La categoría es obligatoria." (concordancia de género CORRECTA — texto femenino para "la categoría") y "Crear producto" permanece deshabilitado. El registro original 2026-06-10 indicaba "obligatorio" (masculino) — no reproducible en el código actual; ver BUG-INV-08 |
-| VAL-PDET-15 | Guardar sin seleccionar Proveedor → formulario inválido | Formulario nuevo, proveedor sin seleccionar, resto completo | Botón "Guardar" deshabilitado o error "Proveedor requerido" | ✅ PASS | Verificado en browser 2026-06-10: al hacer blur en "Proveedor*" sin seleccionar, aparece "El proveedor es obligatorio." y "Crear producto" permanece deshabilitado |
+| VAL-PDET-01 | Campo SKU vacío → error inline | Formulario nuevo | Error "SKU requerido" bajo el campo | ⏳ PENDIENTE | Re-test 2026-06-10: blur en SKU vacío → "El SKU es obligatorio." |
+| VAL-PDET-02 | Campo Nombre vacío → error inline | Formulario nuevo | Error "Nombre requerido" | ⏳ PENDIENTE | Re-test 2026-06-10: blur en Nombre vacío → "El nombre es obligatorio." |
+| VAL-PDET-03 | Precio ≤ 0 → error | Precio = 0 | Error "Debe ser mayor a cero" | ⏳ PENDIENTE | Re-test 2026-06-10: Precio=0, blur → "El precio debe ser mayor a 0." |
+| VAL-PDET-04 | Stock mínimo negativo → error | Valor negativo | Error de validación visible | ⏳ PENDIENTE | Re-test 2026-06-10: Stock mínimo=-1, blur → "El stock mínimo no puede ser negativo." (BUG-INV-02 confirmado corregido) |
+| VAL-PDET-05 | Formulario inválido → botón Guardar deshabilitado | Campos inválidos | `disabled:true` en el DOM | ⏳ PENDIENTE | Re-test 2026-06-10: con SKU/Nombre/Precio/Costo/Categoría/Proveedor inválidos o vacíos, "Crear producto" permanece gris/deshabilitado |
+| VAL-PDET-06 | Formulario de edición recién cargado → Guardar deshabilitado | Sin modificaciones | `disabled:true` (form.dirty = false) | ⏳ PENDIENTE | Verificado en browser 2026-06-10: "Guardar cambios" gris/deshabilitado al abrir diálogo de edición de HMAN-DES-013 |
+| VAL-PDET-07 | Modificar un campo → Guardar se activa | Modificar nombre | `disabled:false` | ⏳ PENDIENTE | Verificado en browser 2026-06-10: al modificar SKU el botón "Guardar cambios" se activa (color púrpura) |
+| VAL-PDET-08 | Guardar exitoso → Guardar se desactiva | Guardar con éxito | `disabled:true` (markAsPristine) | ⏳ PENDIENTE | Re-test 2026-06-10: tras guardar exitosamente (CRUD-PDET-02), al reabrir el diálogo de edición "Guardar cambios" está deshabilitado/gris (form pristine); se activa solo al modificar un campo (form.dirty) |
+| VAL-PDET-09 | SKU duplicado → snackbar error con mensaje del backend | SKU ya existe | Snackbar rojo con mensaje 409/422 del backend | ⏳ PENDIENTE | Re-test 2026-06-10: al editar QA-CRUD-001 cambiando SKU a "ELEC-PRO-043" (ya en uso) y guardar, PUT /api/v1/inventory/products/854 → 409, snackbar rojo "El SKU 'ELEC-PRO-043' ya está en uso por otro producto.", diálogo permaneció abierto. SKU revertido a QA-CRUD-001 tras la prueba |
+| VAL-PDET-10 | Campo Stock no es editable en el formulario | Formulario de edición | Campo "Stock actual" ausente o `disabled:true` — se registra vía movimientos | ⏳ PENDIENTE | Verificado en browser 2026-06-10: campo "Stock físico (solo lectura)" disabled con ícono de candado + hint "El stock físico solo puede modificarse mediante Registrar movimiento." |
+| VAL-PDET-11 | Campo SKU > 50 caracteres → error o input no acepta más | Escribir 51+ caracteres en SKU | Error "Máximo 50 caracteres" o `maxlength` en el DOM impide escribir más | ⏳ PENDIENTE | Verificado en browser 2026-06-10: se escribieron 66 caracteres en SKU, el input quedó truncado a 50 (`maxLength=50` confirmado vía DOM) |
+| VAL-PDET-12 | Campo Nombre > 150 caracteres → error o input no acepta más | Escribir 151+ caracteres en Nombre | Error "Máximo 150 caracteres" o `maxlength` en el DOM impide escribir más | ⏳ PENDIENTE | Verificado en browser 2026-06-10: atributo `maxLength=150` confirmado en input "Nombre" vía DOM |
+| VAL-PDET-13 | Campo Descripción > 500 caracteres → error o input no acepta más | Escribir 501+ caracteres en Descripción | Error "Máximo 500 caracteres" o `maxlength` en el DOM impide escribir más | ⏳ PENDIENTE | Verificado en browser 2026-06-10: atributo `maxLength=500` confirmado en textarea "Descripción" vía DOM |
+| VAL-PDET-14 | Guardar sin seleccionar Categoría → formulario inválido | Formulario nuevo, categoría sin seleccionar, resto completo | Botón "Guardar" deshabilitado o error "Categoría requerida" | ⏳ PENDIENTE | Re-test 2026-06-11/12: al hacer blur en "Categoría*" sin seleccionar, aparece "La categoría es obligatoria." (concordancia de género CORRECTA — texto femenino para "la categoría") y "Crear producto" permanece deshabilitado. El registro original 2026-06-10 indicaba "obligatorio" (masculino) — no reproducible en el código actual; ver BUG-INV-08 |
+| VAL-PDET-15 | Guardar sin seleccionar Proveedor → formulario inválido | Formulario nuevo, proveedor sin seleccionar, resto completo | Botón "Guardar" deshabilitado o error "Proveedor requerido" | ⏳ PENDIENTE | Verificado en browser 2026-06-10: al hacer blur en "Proveedor*" sin seleccionar, aparece "El proveedor es obligatorio." y "Crear producto" permanece deshabilitado |
 
 ### 2c. CRUD Productos (CRUD)
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| CRUD-PDET-01 | Crear producto con todos los datos válidos | Formulario nuevo completo | Snackbar verde "Producto creado correctamente."; diálogo cierra; lista recarga | ✅ PASS | Re-test 2026-06-10 con JWT fresco (re-login): producto QA-CRUD-001 creado, POST /api/v1/inventory/products → 201, snackbar verde "Producto creado correctamente.", diálogo cerró, lista recargó. Confirma diagnóstico de BUG-INV-09: ADMIN tiene permisos correctos, el 403 del intento 1 fue por JWT expirado (no RBAC) |
-| CRUD-PDET-02 | Editar nombre de un producto | Producto existente | Snackbar verde "Producto actualizado."; lista refleja cambio | ✅ PASS | Re-test 2026-06-10: editado el nombre de QA-CRUD-001 a "Producto QA CRUD-PDET-01 (editado)", PUT /api/v1/inventory/products/854 → 200, snackbar verde "Producto actualizado correctamente.", diálogo cerró, lista refleja el nuevo nombre |
-| CRUD-PDET-03 | Desactivar producto — click Desactivar abre diálogo de confirmación | ADMIN, producto activo | Modal con texto confirmatorio | ✅ PASS | Re-test 2026-06-10: click en "Desactivar" (dentro del diálogo de edición de QA-CRUD-001) abre modal "Desactivar producto" con texto '¿Deseas desactivar "Producto QA CRUD-PDET-01 (editado)" (QA-CRUD-001)?' y botones Cancelar/Desactivar |
-| CRUD-PDET-04 | Cancelar desactivación — producto permanece activo | Diálogo confirmación | Sin cambios | ✅ PASS | Re-test 2026-06-10: click en "Cancelar" del modal de confirmación lo cierra sin cambios; el diálogo de edición permanece abierto y el Estado sigue "Disponible" |
-| CRUD-PDET-05 | Confirmar desactivación — producto desaparece de la lista activa | ADMIN, confirmar | Snackbar verde; producto ya no aparece | ✅ PASS | Re-test 2026-06-10: click en "Desactivar" del modal confirma la baja, snackbar verde "Producto desactivado.", el diálogo cierra y la búsqueda "QA-CRUD-001" muestra "Sin resultados" en la lista (filtro por defecto = activos) |
+| CRUD-PDET-01 | Crear producto con todos los datos válidos | Formulario nuevo completo | Snackbar verde "Producto creado correctamente."; diálogo cierra; lista recarga | ⏳ PENDIENTE | Re-test 2026-06-10 con JWT fresco (re-login): producto QA-CRUD-001 creado, POST /api/v1/inventory/products → 201, snackbar verde "Producto creado correctamente.", diálogo cerró, lista recargó. Confirma diagnóstico de BUG-INV-09: ADMIN tiene permisos correctos, el 403 del intento 1 fue por JWT expirado (no RBAC) |
+| CRUD-PDET-02 | Editar nombre de un producto | Producto existente | Snackbar verde "Producto actualizado."; lista refleja cambio | ⏳ PENDIENTE | Re-test 2026-06-10: editado el nombre de QA-CRUD-001 a "Producto QA CRUD-PDET-01 (editado)", PUT /api/v1/inventory/products/854 → 200, snackbar verde "Producto actualizado correctamente.", diálogo cerró, lista refleja el nuevo nombre |
+| CRUD-PDET-03 | Desactivar producto — click Desactivar abre diálogo de confirmación | ADMIN, producto activo | Modal con texto confirmatorio | ⏳ PENDIENTE | Re-test 2026-06-10: click en "Desactivar" (dentro del diálogo de edición de QA-CRUD-001) abre modal "Desactivar producto" con texto '¿Deseas desactivar "Producto QA CRUD-PDET-01 (editado)" (QA-CRUD-001)?' y botones Cancelar/Desactivar |
+| CRUD-PDET-04 | Cancelar desactivación — producto permanece activo | Diálogo confirmación | Sin cambios | ⏳ PENDIENTE | Re-test 2026-06-10: click en "Cancelar" del modal de confirmación lo cierra sin cambios; el diálogo de edición permanece abierto y el Estado sigue "Disponible" |
+| CRUD-PDET-05 | Confirmar desactivación — producto desaparece de la lista activa | ADMIN, confirmar | Snackbar verde; producto ya no aparece | ⏳ PENDIENTE | Re-test 2026-06-10: click en "Desactivar" del modal confirma la baja, snackbar verde "Producto desactivado.", el diálogo cierra y la búsqueda "QA-CRUD-001" muestra "Sin resultados" en la lista (filtro por defecto = activos) |
 
 ### 2d. Kardex / Historial de movimientos (UI)
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| UI-PDET-01 | Sección "Kardex" visible en diálogo de detalle | ADMIN | Producto con movimientos | Tabla de movimientos visible con fecha, tipo, cantidad, motivo | ✅ PASS | Re-test 2026-06-10: se registraron 6 movimientos de "Entrada" sobre QA-CRUD-001 vía "Registrar movimiento"; tab Kardex muestra tabla con columnas Fecha, Tipo, Cantidad, Motivo, Usuario — 6 filas visibles |
-| UI-PDET-02 | Sección Kardex visible para WAREHOUSEMAN | WAREHOUSEMAN | Producto con movimientos | Tabla visible | ✅ PASS | Login `almacen01` — tab "Kardex" en HMAN-DES-013 muestra el movimiento "Entrada +5, UI-PROD-04 confirmar movimiento de prueba, admin" |
-| UI-PDET-03 | Paginación del Kardex funciona | ADMIN | Producto con movimientos | Paginador activo; cambio de página carga filas siguientes | ✅ PASS | Re-test 2026-06-10: con los 6 movimientos de QA-CRUD-001, Items per page=5 → "1-5 of 6"; al hacer click en "siguiente" → "6-6 of 6" mostrando el movimiento restante |
+| UI-PDET-01 | Sección "Kardex" visible en diálogo de detalle | ADMIN | Producto con movimientos | Tabla de movimientos visible con fecha, tipo, cantidad, motivo | ⏳ PENDIENTE | Re-test 2026-06-10: se registraron 6 movimientos de "Entrada" sobre QA-CRUD-001 vía "Registrar movimiento"; tab Kardex muestra tabla con columnas Fecha, Tipo, Cantidad, Motivo, Usuario — 6 filas visibles |
+| UI-PDET-02 | Sección Kardex visible para WAREHOUSEMAN | WAREHOUSEMAN | Producto con movimientos | Tabla visible | ⏳ PENDIENTE | Login `almacen01` — tab "Kardex" en HMAN-DES-013 muestra el movimiento "Entrada +5, UI-PROD-04 confirmar movimiento de prueba, admin" |
+| UI-PDET-03 | Paginación del Kardex funciona | ADMIN | Producto con movimientos | Paginador activo; cambio de página carga filas siguientes | ⏳ PENDIENTE | Re-test 2026-06-10: con los 6 movimientos de QA-CRUD-001, Items per page=5 → "1-5 of 6"; al hacer click en "siguiente" → "6-6 of 6" mostrando el movimiento restante |
 
 ---
 
@@ -255,37 +266,37 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VIS-MOV-01 | Diálogo muestra nombre y SKU del producto | ADMIN | Nombre y SKU del producto seleccionado visibles | ✅ PASS | Re-test 2026-06-10: login `admin` — diálogo "Registrar movimiento de stock" muestra "Producto: (editado QA) (HMAN-DES-013)" |
-| VIS-MOV-02 | Stock disponible visible antes de ingresar cantidad | ADMIN | "Stock disponible: N unidades" visible | ✅ PASS | Re-test 2026-06-10: panel muestra "Stock físico 95 / Reservado (órdenes pendientes) 0 / Disponible para salida 95" |
-| UI-MOV-01 | Selector de tipo: IN (Entrada) y OUT (Salida) disponibles | ADMIN | Ambas opciones en el `mat-select` | ✅ PASS | Re-test 2026-06-10: "Entrada (IN)" y "Salida (OUT)" ambas presentes en el `mat-select` |
+| VIS-MOV-01 | Diálogo muestra nombre y SKU del producto | ADMIN | Nombre y SKU del producto seleccionado visibles | ⏳ PENDIENTE | Re-test 2026-06-10: login `admin` — diálogo "Registrar movimiento de stock" muestra "Producto: (editado QA) (HMAN-DES-013)" |
+| VIS-MOV-02 | Stock disponible visible antes de ingresar cantidad | ADMIN | "Stock disponible: N unidades" visible | ⏳ PENDIENTE | Re-test 2026-06-10: panel muestra "Stock físico 95 / Reservado (órdenes pendientes) 0 / Disponible para salida 95" |
+| UI-MOV-01 | Selector de tipo: IN (Entrada) y OUT (Salida) disponibles | ADMIN | Ambas opciones en el `mat-select` | ⏳ PENDIENTE | Re-test 2026-06-10: "Entrada (IN)" y "Salida (OUT)" ambas presentes en el `mat-select` |
 
 ### 3b. Validaciones (VAL)
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VAL-MOV-01 | Cantidad vacía → error | Campo vacío | Error "Cantidad requerida" | ✅ PASS | Re-test 2026-06-10: campo Cantidad vacío + blur → "La cantidad es obligatoria." |
-| VAL-MOV-02 | Cantidad = 0 → error | Valor 0 | Error "Debe ser mayor a 0" | ✅ PASS | Re-test 2026-06-10: cantidad = 0 + blur → "La cantidad debe ser al menos 1." |
-| VAL-MOV-03 | Motivo vacío → error | Campo vacío | Error "Motivo requerido" | ✅ PASS | Re-test 2026-06-10: campo Motivo vacío + blur → "El motivo es obligatorio." |
-| VAL-MOV-04 | OUT con cantidad > stock disponible → error | availableStock = 5, cantidad = 10 | Error de validación; botón Guardar deshabilitado | ✅ PASS | Re-test 2026-06-10: tipo OUT, availableStock=95, cantidad=9999 → "Supera el stock disponible (95 unidades)." y botón "Registrar" deshabilitado |
-| VAL-MOV-05 | IN sin límite de cantidad — cualquier cantidad positiva válida | Tipo IN, cantidad 9999 | Sin error de máximo | ✅ PASS | Re-test 2026-06-10: tipo IN, cantidad=9999 → sin error de máximo en Cantidad |
-| VAL-MOV-06 | Motivo con > 300 caracteres → error | Texto largo | Error "Máximo 300 caracteres" | ✅ PASS | Re-test 2026-06-10: el `<textarea>` tiene `maxlength="300"` — el navegador impide escribir más de 300 caracteres (verificado: al pegar 420 'a', `value.length`=300, sin `<mat-error>` y "Registrar" habilitado). Cumple la regla de negocio (no se puede exceder 300) mediante prevención en vez de mensaje de error |
+| VAL-MOV-01 | Cantidad vacía → error | Campo vacío | Error "Cantidad requerida" | ⏳ PENDIENTE | Re-test 2026-06-10: campo Cantidad vacío + blur → "La cantidad es obligatoria." |
+| VAL-MOV-02 | Cantidad = 0 → error | Valor 0 | Error "Debe ser mayor a 0" | ⏳ PENDIENTE | Re-test 2026-06-10: cantidad = 0 + blur → "La cantidad debe ser al menos 1." |
+| VAL-MOV-03 | Motivo vacío → error | Campo vacío | Error "Motivo requerido" | ⏳ PENDIENTE | Re-test 2026-06-10: campo Motivo vacío + blur → "El motivo es obligatorio." |
+| VAL-MOV-04 | OUT con cantidad > stock disponible → error | availableStock = 5, cantidad = 10 | Error de validación; botón Guardar deshabilitado | ⏳ PENDIENTE | Re-test 2026-06-10: tipo OUT, availableStock=95, cantidad=9999 → "Supera el stock disponible (95 unidades)." y botón "Registrar" deshabilitado |
+| VAL-MOV-05 | IN sin límite de cantidad — cualquier cantidad positiva válida | Tipo IN, cantidad 9999 | Sin error de máximo | ⏳ PENDIENTE | Re-test 2026-06-10: tipo IN, cantidad=9999 → sin error de máximo en Cantidad |
+| VAL-MOV-06 | Motivo con > 300 caracteres → error | Texto largo | Error "Máximo 300 caracteres" | ⏳ PENDIENTE | Re-test 2026-06-10: el `<textarea>` tiene `maxlength="300"` — el navegador impide escribir más de 300 caracteres (verificado: al pegar 420 'a', `value.length`=300, sin `<mat-error>` y "Registrar" habilitado). Cumple la regla de negocio (no se puede exceder 300) mediante prevención en vez de mensaje de error |
 
 ### 3c. Reglas de negocio (RN)
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RN-MOV-01 | Al cambiar tipo de IN a OUT se aplica validación de máximo automáticamente | Tipo cambia a OUT | Validación máx=availableStock aplicada sin submit | ✅ PASS | Re-test 2026-06-10: con cantidad=9999 fija, IN→OUT → "Supera el stock disponible (95 unidades)." aparece sin tocar el campo Cantidad |
-| RN-MOV-02 | Al cambiar tipo de OUT a IN se quita la validación de máximo | Tipo cambia de OUT a IN | Validación de máximo desaparece | ✅ PASS | Re-test 2026-06-10: con cantidad=9999 fija, OUT→IN → error "Supera el stock disponible" desaparece, sin errores en Cantidad |
-| RN-MOV-03 | Movimiento OUT correcto → stock disminuye en la lista | ADMIN, OUT 3 unidades | Lista de productos recarga; stock = anterior − 3 | ✅ PASS | Re-test 2026-06-10: OUT -3 sobre HMAN-DES-013, 100→97 |
-| RN-MOV-04 | Movimiento IN correcto → stock aumenta en la lista | ADMIN, IN 5 unidades | Lista de productos recarga; stock = anterior + 5 | ✅ PASS | Re-test 2026-06-10: IN +5 sobre HMAN-DES-013, 95→100 |
+| RN-MOV-01 | Al cambiar tipo de IN a OUT se aplica validación de máximo automáticamente | Tipo cambia a OUT | Validación máx=availableStock aplicada sin submit | ⏳ PENDIENTE | Re-test 2026-06-10: con cantidad=9999 fija, IN→OUT → "Supera el stock disponible (95 unidades)." aparece sin tocar el campo Cantidad |
+| RN-MOV-02 | Al cambiar tipo de OUT a IN se quita la validación de máximo | Tipo cambia de OUT a IN | Validación de máximo desaparece | ⏳ PENDIENTE | Re-test 2026-06-10: con cantidad=9999 fija, OUT→IN → error "Supera el stock disponible" desaparece, sin errores en Cantidad |
+| RN-MOV-03 | Movimiento OUT correcto → stock disminuye en la lista | ADMIN, OUT 3 unidades | Lista de productos recarga; stock = anterior − 3 | ⏳ PENDIENTE | Re-test 2026-06-10: OUT -3 sobre HMAN-DES-013, 100→97 |
+| RN-MOV-04 | Movimiento IN correcto → stock aumenta en la lista | ADMIN, IN 5 unidades | Lista de productos recarga; stock = anterior + 5 | ⏳ PENDIENTE | Re-test 2026-06-10: IN +5 sobre HMAN-DES-013, 95→100 |
 
 ### 3d. CRUD Movimiento (CRUD)
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| CRUD-MOV-01 | Registrar movimiento IN válido | Formulario completo, tipo IN | Snackbar verde "Movimiento registrado correctamente."; diálogo cierra | ✅ PASS | Re-test 2026-06-10: IN cantidad=5, motivo="Movimiento de entrada - prueba QA re-test" sobre HMAN-DES-013 → snackbar verde "Movimiento registrado correctamente.", diálogo cierra, stock 95→100 |
-| CRUD-MOV-02 | Registrar movimiento OUT válido | Formulario completo, tipo OUT, cantidad ≤ availableStock | Snackbar verde; diálogo cierra | ✅ PASS | Re-test 2026-06-10: OUT cantidad=3, motivo="Movimiento de salida - prueba QA re-test" sobre HMAN-DES-013 → snackbar verde "Movimiento registrado correctamente.", diálogo cierra, stock 100→97 |
-| CRUD-MOV-03 | Cancelar / cerrar sin guardar | Formulario con datos | Diálogo cierra; stock sin cambios; lista no recarga | ✅ PASS | Re-test 2026-06-11: con cantidad=10, motivo="Movimiento que será cancelado - QA" (IN), clic en "Cancelar" → diálogo cierra, stock de HMAN-DES-013 permanece en 97 |
+| CRUD-MOV-01 | Registrar movimiento IN válido | Formulario completo, tipo IN | Snackbar verde "Movimiento registrado correctamente."; diálogo cierra | ⏳ PENDIENTE | Re-test 2026-06-10: IN cantidad=5, motivo="Movimiento de entrada - prueba QA re-test" sobre HMAN-DES-013 → snackbar verde "Movimiento registrado correctamente.", diálogo cierra, stock 95→100 |
+| CRUD-MOV-02 | Registrar movimiento OUT válido | Formulario completo, tipo OUT, cantidad ≤ availableStock | Snackbar verde; diálogo cierra | ⏳ PENDIENTE | Re-test 2026-06-10: OUT cantidad=3, motivo="Movimiento de salida - prueba QA re-test" sobre HMAN-DES-013 → snackbar verde "Movimiento registrado correctamente.", diálogo cierra, stock 100→97 |
+| CRUD-MOV-03 | Cancelar / cerrar sin guardar | Formulario con datos | Diálogo cierra; stock sin cambios; lista no recarga | ⏳ PENDIENTE | Re-test 2026-06-11: con cantidad=10, motivo="Movimiento que será cancelado - QA" (IN), clic en "Cancelar" → diálogo cierra, stock de HMAN-DES-013 permanece en 97 |
 
 ---
 
@@ -295,9 +306,9 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VIS-CAT-01 | Título "Categorías" visible | ADMIN | Encabezado presente | ✅ PASS | Re-test 2026-06-11: breadcrumb superior "Inventario → Categorías" visible como título de la pantalla |
-| VIS-CAT-02 | Columnas tabla: Nombre, Descripción, Acciones | ADMIN | Todas las columnas visibles | ✅ PASS | Re-test 2026-06-11: columnas "Nombre", "Descripción" y columna de acciones con ícono `shopping_bag` (ver productos) en cada fila |
-| VIS-CAT-03 | `mat-progress-bar` visible durante carga | ADMIN | Barra en parte superior | ✅ PASS | Re-test 2026-06-11: template tiene `@if (loading) { <mat-progress-bar> }` — verificado por code review |
+| VIS-CAT-01 | Título "Categorías" visible | ADMIN | Encabezado presente | ⏳ PENDIENTE | Re-test 2026-06-11: breadcrumb superior "Inventario → Categorías" visible como título de la pantalla |
+| VIS-CAT-02 | Columnas tabla: Nombre, Descripción, Acciones | ADMIN | Todas las columnas visibles | ⏳ PENDIENTE | Re-test 2026-06-11: columnas "Nombre", "Descripción" y columna de acciones con ícono `shopping_bag` (ver productos) en cada fila |
+| VIS-CAT-03 | `mat-progress-bar` visible durante carga | ADMIN | Barra en parte superior | ⏳ PENDIENTE | Re-test 2026-06-11: template tiene `@if (loading) { <mat-progress-bar> }` — verificado por code review |
 
 ### 4b. Búsqueda (BSRCH)
 
@@ -307,51 +318,51 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| BSRCH-CAT-01 | Buscar por nombre exacto | ADMIN | Categorías en BD | Filtra a la(s) categoría(s) coincidente(s) | ✅ PASS | Re-test 2026-06-11: "Cat-Cy-47061" → 1 resultado exacto |
-| BSRCH-CAT-02 | Buscar en minúsculas (case insensitive) | ADMIN | Categoría con nombre en mayúsculas/mixto | Encuentra la categoría sin importar mayúsculas/minúsculas | ✅ PASS | Re-test 2026-06-11: "cat-cy-47061" (minúsculas) → "Cat-Cy-47061" |
-| BSRCH-CAT-03 | Buscar sin acento encuentra nombre acentuado (accent insensitive) | ADMIN | Categoría con acento (ej. "Climatización") | "climatizacion" encuentra "Climatización" — verificar `f_unaccent()` en `CategoryRepository` | ✅ PASS | Re-test 2026-06-11: "construccion" (sin acento) → "Material de Construcción" |
-| BSRCH-CAT-04 | Término sin resultados muestra estado vacío | ADMIN | Término inexistente | Ícono + 'Sin resultados para "…"' | ✅ PASS | Re-test 2026-06-11: "zzzznoexiste" → ícono + "Sin resultados" / "Ningún registro coincide con los filtros aplicados." (texto no incluye el término entre comillas, pero cumple la función de estado vacío de búsqueda) |
-| BSRCH-CAT-05 | Limpiar campo de búsqueda restaura la lista completa | ADMIN | Campo con término activo | Lista restaura todas las categorías activas | ✅ PASS | Re-test 2026-06-11: borrar el campo de búsqueda restaura las 75 categorías (1-20 of 75) |
-| BSRCH-CAT-06 | Buscar con ñ — normalización bidireccional | ADMIN | Categoría con "ñ" en el nombre (si existe) o usar "Climatización"/"Construcción" | Búsqueda sin diacríticos encuentra el nombre con diacríticos y viceversa | ✅ PASS | Re-test 2026-06-11: búsqueda "límpíezá" (con acentos añadidos) → "Limpieza Profesional" (sin acentos en BD) — normalización bidireccional confirmada |
+| BSRCH-CAT-01 | Buscar por nombre exacto | ADMIN | Categorías en BD | Filtra a la(s) categoría(s) coincidente(s) | ⏳ PENDIENTE | Re-test 2026-06-11: "Cat-Cy-47061" → 1 resultado exacto |
+| BSRCH-CAT-02 | Buscar en minúsculas (case insensitive) | ADMIN | Categoría con nombre en mayúsculas/mixto | Encuentra la categoría sin importar mayúsculas/minúsculas | ⏳ PENDIENTE | Re-test 2026-06-11: "cat-cy-47061" (minúsculas) → "Cat-Cy-47061" |
+| BSRCH-CAT-03 | Buscar sin acento encuentra nombre acentuado (accent insensitive) | ADMIN | Categoría con acento (ej. "Climatización") | "climatizacion" encuentra "Climatización" — verificar `f_unaccent()` en `CategoryRepository` | ⏳ PENDIENTE | Re-test 2026-06-11: "construccion" (sin acento) → "Material de Construcción" |
+| BSRCH-CAT-04 | Término sin resultados muestra estado vacío | ADMIN | Término inexistente | Ícono + 'Sin resultados para "…"' | ⏳ PENDIENTE | Re-test 2026-06-11: "zzzznoexiste" → ícono + "Sin resultados" / "Ningún registro coincide con los filtros aplicados." (texto no incluye el término entre comillas, pero cumple la función de estado vacío de búsqueda) |
+| BSRCH-CAT-05 | Limpiar campo de búsqueda restaura la lista completa | ADMIN | Campo con término activo | Lista restaura todas las categorías activas | ⏳ PENDIENTE | Re-test 2026-06-11: borrar el campo de búsqueda restaura las 75 categorías (1-20 of 75) |
+| BSRCH-CAT-06 | Buscar con ñ — normalización bidireccional | ADMIN | Categoría con "ñ" en el nombre (si existe) o usar "Climatización"/"Construcción" | Búsqueda sin diacríticos encuentra el nombre con diacríticos y viceversa | ⏳ PENDIENTE | Re-test 2026-06-11: búsqueda "límpíezá" (con acentos añadidos) → "Limpieza Profesional" (sin acentos en BD) — normalización bidireccional confirmada |
 
 ### 4c. RBAC en categorías (RBAC)
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RBAC-CAT-01 | Botón "Nueva categoría" visible | ADMIN | Visible | ✅ PASS | Re-test 2026-06-11: login `admin` — botón "+ Nueva categoría" visible arriba a la derecha |
-| RBAC-CAT-02 | Botón "Nueva categoría" visible | MANAGER | Visible | ✅ PASS | Re-test 2026-06-10: login `manager01` — botón "Nueva categoría" visible |
-| RBAC-CAT-03 | Botón "Nueva categoría" AUSENTE | WAREHOUSEMAN | Ausente del DOM | ✅ PASS | Re-test 2026-06-10: login `almacen01` — botón "Nueva categoría" ausente del DOM |
-| RBAC-CAT-04 | Botón "Nueva categoría" AUSENTE | SALES | Ausente del DOM | ✅ PASS | Re-test 2026-06-10: login `ventas01` — botón "Nueva categoría" ausente del DOM |
-| RBAC-CAT-05 | Click en fila (ADMIN) abre diálogo edición | ADMIN | Diálogo de edición abre | ✅ PASS | Re-test 2026-06-11: login `admin` — click en fila "Cat-Cy-47061" abre diálogo "Editar categoría" con Nombre="Cat-Cy-47061" y Descripción="test" precargados, botones Desactivar/Cancelar/Guardar cambios |
-| RBAC-CAT-06 | Click en fila (WAREHOUSEMAN) NO abre diálogo | WAREHOUSEMAN | Sin acción; no abre diálogo | ✅ PASS | Re-test 2026-06-10: login `almacen01` — click en fila "Cat-Cy-47061" solo resalta la fila, ningún diálogo se abre |
+| RBAC-CAT-01 | Botón "Nueva categoría" visible | ADMIN | Visible | ⏳ PENDIENTE | Re-test 2026-06-11: login `admin` — botón "+ Nueva categoría" visible arriba a la derecha |
+| RBAC-CAT-02 | Botón "Nueva categoría" visible | MANAGER | Visible | ⏳ PENDIENTE | Re-test 2026-06-10: login `manager01` — botón "Nueva categoría" visible |
+| RBAC-CAT-03 | Botón "Nueva categoría" AUSENTE | WAREHOUSEMAN | Ausente del DOM | ⏳ PENDIENTE | Re-test 2026-06-10: login `almacen01` — botón "Nueva categoría" ausente del DOM |
+| RBAC-CAT-04 | Botón "Nueva categoría" AUSENTE | SALES | Ausente del DOM | ⏳ PENDIENTE | Re-test 2026-06-10: login `ventas01` — botón "Nueva categoría" ausente del DOM |
+| RBAC-CAT-05 | Click en fila (ADMIN) abre diálogo edición | ADMIN | Diálogo de edición abre | ⏳ PENDIENTE | Re-test 2026-06-11: login `admin` — click en fila "Cat-Cy-47061" abre diálogo "Editar categoría" con Nombre="Cat-Cy-47061" y Descripción="test" precargados, botones Desactivar/Cancelar/Guardar cambios |
+| RBAC-CAT-06 | Click en fila (WAREHOUSEMAN) NO abre diálogo | WAREHOUSEMAN | Sin acción; no abre diálogo | ⏳ PENDIENTE | Re-test 2026-06-10: login `almacen01` — click en fila "Cat-Cy-47061" solo resalta la fila, ningún diálogo se abre |
 
 ### 4d. Botones e íconos de acción (UI)
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| UI-CAT-01 | Ícono "Ver productos" en fila → navega a `/inventory/products?categoryId=X` | ADMIN | Lista cargada | Navega a productos filtrados por esa categoría | ✅ PASS | Re-test 2026-06-11: clic en ícono shopping_bag de "Cat-Cy-47061" → navega a `/inventory/products?categoryId=647` con filtro Categoría="Cat-Cy-47061" preseleccionado; "Sin resultados" porque la categoría no tiene productos |
-| UI-CAT-02 | Ícono "Editar" en fila → abre diálogo | ADMIN | Lista cargada | Diálogo de edición abre con datos precargados | ✅ PASS | Re-test 2026-06-11: click en fila "Cat-Cy-47061" abre "Editar categoría" con Nombre y Descripción precargados (no hay ícono dedicado de editar — el click en la fila completa abre el diálogo, consistente con RBAC-CAT-06) |
-| UI-CAT-PAG-01 | Paginador visible cuando hay > pageSize categorías | BD con >20 categorías | Paginador activo | ✅ PASS | Re-test 2026-06-11: paginador muestra "1 – 20 of 75", botón "Next page" habilitado |
-| UI-CAT-PAG-02 | Cambiar tamaño de página (10/20/50) recarga la lista con el nuevo tamaño | Paginador visible, >50 categorías | Selector "Items por página" cambia a 10/50; tabla muestra el número correcto de filas; vuelve a página 0 | ✅ PASS | Re-test 2026-06-11: cambiar de 20 a 50 → "1 – 50 of 75", la lista vuelve a la página 0 (primera fila "Cat-Cy-47061") y muestra 50 filas |
+| UI-CAT-01 | Ícono "Ver productos" en fila → navega a `/inventory/products?categoryId=X` | ADMIN | Lista cargada | Navega a productos filtrados por esa categoría | ⏳ PENDIENTE | Re-test 2026-06-11: clic en ícono shopping_bag de "Cat-Cy-47061" → navega a `/inventory/products?categoryId=647` con filtro Categoría="Cat-Cy-47061" preseleccionado; "Sin resultados" porque la categoría no tiene productos |
+| UI-CAT-02 | Ícono "Editar" en fila → abre diálogo | ADMIN | Lista cargada | Diálogo de edición abre con datos precargados | ⏳ PENDIENTE | Re-test 2026-06-11: click en fila "Cat-Cy-47061" abre "Editar categoría" con Nombre y Descripción precargados (no hay ícono dedicado de editar — el click en la fila completa abre el diálogo, consistente con RBAC-CAT-06) |
+| UI-CAT-PAG-01 | Paginador visible cuando hay > pageSize categorías | BD con >20 categorías | Paginador activo | ⏳ PENDIENTE | Re-test 2026-06-11: paginador muestra "1 – 20 of 75", botón "Next page" habilitado |
+| UI-CAT-PAG-02 | Cambiar tamaño de página (10/20/50) recarga la lista con el nuevo tamaño | Paginador visible, >50 categorías | Selector "Items por página" cambia a 10/50; tabla muestra el número correcto de filas; vuelve a página 0 | ⏳ PENDIENTE | Re-test 2026-06-11: cambiar de 20 a 50 → "1 – 50 of 75", la lista vuelve a la página 0 (primera fila "Cat-Cy-47061") y muestra 50 filas |
 
 ### 4e. CRUD Categorías (CRUD)
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| CRUD-CAT-01 | Crear categoría con datos válidos | Formulario completo | Snackbar verde "Categoría creada."; diálogo cierra; lista recarga | ✅ PASS | Re-test 2026-06-11: creada "Cat-QA-Retest-2026" / "Categoria de prueba QA re-test 2026-06-11" → snackbar verde "Categoría creada correctamente.", diálogo cierra, lista recarga |
-| CRUD-CAT-02 | Editar nombre de categoría | Categoría existente | Snackbar verde "Categoría actualizada."; lista refleja cambio | ✅ PASS | Re-test 2026-06-11: editado "Cat-QA-Retest-2026" → "Cat-QA-Retest-2026-Edited" → snackbar verde "Categoría actualizada correctamente.", lista refleja el nuevo nombre |
-| CRUD-CAT-03 | Desactivar categoría abre diálogo de confirmación | ADMIN, categoría activa | Modal con texto de confirmación | ✅ PASS | Re-test 2026-06-11: clic "Desactivar" sobre "Cat-QA-Retest-2026-Edited" → modal "Desactivar categoría" con texto "¿Deseas desactivar la categoría \"Cat-QA-Retest-2026-Edited\"? Esta acción ocultará la categoría del sistema." y botones Cancelar/Desactivar |
-| CRUD-CAT-04 | Confirmar desactivación | ADMIN | Snackbar verde; categoría ya no aparece | ✅ PASS | Re-test 2026-06-11: confirmar "Desactivar" → snackbar verde "Categoría desactivada.", "Cat-QA-Retest-2026-Edited" ya no aparece en la búsqueda (lista activa) |
-| CRUD-CAT-05 | Intentar desactivar categoría con productos activos | Categoría con productos | Snackbar rojo con mensaje del backend | ✅ PASS | Re-test 2026-06-11: clic "Desactivar" → confirmar sobre "Herramientas Manuales" → snackbar rojo "No se puede desactivar la categoría: tiene productos activos asignados. Reasigne o desactive los productos antes de continuar." |
+| CRUD-CAT-01 | Crear categoría con datos válidos | Formulario completo | Snackbar verde "Categoría creada."; diálogo cierra; lista recarga | ⏳ PENDIENTE | Re-test 2026-06-11: creada "Cat-QA-Retest-2026" / "Categoria de prueba QA re-test 2026-06-11" → snackbar verde "Categoría creada correctamente.", diálogo cierra, lista recarga |
+| CRUD-CAT-02 | Editar nombre de categoría | Categoría existente | Snackbar verde "Categoría actualizada."; lista refleja cambio | ⏳ PENDIENTE | Re-test 2026-06-11: editado "Cat-QA-Retest-2026" → "Cat-QA-Retest-2026-Edited" → snackbar verde "Categoría actualizada correctamente.", lista refleja el nuevo nombre |
+| CRUD-CAT-03 | Desactivar categoría abre diálogo de confirmación | ADMIN, categoría activa | Modal con texto de confirmación | ⏳ PENDIENTE | Re-test 2026-06-11: clic "Desactivar" sobre "Cat-QA-Retest-2026-Edited" → modal "Desactivar categoría" con texto "¿Deseas desactivar la categoría \"Cat-QA-Retest-2026-Edited\"? Esta acción ocultará la categoría del sistema." y botones Cancelar/Desactivar |
+| CRUD-CAT-04 | Confirmar desactivación | ADMIN | Snackbar verde; categoría ya no aparece | ⏳ PENDIENTE | Re-test 2026-06-11: confirmar "Desactivar" → snackbar verde "Categoría desactivada.", "Cat-QA-Retest-2026-Edited" ya no aparece en la búsqueda (lista activa) |
+| CRUD-CAT-05 | Intentar desactivar categoría con productos activos | Categoría con productos | Snackbar rojo con mensaje del backend | ⏳ PENDIENTE | Re-test 2026-06-11: clic "Desactivar" → confirmar sobre "Herramientas Manuales" → snackbar rojo "No se puede desactivar la categoría: tiene productos activos asignados. Reasigne o desactive los productos antes de continuar." |
 
 ### 4f. Validaciones formulario de categoría (VAL)
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VAL-CAT-01 | Nombre vacío → error inline | Campo vacío | Error "Nombre requerido" | ✅ PASS | Re-test 2026-06-11: en "Editar categoría", vaciar el campo Nombre (cmd+a + Backspace) y blur → borde rojo + "El nombre es obligatorio." debajo del campo, "Guardar cambios" permanece deshabilitado |
-| VAL-CAT-02 | Nombre duplicado → error del backend | Nombre ya existe | Snackbar rojo con mensaje 409/422 | ✅ PASS | Re-test 2026-06-11: editar "Cat-Int-12406" → Nombre="Herramientas Manuales" → Guardar cambios → snackbar rojo "Ya existe otra categoría con el nombre 'Herramientas Manuales'.", diálogo permanece abierto |
-| VAL-CAT-03 | Botón Guardar deshabilitado al cargar formulario de edición | Sin modificaciones | `disabled:true` (form.dirty = false) | ✅ PASS | Re-test 2026-06-11: al abrir "Editar categoría" sobre "Cat-Cy-47061" sin modificar nada, "Guardar cambios" aparece en gris/deshabilitado |
-| VAL-CAT-04 | Botón Guardar se activa al modificar un campo | Modificar nombre | `disabled:false` | ✅ PASS | Re-test 2026-06-11: al escribir "X" al final de "Cat-Cy-47061" en el campo Nombre, "Guardar cambios" pasa de gris/deshabilitado a color marca/habilitado |
+| VAL-CAT-01 | Nombre vacío → error inline | Campo vacío | Error "Nombre requerido" | ⏳ PENDIENTE | Re-test 2026-06-11: en "Editar categoría", vaciar el campo Nombre (cmd+a + Backspace) y blur → borde rojo + "El nombre es obligatorio." debajo del campo, "Guardar cambios" permanece deshabilitado |
+| VAL-CAT-02 | Nombre duplicado → error del backend | Nombre ya existe | Snackbar rojo con mensaje 409/422 | ⏳ PENDIENTE | Re-test 2026-06-11: editar "Cat-Int-12406" → Nombre="Herramientas Manuales" → Guardar cambios → snackbar rojo "Ya existe otra categoría con el nombre 'Herramientas Manuales'.", diálogo permanece abierto |
+| VAL-CAT-03 | Botón Guardar deshabilitado al cargar formulario de edición | Sin modificaciones | `disabled:true` (form.dirty = false) | ⏳ PENDIENTE | Re-test 2026-06-11: al abrir "Editar categoría" sobre "Cat-Cy-47061" sin modificar nada, "Guardar cambios" aparece en gris/deshabilitado |
+| VAL-CAT-04 | Botón Guardar se activa al modificar un campo | Modificar nombre | `disabled:false` | ⏳ PENDIENTE | Re-test 2026-06-11: al escribir "X" al final de "Cat-Cy-47061" en el campo Nombre, "Guardar cambios" pasa de gris/deshabilitado a color marca/habilitado |
 
 ### 4g. Estado vacío (EMPTY)
 
@@ -367,34 +378,34 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| VIS-LST-01 | Contadores resumen visibles: "Sin stock", "Crítico", "Por reservas" | ADMIN | Los 3 contadores con valor numérico | ✅ PASS | Re-test 2026-06-11: chips "1 sin stock" y "3 críticos" visibles; el chip "Por reservas" se renderiza condicionalmente solo si `reservasCount > 0` (código `low-stock-page.component.html` línea 22) — actualmente 0 productos en esa categoría, por lo que el chip no se muestra (consistente con RN-LST-03) |
-| VIS-LST-02 | Columna "Severidad" con color semántico | ADMIN | Rojo (sin stock), naranja (crítico), amarillo (por reservas) | ✅ PASS | Re-test 2026-06-11: "Sin stock" rojo #FFEBEE/#C62828; "Crítico" naranja #FFF3E0/#E65100 |
-| VIS-LST-03 | Columna "Costo unitario" visible para ADMIN/MANAGER | ADMIN | Columna presente | ✅ PASS | Re-test 2026-06-10: login `manager01` — columna "Costo unit." visible con valores ($1,750.00, $1,300.00, $5,500.00, $7,800.00) en /inventory/low-stock |
-| VIS-LST-04 | Columna "Costo unitario" AUSENTE para WAREHOUSEMAN | WAREHOUSEMAN | Columna no renderizada | ✅ PASS | Re-test 2026-06-10: login `almacen01` — headers Nivel/SKU/Nombre/Categoría/Proveedor/Físico/Reservado/Disponible/Mínimo/Déficit, sin "Costo unit." |
-| VIS-LST-05 | Columnas numéricas (Stock actual, Reservado, Disponible, Mínimo, Déficit) muestran valores correctos y consistentes por fila | ADMIN | Lista cargada | Para cada fila: `availableStock = currentStock - reservedStock` y `deficit = minimumStock - availableStock` (coincide con `low-stock-page.component.ts`) | ✅ PASS | Re-test 2026-06-11: 4 filas verificadas — HELEC-SIE-048 (3,0,3,8,+5), PINT-BAR5G-049 (6,0,6,10,+4), SEGV-NVR16-050 (1,0,1,4,+3), BLAN-SEC10-045 (0,0,0,2,+2) — todas cumplen `available=current-reserved` y `deficit=minimum-available` |
+| VIS-LST-01 | Contadores resumen visibles: "Sin stock", "Crítico", "Por reservas" | ADMIN | Los 3 contadores con valor numérico | ⏳ PENDIENTE | Re-test 2026-06-11: chips "1 sin stock" y "3 críticos" visibles; el chip "Por reservas" se renderiza condicionalmente solo si `reservasCount > 0` (código `low-stock-page.component.html` línea 22) — actualmente 0 productos en esa categoría, por lo que el chip no se muestra (consistente con RN-LST-03) |
+| VIS-LST-02 | Columna "Severidad" con color semántico | ADMIN | Rojo (sin stock), naranja (crítico), amarillo (por reservas) | ⏳ PENDIENTE | Re-test 2026-06-11: "Sin stock" rojo #FFEBEE/#C62828; "Crítico" naranja #FFF3E0/#E65100 |
+| VIS-LST-03 | Columna "Costo unitario" visible para ADMIN/MANAGER | ADMIN | Columna presente | ⏳ PENDIENTE | Re-test 2026-06-10: login `manager01` — columna "Costo unit." visible con valores ($1,750.00, $1,300.00, $5,500.00, $7,800.00) en /inventory/low-stock |
+| VIS-LST-04 | Columna "Costo unitario" AUSENTE para WAREHOUSEMAN | WAREHOUSEMAN | Columna no renderizada | ⏳ PENDIENTE | Re-test 2026-06-10: login `almacen01` — headers Nivel/SKU/Nombre/Categoría/Proveedor/Físico/Reservado/Disponible/Mínimo/Déficit, sin "Costo unit." |
+| VIS-LST-05 | Columnas numéricas (Stock actual, Reservado, Disponible, Mínimo, Déficit) muestran valores correctos y consistentes por fila | ADMIN | Lista cargada | Para cada fila: `availableStock = currentStock - reservedStock` y `deficit = minimumStock - availableStock` (coincide con `low-stock-page.component.ts`) | ⏳ PENDIENTE | Re-test 2026-06-11: 4 filas verificadas — HELEC-SIE-048 (3,0,3,8,+5), PINT-BAR5G-049 (6,0,6,10,+4), SEGV-NVR16-050 (1,0,1,4,+3), BLAN-SEC10-045 (0,0,0,2,+2) — todas cumplen `available=current-reserved` y `deficit=minimum-available` |
 
 ### 5b. RBAC en stock bajo (RBAC)
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RBAC-LST-01 | Ícono "Registrar movimiento" visible | ADMIN | Visible en cada fila | ✅ PASS | Re-test 2026-06-11: ícono `add_circle` (botón circular morado) presente en las 4 filas |
-| RBAC-LST-02 | Ícono "Registrar movimiento" visible | WAREHOUSEMAN | Visible en cada fila | ✅ PASS | Re-test 2026-06-10: login `almacen01` — botón circular `+` (add_circle) presente en las 4 filas (1 sin stock + 3 críticos) |
-| RBAC-LST-03 | Ícono "Registrar movimiento" AUSENTE | SALES | Columna acciones ausente | ✅ PASS | Re-test 2026-06-10: login `ventas01` — headers Nivel/SKU/Nombre/Categoría/Proveedor/Físico/Reservado/Disponible/Mínimo/Déficit, sin columna "Acciones" ni "Costo unit.", página carga sin snackbar de error |
+| RBAC-LST-01 | Ícono "Registrar movimiento" visible | ADMIN | Visible en cada fila | ⏳ PENDIENTE | Re-test 2026-06-11: ícono `add_circle` (botón circular morado) presente en las 4 filas |
+| RBAC-LST-02 | Ícono "Registrar movimiento" visible | WAREHOUSEMAN | Visible en cada fila | ⏳ PENDIENTE | Re-test 2026-06-10: login `almacen01` — botón circular `+` (add_circle) presente en las 4 filas (1 sin stock + 3 críticos) |
+| RBAC-LST-03 | Ícono "Registrar movimiento" AUSENTE | SALES | Columna acciones ausente | ⏳ PENDIENTE | Re-test 2026-06-10: login `ventas01` — headers Nivel/SKU/Nombre/Categoría/Proveedor/Físico/Reservado/Disponible/Mínimo/Déficit, sin columna "Acciones" ni "Costo unit.", página carga sin snackbar de error |
 
 ### 5c. Botones e íconos de acción (UI)
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| UI-LST-01 | Ícono movimiento → abre `MovementDialog` correctamente | ADMIN | Lista con productos bajo stock | Diálogo abre con datos del producto | ✅ PASS | Re-test 2026-06-11: clic en `add_circle` de HELEC-SIE-048 → diálogo "Registrar movimiento de stock" con "Producto: Sierra Circular 7-1/4\" 1800W (HELEC-SIE-048)", Stock físico=3, Disponible=3, tipo "Entrada (IN)" preseleccionado |
-| UI-LST-02 | Movimiento IN desde stock bajo → lista recarga | ADMIN | MovementDialog abierto, tipo IN | Snackbar verde; lista actualizada | ✅ PASS | Re-test 2026-06-11: IN +5 en HELEC-SIE-048 (3→8) → snackbar verde "Movimiento registrado correctamente."; lista recargó: "3 críticos"→"2 críticos", apareció chip nuevo "1 por reservas" y HELEC-SIE-048 ahora con severidad "Por reservas" (Físico=8=Mínimo, Déficit=0) |
+| UI-LST-01 | Ícono movimiento → abre `MovementDialog` correctamente | ADMIN | Lista con productos bajo stock | Diálogo abre con datos del producto | ⏳ PENDIENTE | Re-test 2026-06-11: clic en `add_circle` de HELEC-SIE-048 → diálogo "Registrar movimiento de stock" con "Producto: Sierra Circular 7-1/4\" 1800W (HELEC-SIE-048)", Stock físico=3, Disponible=3, tipo "Entrada (IN)" preseleccionado |
+| UI-LST-02 | Movimiento IN desde stock bajo → lista recarga | ADMIN | MovementDialog abierto, tipo IN | Snackbar verde; lista actualizada | ⏳ PENDIENTE | Re-test 2026-06-11: IN +5 en HELEC-SIE-048 (3→8) → snackbar verde "Movimiento registrado correctamente."; lista recargó: "3 críticos"→"2 críticos", apareció chip nuevo "1 por reservas" y HELEC-SIE-048 ahora con severidad "Por reservas" (Físico=8=Mínimo, Déficit=0) |
 
 ### 5d. Reglas de negocio (RN)
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RN-LST-01 | Productos ordenados por déficit descendente (mayor déficit primero) | Lista cargada con varios productos | Producto con mayor déficit (min-available) en primera fila | ✅ PASS | Re-test 2026-06-11: orden de Déficit es +5, +4, +3, +2 — descendente |
-| RN-LST-02 | Déficit = minimumStock − availableStock | Producto con min=10, available=3 | Columna "Déficit" muestra 7 | ✅ PASS | Re-test 2026-06-11: fórmula confirmada para las 4 filas en VIS-LST-05 (ej. PINT-BAR5G-049: min=10, available=6, déficit=+4=10-6) |
-| RN-LST-03 | Producto con reservas y stock ≥ mínimo → severidad "Por reservas" | Producto con reservedStock>0, currentStock≥min | Etiqueta "Por reservas" en columna severidad | ✅ PASS | Re-test 2026-06-11: tras IN +5 en HELEC-SIE-048 (Físico=8=Mínimo=8, Reservado=0, Disponible=8), la fila muestra severidad "Por reservas" y el chip "1 por reservas" aparece. Nota: `getSeverity()` (low-stock-page.component.ts) asigna "reservas" cuando `currentStock >= minimumStock`, sin verificar `reservedStock>0` directamente — el caso real verificado tiene reservedStock=0, condición algo más amplia que la descrita pero consistente con el código fuente (no es un bug, solo observación) |
+| RN-LST-01 | Productos ordenados por déficit descendente (mayor déficit primero) | Lista cargada con varios productos | Producto con mayor déficit (min-available) en primera fila | ⏳ PENDIENTE | Re-test 2026-06-11: orden de Déficit es +5, +4, +3, +2 — descendente |
+| RN-LST-02 | Déficit = minimumStock − availableStock | Producto con min=10, available=3 | Columna "Déficit" muestra 7 | ⏳ PENDIENTE | Re-test 2026-06-11: fórmula confirmada para las 4 filas en VIS-LST-05 (ej. PINT-BAR5G-049: min=10, available=6, déficit=+4=10-6) |
+| RN-LST-03 | Producto con reservas y stock ≥ mínimo → severidad "Por reservas" | Producto con reservedStock>0, currentStock≥min | Etiqueta "Por reservas" en columna severidad | ⏳ PENDIENTE | Re-test 2026-06-11: tras IN +5 en HELEC-SIE-048 (Físico=8=Mínimo=8, Reservado=0, Disponible=8), la fila muestra severidad "Por reservas" y el chip "1 por reservas" aparece. Nota: `getSeverity()` (low-stock-page.component.ts) asigna "reservas" cuando `currentStock >= minimumStock`, sin verificar `reservedStock>0` directamente — el caso real verificado tiene reservedStock=0, condición algo más amplia que la descrita pero consistente con el código fuente (no es un bug, solo observación) |
 
 ### 5e. Estado vacío (EMPTY)
 
@@ -408,10 +419,10 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| ERR-01 | Snackbar éxito: fondo verde `#2E7D32` | Crear/editar producto o categoría | Color correcto; clase `snackbar-success` | ✅ PASS | Re-test 2026-06-11: snackbar verde "Movimiento registrado correctamente." (HELEC-SIE-048) y "Categoría creada/actualizada correctamente." en CRUD-CAT-01/02 |
-| ERR-02 | Snackbar error: fondo rojo `#C62828` | Error del backend | Color correcto; clase `snackbar-error` | ✅ PASS | Re-test 2026-06-11: snackbar rojo en CRUD-CAT-05 ("No se puede desactivar la categoría...") y VAL-CAT-02 |
-| ERR-03 | Mensaje específico del backend en snackbar (no genérico) | Backend rechaza con 409/422 | Texto descriptivo del backend visible | ✅ PASS | Re-test 2026-06-11: VAL-CAT-02 mostró "Ya existe otra categoría con el nombre 'Herramientas Manuales'."; CRUD-CAT-05 mostró mensaje específico de productos asignados |
-| ERR-04 | Error al registrar movimiento OUT > stock → mensaje en el diálogo (no snackbar) | OUT cantidad > disponible | Mensaje de error inline en el diálogo; diálogo NO se cierra | ✅ PASS | Re-test 2026-06-11: en SEGV-NVR16-050 (disponible=1), OUT=100 → error inline "Supera el stock disponible (1 unidades)." bajo el campo Cantidad, botón "Registrar" deshabilitado, diálogo permanece abierto |
+| ERR-01 | Snackbar éxito: fondo verde `#2E7D32` | Crear/editar producto o categoría | Color correcto; clase `snackbar-success` | ⏳ PENDIENTE | Re-test 2026-06-11: snackbar verde "Movimiento registrado correctamente." (HELEC-SIE-048) y "Categoría creada/actualizada correctamente." en CRUD-CAT-01/02 |
+| ERR-02 | Snackbar error: fondo rojo `#C62828` | Error del backend | Color correcto; clase `snackbar-error` | ⏳ PENDIENTE | Re-test 2026-06-11: snackbar rojo en CRUD-CAT-05 ("No se puede desactivar la categoría...") y VAL-CAT-02 |
+| ERR-03 | Mensaje específico del backend en snackbar (no genérico) | Backend rechaza con 409/422 | Texto descriptivo del backend visible | ⏳ PENDIENTE | Re-test 2026-06-11: VAL-CAT-02 mostró "Ya existe otra categoría con el nombre 'Herramientas Manuales'."; CRUD-CAT-05 mostró mensaje específico de productos asignados |
+| ERR-04 | Error al registrar movimiento OUT > stock → mensaje en el diálogo (no snackbar) | OUT cantidad > disponible | Mensaje de error inline en el diálogo; diálogo NO se cierra | ⏳ PENDIENTE | Re-test 2026-06-11: en SEGV-NVR16-050 (disponible=1), OUT=100 → error inline "Supera el stock disponible (1 unidades)." bajo el campo Cantidad, botón "Registrar" deshabilitado, diálogo permanece abierto |
 | ERR-05 | Error al cargar productos → snackbar con mensaje útil | Backend apagado | "Error al cargar productos." visible | N/A | Re-test 2026-06-11: no reproducible sin apagar backend |
 | ERR-06 | Error al cargar categorías → snackbar con mensaje útil | Backend apagado | "Error al cargar categorías." visible | N/A | Re-test 2026-06-11: no reproducible sin apagar backend |
 | ERR-07 | Error al cargar stock bajo → snackbar con mensaje útil | Backend apagado | "Error al cargar productos con bajo stock." visible | N/A | Re-test 2026-06-11: no reproducible sin apagar backend |
@@ -423,13 +434,13 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|
-| VIS-GEN-01 | Sidebar colapsado al entrar a cualquier pantalla del módulo | Sidebar en modo íconos al navegar | ✅ PASS | Re-test 2026-06-11: sidebar en modo íconos (64px) en `/inventory/products`, `/inventory/categories` y `/inventory/low-stock` |
-| VIS-GEN-02 | Breadcrumb correcto: "Inventario → Productos" / "→ Categorías" / "→ Stock bajo" | Breadcrumb en topbar correcto | ✅ PASS | Re-test 2026-06-11: "Inventario → Productos", "Inventario → Categorías", "Inventario → Bajo stock" — correctos en topbar |
-| VIS-GEN-03 | Botones primarios con color de marca `#6B3C6B` | "Nuevo producto", "Nueva categoría", "Guardar" con color correcto | ✅ PASS | Re-test 2026-06-11: "Nuevo producto" → `getComputedStyle` confirma `background-color: rgb(107, 60, 107)` (#6B3C6B), texto blanco |
-| VIS-GEN-04 | Botones destructivos con color `warn` (rojo) | "Desactivar" en rojo | ✅ PASS | Re-test 2026-06-11: botón "Desactivar" en rojo en diálogo "Editar producto" y "Editar categoría" |
-| VIS-GEN-05 | Diálogos de confirmación son modales (click fuera no cierra) | Click backdrop → diálogo permanece | ✅ PASS | Corregido y re-test 2026-06-12 (BUG-INV-14): añadido `disableClose: true` a `DIALOG_CONFIG` (products-page y categories-page) y a los `ConfirmDialogComponent` de `category-form-dialog.component.ts` y `product-detail-dialog.component.ts`. Verificado en browser: "Editar categoría" → backdrop → permanece abierto; "Desactivar categoría" (ConfirmDialog) → backdrop → permanece abierto; "Editar producto" → backdrop → permanece abierto; "Desactivar producto" (ConfirmDialog) → backdrop → permanece abierto. Los botones "Cancelar" siguen cerrando correctamente ambos niveles de diálogo |
-| VIS-GEN-06 | Header de tabla con fondo `#F2E4F2` y texto `#6B3C6B` | Colores de marca correctos en todas las tablas | ✅ PASS | Corregido y re-test 2026-06-12 (BUG-INV-07): `getComputedStyle('.mat-mdc-header-cell')` en `/inventory/products` y `/inventory/categories` devuelve `background-color: rgb(242,228,242)` (#F2E4F2), `color: rgb(107,60,107)` (#6B3C6B) en TODAS las celdas de header (incluida la columna de acciones sin texto) |
-| VIS-GEN-07 | Texto largo en celdas se trunca con `…` y tooltip con valor completo | Nombre/descripción larga | Truncado + tooltip | ✅ PASS | Re-test 2026-06-11: en `/inventory/products`, fila "Barniz marino 5 galones para exteriores" se trunca y al hacer hover muestra tooltip "Barniz marino para exteriores" |
+| VIS-GEN-01 | Sidebar colapsado al entrar a cualquier pantalla del módulo | Sidebar en modo íconos al navegar | ⏳ PENDIENTE | Re-test 2026-06-11: sidebar en modo íconos (64px) en `/inventory/products`, `/inventory/categories` y `/inventory/low-stock` |
+| VIS-GEN-02 | Breadcrumb correcto: "Inventario → Productos" / "→ Categorías" / "→ Stock bajo" | Breadcrumb en topbar correcto | ⏳ PENDIENTE | Re-test 2026-06-11: "Inventario → Productos", "Inventario → Categorías", "Inventario → Bajo stock" — correctos en topbar |
+| VIS-GEN-03 | Botones primarios con color de marca `#6B3C6B` | "Nuevo producto", "Nueva categoría", "Guardar" con color correcto | ⏳ PENDIENTE | Re-test 2026-06-11: "Nuevo producto" → `getComputedStyle` confirma `background-color: rgb(107, 60, 107)` (#6B3C6B), texto blanco |
+| VIS-GEN-04 | Botones destructivos con color `warn` (rojo) | "Desactivar" en rojo | ⏳ PENDIENTE | Re-test 2026-06-11: botón "Desactivar" en rojo en diálogo "Editar producto" y "Editar categoría" |
+| VIS-GEN-05 | Diálogos de confirmación son modales (click fuera no cierra) | Click backdrop → diálogo permanece | ⏳ PENDIENTE | Corregido y re-test 2026-06-12 (BUG-INV-14): añadido `disableClose: true` a `DIALOG_CONFIG` (products-page y categories-page) y a los `ConfirmDialogComponent` de `category-form-dialog.component.ts` y `product-detail-dialog.component.ts`. Verificado en browser: "Editar categoría" → backdrop → permanece abierto; "Desactivar categoría" (ConfirmDialog) → backdrop → permanece abierto; "Editar producto" → backdrop → permanece abierto; "Desactivar producto" (ConfirmDialog) → backdrop → permanece abierto. Los botones "Cancelar" siguen cerrando correctamente ambos niveles de diálogo |
+| VIS-GEN-06 | Header de tabla con fondo `#F2E4F2` y texto `#6B3C6B` | Colores de marca correctos en todas las tablas | ⏳ PENDIENTE | Corregido y re-test 2026-06-12 (BUG-INV-07): `getComputedStyle('.mat-mdc-header-cell')` en `/inventory/products` y `/inventory/categories` devuelve `background-color: rgb(242,228,242)` (#F2E4F2), `color: rgb(107,60,107)` (#6B3C6B) en TODAS las celdas de header (incluida la columna de acciones sin texto) |
+| VIS-GEN-07 | Texto largo en celdas se trunca con `…` y tooltip con valor completo | Nombre/descripción larga | Truncado + tooltip | ⏳ PENDIENTE | Re-test 2026-06-11: en `/inventory/products`, fila "Barniz marino 5 galones para exteriores" se trunca y al hacer hover muestra tooltip "Barniz marino para exteriores" |
 
 ---
 
@@ -477,28 +488,28 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 | ID | Descripción | Rol | Precondición | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|---|
-| CYBER-01 | El JWT decodificado (jwt.io / `atob`) no contiene contraseña ni datos sensibles en el payload | ADMIN | Sesión activa | Claims limitados a `sub`, `roles`, `iat`, `exp` (sin password/email sensible) | ✅ PASS | Re-test 2026-06-11: payload decodificado = `{"sub":"admin","roles":["ROLE_ADMIN","ROLE_WAREHOUSEMAN"],"iat":...,"exp":...}` — sin contraseña ni datos sensibles |
-| CYBER-02 | Manipular el JWT en `localStorage` (cambiar rol a `ROLE_ADMIN`) y recargar | SALES | Sesión SALES activa, editar token en Application→LocalStorage | El backend rechaza con 401/403 al primer request; frontend redirige a login (no se otorga acceso elevado por confiar en un JWT alterado) | ✅ PASS | Re-test 2026-06-12 (BUG-INV-13 — NO REPRODUCIBLE): login `ventas01`/SALES, se alteró `roles`/`role` del JWT a `["ROLE_ADMIN"]` en `localStorage` (firma queda inválida) y se navegó a `/inventory/products`. `GET /inventory/products`, `/inventory/categories/active` y `/purchases/suppliers/active` → **401** (antes 403, antes de BUG-INV-09). `error.interceptor.ts` detecta el 401, limpia `localStorage` y redirige a `/login?reason=expired` con snackbar rojo "Tu sesión ha expirado. Inicia sesión nuevamente." — sin flash de UI de ADMIN (confirmado con screenshot inmediato, sin esperar). Ver detalle abajo |
-| CYBER-03 | Eliminar el JWT de `localStorage` con la sesión activa y navegar/recargar | ADMIN | Sesión activa, borrar `localStorage` clave del token | Redirige a `/login`; próximas peticiones HTTP devuelven 401 | ✅ PASS | Re-test 2026-06-11: con sesión ADMIN activa en `/inventory/categories`, se ejecutó `localStorage.removeItem('almacenes_token')` y se navegó a `/inventory/categories` → la app redirigió automáticamente a `/login` |
-| CYBER-04 | Inyección SQL en campo de búsqueda de productos: `' OR '1'='1` y `'; DROP TABLE products;--` | ADMIN | Campo de búsqueda de Productos | Sin error 500; backend trata el texto como literal; sin resultados o resultados normales; tabla `products` intacta | ✅ PASS | Re-test 2026-06-11: ambos payloads en el campo "Buscar por código o nombre" → "Sin resultados" sin error 500/consola; al limpiar, la tabla de 108 productos vuelve a cargar normalmente (tabla `products` intacta) |
-| CYBER-05 | XSS almacenado: crear producto/categoría con nombre `<script>alert(1)</script>` | ADMIN | Formulario Nuevo producto / Nueva categoría | El valor se guarda como texto; al listar/ver el detalle se muestra escapado (`&lt;script&gt;`) sin ejecutar el script | ✅ PASS | Re-test 2026-06-11: creada categoría con Nombre=`<script>document.title='XSS-CAT'</script>QA` y Descripción=`<img src=x onerror="this.dataset.xss=1">QA-XSS-test` → se guardó y listó como texto literal en la tabla y en el formulario "Editar categoría"; `document.title` permanece "Almacenes", sin elementos `<script>`/`<img>` creados en el DOM. Categoría de prueba desactivada al finalizar |
-| CYBER-06 | XSS reflejado vía query param: navegar a `/inventory/products?search=<img src=x onerror=alert(1)>` | ADMIN | URL manual con payload en `?search=` | El valor se usa como texto en el campo de búsqueda / petición HTTP; ningún script se ejecuta | ✅ PASS | Re-test 2026-06-11: navegado a `/inventory/products?search=<img src=x onerror=document.title='XSS-TEST'>` (URL-encoded) — `document.title` permanece "Almacenes" (script NO ejecutado), el componente solo lee `categoryId` de queryParams (no `search`), campo de búsqueda queda vacío, lista de 108 productos carga normalmente |
-| CYBER-07 | Respuesta JSON de `GET /inventory/products` NO incluye `unitCost`/`costPrice` para WAREHOUSEMAN/SALES | WAREHOUSEMAN, SALES | DevTools → pestaña Network, inspeccionar response body | Campo `unitCost` ausente del JSON (no solo oculto en UI) | ✅ PASS | Corregido y re-test 2026-06-11 (BUG-INV-11): `GET /inventory/products`, `/products/{id}`, `/products/sku/{sku}`, `/products/category/{id}`, `/products/low-stock` con JWT de `almacen01` (WAREHOUSEMAN) y `ventas01` (SALES) → `unitCost: null` en todos los registros. Con JWT de `admin` (ADMIN) → `unitCost` con valor real. Ver detalle de verificación abajo |
-| CYBER-08 | Acceso directo a la API sin token: `curl http://localhost:8080/api/v1/inventory/products` | (sin JWT) | Backend corriendo | HTTP 401 Unauthorized; sin datos en el body | ✅ PASS | Re-test 2026-06-11 (post fix BUG-INV-09): `curl -s -o /dev/null -w "%{http_code}"` → **401**, body `{"status":401,"error":"Unauthorized","message":"Token JWT ausente, inválido o expirado. Inicia sesión nuevamente."}`, sin datos de negocio expuestos. `JwtAuthenticationEntryPoint` corrige el código. Ver BUG-INV-09 ✅ Corregido |
-| CYBER-09 | Acceso a endpoint de escritura con rol sin permiso vía `curl`: `POST /inventory/products` con JWT de SALES | SALES | Token JWT válido de SALES capturado del login | HTTP 403 Forbidden | ✅ PASS | Re-test 2026-06-10: `fetch()` con JWT real de `ventas01` → `POST /inventory/products` → 403; `POST /inventory/products/movement` → 403. Ambos correctamente rechazados |
-| CYBER-10 | Mensajes de error del backend (4xx/5xx) no exponen stack traces, rutas de archivos ni nombres de tablas/clases internas | ADMIN | Forzar un error (ej. crear producto con SKU duplicado, o payload malformado) | Mensaje de error de negocio legible; sin trazas Java/SQL en el body de la respuesta ni en el snackbar | ✅ PASS | Re-test 2026-06-11: `POST /inventory/products` con SKU duplicado (`PINT-BAR5G-049`) → 409 `{"timestamp":...,"status":409,"error":"Conflict","message":"Ya existe un producto con el SKU 'PINT-BAR5G-049'."}` — sin stack trace, rutas de archivo ni nombres de clases/tablas |
-| CYBER-11 | Token JWT expirado (simular cambiando `exp` o esperando 2h) → request rechazado | ADMIN | JWT expirado | HTTP 403/401; frontend redirige a `/login` con "Tu sesión ha expirado..."; sin loop infinito de redirects | ✅ PASS | Re-test 2026-06-11 (post fix BUG-INV-09): (1) Ruta de navegación (guard client-side): `exp` modificado a 1h en el pasado → `authGuard` detecta `getTokenState()==='expired'` y redirige a `/login?reason=expired` sin request HTTP. (2) Ruta de request a mitad de sesión (escenario antes ⚠️ ABIERTO de BUG-INV-09): JWT con firma manipulada (exp futuro válido) → backend responde **401** (antes 403) con `{"message":"Token JWT ausente, inválido o expirado..."}`; `error.interceptor.ts` detecta el 401, elimina el token de `localStorage` y redirige a `/login?reason=expired` mostrando el mensaje del backend en snackbar rojo — sin loop de redirects, sin errores de consola. Ambos escenarios correctos. Ver BUG-INV-09 ✅ Corregido |
-| CYBER-12 | IDOR — acceder a `/inventory/products` y abrir el detalle de un producto cuyo `id` no corresponde a ningún elemento visible en la lista filtrada del rol actual (ID secuencial adivinado) | SALES | Conocer/adivinar un `id` válido | El backend solo permite lo autorizado por rol (lectura general permitida para SALES); para escritura (`PUT/PATCH`) responde 403 si SALES intenta modificar | ✅ PASS | Re-test 2026-06-10: `fetch()` con JWT de `ventas01` → `GET /inventory/products/1` → 200 (lectura abierta, esperado); `PUT /inventory/products/1` → 403 (escritura bloqueada correctamente) |
-| CYBER-13 | Cabeceras CORS de la API no permiten `Access-Control-Allow-Origin: *` junto con `Access-Control-Allow-Credentials: true` | — | `curl -I` a cualquier endpoint con header `Origin` arbitrario | Configuración CORS restringida a orígenes conocidos (no wildcard + credentials) | ✅ PASS | Re-test 2026-06-11 (post fix BUG-INV-15): `curl -X OPTIONS .../inventory/products -H "Origin: http://evil.example.com"` → `HTTP 403`, SIN headers `Access-Control-Allow-*`. Con `Origin: http://localhost:4200` (origen del frontend) → `Access-Control-Allow-Origin: http://localhost:4200` + `Access-Control-Allow-Credentials: true`. `SecurityConfig.java` ahora usa `setAllowedOrigins(...)` con lista explícita configurable vía `CORS_ALLOWED_ORIGINS` (default `http://localhost:4200`). ✅ Corregido — ver BUG-INV-15 |
-| CYBER-14 | Login con credenciales incorrectas no revela si el usuario existe | (sin sesión) | Probar `admin`/`pass-incorrecto` vs `usuario-inexistente`/`cualquier-pass` | Mismo mensaje genérico "Usuario o contraseña incorrectos" en ambos casos | ✅ PASS | Re-test 2026-06-11 (post fix BUG-INV-16): `POST /auth/login` con `admin`/`wrongpass` y con `usuario_que_no_existe_xyz`/`cualquierpass` → ambos devuelven el MISMO body `{"status":401,"error":"Unauthorized","message":"Credenciales incorrectas."}` — no revela existencia de usuario, y el código HTTP ahora es 401 (correcto). Ver BUG-INV-16 ✅ Corregido |
-| CYBER-15 | Campo de contraseña en formularios (login, cambio de contraseña) usa `type="password"` y no se loggea en consola/network como texto plano fuera de HTTPS | (sin sesión) | DevTools → Console + Network durante login | Sin contraseña visible en consola; input enmascarado | ✅ PASS | Re-test 2026-06-11: `login.component.html` usa `[type]="hidePassword ? 'password' : 'text'"` con `formControlName="password"` — enmascarado por defecto con toggle de visibilidad explícito (ícono ojo). El body de `POST /auth/login` viaja en texto plano por ser HTTP en `dev` local — limitación ya documentada (ASVS V9.1.1, no aplica en dev, revisar `environment.prod.ts` para HTTPS en producción) |
-| CYBER-16 | Búsqueda con caracteres especiales HTML (`"`, `<`, `>`, `&`) en filtros no rompe el layout ni inyecta atributos | ADMIN | Campo de búsqueda con `"><svg onload=alert(1)>` | Caracteres tratados como texto literal; sin alteración del DOM fuera del campo | ✅ PASS | Re-test 2026-06-11: tipeado `"><svg onload=document.title='XSS-CYBER16'>` en "Buscar por código o nombre" → `document.title` permanece "Almacenes" (sin ejecución), tabla muestra "Sin resultados" sin romper layout, sin elementos `<svg>` inyectados fuera del campo |
-| CYBER-17 | Movimiento de stock (`POST /api/v1/inventory/products/movement`) con `productId` de un producto inactivo/inexistente | ADMIN | `productId` inválido vía request manual (Postman/curl) | HTTP 404/422 con mensaje de negocio; no crea el movimiento ni altera stock | ✅ PASS | Re-test 2026-06-11: `POST /inventory/products/movement` con `productId:999999` → 404 `{"status":404,"error":"Not Found","message":"Producto con id 999999 no encontrado."}` — sin crear movimiento |
+| CYBER-01 | El JWT decodificado (jwt.io / `atob`) no contiene contraseña ni datos sensibles en el payload | ADMIN | Sesión activa | Claims limitados a `sub`, `roles`, `iat`, `exp` (sin password/email sensible) | ⏳ PENDIENTE | Re-test 2026-06-11: payload decodificado = `{"sub":"admin","roles":["ROLE_ADMIN","ROLE_WAREHOUSEMAN"],"iat":...,"exp":...}` — sin contraseña ni datos sensibles |
+| CYBER-02 | Manipular el JWT en `localStorage` (cambiar rol a `ROLE_ADMIN`) y recargar | SALES | Sesión SALES activa, editar token en Application→LocalStorage | El backend rechaza con 401/403 al primer request; frontend redirige a login (no se otorga acceso elevado por confiar en un JWT alterado) | ⏳ PENDIENTE | Re-test 2026-06-12 (BUG-INV-13 — NO REPRODUCIBLE): login `ventas01`/SALES, se alteró `roles`/`role` del JWT a `["ROLE_ADMIN"]` en `localStorage` (firma queda inválida) y se navegó a `/inventory/products`. `GET /inventory/products`, `/inventory/categories/active` y `/purchases/suppliers/active` → **401** (antes 403, antes de BUG-INV-09). `error.interceptor.ts` detecta el 401, limpia `localStorage` y redirige a `/login?reason=expired` con snackbar rojo "Tu sesión ha expirado. Inicia sesión nuevamente." — sin flash de UI de ADMIN (confirmado con screenshot inmediato, sin esperar). Ver detalle abajo |
+| CYBER-03 | Eliminar el JWT de `localStorage` con la sesión activa y navegar/recargar | ADMIN | Sesión activa, borrar `localStorage` clave del token | Redirige a `/login`; próximas peticiones HTTP devuelven 401 | ⏳ PENDIENTE | Re-test 2026-06-11: con sesión ADMIN activa en `/inventory/categories`, se ejecutó `localStorage.removeItem('almacenes_token')` y se navegó a `/inventory/categories` → la app redirigió automáticamente a `/login` |
+| CYBER-04 | Inyección SQL en campo de búsqueda de productos: `' OR '1'='1` y `'; DROP TABLE products;--` | ADMIN | Campo de búsqueda de Productos | Sin error 500; backend trata el texto como literal; sin resultados o resultados normales; tabla `products` intacta | ⏳ PENDIENTE | Re-test 2026-06-11: ambos payloads en el campo "Buscar por código o nombre" → "Sin resultados" sin error 500/consola; al limpiar, la tabla de 108 productos vuelve a cargar normalmente (tabla `products` intacta) |
+| CYBER-05 | XSS almacenado: crear producto/categoría con nombre `<script>alert(1)</script>` | ADMIN | Formulario Nuevo producto / Nueva categoría | El valor se guarda como texto; al listar/ver el detalle se muestra escapado (`&lt;script&gt;`) sin ejecutar el script | ⏳ PENDIENTE | Re-test 2026-06-11: creada categoría con Nombre=`<script>document.title='XSS-CAT'</script>QA` y Descripción=`<img src=x onerror="this.dataset.xss=1">QA-XSS-test` → se guardó y listó como texto literal en la tabla y en el formulario "Editar categoría"; `document.title` permanece "Almacenes", sin elementos `<script>`/`<img>` creados en el DOM. Categoría de prueba desactivada al finalizar |
+| CYBER-06 | XSS reflejado vía query param: navegar a `/inventory/products?search=<img src=x onerror=alert(1)>` | ADMIN | URL manual con payload en `?search=` | El valor se usa como texto en el campo de búsqueda / petición HTTP; ningún script se ejecuta | ⏳ PENDIENTE | Re-test 2026-06-11: navegado a `/inventory/products?search=<img src=x onerror=document.title='XSS-TEST'>` (URL-encoded) — `document.title` permanece "Almacenes" (script NO ejecutado), el componente solo lee `categoryId` de queryParams (no `search`), campo de búsqueda queda vacío, lista de 108 productos carga normalmente |
+| CYBER-07 | Respuesta JSON de `GET /inventory/products` NO incluye `unitCost`/`costPrice` para WAREHOUSEMAN/SALES | WAREHOUSEMAN, SALES | DevTools → pestaña Network, inspeccionar response body | Campo `unitCost` ausente del JSON (no solo oculto en UI) | ⏳ PENDIENTE | Corregido y re-test 2026-06-11 (BUG-INV-11): `GET /inventory/products`, `/products/{id}`, `/products/sku/{sku}`, `/products/category/{id}`, `/products/low-stock` con JWT de `almacen01` (WAREHOUSEMAN) y `ventas01` (SALES) → `unitCost: null` en todos los registros. Con JWT de `admin` (ADMIN) → `unitCost` con valor real. Ver detalle de verificación abajo |
+| CYBER-08 | Acceso directo a la API sin token: `curl http://localhost:8080/api/v1/inventory/products` | (sin JWT) | Backend corriendo | HTTP 401 Unauthorized; sin datos en el body | ⏳ PENDIENTE | Re-test 2026-06-11 (post fix BUG-INV-09): `curl -s -o /dev/null -w "%{http_code}"` → **401**, body `{"status":401,"error":"Unauthorized","message":"Token JWT ausente, inválido o expirado. Inicia sesión nuevamente."}`, sin datos de negocio expuestos. `JwtAuthenticationEntryPoint` corrige el código. Ver BUG-INV-09 ✅ Corregido |
+| CYBER-09 | Acceso a endpoint de escritura con rol sin permiso vía `curl`: `POST /inventory/products` con JWT de SALES | SALES | Token JWT válido de SALES capturado del login | HTTP 403 Forbidden | ⏳ PENDIENTE | Re-test 2026-06-10: `fetch()` con JWT real de `ventas01` → `POST /inventory/products` → 403; `POST /inventory/products/movement` → 403. Ambos correctamente rechazados |
+| CYBER-10 | Mensajes de error del backend (4xx/5xx) no exponen stack traces, rutas de archivos ni nombres de tablas/clases internas | ADMIN | Forzar un error (ej. crear producto con SKU duplicado, o payload malformado) | Mensaje de error de negocio legible; sin trazas Java/SQL en el body de la respuesta ni en el snackbar | ⏳ PENDIENTE | Re-test 2026-06-11: `POST /inventory/products` con SKU duplicado (`PINT-BAR5G-049`) → 409 `{"timestamp":...,"status":409,"error":"Conflict","message":"Ya existe un producto con el SKU 'PINT-BAR5G-049'."}` — sin stack trace, rutas de archivo ni nombres de clases/tablas |
+| CYBER-11 | Token JWT expirado (simular cambiando `exp` o esperando 2h) → request rechazado | ADMIN | JWT expirado | HTTP 403/401; frontend redirige a `/login` con "Tu sesión ha expirado..."; sin loop infinito de redirects | ⏳ PENDIENTE | Re-test 2026-06-11 (post fix BUG-INV-09): (1) Ruta de navegación (guard client-side): `exp` modificado a 1h en el pasado → `authGuard` detecta `getTokenState()==='expired'` y redirige a `/login?reason=expired` sin request HTTP. (2) Ruta de request a mitad de sesión (escenario antes ⚠️ ABIERTO de BUG-INV-09): JWT con firma manipulada (exp futuro válido) → backend responde **401** (antes 403) con `{"message":"Token JWT ausente, inválido o expirado..."}`; `error.interceptor.ts` detecta el 401, elimina el token de `localStorage` y redirige a `/login?reason=expired` mostrando el mensaje del backend en snackbar rojo — sin loop de redirects, sin errores de consola. Ambos escenarios correctos. Ver BUG-INV-09 ✅ Corregido |
+| CYBER-12 | IDOR — acceder a `/inventory/products` y abrir el detalle de un producto cuyo `id` no corresponde a ningún elemento visible en la lista filtrada del rol actual (ID secuencial adivinado) | SALES | Conocer/adivinar un `id` válido | El backend solo permite lo autorizado por rol (lectura general permitida para SALES); para escritura (`PUT/PATCH`) responde 403 si SALES intenta modificar | ⏳ PENDIENTE | Re-test 2026-06-10: `fetch()` con JWT de `ventas01` → `GET /inventory/products/1` → 200 (lectura abierta, esperado); `PUT /inventory/products/1` → 403 (escritura bloqueada correctamente) |
+| CYBER-13 | Cabeceras CORS de la API no permiten `Access-Control-Allow-Origin: *` junto con `Access-Control-Allow-Credentials: true` | — | `curl -I` a cualquier endpoint con header `Origin` arbitrario | Configuración CORS restringida a orígenes conocidos (no wildcard + credentials) | ⏳ PENDIENTE | Re-test 2026-06-11 (post fix BUG-INV-15): `curl -X OPTIONS .../inventory/products -H "Origin: http://evil.example.com"` → `HTTP 403`, SIN headers `Access-Control-Allow-*`. Con `Origin: http://localhost:4200` (origen del frontend) → `Access-Control-Allow-Origin: http://localhost:4200` + `Access-Control-Allow-Credentials: true`. `SecurityConfig.java` ahora usa `setAllowedOrigins(...)` con lista explícita configurable vía `CORS_ALLOWED_ORIGINS` (default `http://localhost:4200`). ✅ Corregido — ver BUG-INV-15 |
+| CYBER-14 | Login con credenciales incorrectas no revela si el usuario existe | (sin sesión) | Probar `admin`/`pass-incorrecto` vs `usuario-inexistente`/`cualquier-pass` | Mismo mensaje genérico "Usuario o contraseña incorrectos" en ambos casos | ⏳ PENDIENTE | Re-test 2026-06-11 (post fix BUG-INV-16): `POST /auth/login` con `admin`/`wrongpass` y con `usuario_que_no_existe_xyz`/`cualquierpass` → ambos devuelven el MISMO body `{"status":401,"error":"Unauthorized","message":"Credenciales incorrectas."}` — no revela existencia de usuario, y el código HTTP ahora es 401 (correcto). Ver BUG-INV-16 ✅ Corregido |
+| CYBER-15 | Campo de contraseña en formularios (login, cambio de contraseña) usa `type="password"` y no se loggea en consola/network como texto plano fuera de HTTPS | (sin sesión) | DevTools → Console + Network durante login | Sin contraseña visible en consola; input enmascarado | ⏳ PENDIENTE | Re-test 2026-06-11: `login.component.html` usa `[type]="hidePassword ? 'password' : 'text'"` con `formControlName="password"` — enmascarado por defecto con toggle de visibilidad explícito (ícono ojo). El body de `POST /auth/login` viaja en texto plano por ser HTTP en `dev` local — limitación ya documentada (ASVS V9.1.1, no aplica en dev, revisar `environment.prod.ts` para HTTPS en producción) |
+| CYBER-16 | Búsqueda con caracteres especiales HTML (`"`, `<`, `>`, `&`) en filtros no rompe el layout ni inyecta atributos | ADMIN | Campo de búsqueda con `"><svg onload=alert(1)>` | Caracteres tratados como texto literal; sin alteración del DOM fuera del campo | ⏳ PENDIENTE | Re-test 2026-06-11: tipeado `"><svg onload=document.title='XSS-CYBER16'>` en "Buscar por código o nombre" → `document.title` permanece "Almacenes" (sin ejecución), tabla muestra "Sin resultados" sin romper layout, sin elementos `<svg>` inyectados fuera del campo |
+| CYBER-17 | Movimiento de stock (`POST /api/v1/inventory/products/movement`) con `productId` de un producto inactivo/inexistente | ADMIN | `productId` inválido vía request manual (Postman/curl) | HTTP 404/422 con mensaje de negocio; no crea el movimiento ni altera stock | ⏳ PENDIENTE | Re-test 2026-06-11: `POST /inventory/products/movement` con `productId:999999` → 404 `{"status":404,"error":"Not Found","message":"Producto con id 999999 no encontrado."}` — sin crear movimiento |
 | CYBER-18 | Cabeceras de seguridad HTTP en las respuestas de la API y del frontend (`X-Content-Type-Options: nosniff`, `X-Frame-Options`, `Content-Security-Policy`, `Strict-Transport-Security` en prod) | — | `curl -I http://localhost:8080/api/v1/inventory/products` y `curl -I http://localhost:4200/` | `SecurityConfig.java` no tiene bloque `.headers(...)` explícito → aplican los defaults de Spring Security 6: `X-Content-Type-Options: nosniff` y `X-Frame-Options: DENY` deberían estar presentes (PASS esperado); `Content-Security-Policy` y `Strict-Transport-Security` NO están configurados → esperar su ausencia y documentarla como hallazgo (ASVS V14.4) | N/A — diferido a checklist de producción | Re-test 2026-06-11: Backend → `X-Content-Type-Options: nosniff` y `X-Frame-Options: DENY` presentes (PASS, defaults de Spring Security); `Content-Security-Policy` y `Strict-Transport-Security` ausentes (esperado en dev, ASVS V14.4). Frontend (`ng serve` dev en :4200) → ninguna cabecera de seguridad (esperado, es el dev-server de Angular CLI). NO es un bug de código — depende del servidor estático/reverse-proxy de producción (aún no elegido) y del dominio HTTPS real. Documentado como checklist obligatorio de pre-despliegue en `memoria_tecnica_global_proyecto.md` §9 — L28 (2026-06-12). Re-ejecutar este caso contra el dominio de producción al desplegar |
-| CYBER-19 | Rate limiting / bloqueo tras múltiples intentos fallidos de login | (sin sesión) | `POST /api/v1/auth/login` con credenciales incorrectas 5-10 veces seguidas | El backend bloquea, retrasa o introduce captcha tras N intentos; si no lo hace, documentar como hallazgo (ASVS V2.2.1) | ✅ PASS | Corregido y re-test 2026-06-12 (BUG-INV-17): 5 intentos consecutivos con credenciales incorrectas → 401; a partir del 6º → **429 Too Many Requests** `{"message":"Demasiados intentos fallidos. Intenta nuevamente en 15 minuto(s)."}`. Bloqueo por usuario (case-insensitive), 15 min, se reinicia con login exitoso. Ver detalle de verificación abajo |
-| CYBER-20 | Logout invalida la sesión: tras cerrar sesión, el botón "atrás" del navegador no muestra datos de Inventario sin re-autenticación | ADMIN | Sesión activa, navegar a `/inventory/products`, cerrar sesión | `localStorage` sin token; redirige a `/login`; botón atrás no expone datos protegidos (o redirige a login) | ✅ PASS | Re-test 2026-06-11: con sesión ADMIN en `/inventory/products`, clic en "Cerrar sesión" → redirige a `/login`, `localStorage.getItem('almacenes_token')` retorna `null`. Botón "atrás" del navegador permanece en `/login`, sin exponer datos de Inventario |
-| CYBER-21 | Validación server-side independiente del cliente: `POST /api/v1/inventory/products` vía curl con `price: -10` o `sku` de 60 caracteres, evitando los `Validators` de Angular | ADMIN | Token JWT válido de ADMIN, request manual (Postman/curl) con payload inválido | HTTP 400/422 — el backend rechaza el payload aunque el frontend nunca lo hubiera enviado así | ✅ PASS | Re-test 2026-06-11: `POST /inventory/products` con `price:-10` → 400 `"Validación fallida: price: El precio debe ser mayor a cero"`; con `sku` de 60 caracteres → 400 `"Validación fallida: sku: el tamaño debe estar entre 0 y 50"`. Ambos rechazados server-side independientemente del frontend |
-| CYBER-22 | JWT con algoritmo alterado a `none` o firma inválida es rechazado | ADMIN | Construir manualmente un JWT con `alg: none` (sin firma) o con firma modificada, usarlo en `Authorization` header | HTTP 401 — el backend valida la firma y el algoritmo, no confía en el payload sin verificar | ✅ PASS | Re-test 2026-06-11 (post fix BUG-INV-09): JWT con header `{"alg":"none","typ":"JWT"}` y firma vacía → **401** (rechazado); JWT con firma real pero 1er carácter de la firma alterado → **401** (rechazado); firma vacía → **401** (rechazado). En los 3 casos `parseSignedClaims` invalida el token y `JwtAuthenticationEntryPoint` responde 401 (antes 403). Ver BUG-INV-09 ✅ Corregido. NOTA informativa (sin cambios): agregar un carácter extra al final de una firma de 64 chars (65 chars, grupo base64 incompleto) → 200 — esto NO es un bypass: el grupo base64 incompleto de 1 carácter se descarta en la decodificación y los bytes de firma decodificados son IDÉNTICOS a los del token original válido; verificado que alterar un byte real de la firma sí es rechazado (401) |
+| CYBER-19 | Rate limiting / bloqueo tras múltiples intentos fallidos de login | (sin sesión) | `POST /api/v1/auth/login` con credenciales incorrectas 5-10 veces seguidas | El backend bloquea, retrasa o introduce captcha tras N intentos; si no lo hace, documentar como hallazgo (ASVS V2.2.1) | ⏳ PENDIENTE | Corregido y re-test 2026-06-12 (BUG-INV-17): 5 intentos consecutivos con credenciales incorrectas → 401; a partir del 6º → **429 Too Many Requests** `{"message":"Demasiados intentos fallidos. Intenta nuevamente en 15 minuto(s)."}`. Bloqueo por usuario (case-insensitive), 15 min, se reinicia con login exitoso. Ver detalle de verificación abajo |
+| CYBER-20 | Logout invalida la sesión: tras cerrar sesión, el botón "atrás" del navegador no muestra datos de Inventario sin re-autenticación | ADMIN | Sesión activa, navegar a `/inventory/products`, cerrar sesión | `localStorage` sin token; redirige a `/login`; botón atrás no expone datos protegidos (o redirige a login) | ⏳ PENDIENTE | Re-test 2026-06-11: con sesión ADMIN en `/inventory/products`, clic en "Cerrar sesión" → redirige a `/login`, `localStorage.getItem('almacenes_token')` retorna `null`. Botón "atrás" del navegador permanece en `/login`, sin exponer datos de Inventario |
+| CYBER-21 | Validación server-side independiente del cliente: `POST /api/v1/inventory/products` vía curl con `price: -10` o `sku` de 60 caracteres, evitando los `Validators` de Angular | ADMIN | Token JWT válido de ADMIN, request manual (Postman/curl) con payload inválido | HTTP 400/422 — el backend rechaza el payload aunque el frontend nunca lo hubiera enviado así | ⏳ PENDIENTE | Re-test 2026-06-11: `POST /inventory/products` con `price:-10` → 400 `"Validación fallida: price: El precio debe ser mayor a cero"`; con `sku` de 60 caracteres → 400 `"Validación fallida: sku: el tamaño debe estar entre 0 y 50"`. Ambos rechazados server-side independientemente del frontend |
+| CYBER-22 | JWT con algoritmo alterado a `none` o firma inválida es rechazado | ADMIN | Construir manualmente un JWT con `alg: none` (sin firma) o con firma modificada, usarlo en `Authorization` header | HTTP 401 — el backend valida la firma y el algoritmo, no confía en el payload sin verificar | ⏳ PENDIENTE | Re-test 2026-06-11 (post fix BUG-INV-09): JWT con header `{"alg":"none","typ":"JWT"}` y firma vacía → **401** (rechazado); JWT con firma real pero 1er carácter de la firma alterado → **401** (rechazado); firma vacía → **401** (rechazado). En los 3 casos `parseSignedClaims` invalida el token y `JwtAuthenticationEntryPoint` responde 401 (antes 403). Ver BUG-INV-09 ✅ Corregido. NOTA informativa (sin cambios): agregar un carácter extra al final de una firma de 64 chars (65 chars, grupo base64 incompleto) → 200 — esto NO es un bypass: el grupo base64 incompleto de 1 carácter se descarta en la decodificación y los bytes de firma decodificados son IDÉNTICOS a los del token original válido; verificado que alterar un byte real de la firma sí es rechazado (401) |
 
 ---
 
@@ -736,29 +747,48 @@ baseline antes de la ronda).
 
 ---
 
+## Historial de rondas de verificación
+
+| Ronda | Fecha | Casos ejecutados | PASS | FAIL | N/A | Resultado | Notas |
+|---|---|---|---|---|---|---|---|
+| 1 | 2026-06-09 | 176 | 156 | 9 | 0 | ❌ Bugs encontrados | Primera ejecución (sin CYBER). 9 FAIL: BUG-INV-06..14 |
+| 2 | 2026-06-11 | 198 | 191 | 0 | 7 | ✅ Certificada (lectura estricta) | +22 casos CYBER; bugs BUG-INV-07..18 corregidos; CYBER-18 → N/A (producción) |
+| 3 | 2026-06-23 | ⏳ | — | — | 7 | 🔄 En curso (reset) | Reset completo bajo Protocolo 4 fases; nuevas lecciones L34/L35 integradas |
+
+---
+
 ## Checklist de cierre (Propuesta D)
 
-Antes de declarar el módulo **done**, verificar que se cumplen las 4 condiciones:
+Antes de declarar el módulo **done** en la ronda actual, verificar que se cumplen las 6 condiciones:
 
 ```
-[✅] 1. Los 198 casos de este documento (162 originales + 17 CYBER + 14 de gap analysis +
-       5 CYBER de mapeo ASVS L1) tienen estado en columna "Estado" — 0 filas ⏳ PENDIENTE.
-       Re-validación 2026-06-11 + ronda de corrección de bugs 2026-06-11: 156 ✅ PASS,
-       9 ❌ FAIL, 1 ⚠️ ABIERTO, 7 N/A. CYBER-08, CYBER-11, CYBER-13, CYBER-14, CYBER-22
-       y CYBER-07 pasaron de ❌ FAIL/⚠️ ABIERTO a ✅ PASS tras corregir BUG-INV-09,
-       BUG-INV-15, BUG-INV-16 y BUG-M3-24 (ver §9 — Resumen de la ronda 2026-06-11).
-       BSRCH-PROD-03 (BUG-INV-06) confirmado RESUELTO; VIS-GEN-06 (BUG-INV-07) confirmado
-       AÚN ABIERTO (el "fix" reportado previamente no existe en el código).
-[✅] 2. ng test --no-watch → 215 specs, 0 fallos ✅; cobertura statements: 89.32% ✅
-         (movement-dialog 81.3%, product-form 82.6%, product-detail 92.0%)
-         — sin cambios de código frontend en esta ronda (los 6 fixes fueron backend +
-         1 frontend de testing, ver §9); backend `./mvnw test` → 396 tests, 4 failures,
-         9 errors — idéntico al baseline pre-ronda, 0 regresiones nuevas
-[✅] 3. Prueba browser completa re-ejecutada con ADMIN, MANAGER, WAREHOUSEMAN y SALES
-       (2026-06-11) — incluye 22 casos CYBER nuevos/re-verificados (CYBER-01..22) y
-       verificación específica de BUG-INV-09 (401 vs 403 + sesión expirada a mitad de uso)
-[✅] 4. Memoria técnica §10 — resumen de la ronda de corrección 2026-06-11 agregado en
-       §9 de este documento (tabla "Resumen de la ronda 2026-06-11"); pendiente trasladar
-       el mismo resumen a `memoria_tecnica_modulo_inventario_frontend.md` §8/§10 y a
-       `memoria_tecnica_global_proyecto.md` en la próxima sesión de documentación
+[ ] 1. Todos los 198 casos tienen estado en columna "Estado" — 0 filas ⏳ PENDIENTE.
+       Última ronda certificada (2026-06-11): 191 ✅ PASS · 0 ❌ FAIL · 7 N/A.
+[ ] 2. ng build --configuration=production → 0 errores AOT (no opcional — BUG-BUILD-01:
+       el runner de tests no aplica strictTemplates AOT).
+[ ] 3. ng test --no-watch --coverage → 0 fallos; cobertura statements ≥ 70%.
+[ ] 4. Backend mvn test → 0 fallos nuevos respecto al baseline documentado.
+[ ] 5. Prueba browser completa re-ejecutada con los 4 roles QA (ADMIN, MANAGER,
+       WAREHOUSEMAN, SALES) — lectura estricta: todos los casos en una sola sesión
+       sobre código congelado, de principio a fin.
+[ ] 6. Actualizar memoria técnica §8/§10 + memoria_tecnica_global_proyecto.md +
+       estado_sesion_activa.md. Commit chore(qa) con fecha y resultado.
+```
+
+**Checklist L29-L35 (mandatorio desde diseño inicial):**
+```
+[ ] L29 — Matriz de campos sensibles × roles documentada en §4; redacción aplicada
+           server-side (no solo ocultada en frontend)
+[ ] L30 — 401 vs 403 correcto (JwtAuthenticationEntryPoint / JwtAccessDeniedHandler);
+           rate limiting en endpoints de autenticación
+[ ] L31 — Todos los MatDialog con formulario usan disableClose:true; paginador resetea
+           a página 0 al cambiar filtro/búsqueda
+[ ] L32 — Estilos de headers de tabla definidos en mixin SCSS compartido (no copiados
+           manualmente en cada componente)
+[ ] L33 — forkJoin con fuentes de RBAC distinto envuelven cada observable con catchError;
+           datos de prueba prefijados [QA]/TEST_ eliminados al cerrar
+[ ] L34 — Click en mat-row abre detalle/edición; no existe columna actions redundante;
+           botones dentro del formulario usan stopPropagation()
+[ ] L35 — Usuarios QA permanentes usados (no efímeros): admin, qa_manager,
+           qa_warehouse, qa_sales
 ```

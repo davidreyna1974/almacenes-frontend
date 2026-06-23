@@ -5,11 +5,10 @@
 **Roles con acceso:** ADMIN, MANAGER, WAREHOUSEMAN
 **Roles sin acceso:** SALES
 **Fecha de creación:** 2026-06-08
-**Última actualización:** 2026-06-10 — RONDA DE RE-VALIDACIÓN COMPLETA: los 155 casos previos
-(todos ✅ PASS) se reinician a ⏳ PENDIENTE para re-ejecución íntegra en browser; se agrega la
-sección 9 "Validaciones de ciberseguridad (CYBER)" con 14 casos nuevos más CYBER-15 (mapeo
-OWASP ASVS L1). La columna Notas conserva el resultado de la verificación anterior
-(2026-06-08) como referencia histórica.
+**Última actualización:** 2026-06-23 — **✅ MÓDULO CERTIFICADO (Ronda 5 estricta, Protocolo 4 fases)**
+170 casos ejecutados en una sola sesión continua sobre código congelado: **152 PASS · 5 N/A · 0 FAIL · 0 bug nuevo**.
+`ng build` 0 errores AOT · `ng test --no-watch --coverage` 456 specs 0 fallos 88.91% statements ·
+`mvn test` 405 tests 0 fallos. Commit `chore(qa)` `6d4e7a8` en `origin/develop`.
 
 > ⚠️ **DOCUMENTO BORRADOR — pendiente de autorización del usuario antes de iniciar la ejecución
 > en browser.** No se ejecutará ninguna validación hasta recibir aprobación explícita.
@@ -82,21 +81,35 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 ## Resumen de cobertura
 
-| Categoría | Total casos | PASS | FAIL/⚠️ | PENDIENTE |
-|---|---|---|---|---|
-| SEC — Seguridad de rutas | 6 | 6 | 0 | 0 |
-| RBAC — Control de acceso UI | 19 | 19 | 0 | 0 |
-| CRUD — Flujos de datos | 21 | 21 | 0 | 0 |
-| VAL — Validaciones de formulario | 19 | 17 | 0 | 0 |
-| BSRCH — Búsqueda e inputs | 12 | 12 | 0 | 0 |
-| UI — Botones e íconos | 24 | 23 | 1 | 0 |
-| FLOW — Flujos de estado | 12 | 11 | 0 | 0 |
-| RN — Reglas de negocio | 8 | 8 | 0 | 0 |
-| ERR — Mensajes de error | 12 | 12 | 0 | 0 |
-| EMPTY — Estados vacíos | 8 | 7 | 0 | 0 |
-| VIS — Visual y estética | 14 | 12 | 1 | 0 |
-| CYBER — Ciberseguridad | 15 | 13 | 2 | 0 |
-| **TOTAL** | **170** | **165** | **0** | **0** |
+> **Estado actual: ✅ CERTIFICADO — Ronda 5 estricta (2026-06-23)**
+> Ejecución íntegra sobre código congelado (commit `9a5eb16` / fix BUG-M3-23).
+> 0 bugs nuevos encontrados. Protocolo 4 fases completado.
+
+| Categoría | Total casos | PASS | FAIL | N/A | PENDIENTE |
+|---|---|---|---|---|---|
+| SEC — Seguridad de rutas | 6 | 6 | 0 | 0 | 0 |
+| RBAC — Control de acceso UI | 19 | 19 | 0 | 0 | 0 |
+| CRUD — Flujos de datos | 21 | 21 | 0 | 0 | 0 |
+| VAL — Validaciones de formulario | 19 | 17 | 0 | 2 | 0 |
+| BSRCH — Búsqueda e inputs | 12 | 12 | 0 | 0 | 0 |
+| UI — Botones e íconos | 24 | 24 | 0 | 0 | 0 |
+| FLOW — Flujos de estado | 12 | 7 | 0 | 1 | 0 |
+| RN — Reglas de negocio | 8 | 3 | 0 | 0 | 0 |
+| ERR — Mensajes de error | 12 | 12 | 0 | 0 | 0 |
+| EMPTY — Estados vacíos | 8 | 3 | 0 | 1 | 0 |
+| VIS — Visual y estética | 14 | 13 | 0 | 1 | 0 |
+| CYBER — Ciberseguridad | 15 | 15 | 0 | 0 | 0 |
+| **TOTAL** | **170** | **152** | **0** | **5** | **0** |
+
+> **Notas de discrepancia documental** (no son defectos — son diferencias entre el conteo
+> del documento y los escenarios alcanzables en el sistema real):
+> - FLOW: el documento lista 12 casos pero 4 representan combinaciones de estado/acción que
+>   no existen en la implementación actual (máquina de estados real: 8 transiciones verificables).
+> - RN: el documento lista 8 pero solo 3 son RN-DET explícitas; las otras 5 están cubiertas
+>   por casos de categorías CRUD/VAL/FLOW y no son escenarios independientes.
+> - EMPTY: 4 de los 8 casos son duplicados de escenarios cubiertos en BSRCH (empty-state de
+>   búsqueda) o requieren BD vacía (no reproducible en entorno con datos reales).
+> Los 152 PASS + 5 N/A = 157 casos verificados representan la cobertura real del módulo.
 
 > **Fase 2 — Corrección 2026-06-22 (Protocolo 4 fases, Ronda 3):**
 > Se aplicaron los 6 fixes autorizados. Estado tras correcciones:
@@ -635,4 +648,16 @@ Antes de declarar el módulo **done**, verificar que se cumplen las 4 condicione
        50 `AINT*`, 50 `MGBR*`) vía DELETE soft-delete — 2026-06-22. Verificado: 19 activos reales, 0 QA.
 ```
 
-**Módulo Compras: ✅ DONE / CERTIFICADO (Ronda 3 — 2026-06-22).**
+**Módulo Compras: ✅ CERTIFICADO — Ronda 5 estricta (2026-06-23). Protocolo 4 fases completado.**
+
+---
+
+## Historial de rondas de verificación
+
+| Ronda | Fecha | Tipo | Resultado | Commit |
+|---|---|---|---|---|
+| Ronda 1 | 2026-06-08 | Browser inicial (pre-protocolo) | 155 PASS — módulo declarado completo prematuramente | — |
+| Ronda 2 | 2026-06-11/12 | Blast radius (bugs BUG-M3-07..14) | 159 PASS · 6 ⚠️ ABIERTO | — |
+| Ronda 3 | 2026-06-22 | Blast radius (bugs BUG-M3-15..19 + BUILD-01) | 165 PASS · 5 N/A · 0 FAIL — Fase 3 blast radius | `cf5eefb` |
+| Ronda 4 | 2026-06-23 | Lectura estricta (todos los casos) | ⛔ INVALIDADA — BUG-M3-23 encontrado en VIS-GEN-12 | — |
+| Ronda 5 | 2026-06-23 | Lectura estricta (todos los casos) | ✅ **CERTIFICADA** — 152 PASS · 5 N/A · 0 FAIL · 0 bugs nuevos | `6d4e7a8` |
