@@ -11,7 +11,7 @@
 
 | Campo | Valor |
 |---|---|
-| **Ronda activa** | **Ronda 6 — Inventario ✅ CERTIFICADO (2026-06-26)** — Fase 1 ejecutada íntegra sobre código congelado (152 PASS · 0 FAIL · 46 N/A · 0 bugs); Fase 4 gatekeeper PASS: `ng build` 0 errores AOT, `ng test` 456 specs 0 fallos (88.94% statements), `mvn test` 405 tests 0 fallos. Módulo Inventario CERTIFICADO bajo Propuesta D. _(Ronda 5 — Compras CERTIFICADO 2026-06-23.)_ |
+| **Ronda activa** | **Ronda 7 — Ventas ✅ CERTIFICADO (2026-06-27)** — Fase 1: 201 PASS · 0 FAIL · 4 N/A · 0 bugs (código congelado). Fase 4 PASS: `ng build` 0 errores AOT, `ng test` 456 specs 0 fallos 88.94% statements, `mvn test` 405 tests 0 fallos. Módulo Ventas CERTIFICADO bajo Propuesta D. _(Ronda 6 — Inventario CERTIFICADO 2026-06-26; Ronda 5 — Compras CERTIFICADO 2026-06-23.)_ |
 | **Protocolo** | 4 fases (ver `protocolo_verificacion_4_fases.md`) |
 | **Fecha de inicio** | 2026-06-22 (Ronda 5 iniciada 2026-06-23) |
 | **Disciplina de documentación incremental** | A petición del usuario (2026-06-23): para no perder contexto ante el límite de uso semanal o cualquier interrupción, este archivo se actualiza **después de cada categoría completada** de la Ronda 5 (no en un único checkpoint). No hay acceso programático al % de uso, por lo que se persiste el progreso de forma continua. La siguiente sesión retoma con "Contexto de recuperación rápida" + la tabla de progreso de la Ronda 5. |
@@ -50,7 +50,7 @@
 | Auth / Usuarios | 106 | 0 | 0 | 3 | 103 | ⏳ Reset 2026-06-23 (+15 CYBER) |
 | Inventario | 198 | 152 | 0 | 46 | 0 | ✅ FASE 1 R6 COMPLETA (2026-06-26) — 0 bugs, código congelado. Listo para Fase 4 |
 | Compras | 170 | 152 | 0 | 5 | 0 | ✅ CERTIFICADO (Ronda 5, 2026-06-23) |
-| Ventas | 205 | 0 | 0 | 5 | 200 | ⏳ Reset 2026-06-23 (+15 CYBER) |
+| Ventas | 205 | 201 | 0 | 4 | 0 | ✅ **CERTIFICADO (2026-06-27)** — Fase 1: **201 PASS · 0 FAIL · 0 PENDIENTE · 4 N/A · 0 bugs**. Fase 4 gatekeeper PASS: `ng build` 0 errores AOT, `ng test` 456 specs 0 fallos 88.94%, `mvn test` 405 tests 0 fallos. Obs reconciliadas: CYBER-04 (SALES sí crea clientes, esperado→201), SEC-01 (esperado→/access-denied). RES-FJ-03: data QA propia limpiada; seed (Cliente Int/RBAC) conservado por decisión del usuario (todos son test, 0 reales). CERTIFICADO bajo Propuesta D |
 | Reportes | 109 | 0 | 0 | 13 | 96 | ⏳ Reset 2026-06-23 (+15 CYBER) |
 
 ---
