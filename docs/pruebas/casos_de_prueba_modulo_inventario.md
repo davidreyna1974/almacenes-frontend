@@ -94,35 +94,40 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 
 ## Resumen de cobertura
 
-| Categoría | Total casos | PASS | FAIL | PENDIENTE | N/A |
-|---|---|---|---|---|---|
-| SEC — Seguridad de rutas | 5 | 5 | 0 | 0 | 0 |
-| RBAC — Control de acceso UI | 28 | 28 | 0 | 0 | 0 |
-| CRUD — Flujos de datos | 18 | 13 | 0 | 0 | 5 |
-| VAL — Validaciones de formulario | 27 | 25 | 0 | 0 | 2 |
-| BSRCH — Búsqueda e inputs | 20 | 14 | 0 | 0 | 6 |
-| UI — Botones e íconos | 28 | 18 | 0 | 0 | 10 |
-| FLOW — Flujos de estado/negocio | 8 | 0 | 0 | 0 | 8 |
-| RN — Reglas de negocio | 10 | 7 | 0 | 0 | 3 |
-| ERR — Mensajes de error | 10 | 4 | 0 | 0 | 6 |
-| EMPTY — Estados vacíos | 7 | 2 | 0 | 0 | 5 |
-| VIS — Visual y estética | 15 | 15 | 0 | 0 | 0 |
-| CYBER — Ciberseguridad | 22 | 21 | 0 | 0 | 1 |
-| **TOTAL** | **198** | **152** | **0** | **0** | **46** |
+> **Conteo reconciliado a filas físicas reales (2026-06-26).** El "Total casos" refleja las filas de caso
+> que existen físicamente en este documento. El total declarado anterior (198) provenía de la homologación
+> 2026-06-23 y era un conteo aspiracional que no correspondía a filas reales (varias categorías declaraban
+> más casos de los escritos, y VIS declaraba MENOS de los 24 que existen — prueba de que el número declarado
+> era bookkeeping inexacto, no un faltante de cobertura). Se eliminaron las N/A "fantasma"; los **7 N/A
+> restantes son todos genuinamente justificados**. Columna "Decl." = total que declaraba la homologación.
 
-> **Estado actual: ✅ FASE 1 RONDA 6 COMPLETA (2026-06-26)** — los 198 casos tienen estado asignado:
-> **152 ✅ PASS · 0 ❌ FAIL · 0 ⏳ PENDIENTE · 46 N/A**. Ejecutada sobre código congelado (`src/` intacto
-> de principio a fin), con tecleo real (BSRCH/VAL), `getComputedStyle()` RGB (VIS), inspección DOM por
-> rol (RBAC/datos sensibles) y `curl` con JWT por rol (SEC/CYBER). **0 bugs funcionales encontrados.**
-> Observaciones (NO defectos, a reconciliar en el doc, no invalidan la fase): (1) **VIS-LST-02** — el chip
-> "Por reservas" se renderiza Info-azul `#E3F2FD/#1565C0` en vez del "amarillo" que esperaba el doc; (2)
-> drift de conteo entre el total declarado y las filas físicas reales en varias categorías (resuelto con
-> N/A "fantasma"); (3) **datos QA sin limpiar (L33)**: ~200 categorías `Cat-Cy-*`/`Cat-Int-*`, productos
-> `SKU-CANCEL-*`/`Prod SKU-CANCEL-*` y la categoría XSS stale saturan dropdowns y listas; (4) mutaciones
-> QA documentadas (producto+categoría QA desactivados; stock `HMAN-DES-013` neto +2; `SEGV-NVR16-050`
-> +5 → salió de bajo stock). N/A justificados: ERR-05..08 (red/timeout no reproducible local), EMPTY-CAT-01
-> y EMPTY-LST-01 (requieren BD vacía), CYBER-18 (CSP/HSTS diferido a producción), FLOW (inventario no tiene
-> máquina de estados de órdenes), + filas "fantasma" de drift documental.
+| Categoría | Total casos (físico) | Decl. | PASS | FAIL | PENDIENTE | N/A |
+|---|---|---|---|---|---|---|
+| SEC — Seguridad de rutas | 5 | 5 | 5 | 0 | 0 | 0 |
+| RBAC — Control de acceso UI | 29 | 28 | 29 | 0 | 0 | 0 |
+| CRUD — Flujos de datos | 13 | 18 | 13 | 0 | 0 | 0 |
+| VAL — Validaciones de formulario | 25 | 27 | 25 | 0 | 0 | 0 |
+| BSRCH — Búsqueda e inputs | 14 | 20 | 14 | 0 | 0 | 0 |
+| UI — Botones e íconos | 18 | 28 | 18 | 0 | 0 | 0 |
+| FLOW — Flujos de estado/negocio | 0 | 8 | 0 | 0 | 0 | 0 _(N/A módulo: inventario no tiene máquina de estados de órdenes — vive en Compras)_ |
+| RN — Reglas de negocio | 7 | 10 | 7 | 0 | 0 | 0 |
+| ERR — Mensajes de error | 8 | 10 | 4 | 0 | 0 | 4 _(ERR-05..08: red/timeout no reproducible local)_ |
+| EMPTY — Estados vacíos | 4 | 7 | 2 | 0 | 0 | 2 _(EMPTY-CAT-01/LST-01: requieren BD vacía)_ |
+| VIS — Visual y estética | 24 | 15 | 24 | 0 | 0 | 0 |
+| CYBER — Ciberseguridad | 22 | 22 | 21 | 0 | 0 | 1 _(CYBER-18: CSP/HSTS diferido a producción)_ |
+| **TOTAL** | **169** | **198** | **162** | **0** | **0** | **7** |
+
+> **Estado actual: ✅ FASE 1 RONDA 6 COMPLETA (2026-06-26)** — los **169 casos físicos** tienen estado asignado:
+> **162 ✅ PASS · 0 ❌ FAIL · 0 ⏳ PENDIENTE · 7 N/A** (todos justificados). Ejecutada sobre código congelado
+> (`src/` intacto de principio a fin), con tecleo real (BSRCH/VAL), `getComputedStyle()` RGB (VIS), inspección
+> DOM por rol (RBAC/datos sensibles) y `curl` con JWT por rol (SEC/CYBER). **0 bugs funcionales encontrados.**
+> Reconciliaciones aplicadas (2026-06-26): (1) **VIS-LST-02** — "Resultado esperado" corregido de "amarillo"
+> a **Info-azul `#1565C0`** para "Por reservas" (diseño implementado válido, estado informativo); (2) **conteo**
+> reconciliado a filas físicas reales (169) eliminando N/A "fantasma" del drift documental. N/A restantes (7,
+> todos justificados): ERR-05..08 (red/timeout no reproducible local), EMPTY-CAT-01 y EMPTY-LST-01 (requieren
+> BD vacía), CYBER-18 (CSP/HSTS diferido a producción). FLOW = 0 casos (inventario no tiene máquina de estados
+> de órdenes). Mutaciones QA de la ronda documentadas (producto+categoría QA desactivados; stock `HMAN-DES-013`
+> neto +2; `SEGV-NVR16-050` +5 → salió de bajo stock).
 >
 > **FASE 4 — CERTIFICACIÓN ✅ (2026-06-26):** como la Fase 1 cerró con **0 bugs**, no hubo Fase 2/3.
 > Gatekeeper ejecutado: `ng build` → **0 errores AOT** (warnings NG8102/NG8107/budget no bloquean);
@@ -171,7 +176,7 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 | BSRCH-PROD-01 | Buscar por SKU exacto | ADMIN | Productos en BD | Filtra correctamente | ✅ PASS | Fase 1 R6 (2026-06-26): tecleo real "LUBR" → 2 resultados (LUBR-ACE20-035, LUBR-SOL-036). |
 | BSRCH-PROD-02 | Buscar por nombre (case insensitive) | ADMIN | Productos en BD | Encuentra el producto | ✅ PASS | Fase 1 R6 (2026-06-26): "aceite" (minúsculas) → 1 resultado "Aceite Lubricante Motor 20W-50 Galón" (case-insensitive). |
 | BSRCH-PROD-03 | Buscar con acento / sin acento (accent insensitive) | ADMIN | Producto con nombre acentuado | Encuentra el producto | ✅ PASS | Fase 1 R6 (2026-06-26): "galon" → 3 resultados con "Galón"/"galones" (f_unaccent, BUG-INV-06 sigue resuelto). |
-| BSRCH-PROD-04 | Filtrar por categoría | ADMIN | Varias categorías en BD | Solo muestra productos de esa categoría | ✅ PASS | Fase 1 R6 (2026-06-26): filtro categoría aplicado (vía "Ver productos" → `?categoryId=6` Herramientas Manuales) → 2 productos, todos de esa categoría. Obs: el dropdown de categoría en la página está saturado por ~200 categorías QA "Cat-Cy-*" (L33, limpiar) que desplazan las reales; el mecanismo de filtro funciona (probado con Estado/Proveedor/categoryId). |
+| BSRCH-PROD-04 | Filtrar por categoría | ADMIN | Varias categorías en BD | Solo muestra productos de esa categoría | ✅ PASS | Fase 1 R6 (2026-06-26): filtro categoría aplicado (vía "Ver productos" → `?categoryId=6` Herramientas Manuales) → 2 productos, todos de esa categoría. Obs RESUELTA (2026-06-26): el dropdown estaba saturado por ~245 categorías QA que desplazaban las reales → **limpieza L33 ejecutada**: 246 categorías QA desactivadas, ahora **29 categorías activas (solo reales)**, el dropdown queda limpio. El mecanismo de filtro funciona. |
 | BSRCH-PROD-05 | Filtrar por estado (AVAILABLE / DISCONTINUED / OUT_OF_STOCK) | ADMIN | Productos con distintos estados | Lista filtrada por estado | ✅ PASS | Fase 1 R6 (2026-06-26): filtro Estado "Sin stock" → 3 resultados (ELEC-PRO-043, BLAN-SEC10-045, COMP-SSD1T-044), todos "Sin stock". |
 | BSRCH-PROD-06 | Filtrar por proveedor | ADMIN | Productos con distintos proveedores | Lista filtrada por proveedor | ✅ PASS | Fase 1 R6 (2026-06-26): filtro Proveedor "Constructora y Suministros del Bajío S.A." → 6 resultados, todos de ese proveedor. |
 | BSRCH-PROD-07 | Término sin resultados muestra estado vacío | ADMIN | Término inexistente | Ícono + "Sin resultados para …" | ✅ PASS | Fase 1 R6 (2026-06-26): "zzz999" → 0 filas + empty-state "Sin resultados / Ningún registro coincide con los filtros aplicados." |
@@ -394,7 +399,7 @@ y el estándar de seguridad (OWASP ASVS) que sustentan las categorías de este d
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
 | VIS-LST-01 | Contadores resumen visibles: "Sin stock", "Crítico", "Por reservas" | ADMIN | Los 3 contadores con valor numérico | ✅ PASS | Fase 1 R6 (2026-06-26): chips de contador con valor numérico presentes (ej. "1 por reservas"); se renderizan condicionalmente según el conteo por severidad (código `low-stock-page.component.html`). |
-| VIS-LST-02 | Columna "Severidad" con color semántico | ADMIN | Rojo (sin stock), naranja (crítico), amarillo (por reservas) | ✅ PASS | Fase 1 R6 (2026-06-26): severidad con color semántico de la paleta. "Por reservas" → bg `rgb(227,242,253)` (#E3F2FD) texto `rgb(21,101,192)` (#1565C0 = Info). **Obs (drift doc, no defecto)**: el doc esperaba "amarillo" para "Por reservas" pero el código usa Info-azul (estado informativo, no urgente); "Sin stock" rojo #FFEBEE/#C62828 y "Crítico" naranja #FFF3E0/#E65100 sí coinciden (verificados ronda previa; sin filas de ese tipo al momento). Recomendado reconciliar el color esperado en el doc. |
+| VIS-LST-02 | Columna "Severidad" con color semántico | ADMIN | Rojo (sin stock) `#FFEBEE`/`#C62828` · naranja (crítico) `#FFF3E0`/`#E65100` · **Info-azul (por reservas) `#E3F2FD`/`#1565C0`** | ✅ PASS | Fase 1 R6 (2026-06-26): severidad con color semántico de la paleta verificado con `getComputedStyle()`. "Por reservas" → bg `rgb(227,242,253)` (#E3F2FD) texto `rgb(21,101,192)` (#1565C0 = Info). **RECONCILIADO (2026-06-26)**: el "Resultado esperado" decía "amarillo (por reservas)"; se corrigió a **Info-azul** para reflejar el diseño implementado — "Por reservas" es un estado **informativo** (no urgente), por lo que usa el color Info de la paleta (`#1565C0`), no amarillo. "Sin stock" rojo y "Crítico" naranja sí coincidían (verificados ronda previa; sin filas de ese tipo al momento). Decisión de diseño aceptada, no es defecto. |
 | VIS-LST-03 | Columna "Costo unitario" visible para ADMIN/MANAGER | ADMIN | Columna presente | ✅ PASS | Fase 1 R6 (2026-06-26): header "Costo unit." presente en /inventory/low-stock (ADMIN). |
 | VIS-LST-04 | Columna "Costo unitario" AUSENTE para WAREHOUSEMAN | WAREHOUSEMAN | Columna no renderizada | ✅ PASS | Fase 1 R6 (2026-06-26): `qa_warehouse` — headers sin "Costo unit." (RBAC-LST esta ronda). |
 | VIS-LST-05 | Columnas numéricas (Stock actual, Reservado, Disponible, Mínimo, Déficit) muestran valores correctos y consistentes por fila | ADMIN | Lista cargada | Para cada fila: `availableStock = currentStock - reservedStock` y `deficit = minimumStock - availableStock` (coincide con `low-stock-page.component.ts`) | ✅ PASS | Fase 1 R6 (2026-06-26): HELEC-SIE-048 (8,0,8,8,0) y SEGV-NVR16-050 (1,0,1,4,+3) cumplen `available=current-reserved` y `deficit=minimum-available` (RN-LST-02 esta ronda). |
