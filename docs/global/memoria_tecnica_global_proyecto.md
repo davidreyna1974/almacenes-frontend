@@ -644,7 +644,7 @@ JWT_SECRET=...       # mínimo 64 caracteres hex (openssl rand -hex 32)
 **Suite total backend**: 396 tests — 0 fallos — BUILD SUCCESS  
 **Cobertura**: 84.6% líneas · 87.5% métodos · 61.6% ramas
 
-### Frontend (`almacenes-frontend`) — En desarrollo
+### Frontend (`almacenes-frontend`) — Completo · **QA certificado (campaña 4 fases cerrada 2026-06-28)**
 
 | Módulo | Estado | Tests | Notas |
 |---|---|---|---|
@@ -655,7 +655,41 @@ JWT_SECRET=...       # mínimo 64 caracteres hex (openssl rand -hex 32)
 | Módulo 4: Sales | ✓ Completo | 383 specs, 0 fallos (89.84% statements) + casos browser ✅ PASS (4 roles) | Propuesta D cerrada 2026-06-13. H1 (404/409/422), H2 (redacción unitCost L29), H3/D8 (@Transactional en approveOrder) y H4 (mocks de controller test desactualizados, backend commit `cca468b`) resueltos/verificados. Suite backend completa: 405/405, 0 fallos/0 errores. Limpieza de datos de prueba sin prefijo (19 clientes + 19 productos "Integración", 19 órdenes canceladas) — RBAC-RES-FJ-03. ERR-09 (Optimistic Locking) verificado vía `SaleOrderConcurrencyTest` (3/3, automatizado). |
 | Módulo 5: Reports | ✓ Completo | 401 specs, 0 fallos (89.89% statements) + 94 casos browser (82 PASS + 12 N/A, 0 FAIL) + 4 roles RBAC | Propuesta D cerrada 2026-06-16. BUG-REP-01 (autocomplete TypeError), BUG-REP-02 (tab Rotación visible para WAREHOUSEMAN → 403), BUG-REP-03 (botón Consultar no deshabilitado con from > to en Movimientos/Rotación), BUG-REP-04 (currency pipe usaba PEN/USD en lugar de MXN — corregido en 7 templates Reports+Inventory) corregidos. ng2-charts + chart.js para gráficas. `turnoverQueried`/`trendQueried`/`topQueried`/`abcQueried`/`supplierQueried` flags para diferenciar "no consultado" vs "sin resultados". forkJoin con catchError en ExecutiveDashboard (L33). |
 
-**Suite total frontend (Módulos 0-5)**: 401 specs — 0 fallos
+**Suite total frontend (Módulos 0-5 + Usuarios)**: **462 specs — 0 fallos — 88.94% statements**
+(incluye 6 specs de `DdMmYyyyDateAdapter`). Backend: **406 tests — 0 fallos — BUILD SUCCESS**.
+
+---
+
+### Campaña de QA — Protocolo de 4 fases (cierre 2026-06-28)
+
+Verificación completa de los **6 documentos de casos de prueba** bajo el Protocolo de 4 fases
+(`docs/pruebas/protocolo_verificacion_4_fases.md`). **Todos los módulos CERTIFICADOS bajo Propuesta D:**
+
+| Módulo | Ronda | Casos (PASS·FAIL·N/A) | Notas de cierre |
+|---|---|---|---|
+| Compras | R5 (2026-06-23) | 152·0·5 | Fase 3 estricta. BUG-M3-23 (disableClose) corregido. |
+| Inventario | R6 (2026-06-26) | 152·0·46 | Fase 1 sobre código congelado, 0 bugs. Limpieza L33 (246 cat + 143 prod QA). |
+| Ventas | R7 (2026-06-27) | 201·0·4 | Fase 1 0 bugs. Reconciliaciones CYBER-04/SEC-01. |
+| Reportes | R10 (2026-06-28) | 96·0·13 | **Fase 3 estricta (lectura literal de 109 casos).** 2 fixes Fase 2 (ver abajo). 9/9 dependientes de datos frescos. |
+| Auth/Usuarios | R2 (2026-06-28) | 103·0·3 | Fase 1 0 bugs + cierre de gaps en vivo. |
+
+**Total: 704 casos verificados · 0 FAIL · 71 N/A justificados · 0 bugs funcionales sin resolver.**
+
+**Fixes globales aplicados durante la campaña (Reportes, blast radius global, verificados en los 4 módulos):**
+1. **Formato de fecha de los MatDatepicker → `dd/MM/yyyy`** (estándar del proyecto). El adapter nativo con
+   locale `es-PE` solo corregía el formato de salida; se añadió `DdMmYyyyDateAdapter` (override de `parse()`)
+   para que el tecleo dd/MM/yyyy también se interprete correctamente. `src/app/core/date/` + 6 specs.
+2. **`MethodArgumentTypeMismatchException` → HTTP 400** (antes 500 filtrando el tipo `LocalDate`).
+   `GlobalExceptionHandler.handleTypeMismatch`. Blast radius: global backend; verificado en
+   reports/inventory/purchases/sales.
+
+**Verificación de regresión cruzada final (2026-06-28):** congelamiento git 0/0 en ambos repos; gatekeeper
+verde (462/462 front · 406/406 back); matriz RBAC cruzada por rol intacta en los 5 módulos (noJWT→401);
+render correcto de los 5 módulos; 0 usuarios QA de prueba activos (datos limpiados). **0 regresiones.**
+
+**Observaciones documentales reconciliadas (no bugs):** (a) rutas denegadas redirigen a `/access-denied`
+(varios docs decían "home `/`"); (b) la búsqueda de usuarios es client-side (filtra la página cargada);
+(c) la nota de CLAUDE.md sobre que `/admin/users` "no tiene ruta funcional" estaba desactualizada — corregida.
 
 ---
 
@@ -1592,6 +1626,24 @@ El archivo `docs/pruebas/estado_sesion_activa.md` actúa como "punto de guardado
 las sesiones de prueba. Se actualiza al completar cada módulo/categoría. Si Claude Code
 se interrumpe por límite de uso, la siguiente sesión lee ese archivo y retoma exactamente
 donde se quedó, sin pérdida de contexto.
+
+### Cierre de la campaña de QA (2026-06-28)
+
+Los **6 documentos de casos de prueba** se ejecutaron bajo este protocolo y **los 5 módulos del
+sistema quedaron CERTIFICADOS** (ver §8 — Estado actual para el detalle por módulo y los 2 fixes
+globales aplicados). Resultado agregado: **704 casos · 0 FAIL · 0 bugs funcionales sin resolver.**
+
+**Lección reforzada por la campaña (Reportes):** la distinción "Fase 3 por blast radius" vs "Fase 3 de
+lectura estricta literal" no es cosmética. Un primer fix de formato de fecha (`MAT_DATE_LOCALE`) pareció
+suficiente en una verificación por superficie, pero **la lectura literal tecleando dd/MM/yyyy en Fase 3
+destapó** que el adapter nativo solo formatea según locale y parsea el tecleo ignorándolo (desajuste
+parse/display). El fix completo requirió un `DdMmYyyyDateAdapter`. **Solo la lectura estricta literal de
+todos los casos en una sola sesión continua sobre el bundle congelado garantiza el "CERTIFICADO" bajo
+Propuesta D** — confirmado en esta campaña.
+
+**Disciplina de datos de prueba (L33):** cada ronda creó datos QA prefijados y los limpió al cerrar
+(soft-delete). En el cierre se verificó 0 residuos activos en todos los módulos; se limpiaron además
+residuos heredados de rondas previas (`qa_flow_test`, `qa_multirole`, ~389 cat/prod QA en Inventario).
 
 ---
 
