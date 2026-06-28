@@ -388,10 +388,15 @@ verificaciones. No basta con que el código compile y los tests unitarios pasen.
   los usuarios QA documentados en `docs/global/memoria_tecnica_global_proyecto.md` §5
   (`qa_manager`/`QaManager123!`, `qa_sales`/`QaSales123!`, `qa_warehouse`/`QaWarehouse123!`,
   además de `admin`/`Admin123!`). Si no existen, crearlos vía `POST /api/v1/auth/users`
-  (JWT de `admin`) y documentar las credenciales antes de iniciar la verificación —
-  ⚠️ el ítem "Usuarios" del sidebar (`/admin/users`) no tiene ruta funcional en
-  `app.routes.ts` (pendiente de implementar), así que la gestión de usuarios por UI no
-  está disponible.
+  (JWT de `admin`) y documentar las credenciales antes de iniciar la verificación.
+  La gestión de usuarios por UI **sí está implementada y funcional** (`/admin/users` para
+  ADMIN, `/admin/profile` para todos los roles): la ruta se define en
+  `src/app/modules/auth/admin.routes.ts` (lazy-loaded desde el path `admin` de
+  `app.routes.ts`) con `canActivate: [authGuard]` y `data.roles`. Componentes:
+  `UsersPageComponent`, `UserFormDialogComponent`, `ProfilePageComponent`,
+  `ChangePasswordDialogComponent`. _(Corregido 2026-06-28: la nota previa de "ruta no
+  funcional / pendiente de implementar" estaba desactualizada — verificado en la Ronda 2
+  de Auth/Usuarios.)_
 
 ---
 
