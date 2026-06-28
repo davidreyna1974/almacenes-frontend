@@ -2,7 +2,8 @@ import { ApplicationConfig, ErrorHandler, provideBrowserGlobalErrorListeners } f
 import { PreloadAllModules, provideRouter, withPreloading } from '@angular/router';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideNativeDateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS, MatDateFormats } from '@angular/material/core';
+import { provideNativeDateAdapter, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS, MatDateFormats } from '@angular/material/core';
+import { DdMmYyyyDateAdapter } from './core/date/dd-mm-yyyy-date-adapter';
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import * as Sentry from '@sentry/angular';
 import { routes } from './app.routes';
@@ -38,6 +39,10 @@ if (environment.sentryDsn) {
  * día y mes de 2 dígitos para obtener exactamente dd/MM/yyyy con ceros a la
  * izquierda. Esto afecta únicamente a los MatDatepicker; las fechas de tablas ya
  * usaban DatePipe con formato 'dd/MM/yyyy' explícito.
+ *
+ * El locale solo corrige el FORMATO de salida del adapter nativo; el parseo de
+ * texto tecleado lo cubre `DdMmYyyyDateAdapter` (override de `parse()`), de modo
+ * que teclear "31/12/2026" se interpreta correctamente como dd/MM/yyyy.
  */
 const APP_DATE_FORMATS: MatDateFormats = {
   parse: {
@@ -58,6 +63,7 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withPreloading(PreloadAllModules)),
     provideAnimationsAsync(),
     provideNativeDateAdapter(),
+    { provide: DateAdapter, useClass: DdMmYyyyDateAdapter },
     { provide: MAT_DATE_LOCALE, useValue: 'es-PE' },
     { provide: MAT_DATE_FORMATS, useValue: APP_DATE_FORMATS },
     provideCharts(withDefaultRegisterables()),
