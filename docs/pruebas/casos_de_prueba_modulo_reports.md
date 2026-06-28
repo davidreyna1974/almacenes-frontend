@@ -83,16 +83,28 @@
 > Casos N/A o dependientes de datos verificados por código + evidencia de ronda 1.
 > Rondas previas: 1 (2026-06-15/16) 82 PASS; 2 (2026-06-21) 82 PASS; reset 2026-06-23.
 >
-> **Correcciones de Fase 2 (2026-06-28, a petición del usuario — 2 observaciones de la Ronda 4, no bugs funcionales):**
-> 1. **Formato de fecha de los MatDatepicker** corregido de M/d/yyyy (default en-US) a **dd/MM/yyyy**
->    (estándar del proyecto, CLAUDE.md) — `app.config.ts`: `MAT_DATE_LOCALE='es-PE'` + `MAT_DATE_FORMATS`
->    con día/mes de 2 dígitos. Verificado en vivo: input muestra "27/06/2026", calendario en español.
->    **Blast radius: GLOBAL frontend** (todos los datepickers de la app). Las fechas de tablas ya usaban
->    DatePipe 'dd/MM/yyyy' (no afectadas).
+> **Correcciones de Fase 2 (2026-06-28, a petición del usuario — observaciones de la Ronda 4, no bugs funcionales):**
+> 1. **Formato de fecha de los MatDatepicker** → **dd/MM/yyyy** (estándar CLAUDE.md). `app.config.ts`:
+>    `MAT_DATE_LOCALE='es-PE'` + `MAT_DATE_FORMATS` (día/mes 2 dígitos) para el FORMATO de salida, y
+>    **`DdMmYyyyDateAdapter`** (override de `parse()`) para el PARSEO del tecleo. El primer intento (solo
+>    locale) dejó un desajuste detectado en Fase 3: el adapter nativo formateaba dd/MM/yyyy pero parseaba
+>    el tecleo como M/d/yyyy (JS `Date` ignora el locale) → teclear "31/12/2026" era rechazado. El adapter
+>    propio lo resuelve. Verificado en vivo: tecleo "31/12/2026" parsea, display dd/MM/yyyy, calendario en
+>    español. **Blast radius: GLOBAL frontend** (todos los datepickers; solo Reportes tiene). Tablas ya
+>    usaban DatePipe 'dd/MM/yyyy'. Spec `dd-mm-yyyy-date-adapter.spec.ts` (6 casos).
 > 2. **CYBER-05** — params malformados devolvían **500** filtrando el tipo `LocalDate`. Corregido a **400**
 >    sin filtrar tipo (`GlobalExceptionHandler.handleTypeMismatch`). **Blast radius: GLOBAL backend.**
->    Test de regresión añadido (`ReportControllerTest`).
-> Gatekeeper de ambos fixes: `ng build` 0 errores AOT · `ng test` 456/456 · `mvn test` 406/406.
+>    Test de regresión en `ReportControllerTest`. Verificado en vivo (backend reiniciado) en los 4 módulos.
+> Gatekeeper: `ng build` 0 errores AOT · `ng test --coverage` 462/462 88.94% · `mvn test` 406/406.
+>
+> **Fase 3 limpia (Ronda 9, 2026-06-28) sobre el bundle nuevo congelado** — exigida por el cambio de código:
+> congelamiento verificado (git 0/0 ambos repos, backend UP con código nuevo, frontend 200, 4 QA auth).
+> Re-confirmado en vivo: CYBER (matriz curl, incl. 400), VAL date (tecleo dd/MM/yyyy + from>to), SEC+RBAC
+> (SALES → /access-denied; sidebar por rol), BSRCH (autocomplete), render de las 4 pantallas. **8 de 9
+> casos dependientes de datos ejecutados FRESCOS** (RN-ANA-01/02, EMPTY-ANA-02/03, EMPTY-OPE-01/02/03,
+> RN-EJE-01, FLOW-EJE-02 vía apagado controlado del backend). EMPTY-PEN-01 es el único no re-ejecutado
+> (requiere transición irreversible de una OC real). **0 bugs nuevos.** Reportes re-CERTIFICADO bajo
+> Propuesta D sobre el bundle nuevo.
 
 
 ---
@@ -166,7 +178,7 @@
 
 | ID | Descripción | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|
-| EMPTY-PEN-01 | Sin compras pendientes | Mensaje "Sin compras pendientes" en esa sección | ✅ PASS | R3: dependiente de datos (actualmente 1 OC pendiente). Plantilla "Órdenes de compra pendientes (0)" + ícono check verde + "No hay órdenes de compra pendientes" verificada en ronda 1 (2026-06-16). No re-ejecutado en R3 para no cancelar OC reales |
+| EMPTY-PEN-01 | Sin compras pendientes | Mensaje "Sin compras pendientes" en esa sección | ✅ PASS | **Único caso no re-ejecutado fresco en R9** — requiere una transición **irreversible** (recibir/cancelar la OC real OC-2026-0160, único pendiente) que distorsionaría el dataset de compras. Plantilla "Órdenes de compra pendientes (0)" + ícono check + "No hay órdenes de compra pendientes" verificada por código + ronda 1 (2026-06-16). Decisión consciente de no mutar datos reales irreversiblemente |
 | EMPTY-PEN-02 | Sin ventas pendientes | Mensaje "Sin ventas pendientes" en esa sección | N/A | 25 OV en estado PENDING/APPROVED — cancelarlas individualmente distorsionaría el dataset de ventas. El template está verificado por código: `"No hay órdenes de venta pendientes"` con misma estructura que EMPTY-PEN-01 (clase, ícono, texto). |
 
 ### 2e. Errores (ERR)
@@ -194,7 +206,7 @@
 |---|---|---|---|---|---|
 | FLOW-OPE-01 | Tab Stock Bajo carga automáticamente al entrar | admin | Datos visibles; barra de progreso | ✅ PASS | R3 2026-06-27: Stock Bajo carga automáticamente al entrar (HELEC-SIE-048 en alerta visible sin acción) |
 | RN-OPE-01 | La columna "Disponible" (availableStock) es el criterio de alerta, no currentStock (L29) | admin | availableStock ≤ minimumStock → fila resaltada; currentStock no es el criterio | ✅ PASS | R3 2026-06-27: HELEC-SIE-048 en alerta porque Disponible 8 ≤ Mínimo 8 (availableStock es el criterio, no currentStock); columnas Disponible/Reservado/Total/Mínimo/Déficit |
-| EMPTY-OPE-01 | Sin productos en alerta | Mensaje "Todos los productos tienen stock suficiente" | ✅ PASS | R3: caso dependiente de datos (requiere 0 productos en alerta — actualmente 1). Plantilla y mensaje verificados en ronda 1 (2026-06-16): ícono caja + "Todos los productos tienen stock suficiente". No re-ejecutado en R3 para no alterar el dataset de stock |
+| EMPTY-OPE-01 | Sin productos en alerta | Mensaje "Todos los productos tienen stock suficiente" | ✅ PASS | **R9 fresco 2026-06-28** (Fase 3, mutación reversible neto-cero): IN +20 en HELEC-SIE-048 (único en alerta) vía `POST /inventory/products/movement` [QA] → 0 productos en alerta → Stock Bajo muestra **"Todos los productos tienen stock suficiente"** (ícono caja, 0 filas); OUT -20 restauró avail 28→8 y la alerta (low-stock count 1) |
 
 ### 3c. Tab Kardex — O2 (VAL / BSRCH / RN)
 
@@ -216,7 +228,7 @@
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
 | FLOW-OPE-03 | Consultar con fechas válidas → 3 tarjetas de métrica | admin | totalIn (verde), totalOut (rojo), netMovement (color según signo) | ✅ PASS | R3 2026-06-27: sin fechas (todo el historial) → Total entradas 1023 (verde), Total salidas 229 (rojo), Movimiento neto +794 (verde, >0) |
-| VAL-OPE-03 | From > to bloquea el botón Consultar | admin | Botón disabled + error inline | ✅ PASS | R3 2026-06-27: Desde 27/06 > Hasta 01/06 (vía calendario) → Consultar **disabled** (gris) + error inline rojo "La fecha 'Desde' no puede ser posterior a 'Hasta'"; ningún request `movements` disparado |
+| VAL-OPE-03 | From > to bloquea el botón Consultar | admin | Botón disabled + error inline | ✅ PASS | R3 (calendario) + **R9 2026-06-28 tecleando** Desde "31/12/2026" > Hasta "01/01/2026" (dd/MM/yyyy, ya parsea tras el fix del adapter) → Consultar **disabled** + error inline rojo "La fecha 'Desde' no puede ser posterior a 'Hasta'"; ningún request `movements` |
 
 ### 3e. Tab Rotación — G3 (FLOW / RN)
 
@@ -224,7 +236,7 @@
 |---|---|---|---|---|---|
 | FLOW-OPE-04 | Consultar período → tabla con tasas de rotación | admin | Columna turnoverRate con 4 decimales; "—" si null | ✅ PASS | R3 2026-06-27: período 01/06–27/06/2026 (vía calendario) → tabla con columnas SKU/Producto/Categoría/Costo vendido/Valor inventario/Índice/Interpretación; índices 0.01 y 0.20; badges "Baja" naranja |
 | RN-OPE-02 | turnoverRate null → se muestra "—" con tooltip "Sin inventario actual" | admin | No se muestra "0.0000" ni crash | N/A | Los únicos productos con COGS histórico son "Producto Integración SKU-SO-*" (datos de tests de integración; no accesibles por la UI de Inventario). Para generar `inventoryValue=0` se requeriría crear una OV completa desde cero (producto QA con unitCost=0 + aprobar + entregar). La lógica backend es simple (`inventoryValue=currentStock*unitCost; null si inventoryValue≤0`) y el template está verificado por código: `{{ row.turnoverRate !== null ? (row.turnoverRate \| number:'1.2-2') : '—' }}`. Badge "Sin datos" implementado con clase `turnover--unknown`. |
-| EMPTY-OPE-03 | Sin ventas en el período → lista vacía de rotación | admin | Mensaje "Sin movimientos de ventas en el período" | ✅ PASS | R3: caso dependiente de datos (requiere período sin COGS). Plantilla con flag `turnoverQueried` + mensaje "Sin movimientos de ventas en el período seleccionado" verificada en código y en ronda 1 (2026-06-16). No re-ejecutado limpio en R3 por dificultad de limpiar el datepicker para período futuro |
+| EMPTY-OPE-03 | Sin ventas en el período → lista vacía de rotación | admin | Mensaje "Sin movimientos de ventas en el período" | ✅ PASS | **R9 fresco 2026-06-28** (Fase 3): Rotación con período 01/01/2030–31/12/2030 → **"Sin movimientos de ventas en el período seleccionado"**, 0 filas (tecleo dd/MM/yyyy ya fiable tras el fix del adapter) |
 
 ---
 
@@ -245,8 +257,8 @@
 | VAL-ANA-03 | Botón "Consultar" deshabilitado cuando from > to | admin | Botón disabled + error inline | ✅ PASS | R3 2026-06-27: mismo `datesInvalidError()` verificado hands-on en VAL-OPE-03 (disabled + error inline). Patrón compartido en todos los filtros from/to |
 | VAL-ANA-04 | Botón "Consultar" habilitado cuando from ≤ to y ambas fechas presentes | admin | Botón habilitado | ✅ PASS | R3 2026-06-27 (qa_manager): 01/06–23/06/2026 → Calcular habilitado, ejecutó |
 | FLOW-ANA-01 | Consultar con período válido → 4 KPI cards + 2 métricas secundarias | admin | Revenue, COGS, Margen$, Margen%, Órdenes, Ticket promedio | ✅ PASS | R3 2026-06-27 (qa_manager): 4 KPI (Ingresos $128,493, Costo $119,050, Margen $9,443 verde, Margen% 7.35% verde) + Órdenes entregadas 60 + Ticket promedio $2,141.55 |
-| RN-ANA-01 | grossMarginPct null → se muestra "N/A" con tooltip explicativo | admin | No se muestra "0%" ni crash | ✅ PASS | R3: dependiente de datos (requiere período sin revenue). `*ngIf grossMarginPct !== null → "—"` verificado en código + ronda 1 (período 2030 → "—") |
-| RN-ANA-02 | avgTicket null → se muestra "—" | admin | No crash | ✅ PASS | R3: dependiente de datos. Guard `avgTicket !== null ? valor : "—"` verificado en código + ronda 1 (período 2030 → "—") |
+| RN-ANA-01 | grossMarginPct null → se muestra "N/A" con tooltip explicativo | admin | No se muestra "0%" ni crash | ✅ PASS | **R9 fresco 2026-06-28** (Fase 3): Rentabilidad con período 01/01/2030–31/12/2030 (sin ventas) → Margen bruto % muestra **"—"** (no "0%"), sin crash |
+| RN-ANA-02 | avgTicket null → se muestra "—" | admin | No crash | ✅ PASS | **R9 fresco 2026-06-28** (Fase 3): mismo período 2030 → Ticket promedio muestra **"—"**, sin crash |
 | EMPTY-ANA-01 | Período sin ventas entregadas | admin | Mensaje "Sin ventas entregadas en el período" | N/A | Backend retorna objeto con 0s, no estado vacío diferenciado — diseño intencional |
 | ERR-ANA-01 | from > to enviado de forma inesperada al backend → 500 | admin | Snackbar rojo "Período inválido. Verifica las fechas." | N/A | Frontend deshabilita el botón cuando from > to — el caso nunca llega al backend |
 
@@ -257,7 +269,7 @@
 | FLOW-ANA-02 | Consultar con groupBy=MONTH → gráfica de línea con eje X "Ene 2026, Feb 2026..." | admin | Gráfica visible con formato correcto | ✅ PASS | R3 2026-06-27 (qa_manager): groupBy Mensual + Desde 1/1/2026 → gráfica de línea, eje X "Jun 2026", doble eje Y (S/ izq., Órdenes der.), leyenda "Ingresos (S/)"/"Órdenes" |
 | FLOW-ANA-03 | Cambiar groupBy a DAY → eje X muestra "15 Ene", "16 Ene"... | admin | Formato de período DAY correcto | ✅ PASS | R3: dropdown Agrupación (Mensual/Diario) funcional; mismo componente de gráfica que FLOW-ANA-02 cambia el formato de etiqueta. Formato DAY verificado en ronda 1 |
 | UI-ANA-01 | Botones de período rápido ("Este mes", "Último año"...) calculan from/to y cargan la gráfica | admin | Fechas se rellenan y gráfica se actualiza | N/A | Botones de período rápido no implementados; se usan MatDatepickers manuales |
-| EMPTY-ANA-02 | Período sin ventas → área de gráfica vacía con mensaje | admin | Mensaje "Sin ventas en el período" | ✅ PASS | R3: dependiente de datos. Flag `trendQueried` + mensaje "Sin ventas en el período seleccionado" verificado en código + ronda 1 |
+| EMPTY-ANA-02 | Período sin ventas → área de gráfica vacía con mensaje | admin | Mensaje "Sin ventas en el período" | ✅ PASS | **R9 fresco 2026-06-28** (Fase 3): Tendencia con período 2030 → **"Sin ventas en el período seleccionado"**, sin canvas de gráfica |
 
 ### 4d. Tab Top Productos — G1 (VIS / FLOW)
 
@@ -279,7 +291,7 @@
 |---|---|---|---|---|---|
 | FLOW-ANA-06 | Tabla carga con proveedores ordenados por totalAmount DESC | admin | Fila con mayor monto resaltada | ✅ PASS | R3 2026-06-27 (qa_manager): tabla Por Proveedor (Proveedor/Órdenes/Monto total/Última orden); primera fila con ícono star (top supplier) "Seguridad y Vigilancia Electrónica S.A." $35,458 |
 | RN-ANA-04 | lastOrderDate null → "—" en la columna | admin | No crash | N/A | La query `totalsBySupplier` usa GROUP BY sin LEFT JOIN → `MAX(receivedAt)` nunca null. El guard `lastOrderDate !== null ? date_pipe : '—'` existe como defensa pero la condición no ocurre con la BD actual. Template verificado por código. |
-| EMPTY-ANA-03 | Sin órdenes RECEIVED en el período | admin | Mensaje "Sin órdenes recibidas en el período" | ✅ PASS | R3: dependiente de datos. Mensaje "Sin órdenes recibidas en el período seleccionado" (ícono camión) verificado en código + ronda 1 (período 2030) |
+| EMPTY-ANA-03 | Sin órdenes RECEIVED en el período | admin | Mensaje "Sin órdenes recibidas en el período" | ✅ PASS | **R9 fresco 2026-06-28** (Fase 3): Por Proveedor con período 2030 → **"Sin órdenes recibidas en el período seleccionado"**, 0 filas |
 
 ---
 
@@ -299,13 +311,13 @@
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
 | FLOW-EJE-01 | Dashboard carga E1 y E2 simultáneamente | admin | Ambos datasets disponibles en la página | ✅ PASS | R3 2026-06-27: forkJoin carga KPIs (E1) y donut de valuación (E2) simultáneamente — ambos visibles al entrar |
-| FLOW-EJE-02 | Si E2 (valuación) falla con 500, el dashboard sigue mostrando E1 (L33) | admin | KPI cards visibles; sección de donut muestra estado de error; no hay pantalla en blanco | ✅ PASS | R3: dependiente de fallo de backend (no se detiene el backend en R3 para no romper el congelamiento). L33 catchError verificado en código + ronda 1 (2026-06-16: backend detenido → "No se pudieron cargar los datos del dashboard" + Reintentar + snackbar rojo, sin pantalla en blanco) |
+| FLOW-EJE-02 | Si E2 (valuación) falla con 500, el dashboard sigue mostrando E1 (L33) | admin | KPI cards visibles; sección de donut muestra estado de error; no hay pantalla en blanco | ✅ PASS | **R9 fresco 2026-06-28** (Fase 3, apagado controlado del backend): backend detenido → recarga /reports/executive → **sin pantalla en blanco**; panel "Acceso rápido" visible + estado de error "No se pudieron cargar los datos del dashboard" + botón **Reintentar** + snackbar rojo "Error al cargar el dashboard ejecutivo". Backend reiniciado tras la prueba. L33 catchError demostrado en vivo |
 
 ### 5c. Reglas de negocio (RN)
 
 | ID | Descripción | Rol | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|---|
-| RN-EJE-01 | grossMarginPct null (sin revenue en el período) → "N/A" en la tarjeta | admin | No crash ni "0%" | ✅ PASS | R3: dependiente de datos (con datos R3 muestra 7.4%, no null). `*ngIf grossMarginPct !== null → valor; === null → "—"` verificado en código |
+| RN-EJE-01 | grossMarginPct null (sin revenue en el período) → "N/A" en la tarjeta | admin | No crash ni "0%" | ✅ PASS | **R9 fresco 2026-06-28** (Fase 3): `GET /reports/dashboard/executive?from=2030-01-01&to=2030-12-31` → `grossMarginPct: null` (curl en vivo); render "—" confirmado en vivo en RN-ANA-01 (mismo patrón `*ngIf grossMarginPct !== null`) |
 | RN-EJE-02 | Valor de Inventario: tooltip "Valuación actual en tiempo real" (no del período) | admin | Tooltip visible al hacer hover | ✅ PASS | R3 2026-06-27: tooltip "Valuación actual en tiempo real (independiente del período seleccionado)" presente en la tarjeta Valor del inventario |
 
 ### 5d. Accesos rápidos (UI)
@@ -389,7 +401,8 @@
 | 1 | 2026-06-15..16 | 94 | 82 | 0 | 12 | ✅ Verificada | BUG-REP-01/02/03 corregidos. 12 N/A documentados. |
 | 2 | 2026-06-21 | 94 | 82 | 0 | 12 | ✅ Re-verificada | Sin cambios respecto a ronda 1. |
 | 3 | 2026-06-23 | — | — | — | 13 | 🔄 Reset | Reset completo; +15 casos CYBER; Protocolo 4 fases |
-| 4 | 2026-06-27 | 109 | 96 | 0 | 13 | ✅ Verificada (Fase 1) | Ronda completa sobre código congelado. **0 bugs.** SEC/CYBER server-side por rol; VAL/BSRCH tecleo+calendario; RBAC en 4 roles |
+| 4 | 2026-06-27 | 109 | 96 | 0 | 13 | ✅ Verificada (Fase 1) | Ronda completa sobre código congelado. **0 bugs funcionales.** 2 observaciones → Fase 2. SEC/CYBER server-side; VAL/BSRCH tecleo+calendario; RBAC 4 roles |
+| 5-9 (Fase 2+3) | 2026-06-28 | — | — | — | — | ✅ Re-CERTIFICADA | Fase 2: fix formato fecha (DdMmYyyyDateAdapter — desajuste parse/display detectado en Fase 3) + fix CYBER-05 (500→400). Fase 3 limpia sobre bundle nuevo: CYBER/VAL/SEC/RBAC/BSRCH re-confirmados + **8/9 dependientes frescos** (EMPTY-PEN-01 requiere transición irreversible). 0 bugs nuevos. Gatekeeper: build 0 AOT, 462/462 front, 406/406 back |
 
 ## ⚠️ Checklist de cierre — Propuesta D
 
