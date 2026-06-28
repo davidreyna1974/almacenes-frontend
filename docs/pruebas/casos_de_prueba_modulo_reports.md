@@ -76,7 +76,10 @@
 | **TOTAL** | **109** | **96** | **0** | **0** | **13** |
 
 
-> **Estado actual: ✅ VERIFICADO (Ronda 4 — 2026-06-27)** — 96 ✅ PASS · 0 ❌ FAIL · 0 ⏳ PENDIENTE · 13 N/A.
+> **Estado actual: ✅ CERTIFICADO (estricto) — Ronda 10, 2026-06-28** — 96 ✅ PASS · 0 ❌ FAIL · 0 ⏳ PENDIENTE · 13 N/A.
+> Lectura literal de los 109 casos en una sola sesión continua sobre el bundle nuevo (post-fixes Fase 2),
+> 9/9 dependientes de datos frescos, 0 bugs. Gatekeeper: `ng build` 0 AOT · `ng test --coverage` 462/462
+> 88.97% · `mvn test` 406/406. _Historia: Ronda 4 (Fase 1) → Fase 2 (2 fixes) → Ronda 10 (estricta)._
 > Ronda 4 ejecutada bajo Protocolo 4 fases (Fase 1 sobre código congelado). **0 bugs funcionales.**
 > Técnicas: `curl` con JWT por rol (SEC/CYBER server-side), tecleo real + calendario (VAL/BSRCH),
 > screenshots con `getComputedStyle`/inspección DOM (VIS/RBAC), navegación por ruta directa (SEC).
@@ -97,14 +100,17 @@
 >    Test de regresión en `ReportControllerTest`. Verificado en vivo (backend reiniciado) en los 4 módulos.
 > Gatekeeper: `ng build` 0 errores AOT · `ng test --coverage` 462/462 88.94% · `mvn test` 406/406.
 >
-> **Fase 3 limpia (Ronda 9, 2026-06-28) sobre el bundle nuevo congelado** — exigida por el cambio de código:
-> congelamiento verificado (git 0/0 ambos repos, backend UP con código nuevo, frontend 200, 4 QA auth).
-> Re-confirmado en vivo: CYBER (matriz curl, incl. 400), VAL date (tecleo dd/MM/yyyy + from>to), SEC+RBAC
-> (SALES → /access-denied; sidebar por rol), BSRCH (autocomplete), render de las 4 pantallas. **8 de 9
-> casos dependientes de datos ejecutados FRESCOS** (RN-ANA-01/02, EMPTY-ANA-02/03, EMPTY-OPE-01/02/03,
-> RN-EJE-01, FLOW-EJE-02 vía apagado controlado del backend). EMPTY-PEN-01 es el único no re-ejecutado
-> (requiere transición irreversible de una OC real). **0 bugs nuevos.** Reportes re-CERTIFICADO bajo
-> Propuesta D sobre el bundle nuevo.
+> **Fase 3 estricta — lectura literal de los 109 casos (Ronda 10, 2026-06-28) sobre el bundle nuevo congelado.**
+> Congelamiento verificado (git 0/0 ambos repos, backend UP con código nuevo, frontend 200, 4 QA auth).
+> Los **109 casos se re-leyeron en una sola sesión continua** sin cambios de código (solo mutaciones de
+> datos de prueba): SEC (12, rutas por los 4 roles → /access-denied / carga), RBAC (10, sidebar por rol:
+> admin 4 / MANAGER 3 / WAREHOUSEMAN 2 / SALES 1), VAL (10, incl. from>to tecleando dd/MM/yyyy en
+> Operativo y por calendario en Ejecutivo → disabled + error inline), BSRCH (5), UI (5), FLOW (14, incl.
+> FLOW-EJE-02 final con apagado controlado del backend), RN (8), ERR (6), EMPTY (8), VIS (16), CYBER (15:
+> matriz curl + XSS/SQLi/token-expirado/CORS/login en vivo). **Los 9 casos dependientes de datos,
+> FRESCOS** — incluido **EMPTY-PEN-01** (se canceló OC-2026-0160 → estado vacío real verificado) y
+> EMPTY-OPE-01 (mutación reversible neto-cero). **0 bugs.** **Reportes CERTIFICADO (estricto) bajo
+> Propuesta D.** Gatekeeper final: `ng build` 0 AOT · `ng test --coverage` 462/462 88.97% · `mvn test` 406/406.
 
 
 ---
@@ -178,7 +184,7 @@
 
 | ID | Descripción | Resultado esperado | Estado | Notas |
 |---|---|---|---|---|
-| EMPTY-PEN-01 | Sin compras pendientes | Mensaje "Sin compras pendientes" en esa sección | ✅ PASS | **Único caso no re-ejecutado fresco en R9** — requiere una transición **irreversible** (recibir/cancelar la OC real OC-2026-0160, único pendiente) que distorsionaría el dataset de compras. Plantilla "Órdenes de compra pendientes (0)" + ícono check + "No hay órdenes de compra pendientes" verificada por código + ronda 1 (2026-06-16). Decisión consciente de no mutar datos reales irreversiblemente |
+| EMPTY-PEN-01 | Sin compras pendientes | Mensaje "Sin compras pendientes" en esa sección | ✅ PASS | **R10 fresco 2026-06-28** (cert estricta, decisión del usuario): se canceló la única OC pendiente OC-2026-0160 (id 460, APPROVED→CANCELLED vía `PATCH /purchases/orders/460/cancel`, sin impacto en stock; Canceladas 88→89) → /reports/pending muestra **"No hay órdenes de compra pendientes"** (ícono check verde, "Compras: 0"). ⚠️ Cambio de datos consciente e irreversible autorizado para esta verificación |
 | EMPTY-PEN-02 | Sin ventas pendientes | Mensaje "Sin ventas pendientes" en esa sección | N/A | 25 OV en estado PENDING/APPROVED — cancelarlas individualmente distorsionaría el dataset de ventas. El template está verificado por código: `"No hay órdenes de venta pendientes"` con misma estructura que EMPTY-PEN-01 (clase, ícono, texto). |
 
 ### 2e. Errores (ERR)
@@ -402,7 +408,8 @@
 | 2 | 2026-06-21 | 94 | 82 | 0 | 12 | ✅ Re-verificada | Sin cambios respecto a ronda 1. |
 | 3 | 2026-06-23 | — | — | — | 13 | 🔄 Reset | Reset completo; +15 casos CYBER; Protocolo 4 fases |
 | 4 | 2026-06-27 | 109 | 96 | 0 | 13 | ✅ Verificada (Fase 1) | Ronda completa sobre código congelado. **0 bugs funcionales.** 2 observaciones → Fase 2. SEC/CYBER server-side; VAL/BSRCH tecleo+calendario; RBAC 4 roles |
-| 5-9 (Fase 2+3) | 2026-06-28 | — | — | — | — | ✅ Re-CERTIFICADA | Fase 2: fix formato fecha (DdMmYyyyDateAdapter — desajuste parse/display detectado en Fase 3) + fix CYBER-05 (500→400). Fase 3 limpia sobre bundle nuevo: CYBER/VAL/SEC/RBAC/BSRCH re-confirmados + **8/9 dependientes frescos** (EMPTY-PEN-01 requiere transición irreversible). 0 bugs nuevos. Gatekeeper: build 0 AOT, 462/462 front, 406/406 back |
+| 5-9 (Fase 2+3) | 2026-06-28 | — | — | — | — | ✅ Re-CERTIFICADA | Fase 2: fix formato fecha (DdMmYyyyDateAdapter — desajuste parse/display detectado en Fase 3) + fix CYBER-05 (500→400). Fase 3 por blast radius + **8/9 dependientes frescos** (EMPTY-PEN-01 pendiente). 0 bugs nuevos |
+| 10 (estricta) | 2026-06-28 | 109 | 96 | 0 | 13 | ✅ **CERTIFICADA (estricto)** | **Lectura literal de los 109 casos en una sola sesión continua** sobre el bundle nuevo congelado. **9/9 dependientes frescos** (EMPTY-PEN-01 vía cancelación de OC-2026-0160; FLOW-EJE-02 vía apagado del backend). 0 bugs. Gatekeeper: build 0 AOT, 462/462 front, 406/406 back |
 
 ## ⚠️ Checklist de cierre — Propuesta D
 
