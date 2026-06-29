@@ -1,0 +1,313 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ir al contenido principal" [ref=e197] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button "Alternar menú lateral" [ref=e198] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e199]':
+            - img [ref=e15]: chevron_right
+            - text: Compras → Órdenes de compra
+        - generic [ref=e16]:
+          - button "Notificaciones" [ref=e200] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button "Menú de usuario" [ref=e201]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - 'generic "Rol: ADMIN" [ref=e202]': ADMIN
+      - generic [ref=e28]:
+        - navigation "Navegación principal" [ref=e203]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button "Expandir menú" [ref=e204] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - heading "Órdenes de compra" [level=2] [ref=e205]
+              - generic [ref=e54]:
+                - generic [ref=e55]: Buscar
+                - img [ref=e57]: search
+                - textbox "Buscar" [ref=e206]:
+                  - /placeholder: N° orden, proveedor, usuario…
+              - button "Nueva orden" [ref=e207]:
+                - img [ref=e61]: add
+                - generic [ref=e62]: Nueva orden
+            - generic [ref=e65]:
+              - tablist [ref=e68]:
+                - generic [ref=e69]:
+                  - tab "Pendientes" [ref=e208] [cursor=pointer]:
+                    - generic [ref=e72]: Pendientes
+                  - tab "Aprobadas" [ref=e209] [cursor=pointer]:
+                    - generic [ref=e76]: Aprobadas
+                  - tab "Recibidas 44" [ref=e210] [cursor=pointer]:
+                    - generic [ref=e79]:
+                      - text: Recibidas
+                      - generic [ref=e211]: "44"
+                  - tab "Canceladas 27" [selected] [ref=e212] [cursor=pointer]:
+                    - generic [ref=e83]:
+                      - text: Canceladas
+                      - generic [ref=e213]: "27"
+              - generic:
+                - tabpanel "Canceladas 27"
+            - generic [ref=e85]:
+              - table [ref=e86]:
+                - row "N° Orden Proveedor Total Creado por Fecha Estado" [ref=e214]:
+                  - columnheader "N° Orden" [ref=e215]
+                  - columnheader "Proveedor" [ref=e216]
+                  - columnheader "Total" [ref=e217]
+                  - columnheader "Creado por" [ref=e218]
+                  - columnheader "Fecha" [ref=e219]
+                  - columnheader "Estado" [ref=e220]
+                  - columnheader [ref=e94]
+                - row "OC-2026-0071 Agroquímica y Fertilizantes del Valle S.A. $150.00 admin 08/06/2026 17:13 Cancelada" [ref=e221] [cursor=pointer]:
+                  - cell "OC-2026-0071" [ref=e222]:
+                    - generic [ref=e223]: OC-2026-0071
+                  - cell "Agroquímica y Fertilizantes del Valle S.A." [ref=e224]:
+                    - generic [ref=e225]: Agroquímica y Fertilizantes del Valle S.A.
+                  - cell "$150.00" [ref=e226]
+                  - cell "admin" [ref=e227]
+                  - cell "08/06/2026 17:13" [ref=e228]
+                  - cell "Cancelada" [ref=e229]:
+                    - generic [ref=e230]: Cancelada
+                  - cell [ref=e231]
+                - row "OC-2026-0069 Electro Industrial del Centro S.A. de C.V. $0.00 admin 08/06/2026 16:41 Cancelada" [ref=e232] [cursor=pointer]:
+                  - cell "OC-2026-0069" [ref=e233]:
+                    - generic [ref=e234]: OC-2026-0069
+                  - cell "Electro Industrial del Centro S.A. de C.V." [ref=e235]:
+                    - generic [ref=e236]: Electro Industrial del Centro S.A. de C.V.
+                  - cell "$0.00" [ref=e237]
+                  - cell "admin" [ref=e238]
+                  - cell "08/06/2026 16:41" [ref=e239]
+                  - cell "Cancelada" [ref=e240]:
+                    - generic [ref=e241]: Cancelada
+                  - cell [ref=e242]
+                - row "OC-2026-0067 Agroquímica y Fertilizantes del Valle S.A. $15,295.00 admin 08/06/2026 16:18 Cancelada" [ref=e243] [cursor=pointer]:
+                  - cell "OC-2026-0067" [ref=e244]:
+                    - generic [ref=e245]: OC-2026-0067
+                  - cell "Agroquímica y Fertilizantes del Valle S.A." [ref=e246]:
+                    - generic [ref=e247]: Agroquímica y Fertilizantes del Valle S.A.
+                  - cell "$15,295.00" [ref=e248]
+                  - cell "admin" [ref=e249]
+                  - cell "08/06/2026 16:18" [ref=e250]
+                  - cell "Cancelada" [ref=e251]:
+                    - generic [ref=e252]: Cancelada
+                  - cell [ref=e253]
+                - row "OC-2026-0064 Climatización e Instalaciones Térmicas S.A. $255.00 test_mgr 07/06/2026 19:03 Cancelada" [ref=e254] [cursor=pointer]:
+                  - cell "OC-2026-0064" [ref=e255]:
+                    - generic [ref=e256]: OC-2026-0064
+                  - cell "Climatización e Instalaciones Térmicas S.A." [ref=e257]:
+                    - generic [ref=e258]: Climatización e Instalaciones Térmicas S.A.
+                  - cell "$255.00" [ref=e259]
+                  - cell "test_mgr" [ref=e260]
+                  - cell "07/06/2026 19:03" [ref=e261]
+                  - cell "Cancelada" [ref=e262]:
+                    - generic [ref=e263]: Cancelada
+                  - cell [ref=e264]
+                - row "OC-2026-0063 Agroquímica y Fertilizantes del Valle S.A. $600.00 test_mgr 07/06/2026 19:01 Cancelada" [ref=e265] [cursor=pointer]:
+                  - cell "OC-2026-0063" [ref=e266]:
+                    - generic [ref=e267]: OC-2026-0063
+                  - cell "Agroquímica y Fertilizantes del Valle S.A." [ref=e268]:
+                    - generic [ref=e269]: Agroquímica y Fertilizantes del Valle S.A.
+                  - cell "$600.00" [ref=e270]
+                  - cell "test_mgr" [ref=e271]
+                  - cell "07/06/2026 19:01" [ref=e272]
+                  - cell "Cancelada" [ref=e273]:
+                    - generic [ref=e274]: Cancelada
+                  - cell [ref=e275]
+                - row "OC-2026-0061 Agroquímica y Fertilizantes del Valle S.A. $602.50 admin 07/06/2026 18:47 Cancelada" [ref=e276] [cursor=pointer]:
+                  - cell "OC-2026-0061" [ref=e277]:
+                    - generic [ref=e278]: OC-2026-0061
+                  - cell "Agroquímica y Fertilizantes del Valle S.A." [ref=e279]:
+                    - generic [ref=e280]: Agroquímica y Fertilizantes del Valle S.A.
+                  - cell "$602.50" [ref=e281]
+                  - cell "admin" [ref=e282]
+                  - cell "07/06/2026 18:47" [ref=e283]
+                  - cell "Cancelada" [ref=e284]:
+                    - generic [ref=e285]: Cancelada
+                  - cell [ref=e286]
+                - row "OC-2026-0060 Agroquímica y Fertilizantes del Valle S.A. $195.00 admin 07/06/2026 18:24 Cancelada" [ref=e287] [cursor=pointer]:
+                  - cell "OC-2026-0060" [ref=e288]:
+                    - generic [ref=e289]: OC-2026-0060
+                  - cell "Agroquímica y Fertilizantes del Valle S.A." [ref=e290]:
+                    - generic [ref=e291]: Agroquímica y Fertilizantes del Valle S.A.
+                  - cell "$195.00" [ref=e292]
+                  - cell "admin" [ref=e293]
+                  - cell "07/06/2026 18:24" [ref=e294]
+                  - cell "Cancelada" [ref=e295]:
+                    - generic [ref=e296]: Cancelada
+                  - cell [ref=e297]
+                - row "OC-2026-0059 Agroquímica y Fertilizantes del Valle S.A. $3,800.00 admin 07/06/2026 18:22 Cancelada" [ref=e298] [cursor=pointer]:
+                  - cell "OC-2026-0059" [ref=e299]:
+                    - generic [ref=e300]: OC-2026-0059
+                  - cell "Agroquímica y Fertilizantes del Valle S.A." [ref=e301]:
+                    - generic [ref=e302]: Agroquímica y Fertilizantes del Valle S.A.
+                  - cell "$3,800.00" [ref=e303]
+                  - cell "admin" [ref=e304]
+                  - cell "07/06/2026 18:22" [ref=e305]
+                  - cell "Cancelada" [ref=e306]:
+                    - generic [ref=e307]: Cancelada
+                  - cell [ref=e308]
+                - row "OC-2026-0056 Proveedor AINT44000 $300.00 admin 07/06/2026 13:12 Cancelada" [ref=e309] [cursor=pointer]:
+                  - cell "OC-2026-0056" [ref=e310]:
+                    - generic [ref=e311]: OC-2026-0056
+                  - cell "Proveedor AINT44000" [ref=e312]:
+                    - generic [ref=e313]: Proveedor AINT44000
+                  - cell "$300.00" [ref=e314]
+                  - cell "admin" [ref=e315]
+                  - cell "07/06/2026 13:12" [ref=e316]
+                  - cell "Cancelada" [ref=e317]:
+                    - generic [ref=e318]: Cancelada
+                  - cell [ref=e319]
+                - row "OC-2026-0053 Proveedor AINT25584 $300.00 admin 07/06/2026 13:12 Cancelada" [ref=e320] [cursor=pointer]:
+                  - cell "OC-2026-0053" [ref=e321]:
+                    - generic [ref=e322]: OC-2026-0053
+                  - cell "Proveedor AINT25584" [ref=e323]:
+                    - generic [ref=e324]: Proveedor AINT25584
+                  - cell "$300.00" [ref=e325]
+                  - cell "admin" [ref=e326]
+                  - cell "07/06/2026 13:12" [ref=e327]
+                  - cell "Cancelada" [ref=e328]:
+                    - generic [ref=e329]: Cancelada
+                  - cell [ref=e330]
+                - row "OC-2026-0050 Proveedor AINT6074 $300.00 admin 07/06/2026 13:11 Cancelada" [ref=e331] [cursor=pointer]:
+                  - cell "OC-2026-0050" [ref=e332]:
+                    - generic [ref=e333]: OC-2026-0050
+                  - cell "Proveedor AINT6074" [ref=e334]:
+                    - generic [ref=e335]: Proveedor AINT6074
+                  - cell "$300.00" [ref=e336]
+                  - cell "admin" [ref=e337]
+                  - cell "07/06/2026 13:11" [ref=e338]
+                  - cell "Cancelada" [ref=e339]:
+                    - generic [ref=e340]: Cancelada
+                  - cell [ref=e341]
+                - row "OC-2026-0047 Proveedor AINT70042 $300.00 admin 07/06/2026 03:52 Cancelada" [ref=e342] [cursor=pointer]:
+                  - cell "OC-2026-0047" [ref=e343]:
+                    - generic [ref=e344]: OC-2026-0047
+                  - cell "Proveedor AINT70042" [ref=e345]:
+                    - generic [ref=e346]: Proveedor AINT70042
+                  - cell "$300.00" [ref=e347]
+                  - cell "admin" [ref=e348]
+                  - cell "07/06/2026 03:52" [ref=e349]
+                  - cell "Cancelada" [ref=e350]:
+                    - generic [ref=e351]: Cancelada
+                  - cell [ref=e352]
+                - row "OC-2026-0044 Proveedor AINT12406 $300.00 admin 07/06/2026 03:50 Cancelada" [ref=e353] [cursor=pointer]:
+                  - cell "OC-2026-0044" [ref=e354]:
+                    - generic [ref=e355]: OC-2026-0044
+                  - cell "Proveedor AINT12406" [ref=e356]:
+                    - generic [ref=e357]: Proveedor AINT12406
+                  - cell "$300.00" [ref=e358]
+                  - cell "admin" [ref=e359]
+                  - cell "07/06/2026 03:50" [ref=e360]
+                  - cell "Cancelada" [ref=e361]:
+                    - generic [ref=e362]: Cancelada
+                  - cell [ref=e363]
+                - row "OC-2026-0041 Proveedor AINT35135 $300.00 admin 07/06/2026 03:47 Cancelada" [ref=e364] [cursor=pointer]:
+                  - cell "OC-2026-0041" [ref=e365]:
+                    - generic [ref=e366]: OC-2026-0041
+                  - cell "Proveedor AINT35135" [ref=e367]:
+                    - generic [ref=e368]: Proveedor AINT35135
+                  - cell "$300.00" [ref=e369]
+                  - cell "admin" [ref=e370]
+                  - cell "07/06/2026 03:47" [ref=e371]
+                  - cell "Cancelada" [ref=e372]:
+                    - generic [ref=e373]: Cancelada
+                  - cell [ref=e374]
+                - row "OC-2026-0038 Proveedor AINT19434 $300.00 admin 07/06/2026 03:47 Cancelada" [ref=e375] [cursor=pointer]:
+                  - cell "OC-2026-0038" [ref=e376]:
+                    - generic [ref=e377]: OC-2026-0038
+                  - cell "Proveedor AINT19434" [ref=e378]:
+                    - generic [ref=e379]: Proveedor AINT19434
+                  - cell "$300.00" [ref=e380]
+                  - cell "admin" [ref=e381]
+                  - cell "07/06/2026 03:47" [ref=e382]
+                  - cell "Cancelada" [ref=e383]:
+                    - generic [ref=e384]: Cancelada
+                  - cell [ref=e385]
+                - row "OC-2026-0035 Proveedor AINT2902 $300.00 admin 07/06/2026 03:46 Cancelada" [ref=e386] [cursor=pointer]:
+                  - cell "OC-2026-0035" [ref=e387]:
+                    - generic [ref=e388]: OC-2026-0035
+                  - cell "Proveedor AINT2902" [ref=e389]:
+                    - generic [ref=e390]: Proveedor AINT2902
+                  - cell "$300.00" [ref=e391]
+                  - cell "admin" [ref=e392]
+                  - cell "07/06/2026 03:46" [ref=e393]
+                  - cell "Cancelada" [ref=e394]:
+                    - generic [ref=e395]: Cancelada
+                  - cell [ref=e396]
+                - row "OC-2026-0032 Proveedor AINT86360 $300.00 admin 07/06/2026 03:46 Cancelada" [ref=e397] [cursor=pointer]:
+                  - cell "OC-2026-0032" [ref=e398]:
+                    - generic [ref=e399]: OC-2026-0032
+                  - cell "Proveedor AINT86360" [ref=e400]:
+                    - generic [ref=e401]: Proveedor AINT86360
+                  - cell "$300.00" [ref=e402]
+                  - cell "admin" [ref=e403]
+                  - cell "07/06/2026 03:46" [ref=e404]
+                  - cell "Cancelada" [ref=e405]:
+                    - generic [ref=e406]: Cancelada
+                  - cell [ref=e407]
+                - row "OC-2026-0029 Proveedor AINT96839 $300.00 admin 07/06/2026 03:41 Cancelada" [ref=e408] [cursor=pointer]:
+                  - cell "OC-2026-0029" [ref=e409]:
+                    - generic [ref=e410]: OC-2026-0029
+                  - cell "Proveedor AINT96839" [ref=e411]:
+                    - generic [ref=e412]: Proveedor AINT96839
+                  - cell "$300.00" [ref=e413]
+                  - cell "admin" [ref=e414]
+                  - cell "07/06/2026 03:41" [ref=e415]
+                  - cell "Cancelada" [ref=e416]:
+                    - generic [ref=e417]: Cancelada
+                  - cell [ref=e418]
+                - row "OC-2026-0026 Proveedor AINT7162 $300.00 admin 07/06/2026 03:20 Cancelada" [ref=e419] [cursor=pointer]:
+                  - cell "OC-2026-0026" [ref=e420]:
+                    - generic [ref=e421]: OC-2026-0026
+                  - cell "Proveedor AINT7162" [ref=e422]:
+                    - generic [ref=e423]: Proveedor AINT7162
+                  - cell "$300.00" [ref=e424]
+                  - cell "admin" [ref=e425]
+                  - cell "07/06/2026 03:20" [ref=e426]
+                  - cell "Cancelada" [ref=e427]:
+                    - generic [ref=e428]: Cancelada
+                  - cell [ref=e429]
+                - row "OC-2026-0023 Proveedor AINT38227 $300.00 admin 07/06/2026 03:13 Cancelada" [ref=e430] [cursor=pointer]:
+                  - cell "OC-2026-0023" [ref=e431]:
+                    - generic [ref=e432]: OC-2026-0023
+                  - cell "Proveedor AINT38227" [ref=e433]:
+                    - generic [ref=e434]: Proveedor AINT38227
+                  - cell "$300.00" [ref=e435]
+                  - cell "admin" [ref=e436]
+                  - cell "07/06/2026 03:13" [ref=e437]
+                  - cell "Cancelada" [ref=e438]:
+                    - generic [ref=e439]: Cancelada
+                  - cell [ref=e440]
+              - group [ref=e441]:
+                - generic [ref=e443]:
+                  - generic [ref=e444]:
+                    - generic [ref=e445]: "Items per page:"
+                    - combobox "Items per page:" [ref=e450] [cursor=pointer]:
+                      - generic [ref=e451]:
+                        - generic [ref=e453]: "20"
+                        - img [ref=e456]
+                  - generic [ref=e459]:
+                    - status [ref=e460]: 1 – 20 of 27
+                    - button "Previous page" [disabled] [ref=e461]:
+                      - img [ref=e462]
+                    - button "Next page" [ref=e466] [cursor=pointer]:
+                      - img [ref=e467]
+  - generic [ref=e477]:
+    - generic [ref=e478]: Orden cancelada.
+    - button "Cerrar" [ref=e480]:
+      - generic [ref=e481]: Cerrar

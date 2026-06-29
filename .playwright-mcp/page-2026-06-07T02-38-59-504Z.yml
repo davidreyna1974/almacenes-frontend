@@ -1,0 +1,180 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e579] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e580] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e581]:
+            - img [ref=e15]: chevron_right
+            - text: Inventario → Productos
+        - generic [ref=e16]:
+          - button [ref=e582] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e583]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: manager01
+              - generic [ref=e584]: MANAGER
+      - generic [ref=e28]:
+        - navigation [ref=e585]:
+          - menubar [ref=e32]:
+            - menuitem [expanded] [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+          - button [ref=e586] [cursor=pointer]:
+            - img [ref=e43]: chevron_right
+        - main [ref=e44]:
+          - generic [ref=e47]:
+            - generic [ref=e48]:
+              - generic [ref=e49]:
+                - generic [ref=e52]:
+                  - generic [ref=e53]: Buscar por código o nombre
+                  - textbox [ref=e587]: HELEC-TEST-MGR
+                  - img [ref=e57]: search
+                - generic [ref=e61] [cursor=pointer]:
+                  - generic [ref=e62]: Categoría
+                  - combobox [ref=e588]:
+                    - img [ref=e70]
+                - generic [ref=e75] [cursor=pointer]:
+                  - generic [ref=e76]: Estado
+                  - combobox [ref=e589]:
+                    - img [ref=e84]
+                - generic [ref=e89] [cursor=pointer]:
+                  - generic [ref=e90]: Proveedor
+                  - combobox [ref=e590]:
+                    - img [ref=e98]
+                - button [ref=e591] [cursor=pointer]:
+                  - img [ref=e556]: filter_alt_off
+              - button [ref=e592]:
+                - img [ref=e103]: add
+                - generic [ref=e104]: Nuevo producto
+            - generic [ref=e107]:
+              - table [ref=e108]:
+                - rowgroup [ref=e109]:
+                  - row [ref=e593]:
+                    - columnheader [ref=e594]: Código
+                    - columnheader [ref=e595]: Nombre
+                    - columnheader [ref=e596]: Categoría
+                    - columnheader [ref=e597]: Proveedor
+                    - columnheader [ref=e598]: Stock
+                    - columnheader [ref=e599]: Precio
+                    - columnheader [ref=e600]: Estado
+                    - columnheader [ref=e118]
+                - rowgroup [ref=e119]:
+                  - row [ref=e601] [cursor=pointer]:
+                    - cell [ref=e602]: HELEC-TEST-MGR
+                    - cell [ref=e603]: Producto de Prueba MANAGER
+                    - cell [ref=e604]: Herramientas Eléctricas
+                    - cell [ref=e605]: Herramientas y Maquinaria del Pacífico S.A.
+                    - cell [ref=e606]:
+                      - status [ref=e607]: "20"
+                    - cell [ref=e608]: $1,500.00
+                    - cell [ref=e609]:
+                      - generic [ref=e569]: Disponible
+                    - cell [ref=e610]:
+                      - button [ref=e611]:
+                        - img [ref=e572]: swap_vert
+                      - button [ref=e612]:
+                        - img [ref=e576]: edit
+              - group [ref=e613]:
+                - generic [ref=e522]:
+                  - generic [ref=e523]:
+                    - generic [ref=e524]: "Items per page:"
+                    - combobox [ref=e614] [cursor=pointer]:
+                      - generic [ref=e530]:
+                        - generic [ref=e532]: "20"
+                        - img [ref=e535]
+                  - generic [ref=e538]:
+                    - status [ref=e539]: 1 – 1 of 1
+                    - button [disabled] [ref=e615]:
+                      - img [ref=e541]
+                    - button [disabled] [ref=e616]:
+                      - img [ref=e546]
+  - dialog [ref=e620]:
+    - generic [ref=e625]:
+      - tablist [ref=e628]:
+        - generic [ref=e629]:
+          - tab "Datos" [active] [selected] [ref=e630] [cursor=pointer]:
+            - generic [ref=e632]: Datos
+          - tab "Kardex" [ref=e633] [cursor=pointer]:
+            - generic [ref=e635]: Kardex
+      - generic [ref=e636]:
+        - tabpanel "Datos" [ref=e637]:
+          - generic [ref=e640]:
+            - heading "Editar producto" [level=3] [ref=e641]
+            - generic [ref=e642]:
+              - generic [ref=e645]:
+                - generic [ref=e646]:
+                  - generic [ref=e647]: SKU *
+                  - generic [ref=e648]: "*"
+                - textbox "SKU *" [ref=e650]: HELEC-TEST-MGR
+              - generic [ref=e654]:
+                - generic [ref=e655]:
+                  - generic [ref=e656]: Nombre *
+                  - generic [ref=e657]: "*"
+                - textbox "Nombre *" [ref=e659]: Producto de Prueba MANAGER
+              - generic [ref=e663]:
+                - generic [ref=e664]:
+                  - generic [ref=e665]: Precio *
+                  - generic [ref=e666]: "*"
+                - generic [ref=e667]: $
+                - spinbutton "Precio *" [ref=e669]: "1500"
+              - generic [ref=e673]:
+                - generic [ref=e674]:
+                  - generic [ref=e675]: Costo unitario *
+                  - generic [ref=e676]: "*"
+                - generic [ref=e677]: $
+                - spinbutton "Costo unitario *" [ref=e679]: "900"
+              - generic [ref=e683]:
+                - generic [ref=e684]:
+                  - text: Stock actual
+                  - generic [ref=e685]: "*"
+                - spinbutton "Stock actual" [ref=e687]: "20"
+              - generic [ref=e691]:
+                - generic [ref=e692]:
+                  - text: Stock mínimo
+                  - generic [ref=e693]: "*"
+                - spinbutton "Stock mínimo" [ref=e695]: "4"
+              - generic [ref=e699] [cursor=pointer]:
+                - generic [ref=e700]:
+                  - generic [ref=e701]: Estado *
+                  - generic [ref=e702]: "*"
+                - combobox "Estado *" [ref=e704]:
+                  - generic [ref=e705]:
+                    - generic [ref=e707]: Disponible
+                    - img [ref=e710]
+              - generic [ref=e715] [cursor=pointer]:
+                - generic [ref=e716]:
+                  - generic [ref=e717]: Categoría *
+                  - generic [ref=e718]: "*"
+                - combobox "Categoría *" [ref=e720]:
+                  - generic [ref=e721]:
+                    - generic [ref=e723]: Herramientas Eléctricas
+                    - img [ref=e726]
+              - generic [ref=e731] [cursor=pointer]:
+                - generic [ref=e732]:
+                  - generic [ref=e733]: Proveedor *
+                  - generic [ref=e734]: "*"
+                - combobox "Proveedor *" [ref=e736]:
+                  - generic [ref=e737]:
+                    - generic [ref=e739]: Herramientas y Maquinaria del Pacífico S.A.
+                    - img [ref=e742]
+              - generic [ref=e747]:
+                - generic [ref=e748]: Descripción
+                - textbox "Descripción" [ref=e750]
+            - generic [ref=e753]:
+              - button "Cancelar" [ref=e754]:
+                - generic [ref=e755]: Cancelar
+              - button "Guardar cambios" [ref=e758]:
+                - generic [ref=e759]: Guardar cambios
+        - tabpanel [ref=e762]

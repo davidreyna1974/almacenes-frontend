@@ -1,0 +1,139 @@
+<div class="pending-page">
+
+  <div class="pending-page__header">
+    <h1 class="pending-page__title">Operaciones Pendientes</h1>
+    <div class="pending-page__actions">
+      <span *ngIf="data" class="pending-page__timestamp">
+        Compras: {{ data.totalPendingPurchases }} &nbsp;|&nbsp; Ventas: {{ data.totalPendingSales }}
+      </span>
+      <button mat-stroked-button color="primary" (click)="load()" [disabled]="loading">
+        <mat-icon>refresh</mat-icon> Actualizar
+      </button>
+    </div>
+  </div>
+
+  <mat-progress-bar *ngIf="loading" mode="indeterminate" class="pending-page__progress"></mat-progress-bar>
+
+  <!-- Compras pendientes -->
+  <section class="pending-page__section">
+    <h2 class="pending-page__section-title">
+      <mat-icon>shopping_cart</mat-icon>
+      Órdenes de compra pendientes
+      <span class="pending-page__count" *ngIf="data">
+        ({{ data.pendingPurchaseOrders.length }})
+      </span>
+    </h2>
+
+    <div class="pending-page__table-wrapper" *ngIf="!loading">
+      <table mat-table [dataSource]="data?.pendingPurchaseOrders ?? []" class="catalog-table">
+
+        <ng-container matColumnDef="orderNumber">
+          <th mat-header-cell *matHeaderCellDef>N.° Orden</th>
+          <td mat-cell *matCellDef="let row">{{ row.orderNumber }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="status-badge" [ngClass]="statusClass(row.status)">
+              {{ row.status | statusLabel }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="counterpartName">
+          <th mat-header-cell *matHeaderCellDef>Proveedor</th>
+          <td mat-cell *matCellDef="let row">{{ row.counterpartName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>Fecha</th>
+          <td mat-cell *matCellDef="let row">{{ row.createdAt | date:'dd/MM/yyyy' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="detailCount">
+          <th mat-header-cell *matHeaderCellDef>Ítems</th>
+          <td mat-cell *matCellDef="let row">{{ row.detailCount }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalAmount">
+          <th mat-header-cell *matHeaderCellDef>Total</th>
+          <td mat-cell *matCellDef="let row">{{ row.totalAmount | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="cols"></tr>
+        <tr mat-row *matRowDef="let row; columns: cols;"
+            class="catalog-row--clickable"
+            (click)="navigateToPurchase(row)"
+            matTooltip="Ver orden de compra"></tr>
+      </table>
+
+      <div class="pending-page__empty" *ngIf="data && data.pendingPurchaseOrders.length === 0">
+        <mat-icon>check_circle</mat-icon>
+        <p>No hay órdenes de compra pendientes</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ventas pendientes -->
+  <section class="pending-page__section">
+    <h2 class="pending-page__section-title">
+      <mat-icon>point_of_sale</mat-icon>
+      Órdenes de venta pendientes
+      <span class="pending-page__count" *ngIf="data">
+        ({{ data.pendingSaleOrders.length }})
+      </span>
+    </h2>
+
+    <div class="pending-page__table-wrapper" *ngIf="!loading">
+      <table mat-table [dataSource]="data?.pendingSaleOrders ?? []" class="catalog-table">
+
+        <ng-container matColumnDef="orderNumber">
+          <th mat-header-cell *matHeaderCellDef>N.° Orden</th>
+          <td mat-cell *matCellDef="let row">{{ row.orderNumber }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="status-badge" [ngClass]="statusClass(row.status)">
+              {{ row.status | statusLabel }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="counterpartName">
+          <th mat-header-cell *matHeaderCellDef>Cliente</th>
+          <td mat-cell *matCellDef="let row">{{ row.counterpartName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>Fecha</th>
+          <td mat-cell *matCellDef="let row">{{ row.createdAt | date:'dd/MM/yyyy' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="detailCount">
+          <th mat-header-cell *matHeaderCellDef>Ítems</th>
+          <td mat-cell *matCellDef="let row">{{ row.detailCount }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalAmount">
+          <th mat-header-cell *matHeaderCellDef>Total</th>
+          <td mat-cell *matCellDef="let row">{{ row.totalAmount | currency:'MXN':'symbol-narrow':'1.2-2' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="cols"></tr>
+        <tr mat-row *matRowDef="let row; columns: cols;"
+            class="catalog-row--clickable"
+            (click)="navigateToSale(row)"
+            matTooltip="Ver orden de venta"></tr>
+      </table>
+
+      <div class="pending-page__empty" *ngIf="data && data.pendingSaleOrders.length === 0">
+        <mat-icon>check_circle</mat-icon>
+        <p>No hay órdenes de venta pendientes</p>
+      </div>
+    </div>
+  </section>
+
+</div>

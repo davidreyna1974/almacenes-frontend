@@ -1,0 +1,181 @@
+@use '../../../../../styles/mixins' as mixins;
+
+.analytics-page {
+  padding: var(--space-3);
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin: 0 0 var(--space-2);
+  }
+}
+
+.tab-content {
+  padding: var(--space-3) 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.filter-bar {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+
+  &__date    { width: 180px; }
+  &__groupby { width: 160px; }
+
+  &__required-hint {
+    margin: -12px 0 0;
+    font-size: 0.78rem;
+    color: var(--color-text-secondary);
+  }
+
+  &__hint {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: -8px 0 0;
+    font-size: 0.8rem;
+    color: var(--color-error);
+
+    mat-icon { font-size: 1rem; width: 1rem; height: 1rem; }
+  }
+}
+
+// ── KPI Grid ─────────────────────────────────────────────────────────────────
+
+.kpi-grid {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+
+  &--secondary { margin-top: -8px; }
+}
+
+.kpi-card {
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-2) var(--space-3);
+  background: #fff;
+  border: 1px solid var(--color-divider);
+  border-radius: 8px;
+
+  &--primary { border-left: 4px solid var(--color-primary); }
+  &--success { border-left: 4px solid var(--color-success); }
+  &--error   { border-left: 4px solid var(--color-error);   }
+  &--sm      { min-width: 140px; }
+
+  &__label { font-size: 0.82rem; color: var(--color-text-secondary); }
+
+  &__value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+}
+
+// ── Tabla ─────────────────────────────────────────────────────────────────────
+
+.table-wrapper {
+  border-radius: 8px;
+  border: 1px solid var(--color-divider);
+  background: #fff;
+  overflow: auto;
+}
+
+.catalog-table {
+  width: 100%;
+  @include mixins.catalog-table-header;
+}
+
+.cell-truncate {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// ── Gráfica de tendencia ──────────────────────────────────────────────────────
+
+.chart-wrapper {
+  background: #fff;
+  border: 1px solid var(--color-divider);
+  border-radius: 8px;
+  padding: var(--space-2);
+  max-height: 420px;
+
+  canvas { max-height: 380px; }
+}
+
+// ── Top productos ─────────────────────────────────────────────────────────────
+
+.medal-icon {
+  display: inline-flex;
+  align-items: center;
+
+  mat-icon { font-size: 1.3rem; width: 1.3rem; height: 1.3rem; }
+
+  &.medal--gold   mat-icon { color: #F59E0B; }
+  &.medal--silver mat-icon { color: #9CA3AF; }
+  &.medal--bronze mat-icon { color: #92400E; }
+}
+
+.rank-number {
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+// ── ABC ───────────────────────────────────────────────────────────────────────
+
+.abc-badge {
+  display: inline-block;
+  padding: 2px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+
+  &.abc--a { background: #E8F5E9; color: #2E7D32; }
+  &.abc--b { background: #E3F2FD; color: #1565C0; }
+  &.abc--c { background: #FFF3E0; color: #E65100; }
+}
+
+.cumulative-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+
+  .cumulative-bar { width: 100px; }
+}
+
+// ── Por proveedor ─────────────────────────────────────────────────────────────
+
+.supplier-name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.top-supplier-icon { color: #F59E0B; font-size: 1.1rem; width: 1.1rem; height: 1.1rem; }
+
+.top-supplier-row { background: #FFFDE7; }
+
+// ── Empty state ───────────────────────────────────────────────────────────────
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-5);
+  color: var(--color-text-secondary);
+
+  mat-icon { font-size: 3rem; width: 3rem; height: 3rem; }
+  p { margin: 0; }
+}

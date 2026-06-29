@@ -1,0 +1,64 @@
+<header class="topbar" role="banner">
+
+  <div class="topbar__left">
+    <button
+      mat-icon-button
+      class="topbar__hamburger"
+      (click)="toggle()"
+      aria-label="Alternar menú lateral"
+      matTooltip="Alternar menú"
+      matTooltipShowDelay="300"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span class="topbar__brand">Almacenes</span>
+    @if (breadcrumb) {
+      <span class="topbar__breadcrumb" aria-label="Ubicación actual: {{ breadcrumb }}">
+        <mat-icon class="topbar__breadcrumb-sep" aria-hidden="true">chevron_right</mat-icon>
+        {{ breadcrumb }}
+      </span>
+    }
+  </div>
+
+  <div class="topbar__right">
+    <button
+      mat-icon-button
+      aria-label="Notificaciones"
+      matTooltip="Notificaciones"
+      matTooltipShowDelay="300"
+    >
+      <mat-icon>notifications_none</mat-icon>
+    </button>
+
+    <button
+      mat-button
+      class="topbar__user-btn"
+      [matMenuTriggerFor]="userMenu"
+      aria-label="Menú de usuario"
+    >
+      <span class="topbar__username">{{ userName }}</span>
+      <span class="topbar__divider" aria-hidden="true"></span>
+      <span
+        class="topbar__role-chip"
+        [style.background-color]="getRoleColor(userRole)"
+        [attr.aria-label]="'Rol: ' + userRole"
+      >
+        {{ userRole }}
+      </span>
+      <mat-icon class="topbar__chevron">arrow_drop_down</mat-icon>
+    </button>
+
+    <mat-menu #userMenu="matMenu" xPosition="before">
+      <button mat-menu-item routerLink="/admin/profile">
+        <mat-icon>person</mat-icon>
+        <span>Mi perfil</span>
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Cerrar sesión</span>
+      </button>
+    </mat-menu>
+
+  </div>
+
+</header>

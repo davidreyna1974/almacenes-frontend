@@ -1,0 +1,156 @@
+<div class="catalog-page">
+
+  <!-- Barra de acciones -->
+  <div class="catalog-page__toolbar">
+    <h2 class="catalog-page__title">Órdenes de venta</h2>
+
+    <div class="catalog-page__actions">
+      @if (canCreateOrder()) {
+        <button mat-flat-button color="primary" (click)="newOrder()">
+          <mat-icon>add</mat-icon>
+          Nueva orden
+        </button>
+      }
+    </div>
+  </div>
+
+  <!-- Tabs por estado -->
+  <mat-tab-group animationDuration="150ms" [selectedIndex]="activeTabIndex"
+                 (selectedTabChange)="onTabChange($event.index)">
+    @for (tab of tabs; track tab.status) {
+      <mat-tab>
+        <ng-template mat-tab-label>
+          {{ tab.label }}
+          @if (countFor(tab.status) > 0) {
+            <span class="catalog-page__tab-count">{{ countFor(tab.status) }}</span>
+          }
+        </ng-template>
+      </mat-tab>
+    }
+  </mat-tab-group>
+
+  <!-- Progress bar de carga -->
+  @if (loading) {
+    <mat-progress-bar mode="indeterminate" class="catalog-page__progress" />
+  }
+
+  <!-- Tabla full-width -->
+  @if (!loading && orders.length === 0) {
+    <div class="catalog-page__empty">
+      <app-empty-state variant="empty" [titleOverride]="'Sin órdenes ' + activeTabLabel.toLowerCase()" />
+    </div>
+  } @else {
+    <div class="catalog-page__table-wrapper">
+      <table mat-table [dataSource]="orders" class="catalog-table" [trackBy]="trackById">
+
+        <!-- N° Orden -->
+        <ng-container matColumnDef="orderNumber">
+          <th mat-header-cell *matHeaderCellDef>N° Orden</th>
+          <td mat-cell *matCellDef="let row" class="cell-mono">{{ row.orderNumber }}</td>
+        </ng-container>
+
+        <!-- Cliente -->
+        <ng-container matColumnDef="clientName">
+          <th mat-header-cell *matHeaderCellDef>Cliente</th>
+          <td mat-cell *matCellDef="let row" class="cell-truncate cell-name"
+              [matTooltip]="row.clientName" matTooltipShowDelay="300">
+            {{ row.clientName }}
+          </td>
+        </ng-container>
+
+        <!-- Total -->
+        <ng-container matColumnDef="totalAmount">
+          <th mat-header-cell *matHeaderCellDef class="cell-num-header">Total</th>
+          <td mat-cell *matCellDef="let row" class="cell-num">
+            {{ row.totalAmount | currency:'MXN':'symbol-narrow':'1.2-2' }}
+          </td>
+        </ng-container>
+
+        <!-- Creado por -->
+        <ng-container matColumnDef="createdByUsername">
+          <th mat-header-cell *matHeaderCellDef>Creado por</th>
+          <td mat-cell *matCellDef="let row">{{ row.createdByUsername }}</td>
+        </ng-container>
+
+        <!-- Fecha -->
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef>Fecha</th>
+          <td mat-cell *matCellDef="let row">{{ row.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+        </ng-container>
+
+        <!-- Estado -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Estado</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="status-chip {{ getStatusClass(row.status) }}">
+              {{ row.status | statusLabel }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Acciones -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let row" class="cell-actions">
+            @if (canEditOrder(row)) {
+              <button mat-icon-button
+                      (click)="$event.stopPropagation(); openDetail(row)"
+                      matTooltip="Editar orden" matTooltipShowDelay="300"
+                      aria-label="Editar orden {{ row.orderNumber }}">
+                <mat-icon>edit</mat-icon>
+              </button>
+            } @else {
+              <button mat-icon-button
+                      (click)="$event.stopPropagation(); openDetail(row)"
+                      matTooltip="Ver orden" matTooltipShowDelay="300"
+                      aria-label="Ver orden {{ row.orderNumber }}">
+                <mat-icon>visibility</mat-icon>
+              </button>
+            }
+            @if (canApprove(row)) {
+              <button mat-icon-button color="primary"
+                      (click)="$event.stopPropagation(); approveOrder(row)"
+                      matTooltip="Aprobar orden" matTooltipShowDelay="300"
+                      aria-label="Aprobar orden {{ row.orderNumber }}">
+                <mat-icon>check_circle</mat-icon>
+              </button>
+            }
+            @if (canDeliver(row)) {
+              <button mat-icon-button color="primary"
+                      (click)="$event.stopPropagation(); deliverOrder(row)"
+                      matTooltip="Entregar orden" matTooltipShowDelay="300"
+                      aria-label="Entregar orden {{ row.orderNumber }}">
+                <mat-icon>done_all</mat-icon>
+              </button>
+            }
+            @if (canCancel(row)) {
+              <button mat-icon-button color="warn"
+                      (click)="$event.stopPropagation(); cancelOrder(row)"
+                      matTooltip="Cancelar orden" matTooltipShowDelay="300"
+                      aria-label="Cancelar orden {{ row.orderNumber }}">
+                <mat-icon>cancel</mat-icon>
+              </button>
+            }
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+            class="catalog-row catalog-row--clickable"
+            (click)="openDetail(row)">
+        </tr>
+      </table>
+
+      @if (currentPage) {
+        <mat-paginator
+          [length]="currentPage.totalElements"
+          [pageSize]="pageSize"
+          [pageIndex]="currentPage.currentPage"
+          [pageSizeOptions]="[10, 20, 50]"
+          (page)="onPageChange($event)"
+          aria-label="Paginación de órdenes de venta" />
+      }
+    </div>
+  }
+
+</div>

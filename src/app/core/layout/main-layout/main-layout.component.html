@@ -1,0 +1,19 @@
+<a class="skip-link" href="#main-content">Ir al contenido principal</a>
+
+<div class="layout-wrapper">
+
+  <app-topbar></app-topbar>
+
+  <div class="layout-body">
+
+    <div class="sidebar-panel" [class.collapsed]="collapsed$ | async">
+      <app-sidebar></app-sidebar>
+    </div>
+
+    <main id="main-content" class="layout-content" (click)="collapseIfExpanded($event)">
+      <router-outlet></router-outlet>
+    </main>
+
+  </div>
+
+</div>

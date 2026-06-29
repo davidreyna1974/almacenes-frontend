@@ -1,0 +1,214 @@
+@use '../../../../../styles/mixins' as mixins;
+
+.exec-page {
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin: 0;
+  }
+
+  &__actions {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+  }
+
+  &__date-error {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: -16px 0 0;
+    font-size: 0.8rem;
+    color: var(--color-error);
+
+    mat-icon { font-size: 1rem; width: 1rem; height: 1rem; }
+  }
+}
+
+.filter-date { width: 180px; }
+
+// ── Alertas pendientes ────────────────────────────────────────────────────────
+
+.alert-strip {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.alert-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: opacity 0.15s;
+
+  &:hover { opacity: 0.85; }
+
+  &--purchases {
+    background: #FFF3E0;
+    color: #E65100;
+  }
+
+  &--sales {
+    background: #E3F2FD;
+    color: #1565C0;
+  }
+
+  &__arrow { font-size: 1rem; width: 1rem; height: 1rem; }
+}
+
+// ── KPI Grid ─────────────────────────────────────────────────────────────────
+
+.kpi-grid {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.kpi-card {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-2) var(--space-3);
+  background: #fff;
+  border: 1px solid var(--color-divider);
+  border-radius: 8px;
+
+  &--primary { border-left: 4px solid var(--color-primary); }
+  &--success { border-left: 4px solid var(--color-success); }
+
+  &__icon { mat-icon { color: var(--color-primary); } }
+  &__label { font-size: 0.82rem; color: var(--color-text-secondary); }
+
+  &__value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+  }
+
+  &__sub {
+    font-size: 0.9rem;
+    color: var(--color-success);
+    font-weight: 500;
+  }
+}
+
+// ── Layout inferior ───────────────────────────────────────────────────────────
+
+.bottom-layout {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.chart-panel {
+  flex: 1;
+  min-width: 300px;
+  background: #fff;
+  border: 1px solid var(--color-divider);
+  border-radius: 8px;
+  padding: var(--space-2) var(--space-3);
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin: 0 0 var(--space-2);
+  }
+
+  .donut-chart { max-height: 320px; }
+}
+
+// ── Acceso rápido ─────────────────────────────────────────────────────────────
+
+.quick-access {
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  &__title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin: 0;
+  }
+
+  &__grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+}
+
+.quick-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-2);
+  background: #fff;
+  border: 1px solid var(--color-divider);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+
+  &:hover {
+    border-color: var(--color-primary);
+    background: var(--color-surface);
+  }
+
+  mat-icon {
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  span {
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: block;
+  }
+
+  small {
+    display: block;
+    color: var(--color-text-secondary);
+    font-size: 0.78rem;
+    margin-top: 2px;
+  }
+}
+
+// ── Empty state ───────────────────────────────────────────────────────────────
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  padding: var(--space-5);
+  color: var(--color-text-secondary);
+
+  mat-icon { font-size: 3rem; width: 3rem; height: 3rem; }
+  p { margin: 0; }
+}

@@ -1,0 +1,169 @@
+<div class="low-stock-page">
+
+  @if (loading) {
+    <mat-progress-bar mode="indeterminate" class="low-stock-page__progress" />
+  }
+
+  <!-- Resumen de severidad -->
+  @if (!loading && items.length > 0) {
+    <div class="low-stock-page__summary">
+      @if (sinStockCount > 0) {
+        <div class="low-stock-page__chip low-stock-page__chip--sin-stock">
+          <mat-icon>remove_shopping_cart</mat-icon>
+          {{ sinStockCount }} sin stock
+        </div>
+      }
+      @if (criticoCount > 0) {
+        <div class="low-stock-page__chip low-stock-page__chip--critico">
+          <mat-icon>warning_amber</mat-icon>
+          {{ criticoCount }} crítico{{ criticoCount !== 1 ? 's' : '' }}
+        </div>
+      }
+      @if (reservasCount > 0) {
+        <div class="low-stock-page__chip low-stock-page__chip--reservas">
+          <mat-icon>lock_clock</mat-icon>
+          {{ reservasCount }} por reservas
+        </div>
+      }
+    </div>
+  }
+
+  <!-- Estado vacío — todo en orden -->
+  @if (!loading && items.length === 0) {
+    <div class="low-stock-page__empty">
+      <mat-icon class="low-stock-page__empty-icon">check_circle</mat-icon>
+      <p class="low-stock-page__empty-title">Todo en orden</p>
+      <p class="low-stock-page__empty-desc">
+        Ningún producto está por debajo del stock mínimo configurado.
+      </p>
+    </div>
+  }
+
+  <!-- Tabla -->
+  @if (items.length > 0) {
+    <div class="low-stock-page__table-wrapper">
+      <table mat-table [dataSource]="items" class="low-stock-page__table">
+
+        <!-- Nivel de severidad -->
+        <ng-container matColumnDef="severity">
+          <th mat-header-cell *matHeaderCellDef>Nivel</th>
+          <td mat-cell *matCellDef="let row">
+            <span class="low-stock-page__severity-chip
+                         low-stock-page__severity-chip--{{ getSeverity(row) }}">
+              {{ getSeverityLabel(row) }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- SKU -->
+        <ng-container matColumnDef="sku">
+          <th mat-header-cell *matHeaderCellDef>SKU</th>
+          <td mat-cell *matCellDef="let row" class="low-stock-page__sku">{{ row.sku }}</td>
+        </ng-container>
+
+        <!-- Nombre -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Nombre</th>
+          <td mat-cell *matCellDef="let row"
+              [matTooltip]="row.name" [matTooltipShowDelay]="300"
+              class="low-stock-page__truncate">{{ row.name }}</td>
+        </ng-container>
+
+        <!-- Categoría -->
+        <ng-container matColumnDef="categoryName">
+          <th mat-header-cell *matHeaderCellDef>Categoría</th>
+          <td mat-cell *matCellDef="let row"
+              [matTooltip]="row.categoryName" [matTooltipShowDelay]="300"
+              class="low-stock-page__truncate">{{ row.categoryName }}</td>
+        </ng-container>
+
+        <!-- Proveedor -->
+        <ng-container matColumnDef="supplierName">
+          <th mat-header-cell *matHeaderCellDef>Proveedor</th>
+          <td mat-cell *matCellDef="let row"
+              [matTooltip]="row.supplierName || ''" [matTooltipShowDelay]="300"
+              class="low-stock-page__truncate">{{ row.supplierName || '—' }}</td>
+        </ng-container>
+
+        <!-- Stock físico -->
+        <ng-container matColumnDef="currentStock">
+          <th mat-header-cell *matHeaderCellDef class="low-stock-page__num-header"
+              matTooltip="Stock físico en almacén">Físico</th>
+          <td mat-cell *matCellDef="let row" class="low-stock-page__num">
+            {{ row.currentStock }}
+          </td>
+        </ng-container>
+
+        <!-- Reservado -->
+        <ng-container matColumnDef="reservedStock">
+          <th mat-header-cell *matHeaderCellDef class="low-stock-page__num-header"
+              matTooltip="Unidades comprometidas con órdenes aprobadas">Reservado</th>
+          <td mat-cell *matCellDef="let row"
+              class="low-stock-page__num"
+              [class.low-stock-page__num--reserved]="row.reservedStock > 0">
+            {{ row.reservedStock }}
+          </td>
+        </ng-container>
+
+        <!-- Disponible -->
+        <ng-container matColumnDef="availableStock">
+          <th mat-header-cell *matHeaderCellDef class="low-stock-page__num-header"
+              matTooltip="Disponible = Físico − Reservado">Disponible</th>
+          <td mat-cell *matCellDef="let row"
+              class="low-stock-page__num low-stock-page__num--available">
+            {{ row.availableStock }}
+          </td>
+        </ng-container>
+
+        <!-- Stock mínimo -->
+        <ng-container matColumnDef="minimumStock">
+          <th mat-header-cell *matHeaderCellDef class="low-stock-page__num-header"
+              matTooltip="Umbral mínimo configurado">Mínimo</th>
+          <td mat-cell *matCellDef="let row" class="low-stock-page__num">
+            {{ row.minimumStock }}
+          </td>
+        </ng-container>
+
+        <!-- Déficit -->
+        <ng-container matColumnDef="deficit">
+          <th mat-header-cell *matHeaderCellDef class="low-stock-page__num-header"
+              matTooltip="Déficit = Mínimo − Disponible. Mayor valor = mayor urgencia">Déficit</th>
+          <td mat-cell *matCellDef="let row"
+              class="low-stock-page__num low-stock-page__num--deficit"
+              [class.low-stock-page__num--deficit-high]="row.deficit > 0"
+              [class.low-stock-page__num--deficit-med]="row.deficit <= 0">
+            {{ row.deficit > 0 ? '+' + row.deficit : row.deficit }}
+          </td>
+        </ng-container>
+
+        <!-- Costo unitario (ADMIN / MANAGER) -->
+        <ng-container matColumnDef="unitCost">
+          <th mat-header-cell *matHeaderCellDef class="low-stock-page__num-header">Costo unit.</th>
+          <td mat-cell *matCellDef="let row" class="low-stock-page__num">
+            {{ row.unitCost | currency:'MXN':'symbol-narrow':'1.2-2' }}
+          </td>
+        </ng-container>
+
+        <!-- Acciones (ADMIN / MANAGER / WAREHOUSEMAN) -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let row">
+            <button mat-icon-button color="primary"
+                    matTooltip="Registrar entrada"
+                    [matTooltipShowDelay]="300"
+                    (click)="openMovementDialog(row)">
+              <mat-icon>add_circle</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+            class="low-stock-page__row
+                   low-stock-page__row--{{ getSeverity(row) }}"></tr>
+
+      </table>
+    </div>
+  }
+
+</div>

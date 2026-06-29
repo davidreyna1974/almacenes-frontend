@@ -1,0 +1,73 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Nueva orden" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Nueva orden
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: test_wh
+            - 'generic "Rol: WAREHOUSEMAN" [ref=e25]': WAREHOUSEMAN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+        - button "Expandir menú" [ref=e42] [cursor=pointer]:
+          - img [ref=e43]: chevron_right
+      - main [ref=e44]:
+        - generic [ref=e47]:
+          - generic [ref=e48]:
+            - button [ref=e49] [cursor=pointer]:
+              - img [ref=e50]: arrow_back
+            - heading "Nueva orden de compra" [level=2] [ref=e54]
+          - generic [ref=e56]:
+            - generic [ref=e57]:
+              - heading "Información de la orden" [level=3] [ref=e58]
+              - generic [ref=e59]:
+                - generic [ref=e62] [cursor=pointer]:
+                  - generic [ref=e63]:
+                    - text: Proveedor
+                    - generic [ref=e64]: "*"
+                  - combobox "Proveedor" [ref=e66]:
+                    - img [ref=e72]
+                - generic [ref=e77]:
+                  - generic [ref=e78]: Notas
+                  - textbox "Notas" [ref=e80]:
+                    - /placeholder: Observaciones opcionales
+            - generic [ref=e82]:
+              - generic [ref=e83]:
+                - heading "Líneas de detalle" [level=3] [ref=e84]
+                - button "Agregar línea" [ref=e85]:
+                  - img [ref=e86]: add
+                  - generic [ref=e87]: Agregar línea
+              - generic [ref=e90]:
+                - img [ref=e91]: playlist_add
+                - paragraph [ref=e92]: Sin líneas de detalle — agrega al menos un producto
+              - table [ref=e93]:
+                - row "SKU Producto Cantidad" [ref=e94]:
+                  - columnheader "SKU" [ref=e95]
+                  - columnheader "Producto" [ref=e96]
+                  - columnheader "Cantidad" [ref=e97]
+            - generic [ref=e98]:
+              - button "Crear orden" [disabled]:
+                - img: save
+                - generic: Crear orden
+              - button "Cancelar" [ref=e99]:
+                - generic [ref=e100]: Cancelar

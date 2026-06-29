@@ -1,0 +1,155 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ir al contenido principal" [ref=e207] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button "Alternar menú lateral" [ref=e208] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e209]':
+            - img [ref=e15]: chevron_right
+            - text: Compras → Órdenes de compra
+        - generic [ref=e16]:
+          - button "Notificaciones" [ref=e210] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button "Menú de usuario" [ref=e211]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - 'generic "Rol: ADMIN" [ref=e212]': ADMIN
+      - generic [ref=e28]:
+        - navigation "Navegación principal" [ref=e213]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button "Expandir menú" [ref=e214] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - button [ref=e51] [cursor=pointer]:
+                - img [ref=e52]: arrow_back
+              - generic [ref=e55]:
+                - heading "OC-2026-0076" [level=2] [ref=e215]
+                - generic [ref=e57]: Recibida
+            - generic [ref=e69]:
+              - generic [ref=e70]:
+                - generic [ref=e71]:
+                  - heading "Información de la orden" [level=3] [ref=e216]
+                  - generic [ref=e73]:
+                    - generic [ref=e74]:
+                      - generic:
+                        - generic:
+                          - generic [ref=e75]:
+                            - text: Proveedor
+                            - generic [ref=e76]: "*"
+                          - generic:
+                            - combobox "Proveedor" [disabled]:
+                              - generic:
+                                - generic:
+                                  - generic: Agroquímica y Fertilizantes del Valle S.A.
+                                - generic:
+                                  - generic:
+                                    - img
+                    - generic [ref=e78]:
+                      - generic:
+                        - generic:
+                          - generic [ref=e79]: Notas
+                          - textbox "Notas" [disabled] [ref=e217]:
+                            - /placeholder: Observaciones opcionales
+                            - text: Prueba panel recepción
+                - generic [ref=e82]:
+                  - heading "Líneas de detalle" [level=3] [ref=e218]
+                  - table [ref=e85]:
+                    - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e219]:
+                      - columnheader "SKU" [ref=e220]
+                      - columnheader "Producto" [ref=e221]
+                      - columnheader "Cantidad" [ref=e222]
+                      - columnheader "Precio unitario" [ref=e223]
+                      - columnheader "Subtotal" [ref=e224]
+                      - columnheader [ref=e92]
+                    - row "LUBR-ACE20-035 Aceite Lubricante Motor 20W-50 Galón 10 $199.50 $1,995.00" [ref=e225]:
+                      - cell "LUBR-ACE20-035" [ref=e226]:
+                        - generic [ref=e227]: LUBR-ACE20-035
+                      - cell "Aceite Lubricante Motor 20W-50 Galón" [ref=e228]:
+                        - generic [ref=e229]: Aceite Lubricante Motor 20W-50 Galón
+                      - cell "10" [ref=e230]
+                      - cell "$199.50" [ref=e231]
+                      - cell "$1,995.00" [ref=e232]
+                      - cell [ref=e233]
+                    - row "HELEC-AMO-015 Amoladora Angular 4.5\" 1400W 5 $850.00 $4,250.00" [ref=e234]:
+                      - cell "HELEC-AMO-015" [ref=e235]:
+                        - generic [ref=e236]: HELEC-AMO-015
+                      - cell "Amoladora Angular 4.5\" 1400W" [ref=e237]:
+                        - generic [ref=e238]: Amoladora Angular 4.5" 1400W
+                      - cell "5" [ref=e239]
+                      - cell "$850.00" [ref=e240]
+                      - cell "$4,250.00" [ref=e241]
+                      - cell [ref=e242]
+                    - row "PINT-BAR5G-049 Barniz marino 5 galones para exteriores 3 $320.00 $960.00" [ref=e243]:
+                      - cell "PINT-BAR5G-049" [ref=e244]:
+                        - generic [ref=e245]: PINT-BAR5G-049
+                      - cell "Barniz marino 5 galones para exteriores" [ref=e246]:
+                        - generic [ref=e247]: Barniz marino 5 galones para exteriores
+                      - cell "3" [ref=e248]
+                      - cell "$320.00" [ref=e249]
+                      - cell "$960.00" [ref=e250]
+                      - cell [ref=e251]
+                  - generic [ref=e120]:
+                    - generic [ref=e121]: "Total de la orden:"
+                    - generic [ref=e122]: $7,205.00
+              - generic [ref=e123]:
+                - generic [ref=e252]:
+                  - generic [ref=e253]:
+                    - img [ref=e254]: inventory_2
+                    - generic [ref=e255]:
+                      - heading "Stock actualizado" [level=3] [ref=e256]
+                      - paragraph [ref=e257]: 3 productos recibidos
+                  - generic [ref=e258]:
+                    - generic [ref=e259]:
+                      - generic [ref=e260]: Aceite Lubricante Motor 20W-50 Galón
+                      - generic [ref=e261]: "+10"
+                    - generic [ref=e262]:
+                      - generic [ref=e263]: Amoladora Angular 4.5" 1400W
+                      - generic [ref=e264]: "+5"
+                    - generic [ref=e265]:
+                      - generic [ref=e266]: Barniz marino 5 galones para exteriores
+                      - generic [ref=e267]: "+3"
+                - generic [ref=e124]:
+                  - heading "Historial de estado" [level=3] [ref=e268]
+                  - generic [ref=e126]:
+                    - generic [ref=e127]:
+                      - img [ref=e128]: add_circle
+                      - generic [ref=e129]:
+                        - generic [ref=e130]: Creada
+                        - generic [ref=e131]: admin
+                        - generic [ref=e132]: 08/06/2026 18:07
+                    - generic [ref=e133]:
+                      - img [ref=e134]: check_circle
+                      - generic [ref=e135]:
+                        - generic [ref=e136]: Aprobada
+                        - generic [ref=e137]: admin
+                        - generic [ref=e138]: 08/06/2026 18:07
+                    - generic [ref=e139]:
+                      - img [ref=e140]: done_all
+                      - generic [ref=e141]:
+                        - generic [ref=e142]: Recibida
+                        - generic [ref=e269]: admin
+                        - generic [ref=e270]: 08/06/2026 18:07
+                - generic [ref=e144]:
+                  - generic [ref=e145]: "Última modificación:"
+                  - generic [ref=e146]: 08/06/2026 18:07
+  - generic [ref=e277]:
+    - generic [ref=e278]: Mercancía recibida. Stock actualizado.
+    - button "Cerrar" [ref=e280]:
+      - generic [ref=e281]: Cerrar

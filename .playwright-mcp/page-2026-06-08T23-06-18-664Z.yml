@@ -1,0 +1,102 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e200] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e201] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Nueva orden" [ref=e490]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Nueva orden
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e203] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e204]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e205]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e206]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e207] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e492]:
+          - generic [ref=e493]:
+            - button [ref=e494] [cursor=pointer]:
+              - img [ref=e495]: arrow_back
+            - heading "Nueva orden de compra" [level=2] [ref=e499]
+          - generic [ref=e501]:
+            - generic [ref=e502]:
+              - heading "Información de la orden" [level=3] [ref=e503]
+              - generic [ref=e504]:
+                - generic [ref=e507] [cursor=pointer]:
+                  - generic [ref=e508]:
+                    - text: Proveedor
+                    - generic [ref=e509]: "*"
+                  - combobox "Proveedor" [ref=e511]:
+                    - generic [ref=e512]:
+                      - generic [ref=e665]: Agroquímica y Fertilizantes del Valle S.A.
+                      - img [ref=e517]
+                - generic [ref=e522]:
+                  - generic [ref=e523]: Notas
+                  - textbox "Notas" [ref=e525]:
+                    - /placeholder: Observaciones opcionales
+            - generic [ref=e527]:
+              - generic [ref=e528]:
+                - heading "Líneas de detalle" [level=3] [ref=e529]
+                - button "Agregar línea" [disabled]:
+                  - img: add
+                  - generic: Agregar línea
+              - generic [ref=e668]:
+                - generic [ref=e671]:
+                  - generic [ref=e672]: Producto
+                  - combobox "Producto" [active] [ref=e674]: aguaagua
+                - generic [ref=e676]:
+                  - generic [ref=e679]:
+                    - generic [ref=e680]:
+                      - text: Cantidad
+                      - generic [ref=e681]: "*"
+                    - spinbutton "Cantidad" [ref=e683]: "1"
+                  - generic [ref=e687]:
+                    - generic [ref=e688]:
+                      - text: Precio unitario
+                      - generic [ref=e689]: "*"
+                    - generic: $
+                    - spinbutton "Precio unitario" [ref=e691]
+                - generic [ref=e693]:
+                  - generic [ref=e694]: "Subtotal:"
+                  - generic [ref=e695]: $0.00
+                - generic [ref=e696]:
+                  - button "Cancelar" [ref=e697]:
+                    - generic [ref=e698]: Cancelar
+                  - button "Agregar línea" [disabled]:
+                    - img: add
+                    - generic: Agregar línea
+              - table [ref=e535]:
+                - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e536]:
+                  - columnheader "SKU" [ref=e537]
+                  - columnheader "Producto" [ref=e538]
+                  - columnheader "Cantidad" [ref=e539]
+                  - columnheader "Precio unitario" [ref=e540]
+                  - columnheader "Subtotal" [ref=e541]
+                  - columnheader [ref=e542]
+            - generic [ref=e543]:
+              - button "Crear orden" [disabled]:
+                - img: save
+                - generic: Crear orden
+              - button "Cancelar" [ref=e544]:
+                - generic [ref=e545]: Cancelar

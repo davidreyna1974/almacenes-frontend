@@ -1,0 +1,346 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Órdenes de compra
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - heading "Órdenes de compra" [level=2] [ref=e51]
+            - generic [ref=e54]:
+              - generic [ref=e55]: Buscar
+              - img [ref=e57]: search
+              - textbox "Buscar" [ref=e59]:
+                - /placeholder: N° orden, proveedor, usuario…
+            - button "Nueva orden" [ref=e60]:
+              - img [ref=e61]: add
+              - generic [ref=e62]: Nueva orden
+          - generic [ref=e65]:
+            - tablist [ref=e68]:
+              - generic [ref=e69]:
+                - tab "Pendientes" [ref=e70] [cursor=pointer]:
+                  - generic [ref=e72]: Pendientes
+                - tab "Aprobadas" [ref=e73] [cursor=pointer]:
+                  - generic [ref=e75]: Aprobadas
+                - tab "Recibidas 39" [active] [selected] [ref=e96] [cursor=pointer]:
+                  - generic [ref=e78]:
+                    - text: Recibidas
+                    - generic [ref=e97]: "39"
+                - tab "Canceladas" [ref=e79] [cursor=pointer]:
+                  - generic [ref=e81]: Canceladas
+            - generic:
+              - tabpanel "Recibidas 39"
+          - generic [ref=e82]:
+            - table [ref=e86]:
+              - row "N° Orden Proveedor Total Creado por Fecha Estado" [ref=e87]:
+                - columnheader "N° Orden" [ref=e88]
+                - columnheader "Proveedor" [ref=e89]
+                - columnheader "Total" [ref=e90]
+                - columnheader "Creado por" [ref=e91]
+                - columnheader "Fecha" [ref=e92]
+                - columnheader "Estado" [ref=e93]
+                - columnheader [ref=e94]
+              - row "OC-2026-0058 Químicos y Lubricantes Industriales S.A. $3,450.00 admin 07/06/2026 18:08 Recibida" [ref=e98] [cursor=pointer]:
+                - cell "OC-2026-0058" [ref=e99]:
+                  - generic [ref=e100]: OC-2026-0058
+                - cell "Químicos y Lubricantes Industriales S.A." [ref=e101]:
+                  - generic [ref=e102]: Químicos y Lubricantes Industriales S.A.
+                - cell "$3,450.00" [ref=e103]
+                - cell "admin" [ref=e104]
+                - cell "07/06/2026 18:08" [ref=e105]
+                - cell "Recibida" [ref=e106]:
+                  - generic [ref=e107]: Recibida
+                - cell [ref=e108]:
+                  - button [ref=e109]:
+                    - img [ref=e110]: open_in_new
+              - row "OC-2026-0057 Proveedor RBAC R44964 $1,500.00 mgrR44964 07/06/2026 13:12 Recibida" [ref=e113] [cursor=pointer]:
+                - cell "OC-2026-0057" [ref=e114]:
+                  - generic [ref=e115]: OC-2026-0057
+                - cell "Proveedor RBAC R44964" [ref=e116]:
+                  - generic [ref=e117]: Proveedor RBAC R44964
+                - cell "$1,500.00" [ref=e118]
+                - cell "mgrR44964" [ref=e119]
+                - cell "07/06/2026 13:12" [ref=e120]
+                - cell "Recibida" [ref=e121]:
+                  - generic [ref=e122]: Recibida
+                - cell [ref=e123]:
+                  - button [ref=e124]:
+                    - img [ref=e125]: open_in_new
+              - row "OC-2026-0055 Proveedor AINT44000 $500.00 admin 07/06/2026 13:12 Recibida" [ref=e128] [cursor=pointer]:
+                - cell "OC-2026-0055" [ref=e129]:
+                  - generic [ref=e130]: OC-2026-0055
+                - cell "Proveedor AINT44000" [ref=e131]:
+                  - generic [ref=e132]: Proveedor AINT44000
+                - cell "$500.00" [ref=e133]
+                - cell "admin" [ref=e134]
+                - cell "07/06/2026 13:12" [ref=e135]
+                - cell "Recibida" [ref=e136]:
+                  - generic [ref=e137]: Recibida
+                - cell [ref=e138]:
+                  - button [ref=e139]:
+                    - img [ref=e140]: open_in_new
+              - row "OC-2026-0054 Proveedor RBAC R26542 $1,500.00 mgrR26542 07/06/2026 13:12 Recibida" [ref=e143] [cursor=pointer]:
+                - cell "OC-2026-0054" [ref=e144]:
+                  - generic [ref=e145]: OC-2026-0054
+                - cell "Proveedor RBAC R26542" [ref=e146]:
+                  - generic [ref=e147]: Proveedor RBAC R26542
+                - cell "$1,500.00" [ref=e148]
+                - cell "mgrR26542" [ref=e149]
+                - cell "07/06/2026 13:12" [ref=e150]
+                - cell "Recibida" [ref=e151]:
+                  - generic [ref=e152]: Recibida
+                - cell [ref=e153]:
+                  - button [ref=e154]:
+                    - img [ref=e155]: open_in_new
+              - row "OC-2026-0052 Proveedor AINT25584 $500.00 admin 07/06/2026 13:12 Recibida" [ref=e158] [cursor=pointer]:
+                - cell "OC-2026-0052" [ref=e159]:
+                  - generic [ref=e160]: OC-2026-0052
+                - cell "Proveedor AINT25584" [ref=e161]:
+                  - generic [ref=e162]: Proveedor AINT25584
+                - cell "$500.00" [ref=e163]
+                - cell "admin" [ref=e164]
+                - cell "07/06/2026 13:12" [ref=e165]
+                - cell "Recibida" [ref=e166]:
+                  - generic [ref=e167]: Recibida
+                - cell [ref=e168]:
+                  - button [ref=e169]:
+                    - img [ref=e170]: open_in_new
+              - row "OC-2026-0051 Proveedor RBAC R6985 $1,500.00 mgrR6985 07/06/2026 13:11 Recibida" [ref=e173] [cursor=pointer]:
+                - cell "OC-2026-0051" [ref=e174]:
+                  - generic [ref=e175]: OC-2026-0051
+                - cell "Proveedor RBAC R6985" [ref=e176]:
+                  - generic [ref=e177]: Proveedor RBAC R6985
+                - cell "$1,500.00" [ref=e178]
+                - cell "mgrR6985" [ref=e179]
+                - cell "07/06/2026 13:11" [ref=e180]
+                - cell "Recibida" [ref=e181]:
+                  - generic [ref=e182]: Recibida
+                - cell [ref=e183]:
+                  - button [ref=e184]:
+                    - img [ref=e185]: open_in_new
+              - row "OC-2026-0049 Proveedor AINT6074 $500.00 admin 07/06/2026 13:11 Recibida" [ref=e188] [cursor=pointer]:
+                - cell "OC-2026-0049" [ref=e189]:
+                  - generic [ref=e190]: OC-2026-0049
+                - cell "Proveedor AINT6074" [ref=e191]:
+                  - generic [ref=e192]: Proveedor AINT6074
+                - cell "$500.00" [ref=e193]
+                - cell "admin" [ref=e194]
+                - cell "07/06/2026 13:11" [ref=e195]
+                - cell "Recibida" [ref=e196]:
+                  - generic [ref=e197]: Recibida
+                - cell [ref=e198]:
+                  - button [ref=e199]:
+                    - img [ref=e200]: open_in_new
+              - row "OC-2026-0048 Proveedor RBAC R70934 $1,500.00 mgrR70934 07/06/2026 03:52 Recibida" [ref=e203] [cursor=pointer]:
+                - cell "OC-2026-0048" [ref=e204]:
+                  - generic [ref=e205]: OC-2026-0048
+                - cell "Proveedor RBAC R70934" [ref=e206]:
+                  - generic [ref=e207]: Proveedor RBAC R70934
+                - cell "$1,500.00" [ref=e208]
+                - cell "mgrR70934" [ref=e209]
+                - cell "07/06/2026 03:52" [ref=e210]
+                - cell "Recibida" [ref=e211]:
+                  - generic [ref=e212]: Recibida
+                - cell [ref=e213]:
+                  - button [ref=e214]:
+                    - img [ref=e215]: open_in_new
+              - row "OC-2026-0046 Proveedor AINT70042 $500.00 admin 07/06/2026 03:52 Recibida" [ref=e218] [cursor=pointer]:
+                - cell "OC-2026-0046" [ref=e219]:
+                  - generic [ref=e220]: OC-2026-0046
+                - cell "Proveedor AINT70042" [ref=e221]:
+                  - generic [ref=e222]: Proveedor AINT70042
+                - cell "$500.00" [ref=e223]
+                - cell "admin" [ref=e224]
+                - cell "07/06/2026 03:52" [ref=e225]
+                - cell "Recibida" [ref=e226]:
+                  - generic [ref=e227]: Recibida
+                - cell [ref=e228]:
+                  - button [ref=e229]:
+                    - img [ref=e230]: open_in_new
+              - row "OC-2026-0045 Proveedor RBAC R13318 $1,500.00 mgrR13318 07/06/2026 03:50 Recibida" [ref=e233] [cursor=pointer]:
+                - cell "OC-2026-0045" [ref=e234]:
+                  - generic [ref=e235]: OC-2026-0045
+                - cell "Proveedor RBAC R13318" [ref=e236]:
+                  - generic [ref=e237]: Proveedor RBAC R13318
+                - cell "$1,500.00" [ref=e238]
+                - cell "mgrR13318" [ref=e239]
+                - cell "07/06/2026 03:50" [ref=e240]
+                - cell "Recibida" [ref=e241]:
+                  - generic [ref=e242]: Recibida
+                - cell [ref=e243]:
+                  - button [ref=e244]:
+                    - img [ref=e245]: open_in_new
+              - row "OC-2026-0043 Proveedor AINT12406 $500.00 admin 07/06/2026 03:50 Recibida" [ref=e248] [cursor=pointer]:
+                - cell "OC-2026-0043" [ref=e249]:
+                  - generic [ref=e250]: OC-2026-0043
+                - cell "Proveedor AINT12406" [ref=e251]:
+                  - generic [ref=e252]: Proveedor AINT12406
+                - cell "$500.00" [ref=e253]
+                - cell "admin" [ref=e254]
+                - cell "07/06/2026 03:50" [ref=e255]
+                - cell "Recibida" [ref=e256]:
+                  - generic [ref=e257]: Recibida
+                - cell [ref=e258]:
+                  - button [ref=e259]:
+                    - img [ref=e260]: open_in_new
+              - row "OC-2026-0042 Proveedor RBAC R36029 $1,500.00 mgrR36029 07/06/2026 03:47 Recibida" [ref=e263] [cursor=pointer]:
+                - cell "OC-2026-0042" [ref=e264]:
+                  - generic [ref=e265]: OC-2026-0042
+                - cell "Proveedor RBAC R36029" [ref=e266]:
+                  - generic [ref=e267]: Proveedor RBAC R36029
+                - cell "$1,500.00" [ref=e268]
+                - cell "mgrR36029" [ref=e269]
+                - cell "07/06/2026 03:47" [ref=e270]
+                - cell "Recibida" [ref=e271]:
+                  - generic [ref=e272]: Recibida
+                - cell [ref=e273]:
+                  - button [ref=e274]:
+                    - img [ref=e275]: open_in_new
+              - row "OC-2026-0040 Proveedor AINT35135 $500.00 admin 07/06/2026 03:47 Recibida" [ref=e278] [cursor=pointer]:
+                - cell "OC-2026-0040" [ref=e279]:
+                  - generic [ref=e280]: OC-2026-0040
+                - cell "Proveedor AINT35135" [ref=e281]:
+                  - generic [ref=e282]: Proveedor AINT35135
+                - cell "$500.00" [ref=e283]
+                - cell "admin" [ref=e284]
+                - cell "07/06/2026 03:47" [ref=e285]
+                - cell "Recibida" [ref=e286]:
+                  - generic [ref=e287]: Recibida
+                - cell [ref=e288]:
+                  - button [ref=e289]:
+                    - img [ref=e290]: open_in_new
+              - row "OC-2026-0039 Proveedor RBAC R20326 $1,500.00 mgrR20326 07/06/2026 03:47 Recibida" [ref=e293] [cursor=pointer]:
+                - cell "OC-2026-0039" [ref=e294]:
+                  - generic [ref=e295]: OC-2026-0039
+                - cell "Proveedor RBAC R20326" [ref=e296]:
+                  - generic [ref=e297]: Proveedor RBAC R20326
+                - cell "$1,500.00" [ref=e298]
+                - cell "mgrR20326" [ref=e299]
+                - cell "07/06/2026 03:47" [ref=e300]
+                - cell "Recibida" [ref=e301]:
+                  - generic [ref=e302]: Recibida
+                - cell [ref=e303]:
+                  - button [ref=e304]:
+                    - img [ref=e305]: open_in_new
+              - row "OC-2026-0037 Proveedor AINT19434 $500.00 admin 07/06/2026 03:46 Recibida" [ref=e308] [cursor=pointer]:
+                - cell "OC-2026-0037" [ref=e309]:
+                  - generic [ref=e310]: OC-2026-0037
+                - cell "Proveedor AINT19434" [ref=e311]:
+                  - generic [ref=e312]: Proveedor AINT19434
+                - cell "$500.00" [ref=e313]
+                - cell "admin" [ref=e314]
+                - cell "07/06/2026 03:46" [ref=e315]
+                - cell "Recibida" [ref=e316]:
+                  - generic [ref=e317]: Recibida
+                - cell [ref=e318]:
+                  - button [ref=e319]:
+                    - img [ref=e320]: open_in_new
+              - row "OC-2026-0036 Proveedor RBAC R3784 $1,500.00 mgrR3784 07/06/2026 03:46 Recibida" [ref=e323] [cursor=pointer]:
+                - cell "OC-2026-0036" [ref=e324]:
+                  - generic [ref=e325]: OC-2026-0036
+                - cell "Proveedor RBAC R3784" [ref=e326]:
+                  - generic [ref=e327]: Proveedor RBAC R3784
+                - cell "$1,500.00" [ref=e328]
+                - cell "mgrR3784" [ref=e329]
+                - cell "07/06/2026 03:46" [ref=e330]
+                - cell "Recibida" [ref=e331]:
+                  - generic [ref=e332]: Recibida
+                - cell [ref=e333]:
+                  - button [ref=e334]:
+                    - img [ref=e335]: open_in_new
+              - row "OC-2026-0034 Proveedor AINT2902 $500.00 admin 07/06/2026 03:46 Recibida" [ref=e338] [cursor=pointer]:
+                - cell "OC-2026-0034" [ref=e339]:
+                  - generic [ref=e340]: OC-2026-0034
+                - cell "Proveedor AINT2902" [ref=e341]:
+                  - generic [ref=e342]: Proveedor AINT2902
+                - cell "$500.00" [ref=e343]
+                - cell "admin" [ref=e344]
+                - cell "07/06/2026 03:46" [ref=e345]
+                - cell "Recibida" [ref=e346]:
+                  - generic [ref=e347]: Recibida
+                - cell [ref=e348]:
+                  - button [ref=e349]:
+                    - img [ref=e350]: open_in_new
+              - row "OC-2026-0033 Proveedor RBAC R87261 $1,500.00 mgrR87261 07/06/2026 03:46 Recibida" [ref=e353] [cursor=pointer]:
+                - cell "OC-2026-0033" [ref=e354]:
+                  - generic [ref=e355]: OC-2026-0033
+                - cell "Proveedor RBAC R87261" [ref=e356]:
+                  - generic [ref=e357]: Proveedor RBAC R87261
+                - cell "$1,500.00" [ref=e358]
+                - cell "mgrR87261" [ref=e359]
+                - cell "07/06/2026 03:46" [ref=e360]
+                - cell "Recibida" [ref=e361]:
+                  - generic [ref=e362]: Recibida
+                - cell [ref=e363]:
+                  - button [ref=e364]:
+                    - img [ref=e365]: open_in_new
+              - row "OC-2026-0031 Proveedor AINT86360 $500.00 admin 07/06/2026 03:46 Recibida" [ref=e368] [cursor=pointer]:
+                - cell "OC-2026-0031" [ref=e369]:
+                  - generic [ref=e370]: OC-2026-0031
+                - cell "Proveedor AINT86360" [ref=e371]:
+                  - generic [ref=e372]: Proveedor AINT86360
+                - cell "$500.00" [ref=e373]
+                - cell "admin" [ref=e374]
+                - cell "07/06/2026 03:46" [ref=e375]
+                - cell "Recibida" [ref=e376]:
+                  - generic [ref=e377]: Recibida
+                - cell [ref=e378]:
+                  - button [ref=e379]:
+                    - img [ref=e380]: open_in_new
+              - row "OC-2026-0030 Proveedor RBAC R97733 $1,500.00 mgrR97733 07/06/2026 03:41 Recibida" [ref=e383] [cursor=pointer]:
+                - cell "OC-2026-0030" [ref=e384]:
+                  - generic [ref=e385]: OC-2026-0030
+                - cell "Proveedor RBAC R97733" [ref=e386]:
+                  - generic [ref=e387]: Proveedor RBAC R97733
+                - cell "$1,500.00" [ref=e388]
+                - cell "mgrR97733" [ref=e389]
+                - cell "07/06/2026 03:41" [ref=e390]
+                - cell "Recibida" [ref=e391]:
+                  - generic [ref=e392]: Recibida
+                - cell [ref=e393]:
+                  - button [ref=e394]:
+                    - img [ref=e395]: open_in_new
+            - group [ref=e398]:
+              - generic [ref=e400]:
+                - generic [ref=e401]:
+                  - generic [ref=e402]: "Items per page:"
+                  - combobox "Items per page:" [ref=e407] [cursor=pointer]:
+                    - generic [ref=e408]:
+                      - generic [ref=e410]: "20"
+                      - img [ref=e413]
+                - generic [ref=e416]:
+                  - status [ref=e417]: 1 – 20 of 39
+                  - button "Previous page" [disabled] [ref=e418]:
+                    - img [ref=e419]
+                  - button "Next page" [ref=e423] [cursor=pointer]:
+                    - img [ref=e424]

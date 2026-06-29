@@ -1,0 +1,29 @@
+.layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.layout-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.sidebar-panel {
+  width: var(--sidebar-width-expanded);
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: width var(--sidebar-transition);
+
+  &.collapsed {
+    width: var(--sidebar-width-collapsed);
+  }
+}
+
+.layout-content {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  background-color: var(--color-bg-app);
+}

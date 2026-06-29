@@ -1,0 +1,41 @@
+.not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 16px;
+  background: #FAFAFA;
+
+  &__icon {
+    font-size: 72px;
+    width: 72px;
+    height: 72px;
+    color: #CE6EEB;
+  }
+
+  &__code {
+    font-size: 96px;
+    font-weight: 700;
+    color: #6B3C6B;
+    margin: 0;
+    line-height: 1;
+  }
+
+  &__title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #212121;
+    margin: 0;
+  }
+
+  &__desc {
+    font-size: 16px;
+    color: #757575;
+    margin: 0;
+  }
+
+  button {
+    margin-top: 8px;
+  }
+}

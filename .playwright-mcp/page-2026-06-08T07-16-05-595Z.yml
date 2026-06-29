@@ -1,0 +1,105 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Órdenes de compra
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: test_wh
+            - 'generic "Rol: WAREHOUSEMAN" [ref=e25]': WAREHOUSEMAN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+        - button "Expandir menú" [ref=e42] [cursor=pointer]:
+          - img [ref=e43]: chevron_right
+      - main [ref=e44]:
+        - generic [ref=e47]:
+          - generic [ref=e48]:
+            - button [ref=e49] [cursor=pointer]:
+              - img [ref=e50]: arrow_back
+            - generic [ref=e53]:
+              - heading "OC-2026-0065" [level=2] [ref=e54]
+              - generic [ref=e55]: Recibida
+          - generic [ref=e56]:
+            - generic [ref=e57]:
+              - generic [ref=e58]:
+                - heading "Información de la orden" [level=3] [ref=e59]
+                - generic [ref=e60]:
+                  - generic [ref=e61]:
+                    - generic:
+                      - generic:
+                        - generic [ref=e62]:
+                          - text: Proveedor
+                          - generic [ref=e63]: "*"
+                        - generic:
+                          - combobox "Proveedor" [disabled]:
+                            - generic:
+                              - generic:
+                                - generic: Agroquímica y Fertilizantes del Valle S.A.
+                              - generic:
+                                - generic:
+                                  - img
+                  - generic [ref=e65]:
+                    - generic:
+                      - generic:
+                        - generic [ref=e66]: Notas
+                        - textbox "Notas" [disabled] [ref=e67]:
+                          - /placeholder: Observaciones opcionales
+                          - text: Orden test WAREHOUSEMAN
+              - generic [ref=e69]:
+                - heading "Líneas de detalle" [level=3] [ref=e71]
+                - table [ref=e72]:
+                  - row "SKU Producto Cantidad" [ref=e73]:
+                    - columnheader "SKU" [ref=e74]
+                    - columnheader "Producto" [ref=e75]
+                    - columnheader "Cantidad" [ref=e76]
+                  - row "ELEC-TV55-001 Televisor LED 55\" 4K Smart TV 2" [ref=e77]:
+                    - cell "ELEC-TV55-001" [ref=e78]:
+                      - generic [ref=e79]: ELEC-TV55-001
+                    - cell "Televisor LED 55\" 4K Smart TV" [ref=e80]:
+                      - generic [ref=e81]: Televisor LED 55" 4K Smart TV
+                    - cell "2" [ref=e82]
+            - generic [ref=e83]:
+              - generic [ref=e84]:
+                - heading "Historial de estado" [level=3] [ref=e85]
+                - generic [ref=e86]:
+                  - generic [ref=e87]:
+                    - img [ref=e88]: add_circle
+                    - generic [ref=e89]:
+                      - generic [ref=e90]: Creada
+                      - generic [ref=e91]: admin
+                      - generic [ref=e92]: 07/06/2026 19:08
+                  - generic [ref=e93]:
+                    - img [ref=e94]: check_circle
+                    - generic [ref=e95]:
+                      - generic [ref=e96]: Aprobada
+                      - generic [ref=e97]: admin
+                      - generic [ref=e98]: 07/06/2026 19:08
+                  - generic [ref=e99]:
+                    - img [ref=e100]: done_all
+                    - generic [ref=e101]:
+                      - generic [ref=e102]: Recibida
+                      - generic [ref=e103]: test_wh
+                      - generic [ref=e104]: 07/06/2026 19:09
+              - generic [ref=e105]:
+                - generic [ref=e106]: "Última modificación:"
+                - generic [ref=e107]: 07/06/2026 19:09

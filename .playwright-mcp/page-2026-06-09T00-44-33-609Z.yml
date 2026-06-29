@@ -1,0 +1,102 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e8714] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e8715] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Productos" [ref=e8716]':
+          - img [ref=e15]: chevron_right
+          - text: Inventario → Productos
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e8717] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e8718]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e8719]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e8720]:
+        - menubar [ref=e32]:
+          - menuitem [expanded] [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e8721] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - generic [ref=e51]:
+              - generic [ref=e54]:
+                - generic [ref=e55]: Buscar por código o nombre
+                - textbox "Buscar por código o nombre" [active] [ref=e8722]: Desarmador
+                - img [ref=e59]: search
+              - generic [ref=e63] [cursor=pointer]:
+                - generic [ref=e64]: Categoría
+                - combobox "Categoría" [ref=e8723]:
+                  - img [ref=e72]
+              - generic [ref=e77] [cursor=pointer]:
+                - generic [ref=e78]: Estado
+                - combobox "Estado" [ref=e8724]:
+                  - img [ref=e86]
+              - generic [ref=e91] [cursor=pointer]:
+                - generic [ref=e92]: Proveedor
+                - combobox "Proveedor" [ref=e8725]:
+                  - img [ref=e100]
+              - button "Limpiar todos los filtros" [ref=e8726] [cursor=pointer]:
+                - img [ref=e8474]: filter_alt_off
+            - button "Nuevo producto" [ref=e8727]:
+              - img [ref=e105]: add
+              - generic [ref=e106]: Nuevo producto
+          - generic [ref=e8747]:
+            - table [ref=e8748]:
+              - rowgroup [ref=e8749]:
+                - row "Código Nombre Categoría Proveedor Stock Precio Costo unit. Estado" [ref=e8750]:
+                  - columnheader "Código" [ref=e8751]
+                  - columnheader "Nombre" [ref=e8752]
+                  - columnheader "Categoría" [ref=e8753]
+                  - columnheader "Proveedor" [ref=e8754]
+                  - columnheader "Stock" [ref=e8755]
+                  - columnheader "Precio" [ref=e8756]
+                  - columnheader "Costo unit." [ref=e8757]
+                  - columnheader "Estado" [ref=e8758]
+                  - columnheader [ref=e8759]
+              - rowgroup [ref=e8760]:
+                - 'row "HMAN-DES-013 Desarmador de Impacto Manual 6 en 1 Herramientas Manuales Ferretera Industrial del Norte S.A. de C.V. Stock OK · Físico: 90 · Mínimo: 20 $320.00 $180.00 Disponible Registrar movimiento para Desarmador de Impacto Manual 6 en 1" [ref=e8761] [cursor=pointer]':
+                  - cell "HMAN-DES-013" [ref=e8762]
+                  - cell "Desarmador de Impacto Manual 6 en 1" [ref=e8763]
+                  - cell "Herramientas Manuales" [ref=e8764]
+                  - cell "Ferretera Industrial del Norte S.A. de C.V." [ref=e8765]
+                  - 'cell "Stock OK · Físico: 90 · Mínimo: 20" [ref=e8766]':
+                    - 'status "Stock OK · Físico: 90 · Mínimo: 20" [ref=e8768]': "90"
+                  - cell "$320.00" [ref=e8769]
+                  - cell "$180.00" [ref=e8770]
+                  - cell "Disponible" [ref=e8771]:
+                    - generic [ref=e8772]: Disponible
+                  - cell "Registrar movimiento para Desarmador de Impacto Manual 6 en 1" [ref=e8773]:
+                    - button "Registrar movimiento para Desarmador de Impacto Manual 6 en 1" [ref=e8774]:
+                      - img [ref=e8775]: swap_vert
+            - group "Paginación de productos" [ref=e8778]:
+              - generic [ref=e8780]:
+                - generic [ref=e8781]:
+                  - generic [ref=e8782]: "Items per page:"
+                  - combobox "Items per page:" [ref=e8787] [cursor=pointer]:
+                    - generic [ref=e8788]:
+                      - generic [ref=e8790]: "20"
+                      - img [ref=e8793]
+                - generic [ref=e8796]:
+                  - status [ref=e8797]: 1 – 1 of 1
+                  - button "Previous page" [disabled] [ref=e8798]:
+                    - img [ref=e8799]
+                  - button "Next page" [disabled] [ref=e8803]:
+                    - img [ref=e8804]

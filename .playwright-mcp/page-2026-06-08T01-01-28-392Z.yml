@@ -1,0 +1,122 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "Ir al contenido principal" [ref=e611] [cursor=pointer]:
+      - /url: "#main-content"
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button "Alternar menú lateral" [ref=e612] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e945]':
+            - img [ref=e15]: chevron_right
+            - text: Compras → Órdenes de compra
+        - generic [ref=e16]:
+          - button "Notificaciones" [ref=e614] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button "Menú de usuario" [ref=e615]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: test_mgr
+              - 'generic "Rol: MANAGER" [ref=e616]': MANAGER
+      - generic [ref=e28]:
+        - navigation "Navegación principal" [ref=e617]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+          - button "Expandir menú" [ref=e618] [cursor=pointer]:
+            - img [ref=e43]: chevron_right
+        - main [ref=e44]:
+          - generic [ref=e947]:
+            - generic [ref=e948]:
+              - button [ref=e949] [cursor=pointer]:
+                - img [ref=e950]: arrow_back
+              - generic [ref=e953]:
+                - heading "OC-2026-0063" [level=2] [ref=e954]
+                - generic [ref=e955]: Pendiente
+              - generic [ref=e956]:
+                - button "Aprobar" [ref=e957]:
+                  - img [ref=e958]: check_circle
+                  - generic [ref=e959]: Aprobar
+                - button "Cancelar orden" [ref=e962]:
+                  - img [ref=e963]: cancel
+                  - generic [ref=e964]: Cancelar orden
+            - generic [ref=e967]:
+              - generic [ref=e968]:
+                - generic [ref=e969]:
+                  - heading "Información de la orden" [level=3] [ref=e970]
+                  - generic [ref=e971]:
+                    - generic [ref=e974] [cursor=pointer]:
+                      - generic [ref=e975]:
+                        - text: Proveedor
+                        - generic [ref=e976]: "*"
+                      - combobox "Proveedor" [ref=e978]:
+                        - generic [ref=e979]:
+                          - generic [ref=e981]: Agroquímica y Fertilizantes del Valle S.A.
+                          - img [ref=e984]
+                    - generic [ref=e989]:
+                      - generic [ref=e990]: Notas
+                      - textbox "Notas" [ref=e992]:
+                        - /placeholder: Observaciones opcionales
+                    - button "Guardar cambios" [ref=e995]:
+                      - img [ref=e996]: save
+                      - generic [ref=e997]: Guardar cambios
+                - generic [ref=e1000]:
+                  - generic [ref=e1001]:
+                    - heading "Líneas de detalle" [level=3] [ref=e1002]
+                    - button "Agregar línea" [ref=e1003]:
+                      - img [ref=e1004]: add
+                      - generic [ref=e1005]: Agregar línea
+                  - table [ref=e1008]:
+                    - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e1009]:
+                      - columnheader "SKU" [ref=e1010]
+                      - columnheader "Producto" [ref=e1011]
+                      - columnheader "Cantidad" [ref=e1012]
+                      - columnheader "Precio unitario" [ref=e1013]
+                      - columnheader "Subtotal" [ref=e1014]
+                      - columnheader [ref=e1015]
+                    - row "CONS-CEM50-016 Cemento Portland Tipo I Saco 50kg 5 $120.00 $600.00" [ref=e1016]:
+                      - cell "CONS-CEM50-016" [ref=e1017]:
+                        - generic [ref=e1018]: CONS-CEM50-016
+                      - cell "Cemento Portland Tipo I Saco 50kg" [ref=e1019]:
+                        - generic [ref=e1020]: Cemento Portland Tipo I Saco 50kg
+                      - cell "5" [ref=e1021]
+                      - cell "$120.00" [ref=e1022]
+                      - cell "$600.00" [ref=e1023]
+                      - cell [ref=e1024]:
+                        - button [ref=e1025] [cursor=pointer]:
+                          - img [ref=e1026]: edit
+                        - button [ref=e1029] [cursor=pointer]:
+                          - img [ref=e1030]: delete
+                  - generic [ref=e1033]:
+                    - generic [ref=e1034]: "Total de la orden:"
+                    - generic [ref=e1035]: $600.00
+              - generic [ref=e1037]:
+                - heading "Historial de estado" [level=3] [ref=e1038]
+                - generic [ref=e1039]:
+                  - generic [ref=e1040]:
+                    - img [ref=e1041]: add_circle
+                    - generic [ref=e1042]:
+                      - generic [ref=e1043]: Creada
+                      - generic [ref=e1044]: test_mgr
+                      - generic [ref=e1045]: 07/06/2026 19:01
+                  - generic [ref=e1046]:
+                    - img [ref=e1047]: check_circle
+                    - generic [ref=e1048]:
+                      - generic [ref=e1049]: Aprobada
+                      - generic [ref=e1050]: Pendiente
+                  - generic [ref=e1051]:
+                    - img [ref=e1052]: done_all
+                    - generic [ref=e1053]:
+                      - generic [ref=e1054]: Recibida
+                      - generic [ref=e1055]: Pendiente
+  - generic [ref=e1062]:
+    - generic [ref=e1063]: Orden creada correctamente.
+    - button "Cerrar" [ref=e1065]:
+      - generic [ref=e1066]: Cerrar

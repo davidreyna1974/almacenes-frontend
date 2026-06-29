@@ -1,0 +1,67 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Órdenes de compra
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: test_wh
+            - 'generic "Rol: WAREHOUSEMAN" [ref=e25]': WAREHOUSEMAN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+        - button "Expandir menú" [ref=e42] [cursor=pointer]:
+          - img [ref=e43]: chevron_right
+      - main [ref=e44]:
+        - generic [ref=e47]:
+          - generic [ref=e48]:
+            - heading "Órdenes de compra" [level=2] [ref=e49]
+            - generic [ref=e52]:
+              - generic [ref=e53]: Buscar
+              - img [ref=e55]: search
+              - textbox "Buscar" [ref=e57]:
+                - /placeholder: N° orden, proveedor, usuario…
+          - generic [ref=e58]:
+            - tablist [ref=e61]:
+              - generic [ref=e62]:
+                - tab "Pendientes" [selected] [ref=e63] [cursor=pointer]:
+                  - generic [ref=e65]: Pendientes
+                - tab "Aprobadas" [ref=e66] [cursor=pointer]:
+                  - generic [ref=e68]: Aprobadas
+                - tab "Recibidas" [ref=e69] [cursor=pointer]:
+                  - generic [ref=e71]: Recibidas
+                - tab "Canceladas" [ref=e72] [cursor=pointer]:
+                  - generic [ref=e74]: Canceladas
+            - generic:
+              - tabpanel "Pendientes"
+          - generic [ref=e75]:
+            - generic [ref=e76]:
+              - img [ref=e77]: receipt_long
+              - paragraph [ref=e78]: Sin órdenes pendientes
+            - table [ref=e79]:
+              - row "N° Orden Proveedor Creado por Fecha Estado" [ref=e80]:
+                - columnheader "N° Orden" [ref=e81]
+                - columnheader "Proveedor" [ref=e82]
+                - columnheader "Creado por" [ref=e83]
+                - columnheader "Fecha" [ref=e84]
+                - columnheader "Estado" [ref=e85]
+                - columnheader [ref=e86]

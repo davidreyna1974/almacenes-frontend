@@ -1,0 +1,128 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e1069] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e1070] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e1071]:
+            - img [ref=e15]: chevron_right
+            - text: Compras → Órdenes de compra
+        - generic [ref=e16]:
+          - button [ref=e1072] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e1073]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: test_mgr
+              - generic [ref=e1074]: MANAGER
+      - generic [ref=e28]:
+        - navigation [ref=e1075]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+          - button [ref=e1076] [cursor=pointer]:
+            - img [ref=e43]: chevron_right
+        - main [ref=e44]:
+          - generic [ref=e947]:
+            - generic [ref=e948]:
+              - button [ref=e949] [cursor=pointer]:
+                - img [ref=e950]: arrow_back
+              - generic [ref=e953]:
+                - heading [level=2] [ref=e1077]: OC-2026-0063
+                - generic [ref=e955]: Pendiente
+              - generic [ref=e956]:
+                - button [ref=e1078]:
+                  - img [ref=e958]: check_circle
+                  - generic [ref=e959]: Aprobar
+                - button [ref=e1079]:
+                  - img [ref=e963]: cancel
+                  - generic [ref=e964]: Cancelar orden
+            - generic [ref=e967]:
+              - generic [ref=e968]:
+                - generic [ref=e969]:
+                  - heading [level=3] [ref=e1080]: Información de la orden
+                  - generic [ref=e971]:
+                    - generic [ref=e974] [cursor=pointer]:
+                      - generic [ref=e975]:
+                        - text: Proveedor
+                        - generic [ref=e976]: "*"
+                      - combobox [ref=e1081]:
+                        - generic [ref=e979]:
+                          - generic [ref=e981]: Agroquímica y Fertilizantes del Valle S.A.
+                          - img [ref=e984]
+                    - generic [ref=e989]:
+                      - generic [ref=e990]: Notas
+                      - textbox [ref=e1082]:
+                        - /placeholder: Observaciones opcionales
+                    - button [ref=e1083]:
+                      - img [ref=e996]: save
+                      - generic [ref=e997]: Guardar cambios
+                - generic [ref=e1000]:
+                  - generic [ref=e1001]:
+                    - heading [level=3] [ref=e1084]: Líneas de detalle
+                    - button [ref=e1085]:
+                      - img [ref=e1004]: add
+                      - generic [ref=e1005]: Agregar línea
+                  - table [ref=e1008]:
+                    - row [ref=e1086]:
+                      - columnheader [ref=e1087]: SKU
+                      - columnheader [ref=e1088]: Producto
+                      - columnheader [ref=e1089]: Cantidad
+                      - columnheader [ref=e1090]: Precio unitario
+                      - columnheader [ref=e1091]: Subtotal
+                      - columnheader [ref=e1015]
+                    - row [ref=e1092]:
+                      - cell [ref=e1093]:
+                        - generic [ref=e1018]: CONS-CEM50-016
+                      - cell [ref=e1094]:
+                        - generic [ref=e1020]: Cemento Portland Tipo I Saco 50kg
+                      - cell [ref=e1095]: "5"
+                      - cell [ref=e1096]: $120.00
+                      - cell [ref=e1097]: $600.00
+                      - cell [ref=e1024]:
+                        - button [ref=e1025] [cursor=pointer]:
+                          - img [ref=e1026]: edit
+                        - button [ref=e1029] [cursor=pointer]:
+                          - img [ref=e1030]: delete
+                  - generic [ref=e1033]:
+                    - generic [ref=e1034]: "Total de la orden:"
+                    - generic [ref=e1035]: $600.00
+              - generic [ref=e1037]:
+                - heading [level=3] [ref=e1098]: Historial de estado
+                - generic [ref=e1039]:
+                  - generic [ref=e1040]:
+                    - img [ref=e1041]: add_circle
+                    - generic [ref=e1042]:
+                      - generic [ref=e1043]: Creada
+                      - generic [ref=e1044]: test_mgr
+                      - generic [ref=e1045]: 07/06/2026 19:01
+                  - generic [ref=e1046]:
+                    - img [ref=e1047]: check_circle
+                    - generic [ref=e1048]:
+                      - generic [ref=e1049]: Aprobada
+                      - generic [ref=e1050]: Pendiente
+                  - generic [ref=e1051]:
+                    - img [ref=e1052]: done_all
+                    - generic [ref=e1053]:
+                      - generic [ref=e1054]: Recibida
+                      - generic [ref=e1055]: Pendiente
+  - dialog "Cancelar orden" [ref=e1102]:
+    - generic [ref=e1105]:
+      - heading "Cancelar orden" [level=2] [ref=e1106]
+      - paragraph [ref=e1108]: ¿Cancelar la orden OC-2026-0063? Esta acción es irreversible.
+      - generic [ref=e1109]:
+        - button "Cancelar" [active] [ref=e1110]:
+          - generic [ref=e1111]: Cancelar
+        - button "Cancelar orden" [ref=e1114]:
+          - generic [ref=e1115]: Cancelar orden

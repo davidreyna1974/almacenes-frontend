@@ -1,0 +1,184 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e1283] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e1284] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Categorías" [ref=e1285]':
+          - img [ref=e15]: chevron_right
+          - text: Inventario → Categorías
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e1286] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e1287]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e1288]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e1289]:
+        - menubar [ref=e32]:
+          - menuitem [expanded] [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e1290] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - heading "Categorías" [level=2] [ref=e1291]
+            - button "Nueva categoría" [ref=e1292]:
+              - img [ref=e54]: add
+              - generic [ref=e55]: Nueva categoría
+          - generic [ref=e58]:
+            - table [ref=e59]:
+              - rowgroup [ref=e60]:
+                - row "Nombre Descripción" [ref=e1293]:
+                  - columnheader "Nombre" [ref=e1294]
+                  - columnheader "Descripción" [ref=e1295]
+                  - columnheader [ref=e64]
+              - rowgroup [ref=e65]:
+                - row "Cat-Mgr-R13318 Categoría de MANAGER Ver productos de Cat-Mgr-R13318" [ref=e1633] [cursor=pointer]:
+                  - cell "Cat-Mgr-R13318" [ref=e1634]
+                  - cell "Categoría de MANAGER" [ref=e1635]
+                  - cell "Ver productos de Cat-Mgr-R13318" [ref=e1636]:
+                    - button "Ver productos de Cat-Mgr-R13318" [ref=e1637]:
+                      - img [ref=e1638]: shopping_bag
+                - row "Cat-Mgr-R17308 Categoría de MANAGER Ver productos de Cat-Mgr-R17308" [ref=e1641] [cursor=pointer]:
+                  - cell "Cat-Mgr-R17308" [ref=e1642]
+                  - cell "Categoría de MANAGER" [ref=e1643]
+                  - cell "Ver productos de Cat-Mgr-R17308" [ref=e1644]:
+                    - button "Ver productos de Cat-Mgr-R17308" [ref=e1645]:
+                      - img [ref=e1646]: shopping_bag
+                - row "Cat-Mgr-R20326 Categoría de MANAGER Ver productos de Cat-Mgr-R20326" [ref=e1649] [cursor=pointer]:
+                  - cell "Cat-Mgr-R20326" [ref=e1650]
+                  - cell "Categoría de MANAGER" [ref=e1651]
+                  - cell "Ver productos de Cat-Mgr-R20326" [ref=e1652]:
+                    - button "Ver productos de Cat-Mgr-R20326" [ref=e1653]:
+                      - img [ref=e1654]: shopping_bag
+                - row "Cat-Mgr-R24138 Categoría de MANAGER Ver productos de Cat-Mgr-R24138" [ref=e1657] [cursor=pointer]:
+                  - cell "Cat-Mgr-R24138" [ref=e1658]
+                  - cell "Categoría de MANAGER" [ref=e1659]
+                  - cell "Ver productos de Cat-Mgr-R24138" [ref=e1660]:
+                    - button "Ver productos de Cat-Mgr-R24138" [ref=e1661]:
+                      - img [ref=e1662]: shopping_bag
+                - row "Cat-Mgr-R26542 Categoría de MANAGER Ver productos de Cat-Mgr-R26542" [ref=e1665] [cursor=pointer]:
+                  - cell "Cat-Mgr-R26542" [ref=e1666]
+                  - cell "Categoría de MANAGER" [ref=e1667]
+                  - cell "Ver productos de Cat-Mgr-R26542" [ref=e1668]:
+                    - button "Ver productos de Cat-Mgr-R26542" [ref=e1669]:
+                      - img [ref=e1670]: shopping_bag
+                - row "Cat-Mgr-R36029 Categoría de MANAGER Ver productos de Cat-Mgr-R36029" [ref=e1673] [cursor=pointer]:
+                  - cell "Cat-Mgr-R36029" [ref=e1674]
+                  - cell "Categoría de MANAGER" [ref=e1675]
+                  - cell "Ver productos de Cat-Mgr-R36029" [ref=e1676]:
+                    - button "Ver productos de Cat-Mgr-R36029" [ref=e1677]:
+                      - img [ref=e1678]: shopping_bag
+                - row "Cat-Mgr-R36816 Categoría de MANAGER Ver productos de Cat-Mgr-R36816" [ref=e1681] [cursor=pointer]:
+                  - cell "Cat-Mgr-R36816" [ref=e1682]
+                  - cell "Categoría de MANAGER" [ref=e1683]
+                  - cell "Ver productos de Cat-Mgr-R36816" [ref=e1684]:
+                    - button "Ver productos de Cat-Mgr-R36816" [ref=e1685]:
+                      - img [ref=e1686]: shopping_bag
+                - row "Cat-Mgr-R3784 Categoría de MANAGER Ver productos de Cat-Mgr-R3784" [ref=e1689] [cursor=pointer]:
+                  - cell "Cat-Mgr-R3784" [ref=e1690]
+                  - cell "Categoría de MANAGER" [ref=e1691]
+                  - cell "Ver productos de Cat-Mgr-R3784" [ref=e1692]:
+                    - button "Ver productos de Cat-Mgr-R3784" [ref=e1693]:
+                      - img [ref=e1694]: shopping_bag
+                - row "Cat-Mgr-R39152 Categoría de MANAGER Ver productos de Cat-Mgr-R39152" [ref=e1697] [cursor=pointer]:
+                  - cell "Cat-Mgr-R39152" [ref=e1698]
+                  - cell "Categoría de MANAGER" [ref=e1699]
+                  - cell "Ver productos de Cat-Mgr-R39152" [ref=e1700]:
+                    - button "Ver productos de Cat-Mgr-R39152" [ref=e1701]:
+                      - img [ref=e1702]: shopping_bag
+                - row "Cat-Mgr-R41075 Categoría de MANAGER Ver productos de Cat-Mgr-R41075" [ref=e1705] [cursor=pointer]:
+                  - cell "Cat-Mgr-R41075" [ref=e1706]
+                  - cell "Categoría de MANAGER" [ref=e1707]
+                  - cell "Ver productos de Cat-Mgr-R41075" [ref=e1708]:
+                    - button "Ver productos de Cat-Mgr-R41075" [ref=e1709]:
+                      - img [ref=e1710]: shopping_bag
+                - row "Cat-Mgr-R44964 Categoría de MANAGER Ver productos de Cat-Mgr-R44964" [ref=e1713] [cursor=pointer]:
+                  - cell "Cat-Mgr-R44964" [ref=e1714]
+                  - cell "Categoría de MANAGER" [ref=e1715]
+                  - cell "Ver productos de Cat-Mgr-R44964" [ref=e1716]:
+                    - button "Ver productos de Cat-Mgr-R44964" [ref=e1717]:
+                      - img [ref=e1718]: shopping_bag
+                - row "Cat-Mgr-R58523 Categoría de MANAGER Ver productos de Cat-Mgr-R58523" [ref=e1721] [cursor=pointer]:
+                  - cell "Cat-Mgr-R58523" [ref=e1722]
+                  - cell "Categoría de MANAGER" [ref=e1723]
+                  - cell "Ver productos de Cat-Mgr-R58523" [ref=e1724]:
+                    - button "Ver productos de Cat-Mgr-R58523" [ref=e1725]:
+                      - img [ref=e1726]: shopping_bag
+                - row "Cat-Mgr-R59 Categoría de MANAGER Ver productos de Cat-Mgr-R59" [ref=e1729] [cursor=pointer]:
+                  - cell "Cat-Mgr-R59" [ref=e1730]
+                  - cell "Categoría de MANAGER" [ref=e1731]
+                  - cell "Ver productos de Cat-Mgr-R59" [ref=e1732]:
+                    - button "Ver productos de Cat-Mgr-R59" [ref=e1733]:
+                      - img [ref=e1734]: shopping_bag
+                - row "Cat-Mgr-R6985 Categoría de MANAGER Ver productos de Cat-Mgr-R6985" [ref=e1737] [cursor=pointer]:
+                  - cell "Cat-Mgr-R6985" [ref=e1738]
+                  - cell "Categoría de MANAGER" [ref=e1739]
+                  - cell "Ver productos de Cat-Mgr-R6985" [ref=e1740]:
+                    - button "Ver productos de Cat-Mgr-R6985" [ref=e1741]:
+                      - img [ref=e1742]: shopping_bag
+                - row "Cat-Mgr-R70934 Categoría de MANAGER Ver productos de Cat-Mgr-R70934" [ref=e1745] [cursor=pointer]:
+                  - cell "Cat-Mgr-R70934" [ref=e1746]
+                  - cell "Categoría de MANAGER" [ref=e1747]
+                  - cell "Ver productos de Cat-Mgr-R70934" [ref=e1748]:
+                    - button "Ver productos de Cat-Mgr-R70934" [ref=e1749]:
+                      - img [ref=e1750]: shopping_bag
+                - row "Cat-Mgr-R8056 Categoría de MANAGER Ver productos de Cat-Mgr-R8056" [ref=e1753] [cursor=pointer]:
+                  - cell "Cat-Mgr-R8056" [ref=e1754]
+                  - cell "Categoría de MANAGER" [ref=e1755]
+                  - cell "Ver productos de Cat-Mgr-R8056" [ref=e1756]:
+                    - button "Ver productos de Cat-Mgr-R8056" [ref=e1757]:
+                      - img [ref=e1758]: shopping_bag
+                - row "Cat-Mgr-R87261 Categoría de MANAGER Ver productos de Cat-Mgr-R87261" [ref=e1761] [cursor=pointer]:
+                  - cell "Cat-Mgr-R87261" [ref=e1762]
+                  - cell "Categoría de MANAGER" [ref=e1763]
+                  - cell "Ver productos de Cat-Mgr-R87261" [ref=e1764]:
+                    - button "Ver productos de Cat-Mgr-R87261" [ref=e1765]:
+                      - img [ref=e1766]: shopping_bag
+                - row "Cat-Mgr-R95214 Categoría de MANAGER Ver productos de Cat-Mgr-R95214" [ref=e1769] [cursor=pointer]:
+                  - cell "Cat-Mgr-R95214" [ref=e1770]
+                  - cell "Categoría de MANAGER" [ref=e1771]
+                  - cell "Ver productos de Cat-Mgr-R95214" [ref=e1772]:
+                    - button "Ver productos de Cat-Mgr-R95214" [ref=e1773]:
+                      - img [ref=e1774]: shopping_bag
+                - row "Cat-Mgr-R97733 Categoría de MANAGER Ver productos de Cat-Mgr-R97733" [ref=e1777] [cursor=pointer]:
+                  - cell "Cat-Mgr-R97733" [ref=e1778]
+                  - cell "Categoría de MANAGER" [ref=e1779]
+                  - cell "Ver productos de Cat-Mgr-R97733" [ref=e1780]:
+                    - button "Ver productos de Cat-Mgr-R97733" [ref=e1781]:
+                      - img [ref=e1782]: shopping_bag
+                - row "Categoría Test F06 Ver productos de Categoría Test F06" [ref=e1785] [cursor=pointer]:
+                  - cell "Categoría Test F06" [ref=e1786]
+                  - cell [ref=e1787]
+                  - cell "Ver productos de Categoría Test F06" [ref=e1788]:
+                    - button "Ver productos de Categoría Test F06" [ref=e1789]:
+                      - img [ref=e1790]: shopping_bag
+            - group "Paginación de categorías" [ref=e1456]:
+              - generic [ref=e228]:
+                - generic [ref=e229]:
+                  - generic [ref=e230]: "Items per page:"
+                  - combobox "Items per page:" [ref=e1457] [cursor=pointer]:
+                    - generic [ref=e236]:
+                      - generic [ref=e238]: "20"
+                      - img [ref=e241]
+                - generic [ref=e244]:
+                  - status [ref=e245]: 21 – 40 of 69
+                  - button "Previous page" [ref=e1458] [cursor=pointer]:
+                    - img [ref=e247]
+                  - button "Next page" [ref=e1459] [cursor=pointer]:
+                    - img [ref=e252]

@@ -1,0 +1,52 @@
+.client-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+
+  &__title {
+    margin: 0 0 var(--space-1);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 16px;
+  }
+
+  &__field--half { grid-column: span 1; }
+  &__field--full { grid-column: span 2; }
+
+  &__audit {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    padding: 4px 0;
+  }
+
+  &__audit-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    mat-icon { font-size: 14px; width: 14px; height: 14px; }
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: var(--space-1);
+    border-top: 1px solid var(--color-divider);
+  }
+
+  &__actions-right {
+    display: flex;
+    gap: var(--space-1);
+    margin-left: auto;
+  }
+}

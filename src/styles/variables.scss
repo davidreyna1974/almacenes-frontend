@@ -1,0 +1,59 @@
+// ============================================================
+// PALETA CORPORATIVA — Sistema Almacenes
+// ============================================================
+
+// Colores de marca
+:root {
+  --color-primary:        #6B3C6B;
+  --color-accent:         #CE6EEB;
+  --color-surface:        #F2E4F2;
+
+  // Fondos
+  --color-bg-app:         #FAFAFA;
+  --color-bg-card:        #FFFFFF;
+
+  // Textos
+  --color-text-primary:   #212121;
+  --color-text-secondary: #757575;
+
+  // Bordes y separadores
+  --color-divider:        #E0E0E0;
+
+  // Estados semánticos
+  --color-success:        #2E7D32;
+  --color-success-bg:     #E8F5E9;
+  --color-warning:        #E65100;
+  --color-warning-bg:     #FFF3E0;
+  --color-info:           #1565C0;
+  --color-info-bg:        #E3F2FD;
+  --color-error:          #C62828;
+  --color-error-bg:       #FFEBEE;
+
+  // Chips de rol
+  --color-role-admin:       #C2185B;
+  --color-role-manager:     #1565C0;
+  --color-role-warehouseman: #2E7D32;
+  --color-role-sales:       #E65100;
+
+  // Layout
+  --sidebar-width-expanded:  240px;
+  --sidebar-width-collapsed: 64px;
+  --topbar-height:           64px;
+  --sidebar-transition:      200ms ease-in-out;
+
+  // Espaciado base (múltiplos de 8px)
+  --space-1: 8px;
+  --space-2: 16px;
+  --space-3: 24px;
+  --space-4: 32px;
+  --space-6: 48px;
+
+  // Sombras
+  --shadow-topbar:   0 1px 4px rgba(107, 60, 107, 0.15);
+  --shadow-card:     0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-dialog:   0 8px 24px rgba(0, 0, 0, 0.15);
+
+  // Tipografía
+  --font-family: 'Roboto', sans-serif;
+  --font-size-base: 14px;
+}

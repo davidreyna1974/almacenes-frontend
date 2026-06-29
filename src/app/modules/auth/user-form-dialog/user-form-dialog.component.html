@@ -1,0 +1,101 @@
+<h2 mat-dialog-title>
+  {{ isEdit ? 'Editar usuario: ' + (data.user?.username ?? '') : 'Nuevo usuario' }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="user-form" novalidate>
+
+    <!-- Username -->
+    <mat-form-field appearance="outline" class="user-form__field">
+      <mat-label>Nombre de usuario</mat-label>
+      <input matInput formControlName="username" maxlength="50" autocomplete="off">
+      @if (form.get('username')?.hasError('required') && form.get('username')?.touched) {
+        <mat-error>El nombre de usuario es obligatorio.</mat-error>
+      }
+      @if (form.get('username')?.hasError('maxlength')) {
+        <mat-error>Máximo 50 caracteres.</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Email -->
+    <mat-form-field appearance="outline" class="user-form__field">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" type="email" maxlength="100" autocomplete="off">
+      @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
+        <mat-error>El email es obligatorio.</mat-error>
+      }
+      @if (form.get('email')?.hasError('email')) {
+        <mat-error>El email no tiene un formato válido.</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Contraseña (solo en modo crear) -->
+    @if (!isEdit) {
+      <mat-form-field appearance="outline" class="user-form__field">
+        <mat-label>Contraseña</mat-label>
+        <input matInput formControlName="password"
+               [type]="hidePassword ? 'password' : 'text'"
+               autocomplete="new-password">
+        <button mat-icon-button matSuffix type="button"
+                (click)="hidePassword = !hidePassword"
+                [attr.aria-label]="hidePassword ? 'Mostrar contraseña' : 'Ocultar contraseña'">
+          <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        @if (form.get('password')?.hasError('required') && form.get('password')?.touched) {
+          <mat-error>La contraseña es obligatoria.</mat-error>
+        }
+        @if (form.get('password')?.hasError('minlength')) {
+          <mat-error>La contraseña debe tener al menos 8 caracteres.</mat-error>
+        }
+      </mat-form-field>
+    }
+
+    <!-- Roles -->
+    <div class="user-form__roles-section">
+      <p class="user-form__roles-label">
+        Roles <span class="user-form__roles-required" aria-hidden="true">*</span>
+      </p>
+      <div class="user-form__roles-grid">
+        @for (role of allRoles; track role.value) {
+          <mat-checkbox
+            [checked]="isRoleChecked(role.value)"
+            (change)="toggleRole(role.value)"
+            color="primary">
+            {{ role.label }}
+          </mat-checkbox>
+        }
+      </div>
+      @if (rolesInvalid && form.dirty) {
+        <p class="user-form__roles-error">Debe seleccionar al menos un rol.</p>
+      }
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-divider></mat-divider>
+
+<mat-dialog-actions class="user-form__actions">
+  @if (isEdit && canDeactivate) {
+    <button mat-stroked-button color="warn"
+            (click)="onDeactivate()"
+            [disabled]="loading"
+            class="user-form__btn-deactivate">
+      <mat-icon>person_off</mat-icon>
+      Desactivar
+    </button>
+  }
+  <span class="user-form__actions-spacer"></span>
+  <button mat-button (click)="dialogRef.close(false)" [disabled]="loading">
+    Cancelar
+  </button>
+  <button mat-flat-button color="primary"
+          (click)="onSave()"
+          [disabled]="saveDisabled">
+    @if (loading) {
+      <mat-spinner diameter="18" strokeWidth="2"></mat-spinner>
+    } @else {
+      {{ isEdit ? 'Guardar cambios' : 'Crear usuario' }}
+    }
+  </button>
+</mat-dialog-actions>

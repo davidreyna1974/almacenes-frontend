@@ -1,0 +1,1033 @@
+================================================================================
+PROPUESTA MÓDULO 4 — VENTAS / SALES (FRONTEND)
+Sistema de Gestión de Almacenes — Angular 21
+================================================================================
+
+Fecha de creación  : 2026-06-12
+Autor              : David Reyna Pineda
+Estado             : PROPUESTA — pendiente de aprobación antes de codificar
+Rama de trabajo    : feature/sales
+Referencia backend : módulo `sales` — completo (47 A + 25 B + 3 C + 5 D tests, 0 fallos;
+                      Optimistic Locking, reservas de stock)
+
+--------------------------------------------------------------------------------
+0. CHECKLIST OBLIGATORIO PRE-CÓDIGO (CLAUDE.md)
+--------------------------------------------------------------------------------
+
+[x] Leí memoria_tecnica_global_proyecto.md (sección 3 — contratos de integración,
+    sección 4 — RBAC transversal, sección 9 — lecciones L1-L33)
+[x] Leí controladores y DTOs del backend: ClientController, SaleOrderController,
+    ReservationController, ClientDTO, SaleOrder*DTO, Reserved*DTO, ReservationSummaryDTO
+[x] Leí SaleOrderServiceImpl.java (reglas de negocio, máquina de estados, manejo de
+    excepciones) y SecurityConfig.java (matriz RBAC real para /api/v1/sales/**)
+[x] Para cada endpoint: verifiqué ruta exacta, método HTTP y código de respuesta
+[x] Para cada response: verifiqué si es PageResponse<T>, lista simple, objeto o void (204)
+[x] Para cada DTO: verifiqué nombres exactos de campos del backend — ninguno asumido
+[x] Identifiqué 2 hallazgos pre-código que requieren decisión/coordinación con backend
+    antes o durante el desarrollo (sección 2 de este documento)
+[x] Matriz de campos sensibles × roles (L29) diseñada en sección 6 — ANTES de codificar
+[x] Decisiones L30 (401/403), L31 (diálogos/paginador), L32 (mixin tablas), L33
+    (forkJoin RBAC + datos de prueba) incorporadas desde el diseño (secciones 6-9)
+
+⚠️ Este documento NO incluye código todavía — es la propuesta de diseño para
+   aprobación. Los hallazgos de la sección 2 se documentan pero NO se corrigen
+   sin autorización explícita del usuario (regla vigente desde la revisión de
+   bugs de Inventory 2026-06-11/12).
+
+--------------------------------------------------------------------------------
+1. CONTEXTO Y JUSTIFICACIÓN
+--------------------------------------------------------------------------------
+
+El Módulo 4 — Ventas gestiona el ciclo de vida completo de las órdenes de venta:
+desde la creación con líneas de producto, pasando por la reserva de stock al
+aprobar, hasta la entrega física que decrementa el inventario. Es el espejo
+funcional de Compras (Módulo 3), pero con una máquina de estados distinta y
+con un concepto nuevo — **reservas de stock** (`reservedStock`) — que ya existe
+en el DTO de productos desde el Módulo 2 (Inventory) pero que Sales es el
+primer módulo en escribir activamente.
+
+El backend está completamente implementado y probado (0 fallos, 80 tests del
+módulo `sales`). El frontend consumirá:
+  - 5 endpoints de clientes (`/sales/clients/**`)
+  - 13 endpoints de órdenes de venta (`/sales/orders/**`)
+  - 5 endpoints de reservas (`/sales/reservations/**`, solo lectura)
+
+Audiencias (matriz de acceso global, memoria_tecnica_global_proyecto.md §4):
+  - ADMIN / MANAGER  : acceso completo (CRUD clientes, crear/editar/aprobar/
+                       entregar/cancelar órdenes, ver reservas)
+  - SALES            : crear/editar/cancelar órdenes propias del flujo PENDING,
+                       CRUD de clientes excepto desactivar, lectura de reservas
+  - WAREHOUSEMAN     : lectura de órdenes y reservas, entrega de órdenes
+                       APPROVED (única escritura permitida)
+
+A diferencia de Compras (donde SALES no tenía acceso alguno), **Sales es el
+primer módulo visible y operable por los 4 roles** — el primero donde se aplica
+realmente la matriz L29 de campos sensibles × roles de extremo a extremo.
+
+--------------------------------------------------------------------------------
+2. HALLAZGOS PRE-CÓDIGO — REQUIEREN DECISIÓN ANTES/JUNTO CON EL DESARROLLO
+--------------------------------------------------------------------------------
+
+Estos hallazgos se identifican y documentan aquí (regla vigente: "si identificas
+errores o bugs, solo identifícalos y documéntalos, no los corrijas hasta que lo
+autorices"). Ninguno bloquea por sí solo el inicio del Módulo 4, pero ambos
+deben resolverse ANTES de cerrar el módulo (Propuesta D) porque afectan
+directamente al manejo de errores y a la redacción de campos sensibles que el
+frontend de Sales va a consumir desde el primer componente.
+
+### H1 — `SaleOrderServiceImpl` usa `RuntimeException` genérica para reglas de
+negocio → el backend responde **500** en vez de **404/409/422**
+
+`GlobalExceptionHandler` solo convierte `BusinessRuleException` → 422,
+`ResourceNotFoundException` → 404, `DuplicateResourceException` → 409, y deja
+`RuntimeException` → **500** ("solo deben llegar aquí errores genuinos de
+infraestructura"). Sin embargo, `SaleOrderServiceImpl` lanza `RuntimeException`
+plano para TODAS sus reglas de negocio y casos "no encontrado", por ejemplo:
+
+  - `"Orden de venta con id {id} no encontrada."` (debería ser 404)
+  - `"Cliente con id {id} no encontrado."` (debería ser 404)
+  - `"Producto con id {id} no encontrado."` / `"...no está activo."` (404/422)
+  - `"Solo se pueden aprobar órdenes en estado PENDING..."` (422)
+  - `"Stock disponible insuficiente para '{name}'..."` (422)
+  - `"Solo se pueden entregar órdenes en estado APPROVED..."` (422)
+  - `"Stock físico insuficiente para '{name}'..."` (422)
+  - `"No se puede cancelar una orden ya entregada."` / `"...ya está cancelada."` (422)
+  - `"El producto '{name}' ya existe en esta orden..."` (409/422)
+  - `"Detalle con id {id} no encontrado en la orden {orderId}."` (404)
+  - `"Esta operación solo está permitida en órdenes PENDING..."` (422)
+
+**Impacto en el frontend de Sales**: `memoria_tecnica_global_proyecto.md` (§3)
+establece que "el frontend no debe basar ninguna lógica en el status code de
+errores de negocio; debe siempre leer `err.error?.message`". El mensaje SÍ
+llega correctamente en el body incluso con 500 (`GlobalExceptionHandler.
+handleRuntimeException` también usa `ex.getMessage()`), así que el snackbar
+rojo con el mensaje del backend **funcionará igual**. El riesgo real es:
+  1. Un 500 puede activar manejo genérico de "error de servidor" en
+     `error.interceptor.ts` si en el futuro se agrega lógica para 5xx
+     (hoy el interceptor solo actúa sobre 401/403, por lo que NO hay
+     riesgo inmediato — confirmado al leer error.interceptor.ts).
+  2. Los logs del backend van a registrar como "error de infraestructura"
+     situaciones que son, en realidad, reglas de negocio normales
+     (stock insuficiente, transición de estado inválida) — ruido en
+     monitoreo/alertas de producción.
+  3. Inconsistencia con el patrón ya corregido en
+     `PurchaseOrderServiceImpl` (ronda 2026-06-11/12, commit
+     `c3e2206`), donde `"Estado inválido: ..."` se migró de
+     `RuntimeException` a `BusinessRuleException` precisamente por
+     este motivo.
+  4. Caso adicional verificado en `GlobalExceptionHandler` (ver tabla
+     completa en sección 3 "Formato de error del backend"):
+     `approveOrder()` captura `ObjectOptimisticLockingFailureException`
+     y la re-lanza como `RuntimeException("Stock modificado
+     concurrentemente...")` → 500, cuando el handler dedicado de esa
+     excepción ya devolvería 409 (código semánticamente correcto para
+     "reintente, hubo contención"). El mensaje llega igual al frontend,
+     pero el código HTTP pierde la semántica de "reintentable".
+
+**Recomendación**: antes de cerrar el Módulo 4, migrar (en el backend) los
+`throw new RuntimeException(...)` de `SaleOrderServiceImpl` y `ClientServiceImpl`
+a `BusinessRuleException` (422) o `ResourceNotFoundException` (404) según
+corresponda — análogo al fix ya aplicado en `PurchaseOrderServiceImpl`. El
+frontend puede desarrollarse en paralelo (el mensaje llega igual), pero el
+caso de prueba `ERR-*` de "orden inexistente → 404" documentará el código
+real (500) hasta que se aplique el fix, con nota explícita. **No se modifica
+nada del backend sin autorización explícita.**
+
+### H2 — `unitCost` en `SaleOrderDetailResponseDTO` no tiene redacción por rol
+(continuación directa de L29 / BUG-INV-11)
+
+`GET /api/v1/sales/orders/**` es accesible para los 4 roles (`SecurityConfig`
+línea 164-165: `hasAnyRole("ADMIN","MANAGER","WAREHOUSEMAN","SALES")`).
+`SaleOrderDetailResponseDTO.unitCost` se popula siempre desde
+`Product.getUnitCost()` (ver `SaleOrderServiceImpl.createOrder/addDetail/
+updateDetail` y el comentario del DTO: "Incluye unitCost para que el futuro
+módulo financiero pueda calcular margen..."). No existe ningún `redactXxx(dto,
+role)` para este DTO — el mismo patrón que causó BUG-INV-11 en
+`ProductServiceImpl` (donde `unitCost` SÍ fue redactado para WAREHOUSEMAN/SALES
+el 2026-06-12, commit `c3e2206`).
+
+**Impacto**: si el frontend de Sales simplemente consume `details[].unitCost`
+para WAREHOUSEMAN o SALES, estaría exponiendo el costo de adquisición de cada
+producto vendido — exactamente el mismo "excessive data exposure" (CYBER-07)
+que BUG-INV-11, ahora en el módulo de Ventas.
+
+**Recomendación**: aplicar la matriz L29 completa (sección 6 de este documento)
+ANTES de implementar `ClientService`/`SaleOrderService` en Angular:
+  - Backend: redactar `unitCost` (y por extensión cualquier cálculo de margen)
+    en `SaleOrderDetailResponseDTO` para WAREHOUSEMAN y SALES, vía
+    `redactUnitCost(dto, role)` reutilizando el patrón de `ProductServiceImpl`,
+    aplicado en TODOS los endpoints de lectura de `/sales/orders/**`.
+  - Frontend: **no mostrar** la columna `unitCost`/margen en la tabla de
+    detalles ni en el formulario para WAREHOUSEMAN/SALES — condicional por
+    `canSeeCost()`, análogo a `canWrite()` en Inventory/Purchases.
+  - `ReservationSummaryDTO.totalReservedValue` y `ReservedProductDTO.
+    totalReservedValue`/`unitPrice` usan `Product.price` (precio de venta, no
+    costo) — **no requieren redacción** según la matriz L29 (ver sección 6).
+
+Ambos hallazgos (H1, H2) se agregan a `memoria_tecnica_modulo_sales_frontend.md`
+§8 (Bugs y retos) en cuanto se cree ese documento, y a
+`memoria_tecnica_global_proyecto.md` §9 al cerrar el módulo.
+
+--------------------------------------------------------------------------------
+3. CONTRATOS DE API VERIFICADOS
+--------------------------------------------------------------------------------
+
+BASE URL: http://localhost:8080/api/v1
+
+─── CLIENTES ────────────────────────────────────────────────────────────────
+
+  POST   /sales/clients                    → 201  ClientDTO
+  GET    /sales/clients/active             → 200  PageResponse<ClientDTO>
+           ?search=  (opcional, parcial sobre name, rfc, contact_name; insensible
+                      a may/acentos vía f_unaccent)
+           &page=0&size=20
+  GET    /sales/clients/{id}               → 200  ClientDTO
+  PUT    /sales/clients/{id}                → 200  ClientDTO
+  DELETE /sales/clients/{id}                → 204  void  (desactivación lógica)
+
+  RBAC backend (SecurityConfig):
+    GET                    → ADMIN, MANAGER, WAREHOUSEMAN, SALES
+    POST, PUT              → ADMIN, MANAGER, SALES
+    DELETE                 → ADMIN, MANAGER  (SALES explícitamente excluido,
+                              línea 179-181 — orden de matchers importa)
+
+─── ÓRDENES DE VENTA ──────────────────────────────────────────────────────────
+
+  POST   /sales/orders                              → 201  SaleOrderResponseDTO
+  GET    /sales/orders/{id}                         → 200  SaleOrderResponseDTO
+  GET    /sales/orders/status/{status}              → 200  PageResponse<SaleOrderResponseDTO>
+           &page=0&size=20  — Sort por createdAt DESC
+  GET    /sales/orders/client/{clientId}            → 200  List<SaleOrderResponseDTO>  (NO paginada)
+  GET    /sales/orders/client/{clientId}/status/{s} → 200  List<SaleOrderResponseDTO>  (NO paginada)
+  GET    /sales/orders/product/{productId}          → 200  List<SaleOrderResponseDTO>  (NO paginada)
+  GET    /sales/orders/product/{productId}/status/{s} → 200  List<SaleOrderResponseDTO>  (NO paginada)
+  PUT    /sales/orders/{id}                         → 200  SaleOrderResponseDTO  (solo PENDING)
+  PATCH  /sales/orders/{id}/approve                 → 200  SaleOrderResponseDTO  (sin body)
+  PATCH  /sales/orders/{id}/deliver                 → 200  SaleOrderResponseDTO  (sin body)
+  PATCH  /sales/orders/{id}/cancel                  → 200  SaleOrderResponseDTO  (sin body)
+  POST   /sales/orders/{id}/details                 → 201  SaleOrderResponseDTO  (orden completa)
+  PUT    /sales/orders/{id}/details/{detailId}      → 200  SaleOrderResponseDTO  (orden completa)
+  DELETE /sales/orders/{id}/details/{detailId}      → 204  void
+
+  RBAC backend (SecurityConfig, el orden de los matchers es significativo):
+    GET                    → ADMIN, MANAGER, WAREHOUSEMAN, SALES
+    PATCH /approve         → ADMIN, MANAGER               (NO WAREHOUSEMAN, NO SALES)
+    PATCH /deliver         → ADMIN, MANAGER, WAREHOUSEMAN  (NO SALES)
+    PATCH /cancel          → ADMIN, MANAGER, SALES         (NO WAREHOUSEMAN)
+    POST, PUT, DELETE      → ADMIN, MANAGER, SALES         (NO WAREHOUSEMAN)
+    PATCH (genérico, no matcheado arriba) → ADMIN, MANAGER, SALES
+
+─── RESERVAS (solo lectura) ───────────────────────────────────────────────────
+
+  GET /sales/reservations/summary           → 200  ReservationSummaryDTO
+  GET /sales/reservations/products          → 200  List<ReservedProductDTO>
+  GET /sales/reservations/products/{id}     → 200  ReservedProductDTO
+  GET /sales/reservations/clients           → 200  List<ReservedClientDTO>
+  GET /sales/reservations/clients/{id}      → 200  ReservedClientDTO
+
+  RBAC backend: GET /api/v1/sales/** → ADMIN, MANAGER, WAREHOUSEMAN, SALES (todos)
+
+─── DTOs VERIFICADOS (nombres exactos de campos) ──────────────────────────────
+
+  ClientDTO:
+    id, name, rfc, contactName, phone, email, address, active
+    createdAt, createdById, createdByUsername
+    updatedAt, updatedById, updatedByUsername
+    Validaciones: name (NotBlank, max 150), rfc (max 13), contactName (max 100),
+    phone (max 20), email (formato válido)
+
+  SaleOrderRequestDTO (body de POST /sales/orders):
+    clientId (Long, requerido)
+    notes (String, opcional)
+    details (List<SaleOrderDetailRequestDTO>, @NotNull @Size(min=1))
+      └─ productId (Long, requerido)
+         quantity  (int, min 1, requerido)
+         unitPrice (BigDecimal, min 0.01, requerido)
+         ⚠️ unitCost NO se envía — el backend lo lee de Product.unitCost
+
+  SaleOrderUpdateRequestDTO (body de PUT /sales/orders/{id}):
+    clientId (Long, requerido)
+    notes (String, opcional)
+
+  SaleOrderDetailRequestDTO (body de POST /sales/orders/{id}/details):
+    productId, quantity, unitPrice  (igual que arriba)
+
+  SaleOrderDetailUpdateRequestDTO (body de PUT .../details/{detailId}):
+    quantity (int, min 1), unitPrice (BigDecimal, min 0.01)
+    — productId NO se incluye (cambio de producto = delete + add, igual que Purchases)
+
+  SaleOrderResponseDTO:
+    id, orderNumber, status, notes, totalAmount
+    clientId, clientName
+    createdAt, createdById, createdByUsername
+    updatedAt, updatedById, updatedByUsername
+    approvedAt, approvedById, approvedByUsername
+    deliveredAt, deliveredById, deliveredByUsername
+    cancelledAt, cancelledById, cancelledByUsername
+    details (List<SaleOrderDetailResponseDTO>)
+
+  SaleOrderDetailResponseDTO:
+    id, quantity, unitPrice, unitCost (⚠️ ver H2), subtotal
+    productId, productSku, productName
+
+  ReservationSummaryDTO:
+    totalProductsWithReservations (int)
+    totalReservedUnits (int)
+    totalReservedValue (BigDecimal)   — reservedStock × price (precio venta, no costo)
+    totalApprovedOrders (int)
+
+  ReservedProductDTO:
+    productId, productSku, productName, totalReservedQty, unitPrice,
+    totalReservedValue, orders: List<ReservedProductOrderDTO>
+
+  ReservedProductOrderDTO:
+    orderId, orderNumber, quantity, subtotal, clientId, clientName, approvedAt
+
+  ReservedClientDTO:
+    clientId, clientName, totalReservedOrders, totalReservedValue,
+    orders: List<ReservedClientOrderDTO>
+
+  ReservedClientOrderDTO:
+    orderId, orderNumber, totalAmount, approvedAt, totalItems
+
+─── CAMPOS DE SOLO LECTURA (el backend los ignora o los genera) ───────────────
+
+  orderNumber  → generado por el servicio (OV-YYYY-NNNN) — nunca editable
+  totalAmount  → calculado (suma de subtotales) — nunca editable
+  subtotal     → calculado (quantity × unitPrice) — nunca editable
+  unitCost     → capturado de Product.unitCost al crear/actualizar detalle —
+                 nunca editable, ⚠️ sujeto a redacción por rol (H2/L29)
+  status       → solo cambia por PATCH /approve, /deliver, /cancel
+  createdAt/updatedAt/approvedAt/deliveredAt/cancelledAt → auditoría, solo lectura
+  createdBy*/approvedBy*/deliveredBy*/cancelledBy*       → auditoría, solo lectura
+
+─── REGLAS DE NEGOCIO DEL BACKEND (SaleOrderServiceImpl) ──────────────────────
+
+  R1.  Edición solo en PENDING: PUT /{id}, POST/PUT/DELETE details
+       → si status != PENDING → error (ver H1: hoy 500, debería ser 422)
+  R2.  Aprobación requiere ≥ 1 detalle → error si details vacío
+  R3.  Aprobación solo desde PENDING → error si status != PENDING
+  R4.  Aprobación valida disponibilidad en 2 fases (sin escrituras parciales):
+       si `currentStock - reservedStock < quantity` para CUALQUIER detalle,
+       NINGÚN producto se reserva → error "Stock disponible insuficiente para 'X'.
+       Disponible: N, solicitado: M."
+  R5.  Aprobación exitosa: `reservedStock += quantity` por cada detalle
+       (con `saveAndFlush` + manejo de `ObjectOptimisticLockingFailureException`
+       → "Stock modificado concurrentemente. Intente nuevamente.")
+  R6.  Entrega solo desde APPROVED → error si status != APPROVED
+  R7.  Entrega valida `currentStock >= quantity` (NO `availableStock` — la
+       reserva de ESTA orden ya está en `reservedStock`, usar availableStock
+       sería doble resta) → error "Stock físico insuficiente para 'X'."
+  R8.  Entrega exitosa: `reservedStock -= quantity` + `registerStockMovement`
+       tipo OUT con reason "Entrega orden de venta {orderNumber}" por cada detalle
+  R9.  Cancelación: bloqueada si status == DELIVERED ("ya entregada") o ya
+       CANCELLED ("ya está cancelada")
+  R10. Cancelación desde APPROVED libera la reserva: `reservedStock -= quantity`
+       por cada detalle (cancelación desde PENDING no toca stock)
+  R11. `addDetail`: rechaza producto duplicado en la misma orden
+       ("ya existe en esta orden... use actualizar detalle")
+  R12. `addDetail`/`createOrder`: producto debe existir y estar `active`
+  R13. `unitPrice` del detalle es el precio pactado — puede diferir de
+       `Product.price` (igual que `unitPrice` vs `Product.price` en Purchases)
+  R14. `unitCost` se re-lee de `Product.unitCost` en cada `addDetail`/
+       `updateDetail` mientras la orden esté PENDING (refleja costo actual,
+       no el costo al momento de creación)
+
+─── TRAZABILIDAD REGLAS → COMPONENTES UI ──────────────────────────────────────
+
+  R1     → botones Editar cabecera/Agregar/Editar/Eliminar detalle: visibles
+           solo cuando status=PENDING y el rol tiene escritura
+  R2/R3  → botón Aprobar: deshabilitado si details vacío o status != PENDING
+  R4/R5  → al intentar Aprobar, mostrar `availableStock` (currentStock -
+           reservedStock) de cada producto en el formulario/preview ANTES de
+           confirmar — validación preventiva con `StockBadgeComponent`
+  R6/R7  → botón Entregar: solo visible status=APPROVED; preview de
+           `currentStock` vs cantidad antes de confirmar
+  R9/R10 → botón Cancelar: oculto en DELIVERED/CANCELLED; visible en
+           PENDING/APPROVED según rol
+  R11    → selector de producto en addDetail: deshabilitar productos ya en
+           la orden (igual que Purchases)
+  R12    → selector de producto: solo productos activos (`GET /products/active`
+           o `GET /products?active=true`, verificar endpoint exacto en
+           ProductService existente)
+  R13    → campo `unitPrice` del detalle: editable, pre-rellenado con
+           `Product.price`, modificable
+  R14    → `unitCost`/margen NO se muestra en el formulario (solo lectura
+           interna del backend) — ver H2/L29
+
+─── FORMATO DE ERROR DEL BACKEND (verificado en GlobalExceptionHandler.java) ──
+
+Todas las respuestas de error (4xx/5xx) que pasan por `GlobalExceptionHandler`
+devuelven el MISMO shape JSON, vía `buildResponse(status, message)`:
+
+  {
+    "timestamp": "2026-06-12T10:15:30.123456",   // LocalDateTime.toString(), sin zona
+    "status":    422,                              // int, código HTTP
+    "error":     "Unprocessable Entity",           // HttpStatus.getReasonPhrase()
+    "message":   "Stock disponible insuficiente para 'Producto X'. Disponible: 3, solicitado: 5."
+  }
+
+  Patrón de consumo en el frontend (ya usado en Inventory/Purchases, L9):
+    catchError((err: HttpErrorResponse) => {
+      const msg = err.error?.message ?? 'Error inesperado. Intente nuevamente.';
+      this.snackBar.open(msg, 'Cerrar', { duration: 3000, panelClass: ['snackbar-error'] });
+      return EMPTY;
+    })
+  El frontend NUNCA debe ramificar lógica según `err.status` para mensajes de
+  negocio — solo `err.error?.message` (L9). `err.status` solo se usa para
+  casos genéricos ya cubiertos por `error.interceptor.ts` (401/403).
+
+  Tabla de excepción → status → origen (relevante para Sales):
+
+  | Excepción                              | HTTP | Body.error              | Dónde se lanza en Sales |
+  |---|---|---|---|
+  | `ResourceNotFoundException`            | 404  | Not Found                | NINGÚN lugar en SaleOrderServiceImpl/ClientServiceImpl actual — los "no encontrado" usan RuntimeException (ver H1) |
+  | `DuplicateResourceException`           | 409  | Conflict                 | NINGÚN lugar en Sales actual — "producto duplicado en orden" usa RuntimeException (ver H1) |
+  | `BusinessRuleException`                | 422  | Unprocessable Entity     | NINGÚN lugar en Sales actual — stock insuficiente, transiciones de estado, etc. usan RuntimeException (ver H1) |
+  | `MethodArgumentNotValidException`      | 400  | Bad Request              | Validaciones `@Valid` de los DTOs de request (sí funciona correctamente hoy) |
+  | `ObjectOptimisticLockingFailureException` (handler dedicado) | 409 | Conflict | "Stock modificado concurrentemente. Intente nuevamente." — SOLO si la excepción llega SIN convertir al controlador |
+  | `RuntimeException` (genérica)          | 500  | Internal Server Error    | TODOS los casos de Sales listados en H1, INCLUYENDO el caso de Optimistic Locking (ver nota abajo) |
+  | `BadCredentialsException`              | 401  | Unauthorized             | No aplica a Sales (módulo auth) |
+  | `TooManyAttemptsException`             | 429  | Too Many Requests        | No aplica a Sales (módulo auth) |
+
+  ⚠️ NOTA ADICIONAL A H1 — Optimistic Locking enmascarado:
+  `GlobalExceptionHandler` tiene un handler dedicado para
+  `ObjectOptimisticLockingFailureException` → 409 con el mensaje fijo "Stock
+  modificado concurrentemente. Intente nuevamente." (pensado como "defensa en
+  profundidad", según su javadoc). Sin embargo, `SaleOrderServiceImpl.
+  approveOrder()` ya captura esa excepción en un try/catch propio y la
+  re-lanza como `new RuntimeException("Stock modificado concurrentemente...")`
+  — por lo que el handler dedicado de 409 NUNCA se activa en la práctica para
+  Sales: el cliente recibe **500**, no 409, para una colisión de concurrencia
+  que SÍ es recuperable con un reintento. El MENSAJE es idéntico en ambos casos
+  (el frontend puede mostrarlo igual vía `err.error?.message`), pero el código
+  HTTP real (500) no refleja la semántica "reintentable" que sí tiene 409.
+  Este punto se agrega a H1 como parte del mismo fix de backend (cambiar el
+  `catch` de `approveOrder()` para re-lanzar `ObjectOptimisticLockingFailureException`
+  sin envolver, o lanzar `BusinessRuleException`/una excepción 409 dedicada en
+  vez de `RuntimeException`).
+
+  El formato 400 de `MethodArgumentNotValidException` concatena los errores de
+  campo en un solo string dentro de `message`:
+    "Validación fallida: clientId: no debe ser nulo; details: tamaño debe estar entre 1 y 2147483647"
+  El frontend muestra este string completo en el snackbar — no se parsea
+  campo por campo (mismo patrón que Inventory/Purchases).
+
+--------------------------------------------------------------------------------
+4. DISEÑO DE MÓDULO Y VISTAS
+--------------------------------------------------------------------------------
+
+Estructura de rutas:
+  /sales                       → SalesComponent (shell con sidebar activo)
+    /sales/clients             → ClientsPageComponent
+    /sales/orders              → SaleOrdersPageComponent
+    /sales/orders/new          → SaleOrderDetailPageComponent (modo creación)
+    /sales/orders/:id          → SaleOrderDetailPageComponent (modo edición/vista)
+    /sales/reservations        → ReservationsPageComponent (dashboard de reservas)
+
+  En app.routes.ts:
+    {
+      path: 'sales',
+      canActivate: [authGuard],
+      data: { roles: ['ROLE_ADMIN','ROLE_MANAGER','ROLE_WAREHOUSEMAN','ROLE_SALES'] },
+      loadChildren: () => import('./modules/sales/sales.routes').then(m => m.SALES_ROUTES)
+    }
+
+  En sales.routes.ts (Propuesta C — gate de seguridad, 'orders/new' ANTES de 'orders/:id'):
+    { path: 'clients',       component: ClientsPageComponent }
+    { path: 'orders',        component: SaleOrdersPageComponent }
+    {
+      path: 'orders/new', component: SaleOrderDetailPageComponent,
+      canActivate: [authGuard],
+      data: { roles: ['ROLE_ADMIN','ROLE_MANAGER','ROLE_SALES'] }  // WAREHOUSEMAN no crea
+    }
+    { path: 'orders/:id',     component: SaleOrderDetailPageComponent }
+    { path: 'reservations',   component: ReservationsPageComponent }
+
+Estructura de archivos (src/app/modules/sales/):
+  sales.component.ts/.html
+  sales.routes.ts
+  services/
+    client.service.ts          (+ .spec.ts)
+    sale-order.service.ts       (+ .spec.ts)
+    reservation.service.ts      (+ .spec.ts)
+  models/
+    client.model.ts
+    sale-order.model.ts
+    reservation.model.ts
+  components/
+    clients-page/                          (smart, master-detail)
+    client-dialog/                          (MatDialog, disableClose L31)
+    client-form/                            (dumb)
+    sale-orders-page/                       (smart, tabs por estado)
+    sale-order-detail-page/                 (smart, cabecera + detalles)
+    sale-order-detail-form/                 (dumb, diálogo agregar/editar línea)
+    reservations-page/                      (smart, dashboard de reservas)
+    reserved-product-row/ (opcional, dumb)  (fila expandible producto→órdenes)
+    reserved-client-row/  (opcional, dumb)  (fila expandible cliente→órdenes)
+
+Sidebar (actualización):
+  - Ventas se expande como grupo con tres hijos:
+      • Clientes      → /sales/clients
+      • Órdenes de venta → /sales/orders
+      • Reservas       → /sales/reservations
+  - Ventas visible para los 4 roles (ADMIN, MANAGER, WAREHOUSEMAN, SALES) —
+    primer módulo visible para todos. Para WAREHOUSEMAN y SALES, los hijos
+    visibles se filtran según permisos (ver sección 6).
+
+Breadcrumb (topbar):
+  /sales/clients        → "Ventas → Clientes"
+  /sales/orders         → "Ventas → Órdenes de venta"
+  /sales/orders/:id     → "Ventas → Detalle de orden"
+  /sales/reservations   → "Ventas → Reservas de stock"
+
+─── VISTA A: CLIENTES (/sales/clients) ────────────────────────────────────────
+
+  Layout: master-detail (mismo patrón que Proveedores en Compras)
+    Panel izquierdo (~40%): tabla paginada de clientes activos
+      Columnas: Nombre, RFC, Contacto, Teléfono, Email, Acciones
+      Botón "Nuevo cliente" — visible ADMIN/MANAGER/SALES (no WAREHOUSEMAN)
+      Búsqueda con debounce 350ms sobre name/rfc/contactName (accent-insensitive,
+      f_unaccent en backend — confirmado en endpoint /clients/active)
+      Fila seleccionada: fondo #F2E4F2
+      Reset de paginador a página 0 al cambiar búsqueda (L31)
+
+    Panel derecho (~60%): ClientFormComponent (dumb), abierto vía MatDialog
+    (ClientDialogComponent) con disableClose: true (L31) — opt-out documentado
+    solo si se decide usar panel inline en vez de diálogo (ver Decisión D5)
+      Campos: Nombre, RFC, Nombre de contacto, Teléfono, Email, Dirección
+      Modo creación: ADMIN/MANAGER/SALES — todos los campos habilitados
+      Modo edición: ADMIN/MANAGER/SALES — todos los campos editables
+      WAREHOUSEMAN: panel de solo lectura (sin botón Guardar/Nuevo/Desactivar)
+      Botón Guardar: requiere `form.dirty` en edición (L25)
+      Botón Desactivar: solo ADMIN/MANAGER (SecurityConfig DELETE /clients → no SALES)
+      Desactivar → ConfirmDialogComponent — el backend puede rechazar si el
+      cliente tiene órdenes PENDING/APPROVED (verificar regla exacta en
+      ClientServiceImpl al implementar — análogo a R5 de Suppliers)
+
+─── VISTA B: LISTA DE ÓRDENES (/sales/orders) ─────────────────────────────────
+
+  Layout: pantalla completa con tabs de estado (igual que Compras)
+
+  Tabs de estado:
+    [Pendientes | Aprobadas | Entregadas | Canceladas]
+    PENDING | APPROVED | DELIVERED | CANCELLED
+    Cada tab muestra el conteo (Map<status, number> separado de Map<status,
+    PageResponse> — L23/L24)
+    Tab activo por defecto: Pendientes (D2, igual razón que Compras: requieren
+    acción inmediata del rol SALES)
+    Reset de paginador a página 0 al cambiar de tab/búsqueda (L31)
+
+  Tabla por tab:
+    Columnas: N° Orden, Cliente, Total, Creado por, Fecha, Estado, Acciones
+    `totalAmount` visible para ADMIN/MANAGER/SALES (precio de venta — su
+    información de trabajo); WAREHOUSEMAN: a confirmar en Decisión D6
+    Acciones por fila (con $event.stopPropagation() — L27):
+      ADMIN/MANAGER en PENDING   : Ver, Editar, Aprobar, Cancelar
+      ADMIN/MANAGER en APPROVED  : Ver, Entregar, Cancelar
+      ADMIN/MANAGER en DELIVERED/CANCELLED : Ver
+      SALES en PENDING           : Ver, Editar, Cancelar (NO Aprobar)
+      SALES en APPROVED          : Ver, Cancelar (NO Entregar)
+      SALES en DELIVERED/CANCELLED : Ver
+      WAREHOUSEMAN en APPROVED   : Ver, Entregar (única escritura)
+      WAREHOUSEMAN en otros      : Ver
+
+  Botón "Nueva orden": visible ADMIN/MANAGER/SALES → navega a /sales/orders/new
+
+─── VISTA C: DETALLE DE ORDEN (/sales/orders/:id y /sales/orders/new) ─────────
+
+  Layout: igual que Compras — cabecera + tabla de detalles, dos secciones
+  verticales en una sola página completa (no master-detail).
+
+  Cabecera de la orden:
+    N° Orden (solo lectura, generado), Estado (badge), Cliente (MatSelect/
+    autocomplete de clientes activos), Notas
+    Total de la orden, fecha de creación, usuario creador
+    Historial de estado (tabla 3 filas — D4 de Compras adaptado):
+      Aprobada por / Entregada por / Cancelada por + timestamp, "—" si no aplica
+
+  Campos editables en PENDING:
+    ADMIN/MANAGER/SALES: Cliente, Notas
+    WAREHOUSEMAN: nunca edita cabecera (solo lectura siempre)
+
+  Botones de transición (según estado y rol — ver tabla RBAC sección 6):
+    PENDING  + (ADMIN/MANAGER/SALES) : Guardar cambios (L25, requiere dirty),
+                                        Aprobar (solo ADMIN/MANAGER), Cancelar
+    APPROVED + (ADMIN/MANAGER)        : Entregar, Cancelar
+    APPROVED + WAREHOUSEMAN            : Entregar (único botón)
+    APPROVED + SALES                   : Cancelar (NO Entregar)
+    DELIVERED/CANCELLED                : ningún botón de transición
+
+  Confirmaciones obligatorias (irreversibles, impactan stock):
+    Aprobar  → ConfirmDialogComponent, mostrar preview de `availableStock` por
+               producto vs `quantity` solicitada (R4) ANTES de confirmar
+    Entregar → ConfirmDialogComponent, mostrar preview de `currentStock` por
+               producto vs `quantity` (R7)
+    Cancelar → ConfirmDialogComponent (mensaje distinto si status=APPROVED,
+               advirtiendo que libera la reserva — R10)
+
+  Tabla de detalles:
+    Columnas: Producto (SKU + Nombre), Cantidad, Precio unitario, Subtotal,
+    [Costo unitario / Margen — solo ADMIN/MANAGER, ver H2/L29], Acciones
+    PENDING + (ADMIN/MANAGER/SALES): botón Agregar detalle, iconos Editar/
+    Eliminar por fila (con protección L26 — no eliminar la última línea)
+    Otros estados / WAREHOUSEMAN: solo lectura, sin columna de costo/margen
+
+  Diálogo Agregar/Editar detalle (SaleOrderDetailFormComponent, disableClose
+  L31):
+    productId → MatAutocomplete de productos activos; deshabilitar los ya en
+                la orden (R11); mostrar "[SKU] — Nombre (disponible: N)" usando
+                `availableStock` del ProductService (Decisión D3, igual que
+                Compras)
+    quantity  → number input, min 1; advertencia visual si quantity >
+                availableStock (validación preventiva de R4, sin bloquear
+                el guardado del detalle — el bloqueo real es al Aprobar)
+    unitPrice → number input (currency), pre-rellenado con `Product.price`,
+                editable (R13)
+    subtotal  → texto calculado en tiempo real (quantity × unitPrice)
+
+  Badge de estado (StatusLabelPipe, colores ya definidos en CLAUDE.md):
+    PENDING    → fondo #FFF3E0, texto #E65100, ícono schedule
+    APPROVED   → fondo #E3F2FD, texto #1565C0, ícono check_circle
+    DELIVERED  → fondo #E8F5E9, texto #2E7D32, ícono done_all  (mismo estilo
+                  que RECEIVED en Compras)
+    CANCELLED  → fondo #FFEBEE, texto #C62828, ícono cancel
+
+─── VISTA D: RESERVAS (/sales/reservations) ───────────────────────────────────
+
+  Layout: dashboard de una sola columna, sin master-detail.
+  Visible para los 4 roles (GET /sales/reservations/** → todos).
+
+  Sección superior — Resumen (ReservationSummaryDTO):
+    4 tarjetas (cards) con: total de productos con reservas, total de unidades
+    reservadas, valor total reservado (totalReservedValue — precio de venta,
+    NO costo, visible para todos según L29), total de órdenes APPROVED
+
+  Sección "Por producto" (GET /reservations/products):
+    Tabla expandible: cada fila = producto (SKU, nombre, totalReservedQty,
+    unitPrice, totalReservedValue); al expandir, sub-tabla con
+    ReservedProductOrderDTO (orderId/orderNumber, quantity, subtotal,
+    clientId/clientName, approvedAt) — click en orderNumber navega a
+    /sales/orders/:id?from=reservations
+
+  Sección "Por cliente" (GET /reservations/clients):
+    Misma estructura: ReservedClientDTO expandible → ReservedClientOrderDTO
+
+  (L33) Las 3 llamadas (summary, products, clients) se combinan con `forkJoin`.
+  Las 3 son accesibles para los 4 roles según SecurityConfig, por lo que en
+  teoría no se requiere `catchError` por RBAC — pero se mantiene el patrón
+  `catchError(() => of(<default vacío>))` por cada observable como defensa
+  ante 404/500 aislados (p.ej. backend con datos inconsistentes), para que un
+  fallo en una sección no rompa el dashboard completo.
+
+--------------------------------------------------------------------------------
+5. SERVICIOS Y CONTRATOS ANGULAR
+--------------------------------------------------------------------------------
+
+  ClientService:
+    getActive(search?, page, size)  → Observable<PageResponse<ClientDTO>>
+    getById(id)                     → Observable<ClientDTO>
+    create(dto)                     → Observable<ClientDTO>
+    update(id, dto)                 → Observable<ClientDTO>
+    deactivate(id)                  → Observable<void>
+
+  SaleOrderService:
+    create(dto)                          → Observable<SaleOrderResponseDTO>
+    getById(id)                          → Observable<SaleOrderResponseDTO>
+    getByStatus(status, page, size)      → Observable<PageResponse<SaleOrderResponseDTO>>
+    getByClientId(clientId)              → Observable<SaleOrderResponseDTO[]>
+    getByClientIdAndStatus(clientId, st) → Observable<SaleOrderResponseDTO[]>
+    getByProductId(productId)            → Observable<SaleOrderResponseDTO[]>
+    getByProductIdAndStatus(pid, st)     → Observable<SaleOrderResponseDTO[]>
+    update(id, dto)                      → Observable<SaleOrderResponseDTO>
+    approve(id)                          → Observable<SaleOrderResponseDTO>
+    deliver(id)                          → Observable<SaleOrderResponseDTO>
+    cancel(id)                           → Observable<SaleOrderResponseDTO>
+    addDetail(id, dto)                   → Observable<SaleOrderResponseDTO>
+    updateDetail(id, detailId, dto)      → Observable<SaleOrderResponseDTO>
+    removeDetail(id, detailId)           → Observable<void>
+
+  ReservationService:
+    getSummary()                    → Observable<ReservationSummaryDTO>
+    getReservedProducts()           → Observable<ReservedProductDTO[]>
+    getProductReservationDetail(id) → Observable<ReservedProductDTO>
+    getClientsWithReservations()    → Observable<ReservedClientDTO[]>
+    getClientReservationDetail(id)  → Observable<ReservedClientDTO>
+
+  Reutilización de ProductService (Inventory) — verificar al implementar:
+    - Endpoint para autocomplete de productos activos con availableStock
+      (mismo usado en Purchases para el selector de detalle)
+
+--------------------------------------------------------------------------------
+6. RBAC FRONTEND — MATRICES DE VISIBILIDAD
+--------------------------------------------------------------------------------
+
+### 6.1 Matriz de acceso por vista/acción
+
+| Vista / Acción                          | ADMIN | MANAGER | WAREHOUSEMAN | SALES |
+|---|:---:|:---:|:---:|:---:|
+| Ver módulo Ventas en sidebar            |  ✓  |   ✓   |     ✓        |   ✓  |
+| Clientes — listar/ver                   |  ✓  |   ✓   |     ✓        |   ✓  |
+| Clientes — crear/editar                 |  ✓  |   ✓   |     —        |   ✓  |
+| Clientes — desactivar                   |  ✓  |   ✓   |     —        |   —  |
+| Órdenes — listar/ver (todas las tabs)   |  ✓  |   ✓   |     ✓        |   ✓  |
+| Órdenes — crear                         |  ✓  |   ✓   |     —        |   ✓  |
+| Órdenes — editar cabecera/detalles (PENDING) |  ✓  |   ✓   |  —      |   ✓  |
+| Órdenes — Aprobar (PENDING→APPROVED)    |  ✓  |   ✓   |     —        |   —  |
+| Órdenes — Entregar (APPROVED→DELIVERED) |  ✓  |   ✓   |     ✓        |   —  |
+| Órdenes — Cancelar (PENDING/APPROVED)   |  ✓  |   ✓   |     —        |   ✓  |
+| Reservas — ver dashboard                |  ✓  |   ✓   |     ✓        |   ✓  |
+
+Helpers de componente (consistentes con `canWrite()`/`canReceive()` de Purchases):
+  canManageClients()  → ADMIN | MANAGER | SALES
+  canDeactivateClient() → ADMIN | MANAGER
+  canCreateOrder()    → ADMIN | MANAGER | SALES
+  canEditOrder(order) → (ADMIN | MANAGER | SALES) && order.status === 'PENDING'
+  canApprove(order)   → (ADMIN | MANAGER) && order.status === 'PENDING'
+  canDeliver(order)   → (ADMIN | MANAGER | WAREHOUSEMAN) && order.status === 'APPROVED'
+  canCancel(order)    → ((ADMIN | MANAGER | SALES) && order.status in [PENDING, APPROVED])
+
+### 6.2 Matriz de campos sensibles × roles (L29 — MANDATORIA, diseñada antes de codificar)
+
+| Campo / DTO                                              | ADMIN | MANAGER | WAREHOUSEMAN | SALES |
+|---|---|---|---|---|
+| `SaleOrderDetailResponseDTO.unitCost`                    | valor real | valor real | `null`* | `null`* |
+| Margen derivado (`unitPrice - unitCost`, si se calcula en UI) | visible | visible | ausente | ausente |
+| `SaleOrderResponseDTO.totalAmount` (precio de venta)     | visible | visible | a confirmar (D6) | visible |
+| `SaleOrderDetailResponseDTO.unitPrice` / `subtotal`      | visible | visible | a confirmar (D6) | visible |
+| `ReservationSummaryDTO.totalReservedValue` (precio venta)| visible | visible | visible | visible |
+| `ReservedProductDTO.unitPrice` / `totalReservedValue`    | visible | visible | visible | visible |
+| `ClientDTO` (todos los campos — sin datos financieros)   | visible | visible | visible | visible |
+
+\* Requiere el fix de backend descrito en H2 (`redactUnitCost` para
+`SaleOrderDetailResponseDTO`, análogo a `ProductServiceImpl`/BUG-INV-11). Hasta
+que el backend redacte, el frontend NO debe leer ni renderizar `unitCost` para
+WAREHOUSEMAN/SALES aunque el campo llegue poblado en el JSON — ocultar en el
+componente Y excluir de `displayedColumns` (no solo CSS), y documentar como
+gap temporal en `memoria_tecnica_modulo_sales_frontend.md` §8 hasta que el
+backend aplique la redacción.
+
+Para cada fila marcada `null`/ausente: el test de redacción/ocultamiento por
+rol (`RBAC-[F]-06` del template, caso `(L29)`) se escribe ANTES de implementar
+la columna en la tabla de detalles.
+
+### 6.3 Gate de seguridad de rutas (Propuesta C)
+
+```
+[ ] /sales                 → canActivate: [authGuard], data.roles: [ADMIN, MANAGER, WAREHOUSEMAN, SALES]
+[ ] /sales/orders/new      → canActivate: [authGuard], data.roles: [ADMIN, MANAGER, SALES] (no WAREHOUSEMAN)
+[ ] Caso SEC: WAREHOUSEMAN navega por URL directa a /sales/orders/new → redirige
+[ ] Caso SEC: SALES navega por URL directa a /sales/orders/:id de otro usuario
+    y usa Aprobar/Entregar → backend responde 403 (botón no debe estar visible,
+    pero el guard de RUTA por sí solo no cubre botones — verificar 403 real)
+```
+
+--------------------------------------------------------------------------------
+7. PATRONES UX/UI A APLICAR (heredados de Inventory/Purchases, L1-L33)
+--------------------------------------------------------------------------------
+
+Heredados (verificados, sin cambios):
+  - MatProgressBar indeterminado durante cargas; skeleton loading en tablas
+  - MatSnackBar verde #2E7D32 (éxito, 3s) / rojo #C62828 (error) con
+    `panelClass` SIEMPRE como array (L18)
+  - ConfirmDialogComponent antes de Aprobar/Entregar/Cancelar/Desactivar
+  - EmptyStateComponent — distinguir "sin datos" vs "sin resultados de búsqueda"
+  - Fila seleccionada: fondo #F2E4F2; StatusLabelPipe para estados en español
+  - takeUntilDestroyed() en todas las suscripciones; OnPush en todos los componentes
+  - Sin asteriscos dobles (AM genera `*` con Validators.required)
+  - subscriptSizing="dynamic"; campos read-only con `disabled()` + mat-hint
+    de candado azul #1565C0
+  - L25: botón "Guardar cambios" requiere `form.dirty` además de `form.valid`;
+    `form.markAsPristine()` tras guardar
+  - L26: proteger eliminación de la última línea de detalle de una orden
+  - L27: `$event.stopPropagation()` en TODOS los botones de fila clickeable
+  - L20: app exclusivamente desktop 1280px+ — casos VIS responsive = N/A
+
+Mandatorios desde el diseño (L29-L33 — primera vez aplicados desde el día 1):
+  - L29: matriz de campos sensibles × roles documentada en sección 6.2 antes
+    de implementar; redacción centralizada en backend + verificación de
+    ausencia en el DOM en frontend
+  - L30: `error.interceptor.ts` ya maneja 401 (sesión expirada) y 403 (acceso
+    denegado); los 422/404 de Sales se leen vía `err.error?.message` en cada
+    componente (catchError local), igual que Purchases. H1 documenta el caso
+    transitorio de 500 con mensaje de negocio válido.
+  - L31: TODOS los `MatDialog.open(...)` de Sales (ClientDialog,
+    SaleOrderDetailFormDialog, ConfirmDialog) usan `disableClose: true`;
+    paginador de `sale-orders-page` y `clients-page` resetea a página 0 en el
+    mismo punto donde se aplica el filtro/tab
+  - L32: headers de tabla (`clients-page`, `sale-orders-page`,
+    `sale-order-detail-page` tabla de detalles, `reservations-page`) usan el
+    mixin/placeholder SCSS compartido (`%catalog-table-header` o equivalente
+    ya extraído en Módulo 2/3) — NO copiar `.mat-mdc-header-cell` manualmente
+  - L33: `forkJoin` de `reservations-page` (summary + products + clients) usa
+    `catchError(() => of(<default>))` por observable; cualquier dato de prueba
+    creado durante pruebas de seguridad (clientes `[QA] `, órdenes `TEST_`) se
+    cancela/desactiva antes de cerrar el módulo
+
+Específicos de Sales (nuevos):
+  - Reserva de stock visible: `StockBadgeComponent` (Inventory) reutilizado en
+    el diálogo de detalle de orden y en Reservas, mostrando
+    currentStock/reservedStock/availableStock con tooltip (componente ya
+    existe — `src/app/modules/inventory/components/stock-badge/`)
+  - Preview de impacto en stock ANTES de confirmar Aprobar/Entregar (R4/R7) —
+    patrón nuevo: tabla de previsualización dentro del ConfirmDialog mostrando
+    producto, cantidad solicitada, disponible/físico actual, y resultado (OK/
+    insuficiente) por fila
+  - Tabs de estado con 4 valores (PENDING/APPROVED/DELIVERED/CANCELLED) —
+    mismo componente que Purchases pero con un estado más que en Inventory
+    (no aplica) y nombre de estado terminal distinto (DELIVERED vs RECEIVED)
+
+--------------------------------------------------------------------------------
+8. PLAN DE IMPLEMENTACIÓN POR FASES
+--------------------------------------------------------------------------------
+
+Rama de trabajo: feature/sales
+Merge a develop con --no-ff al completar el módulo
+
+FASE 0 — Documentación previa (Propuesta A)
+  [ ] casos_de_prueba_modulo_sales.md — copiar de casos_de_prueba_modulo_TEMPLATE.md
+      y completar TODOS los marcadores, incluyendo casos (L29)-(L33) y matriz
+      de campos sensibles de sección 6.2
+  [ ] memoria_tecnica_modulo_sales_frontend.md — iniciar con secciones 1-4
+      (incluye H1/H2 en §8 desde el inicio, no al cierre)
+  [x] Confirmar con el usuario las Decisiones D1-D8 (sección 11) antes de
+      iniciar FASE 1 — D1-D8 confirmadas (D1-D5 por defecto, D6=(a), D7
+      según lo acordado, D8 nuevo)
+
+FASE 1 — Modelos, servicios y rutas (sin UI)
+  [ ] Crear src/app/modules/sales/
+  [ ] Modelos: client.model.ts, sale-order.model.ts, reservation.model.ts
+      (campos EXACTOS verificados en sección 3 — incluir nota sobre H1/H2)
+  [ ] ClientService + spec
+  [ ] SaleOrderService + spec
+  [ ] ReservationService + spec
+  [ ] sales.routes.ts (lazy loading) + gate de seguridad (sección 6.3)
+  [ ] Actualizar app.routes.ts con loadChildren
+  [ ] Actualizar sidebar: Ventas con tres hijos, visible para los 4 roles,
+      hijos filtrados según permisos
+  [ ] Actualizar topbar: breadcrumbs de Ventas
+  [ ] (D8) Leer SaleOrderServiceImpl.approveOrder() y verificar @Transactional
+      — documentar como H3 en memoria_tecnica_modulo_sales_frontend.md §8 si
+      no está presente, sin modificar código
+  [ ] (D7/H1) Si se autoriza, migrar RuntimeException → BusinessRuleException/
+      ResourceNotFoundException/DuplicateResourceException en
+      SaleOrderServiceImpl/ClientServiceImpl (incl. Optimistic Locking
+      enmascarado en approveOrder)
+  [ ] ng test --no-watch → 0 fallos (regresión módulos 0-3)
+
+FASE 2 — Clientes (CRUD completo)
+  [ ] ClientsPageComponent (smart, master-detail)
+  [ ] ClientFormComponent (dumb) + specs
+  [ ] ClientDialogComponent (disableClose L31) — o panel inline (Decisión D5)
+  [ ] RBAC: canManageClients(), canDeactivateClient()
+  [ ] Soft delete con ConfirmDialogComponent
+  [ ] Protocolo de cierre: tests + browser 4 roles
+
+FASE 3 — Lista de órdenes con tabs
+  [ ] SaleOrdersPageComponent con tabs PENDING/APPROVED/DELIVERED/CANCELLED
+  [ ] counts: Map separado de pages: Map (L23/L24); carga lazy por tab
+  [ ] Botones de transición condicionados a rol + estado (sección 6.1)
+  [ ] Reset de paginador en filtros/tabs (L31)
+  [ ] Protocolo de cierre: tests + browser 4 roles
+
+FASE 4 — Detalle de orden + gestión de detalles + reservas (preview R4/R7)
+  [ ] SaleOrderDetailPageComponent (modo new/edit, historial de estado)
+  [ ] SaleOrderDetailFormComponent (dumb) + specs — diálogo agregar/editar línea
+  [ ] StockBadgeComponent reutilizado para availableStock en selector de producto
+  [ ] Preview de impacto en stock antes de Aprobar/Entregar (ConfirmDialog)
+  [ ] L25 (dirty), L26 (última línea), L27 (stopPropagation)
+  [ ] Columna unitCost/margen oculta para WAREHOUSEMAN/SALES (L29/H2)
+  [ ] Protocolo de cierre: tests + browser 4 roles + reglas R1-R14
+
+FASE 5 — Reservas (dashboard)
+  [ ] ReservationsPageComponent — forkJoin summary+products+clients (L33)
+  [ ] Tablas expandibles producto→órdenes y cliente→órdenes
+  [ ] Navegación a /sales/orders/:id?from=reservations
+  [ ] Protocolo de cierre: tests + browser 4 roles
+
+FASE 6 — Cierre de módulo (Propuesta D)
+  [ ] ng test --no-watch → 0 fallos, suite completa
+  [ ] Cobertura ≥ 70% statements (ng test --coverage)
+  [ ] Regresión: módulos 0-3 siguen en 0 fallos
+  [ ] Verificación de seguridad backend (curl) — todos los endpoints de sección 3
+  [ ] H1 resuelto en FASE 1 (con autorización explícita) o documentado como
+      pendiente formal en los casos ERR-* (D7); H2 ya mitigado desde FASE 4
+      en frontend — redacción de backend pendiente como mejora opcional;
+      D8 verificado (transaccionalidad approveOrder) — H3 documentado si aplica
+  [ ] 100% casos de casos_de_prueba_modulo_sales.md en ✅ PASS
+  [ ] Prueba browser completa 4 roles documentada
+  [ ] Actualizar memoria_tecnica_modulo_sales_frontend.md §7 y §10
+  [ ] Actualizar memoria_tecnica_global_proyecto.md (§8 estado, §9 lecciones nuevas si surgen)
+  [ ] Actualizar CLAUDE.md con bugs/lecciones del módulo si aplica
+  [ ] Merge --no-ff a develop + push (frontend y backend si H1/H2 se resolvieron)
+
+--------------------------------------------------------------------------------
+9. PLAN DE TESTS
+--------------------------------------------------------------------------------
+
+Tipo A — Tests unitarios de servicios:
+  client.service.spec.ts:
+    getActive() — verifica params search/page/size (omitir search si vacío)
+    create()/update() — verifica body y URL
+    deactivate() — verifica 204 void
+  sale-order.service.spec.ts:
+    create() — verifica body con details[] (sin unitCost)
+    getByStatus() — verifica URL con status + page/size
+    getByClientId()/getByProductId() — verifica respuesta como array (no PageResponse)
+    approve()/deliver()/cancel() — verifican PATCH sin body
+    addDetail()/updateDetail()/removeDetail() — URL y método correctos
+  reservation.service.spec.ts:
+    getSummary()/getReservedProducts()/getReservedClients() — verifican URL y
+    tipo de respuesta (objeto vs array)
+
+Tipo A — Tests unitarios de componentes dumb:
+  client-form.component.spec.ts: patrón igual a supplier-form (setInput,
+    save/cancel/deactivate outputs, L25 dirty)
+  sale-order-detail-form.component.spec.ts:
+    subtotal calculado en tiempo real (quantity × unitPrice)
+    productos ya en la orden deshabilitados en autocomplete (R11)
+    unitCost/margen NO se renderiza si @Input role es WAREHOUSEMAN/SALES (L29)
+
+Tipo C — Integración:
+  sale-orders-page: tabs cargan counts y pages correctamente; reset de
+    paginador al cambiar tab/búsqueda (L31)
+  sale-order-detail-page: transición de botones visibles según status+rol
+    (matriz 6.1); L26 al intentar eliminar última línea; L27 en botones de fila
+
+Tipo B — Tests de seguridad RBAC (browser / curl):
+  Clients: POST → WAREHOUSEMAN 403; DELETE → SALES 403, ADMIN 204
+  Orders: PATCH /approve → SALES 403, WAREHOUSEMAN 403, MANAGER 200
+          PATCH /deliver → SALES 403, ADMIN 200
+          PATCH /cancel  → WAREHOUSEMAN 403, SALES 200
+  Reservations: GET → los 4 roles 200
+  (L29) Verificar en respuesta JSON real (curl) si unitCost llega poblado para
+  WAREHOUSEMAN/SALES — documentar como hallazgo H2 hasta que se aplique el fix
+
+Tipo D — E2E / browser (Propuesta B, por componente, 4 roles):
+  Flujo completo: crear orden (SALES) → aprobar (MANAGER) → ver reserva
+  reflejada (Reservas, los 4 roles) → entregar (WAREHOUSEMAN) → verificar
+  `currentStock`/`reservedStock` en Inventory tras la entrega
+
+Cobertura esperada: ≥ 70% statements en el módulo
+Suite total estimada post-módulo: ~143 specs actuales + ~35-40 nuevos
+
+--------------------------------------------------------------------------------
+10. LECCIONES APLICADAS (L1-L33)
+--------------------------------------------------------------------------------
+
+De Inventory/Purchases (sin cambios, ver propuesta_modulo_compras_frontend.txt
+§9 para detalle de L8-L20):
+  L8  — Contratos verificados contra backend antes de escribir TS (sección 3)
+  L9  — `err.error?.message` siempre, sin asumir status code (relevante por H1)
+  L11 — setInput() en tests de componentes con @Input
+  L14 — Campos inmutables (orderNumber, totalAmount, subtotal, unitCost, status,
+        timestamps) — formularios solo exponen clientId/notes (cabecera) y
+        productId/quantity/unitPrice (detalle)
+  L15 — Sin asteriscos dobles
+  L18 — panelClass de MatSnackBar siempre array
+  L20 — Solo desktop 1280px+, responsive = N/A
+  L25 — Guardar requiere form.dirty
+  L26 — Proteger última línea de detalle
+  L27 — stopPropagation en botones de fila clickeable
+
+Mandatorias L29-L33 (primera aplicación desde el diseño inicial — ver secciones
+6.2, 6.3, 7 y 8 de este documento para el detalle de cómo se incorporan):
+  L29 — Matriz de campos sensibles × roles (sección 6.2) — bloquea H2
+  L30 — 401/403 explícitos; H1 documenta el caso transitorio de 500 con
+        mensaje de negocio válido en SaleOrderServiceImpl
+  L31 — disableClose en diálogos + reset de paginador centralizado
+  L32 — Mixin SCSS compartido para headers de tabla, reutilizado (no copiado)
+  L33 — forkJoin con catchError en reservations-page; datos de prueba
+        prefijados `[QA] `/`TEST_` y limpiados antes del cierre del módulo
+
+Complejidad nueva (no presente en Inventory/Purchases):
+  - Máquina de estados con 4 estados terminales/no-terminales distintos
+    (DELIVERED en vez de RECEIVED) — mismo patrón de tabs, distinto vocabulario
+  - Reservas de stock (`reservedStock`) escritas activamente por primera vez —
+    preview de impacto antes de Aprobar/Entregar (R4/R7), nuevo patrón de UI
+  - Optimistic Locking con mensaje de negocio específico
+    ("Stock modificado concurrentemente. Intente nuevamente.") — el frontend
+    debe mostrarlo en snackbar rojo y permitir reintentar sin perder los datos
+    del formulario
+  - Primer módulo con SALES como rol con escritura real — primera vez que se
+    prueba en browser con credenciales SALES en un módulo de escritura
+
+--------------------------------------------------------------------------------
+11. DECISIONES A RESOLVER (pendientes de confirmación del usuario)
+--------------------------------------------------------------------------------
+
+  D1. Creación de orden → ¿ruta /sales/orders/new (igual que Compras, D1) o
+      MatDialog? Recomendación: ruta, por consistencia y porque el formulario
+      de cabecera + gestión de líneas no cabe cómodamente en un diálogo
+      (mismo razonamiento que Compras D1).
+
+  D2. Tab activa por defecto → PENDIENTES (igual razonamiento que Compras D2,
+      reforzado porque SALES es el operador principal y necesita actuar sobre
+      sus PENDING). Confirmar.
+
+  D3. Selector de producto en detalle → MatAutocomplete con
+      "[SKU] — Nombre (disponible: N)" usando availableStock, igual que
+      Compras D3. Confirmar.
+
+  D4. Historial de estado → tabla de 3 filas (Aprobada/Entregada/Cancelada),
+      igual que Compras D4. Confirmar.
+
+  D5. Formulario de Cliente → ¿MatDialog (como SupplierDialog en Compras) o
+      panel inline master-detail (como Categorías en Inventory)? Ambos
+      patrones existen en el proyecto. Recomendación: MatDialog por
+      consistencia directa con Compras (entidad análoga: Cliente ~ Proveedor).
+
+  D6. Visibilidad de `totalAmount`/`unitPrice`/`subtotal` (precio de venta,
+      NO costo) para WAREHOUSEMAN — RESUELTO ✅
+      Opción confirmada: (a) VISIBLE para WAREHOUSEMAN. No es información de
+      costo/margen, solo contexto operativo del pedido que va a entregar.
+      Esta decisión NO afecta a `unitCost` (H2/L29), que se oculta para
+      WAREHOUSEMAN/SALES en cualquier caso (ver tabla 6.2). Aplica a:
+        - SaleOrdersPageComponent: columna "Total" visible en las 4 tabs
+          para WAREHOUSEMAN
+        - SaleOrderDetailPageComponent: `totalAmount` en cabecera y columnas
+          `unitPrice`/`subtotal` en la tabla de detalles visibles para
+          WAREHOUSEMAN (solo la columna `unitCost`/margen permanece oculta)
+        - ReservationsPageComponent: `totalReservedValue`/`unitPrice` ya
+          eran visibles para todos (sección 6.2, sin cambios)
+
+  D7. H1 (RuntimeException → 500/Optimistic Locking enmascarado) y H2
+      (unitCost sin redacción) — RESUELTO ✅
+      - **H2 → NO bloquea el inicio del módulo.** Es una decisión 100% de
+        frontend: desde el día 1 (FASE 4), `SaleOrderDetailFormComponent` y
+        la tabla de detalles de `SaleOrderDetailPageComponent` NUNCA leen ni
+        renderizan `unitCost`/margen para WAREHOUSEMAN/SALES, sea que el
+        backend ya redacte o no (excluido de `displayedColumns`, no solo
+        oculto con CSS — sección 6.2). La redacción en backend
+        (`redactUnitCost`, análogo a BUG-INV-11) queda como mejora de
+        "defensa en profundidad" a aplicar cuando se autorice, sin que
+        bloquee ninguna fase del frontend.
+      - **H1 → se resuelve en backend EN PARALELO durante FASE 1**, sujeto a
+        autorización explícita en el momento de implementar (cambios
+        acotados a `SaleOrderServiceImpl`/`ClientServiceImpl`: migrar
+        `RuntimeException` → `BusinessRuleException`/`ResourceNotFoundException`/
+        `DuplicateResourceException` según corresponda, incluyendo el caso de
+        `ObjectOptimisticLockingFailureException` enmascarado en
+        `approveOrder()`, análogo al fix de `PurchaseOrderServiceImpl` y
+        `ProductServiceImpl` de la ronda 2026-06-11/12). Si no se autoriza en
+        ese momento, los casos `ERR-*` de `casos_de_prueba_modulo_sales.md`
+        documentan el código real (500) con nota de "pendiente backend" y el
+        módulo puede cerrarse igual (Propuesta D) — el mensaje de error
+        siempre llega correctamente en `err.error?.message` (L9).
+
+  D8. Verificación de transaccionalidad de `approveOrder()` (Fase 2 del
+      flujo de aprobación, R5) — NUEVO, agregado durante la discusión de
+      reservas/stock:
+      Confirmar que `SaleOrderServiceImpl.approveOrder()` esté anotado
+      `@Transactional` para que, si la reserva de la línea N falla por
+      `ObjectOptimisticLockingFailureException`, las reservas ya flusheadas
+      de las líneas 1..N-1 (vía `saveAndFlush()`) se reviertan completas
+      (rollback), evitando reservas parciales/inconsistentes. Punto de
+      verificación de solo lectura durante FASE 1 (leer el código, sin
+      modificarlo) — si NO está `@Transactional`, se agrega como hallazgo H3
+      a `memoria_tecnica_modulo_sales_frontend.md` §8, documentado igual que
+      H1/H2, sin corregir sin autorización.
+
+================================================================================
+FIN DE PROPUESTA
+================================================================================

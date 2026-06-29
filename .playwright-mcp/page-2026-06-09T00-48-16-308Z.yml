@@ -1,0 +1,205 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e1111] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e1112] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e1113]:
+            - img [ref=e15]: chevron_right
+            - text: Inventario → Categorías
+        - generic [ref=e16]:
+          - button [ref=e1114] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e1115]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - generic [ref=e1116]: ADMIN
+      - generic [ref=e28]:
+        - navigation [ref=e1117]:
+          - menubar [ref=e32]:
+            - menuitem [expanded] [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button [ref=e1118] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - heading [level=2] [ref=e1119]: Categorías
+              - button [ref=e1120]:
+                - img [ref=e54]: add
+                - generic [ref=e55]: Nueva categoría
+            - generic [ref=e58]:
+              - table [ref=e59]:
+                - rowgroup [ref=e60]:
+                  - row [ref=e1121]:
+                    - columnheader [ref=e1122]: Nombre
+                    - columnheader [ref=e1123]: Descripción
+                    - columnheader [ref=e64]
+                - rowgroup [ref=e65]:
+                  - row [ref=e1124] [cursor=pointer]:
+                    - cell [ref=e1125]: Cat-Mgr-R13318
+                    - cell [ref=e1126]: Categoría de MANAGER
+                    - cell [ref=e1127]:
+                      - button [ref=e1128]:
+                        - img [ref=e956]: shopping_bag
+                  - row [ref=e1129] [cursor=pointer]:
+                    - cell [ref=e1130]: Cat-Mgr-R17308
+                    - cell [ref=e1131]: Categoría de MANAGER
+                    - cell [ref=e1132]:
+                      - button [ref=e1133]:
+                        - img [ref=e964]: shopping_bag
+                  - row [ref=e1134] [cursor=pointer]:
+                    - cell [ref=e1135]: Cat-Mgr-R20326
+                    - cell [ref=e1136]: Categoría de MANAGER
+                    - cell [ref=e1137]:
+                      - button [ref=e1138]:
+                        - img [ref=e972]: shopping_bag
+                  - row [ref=e1139] [cursor=pointer]:
+                    - cell [ref=e1140]: Cat-Mgr-R24138
+                    - cell [ref=e1141]: Categoría de MANAGER
+                    - cell [ref=e1142]:
+                      - button [ref=e1143]:
+                        - img [ref=e980]: shopping_bag
+                  - row [ref=e1144] [cursor=pointer]:
+                    - cell [ref=e1145]: Cat-Mgr-R26542
+                    - cell [ref=e1146]: Categoría de MANAGER
+                    - cell [ref=e1147]:
+                      - button [ref=e1148]:
+                        - img [ref=e988]: shopping_bag
+                  - row [ref=e1149] [cursor=pointer]:
+                    - cell [ref=e1150]: Cat-Mgr-R36029
+                    - cell [ref=e1151]: Categoría de MANAGER
+                    - cell [ref=e1152]:
+                      - button [ref=e1153]:
+                        - img [ref=e996]: shopping_bag
+                  - row [ref=e1154] [cursor=pointer]:
+                    - cell [ref=e1155]: Cat-Mgr-R36816
+                    - cell [ref=e1156]: Categoría de MANAGER
+                    - cell [ref=e1157]:
+                      - button [ref=e1158]:
+                        - img [ref=e1004]: shopping_bag
+                  - row [ref=e1159] [cursor=pointer]:
+                    - cell [ref=e1160]: Cat-Mgr-R3784
+                    - cell [ref=e1161]: Categoría de MANAGER
+                    - cell [ref=e1162]:
+                      - button [ref=e1163]:
+                        - img [ref=e1012]: shopping_bag
+                  - row [ref=e1164] [cursor=pointer]:
+                    - cell [ref=e1165]: Cat-Mgr-R39152
+                    - cell [ref=e1166]: Categoría de MANAGER
+                    - cell [ref=e1167]:
+                      - button [ref=e1168]:
+                        - img [ref=e1020]: shopping_bag
+                  - row [ref=e1169] [cursor=pointer]:
+                    - cell [ref=e1170]: Cat-Mgr-R41075
+                    - cell [ref=e1171]: Categoría de MANAGER
+                    - cell [ref=e1172]:
+                      - button [ref=e1173]:
+                        - img [ref=e1028]: shopping_bag
+                  - row [ref=e1174] [cursor=pointer]:
+                    - cell [ref=e1175]: Cat-Mgr-R44964
+                    - cell [ref=e1176]: Categoría de MANAGER
+                    - cell [ref=e1177]:
+                      - button [ref=e1178]:
+                        - img [ref=e1036]: shopping_bag
+                  - row [ref=e1179] [cursor=pointer]:
+                    - cell [ref=e1180]: Cat-Mgr-R58523
+                    - cell [ref=e1181]: Categoría de MANAGER
+                    - cell [ref=e1182]:
+                      - button [ref=e1183]:
+                        - img [ref=e1044]: shopping_bag
+                  - row [ref=e1184] [cursor=pointer]:
+                    - cell [ref=e1185]: Cat-Mgr-R59
+                    - cell [ref=e1186]: Categoría de MANAGER
+                    - cell [ref=e1187]:
+                      - button [ref=e1188]:
+                        - img [ref=e1052]: shopping_bag
+                  - row [ref=e1189] [cursor=pointer]:
+                    - cell [ref=e1190]: Cat-Mgr-R6985
+                    - cell [ref=e1191]: Categoría de MANAGER
+                    - cell [ref=e1192]:
+                      - button [ref=e1193]:
+                        - img [ref=e1060]: shopping_bag
+                  - row [ref=e1194] [cursor=pointer]:
+                    - cell [ref=e1195]: Cat-Mgr-R70934
+                    - cell [ref=e1196]: Categoría de MANAGER
+                    - cell [ref=e1197]:
+                      - button [ref=e1198]:
+                        - img [ref=e1068]: shopping_bag
+                  - row [ref=e1199] [cursor=pointer]:
+                    - cell [ref=e1200]: Cat-Mgr-R8056
+                    - cell [ref=e1201]: Categoría de MANAGER
+                    - cell [ref=e1202]:
+                      - button [ref=e1203]:
+                        - img [ref=e1076]: shopping_bag
+                  - row [ref=e1204] [cursor=pointer]:
+                    - cell [ref=e1205]: Cat-Mgr-R87261
+                    - cell [ref=e1206]: Categoría de MANAGER
+                    - cell [ref=e1207]:
+                      - button [ref=e1208]:
+                        - img [ref=e1084]: shopping_bag
+                  - row [ref=e1209] [cursor=pointer]:
+                    - cell [ref=e1210]: Cat-Mgr-R95214
+                    - cell [ref=e1211]: Categoría de MANAGER
+                    - cell [ref=e1212]:
+                      - button [ref=e1213]:
+                        - img [ref=e1092]: shopping_bag
+                  - row [ref=e1214] [cursor=pointer]:
+                    - cell [ref=e1215]: Cat-Mgr-R97733
+                    - cell [ref=e1216]: Categoría de MANAGER
+                    - cell [ref=e1217]:
+                      - button [ref=e1218]:
+                        - img [ref=e1100]: shopping_bag
+                  - row [ref=e1219] [cursor=pointer]:
+                    - cell [ref=e1220]: Categoría de Prueba QA
+                    - cell [ref=e1105]
+                    - cell [ref=e1221]:
+                      - button [ref=e1222]:
+                        - img [ref=e1108]: shopping_bag
+              - group [ref=e1223]:
+                - generic [ref=e228]:
+                  - generic [ref=e229]:
+                    - generic [ref=e230]: "Items per page:"
+                    - combobox [ref=e1224] [cursor=pointer]:
+                      - generic [ref=e236]:
+                        - generic [ref=e238]: "20"
+                        - img [ref=e241]
+                  - generic [ref=e244]:
+                    - status [ref=e245]: 21 – 40 of 70
+                    - button [ref=e1225] [cursor=pointer]:
+                      - img [ref=e247]
+                    - button [ref=e1226] [cursor=pointer]:
+                      - img [ref=e252]
+  - dialog [ref=e1230]:
+    - generic [ref=e1235]:
+      - heading "Editar categoría" [level=3] [ref=e1236]
+      - generic [ref=e1239]:
+        - generic [ref=e1240]:
+          - text: Nombre
+          - generic [ref=e1241]: "*"
+        - textbox "Nombre" [active] [ref=e1243]: Categoría de Prueba QA
+      - generic [ref=e1247]:
+        - generic [ref=e1248]: Descripción
+        - textbox "Descripción" [ref=e1250]
+      - generic [ref=e1252]:
+        - button "Desactivar" [ref=e1253]:
+          - generic [ref=e1254]: Desactivar
+        - generic [ref=e1257]:
+          - button "Cancelar" [ref=e1258]:
+            - generic [ref=e1259]: Cancelar
+          - button "Guardar cambios" [disabled]:
+            - generic: Guardar cambios

@@ -1,0 +1,73 @@
+<div class="catalog-page">
+
+  <!-- Toolbar -->
+  <div class="catalog-page__toolbar">
+    <div class="catalog-page__filters">
+      <mat-form-field appearance="outline" class="filter-field filter-field--search">
+        <mat-label>Buscar proveedor</mat-label>
+        <input matInput [formControl]="searchCtrl" autocomplete="off"
+               placeholder="RFC o razón social" />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+    <div class="catalog-page__actions">
+      @if (canWrite()) {
+        <button mat-flat-button color="primary" (click)="openNew()">
+          <mat-icon>add</mat-icon> Nuevo proveedor
+        </button>
+      }
+    </div>
+  </div>
+
+  @if (loading) {
+    <mat-progress-bar mode="indeterminate" class="catalog-page__progress" />
+  }
+
+  @if (!loading && filtered.length === 0) {
+    <div class="catalog-page__empty">
+      <mat-icon class="catalog-page__empty-icon">local_shipping</mat-icon>
+      <p class="catalog-page__empty-title">
+        @if (searchCtrl.value) {
+          Sin resultados para "{{ searchCtrl.value }}"
+        } @else {
+          Sin proveedores registrados
+        }
+      </p>
+    </div>
+  } @else {
+    <div class="catalog-page__table-wrapper">
+      <table mat-table [dataSource]="filtered" class="catalog-table" [trackBy]="trackById">
+
+        <ng-container matColumnDef="rfc">
+          <th mat-header-cell *matHeaderCellDef>RFC</th>
+          <td mat-cell *matCellDef="let s" class="cell-mono">{{ s.rfc }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="companyName">
+          <th mat-header-cell *matHeaderCellDef>Razón social</th>
+          <td mat-cell *matCellDef="let s"
+              [matTooltip]="s.companyName" matTooltipShowDelay="300">
+            <div class="cell-truncate">{{ s.companyName }}</div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="contactName">
+          <th mat-header-cell *matHeaderCellDef>Contacto</th>
+          <td mat-cell *matCellDef="let s">{{ s.contactName ?? '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef>Teléfono</th>
+          <td mat-cell *matCellDef="let s">{{ s.phone ?? '—' }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+            class="catalog-row"
+            (click)="onRowClick(row)">
+        </tr>
+      </table>
+    </div>
+  }
+
+</div>

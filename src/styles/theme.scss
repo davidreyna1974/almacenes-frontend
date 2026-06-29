@@ -1,0 +1,50 @@
+@use '@angular/material' as mat;
+
+// ============================================================
+// PALETA PERSONALIZADA — Almacenes
+// Colores corporativos: #6B3C6B / #CE6EEB / #F2E4F2
+// ============================================================
+
+$primary-palette: (
+  100: #F2E4F2,
+  300: #CE6EEB,
+  500: #9B4FAB,
+  700: #6B3C6B,
+  900: #4A2850,
+  contrast: (
+    100: #212121,
+    300: #212121,
+    500: #ffffff,
+    700: #ffffff,
+    900: #ffffff,
+  )
+);
+
+$accent-palette: (
+  200: #F2E4F2,
+  400: #CE6EEB,
+  600: #B850D4,
+  contrast: (
+    200: #212121,
+    400: #212121,
+    600: #ffffff,
+  )
+);
+
+$almacenes-primary: mat.m2-define-palette($primary-palette, 700, 300, 900);
+$almacenes-accent:  mat.m2-define-palette($accent-palette, 400, 200, 600);
+$almacenes-warn:    mat.m2-define-palette(mat.$m2-red-palette);
+
+$almacenes-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $almacenes-primary,
+    accent:  $almacenes-accent,
+    warn:    $almacenes-warn,
+  ),
+  typography: mat.m2-define-typography-config(
+    $font-family: 'Roboto, sans-serif',
+  ),
+  density: 0,
+));
+
+@include mat.all-component-themes($almacenes-theme);

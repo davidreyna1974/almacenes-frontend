@@ -1,0 +1,84 @@
+<h2 mat-dialog-title>Registrar movimiento de stock</h2>
+
+<mat-dialog-content>
+  <p class="movement-dialog__product">
+    <strong>Producto:</strong> {{ data.product.name }} ({{ data.product.sku }})
+  </p>
+
+  <div class="movement-dialog__stock-panel">
+    <div class="movement-dialog__stock-row">
+      <span class="movement-dialog__stock-label">Stock físico</span>
+      <span class="movement-dialog__stock-value">{{ data.product.currentStock }}</span>
+    </div>
+    <div class="movement-dialog__stock-row">
+      <span class="movement-dialog__stock-label">Reservado (órdenes pendientes)</span>
+      <span class="movement-dialog__stock-value movement-dialog__stock-value--reserved">
+        {{ data.product.reservedStock ?? 0 }}
+      </span>
+    </div>
+    <div class="movement-dialog__stock-row movement-dialog__stock-row--available">
+      <span class="movement-dialog__stock-label">Disponible para salida</span>
+      <span class="movement-dialog__stock-value movement-dialog__stock-value--available">
+        {{ availableStock }}
+      </span>
+    </div>
+  </div>
+
+  @if (errorMessage) {
+    <div class="movement-dialog__error" role="alert">
+      <mat-icon class="movement-dialog__error-icon">error_outline</mat-icon>
+      <span>{{ errorMessage }}</span>
+    </div>
+  }
+
+  <form [formGroup]="form" class="movement-dialog__form">
+
+    <!-- Tipo -->
+    <mat-form-field appearance="outline" class="movement-dialog__field">
+      <mat-label>Tipo de movimiento</mat-label>
+      <mat-select formControlName="type">
+        <mat-option value="IN">Entrada (IN)</mat-option>
+        <mat-option value="OUT">Salida (OUT)</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Cantidad -->
+    <mat-form-field appearance="outline" class="movement-dialog__field">
+      <mat-label>Cantidad</mat-label>
+      <input matInput type="number" formControlName="quantity" min="1" />
+      @if (form.get('quantity')?.hasError('required') && form.get('quantity')?.touched) {
+        <mat-error>La cantidad es obligatoria.</mat-error>
+      }
+      @if (form.get('quantity')?.hasError('min')) {
+        <mat-error>La cantidad debe ser al menos 1.</mat-error>
+      }
+      @if (form.get('quantity')?.hasError('max')) {
+        <mat-error>Supera el stock disponible ({{ availableStock }} unidades).</mat-error>
+      }
+    </mat-form-field>
+
+    <!-- Motivo -->
+    <mat-form-field appearance="outline" class="movement-dialog__field movement-dialog__reason">
+      <mat-label>Motivo</mat-label>
+      <textarea matInput formControlName="reason" rows="3" maxlength="300"></textarea>
+      @if (form.get('reason')?.hasError('required') && form.get('reason')?.touched) {
+        <mat-error>El motivo es obligatorio.</mat-error>
+      }
+      @if (form.get('reason')?.hasError('maxlength')) {
+        <mat-error>Máximo 300 caracteres.</mat-error>
+      }
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button mat-dialog-close [disabled]="saving">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="submit()" [disabled]="form.invalid || saving">
+    @if (saving) {
+      <mat-spinner diameter="18" />
+    } @else {
+      Registrar
+    }
+  </button>
+</mat-dialog-actions>

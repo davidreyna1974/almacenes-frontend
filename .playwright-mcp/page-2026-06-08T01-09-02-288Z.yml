@@ -1,0 +1,94 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Órdenes de compra
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: test_wh
+            - 'generic "Rol: WAREHOUSEMAN" [ref=e25]': WAREHOUSEMAN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+        - button "Expandir menú" [ref=e42] [cursor=pointer]:
+          - img [ref=e43]: chevron_right
+      - main [ref=e44]:
+        - generic [ref=e47]:
+          - generic [ref=e48]:
+            - heading "Órdenes de compra" [level=2] [ref=e49]
+            - generic [ref=e52]:
+              - generic [ref=e53]: Buscar
+              - img [ref=e55]: search
+              - textbox "Buscar" [ref=e57]:
+                - /placeholder: N° orden, proveedor, usuario…
+          - generic [ref=e58]:
+            - tablist [ref=e61]:
+              - generic [ref=e62]:
+                - tab "Pendientes" [ref=e63] [cursor=pointer]:
+                  - generic [ref=e65]: Pendientes
+                - tab "Aprobadas 1" [active] [selected] [ref=e88] [cursor=pointer]:
+                  - generic [ref=e68]:
+                    - text: Aprobadas
+                    - generic [ref=e89]: "1"
+                - tab "Recibidas" [ref=e69] [cursor=pointer]:
+                  - generic [ref=e71]: Recibidas
+                - tab "Canceladas" [ref=e72] [cursor=pointer]:
+                  - generic [ref=e74]: Canceladas
+            - generic:
+              - tabpanel "Aprobadas 1"
+          - generic [ref=e75]:
+            - table [ref=e79]:
+              - row "N° Orden Proveedor Creado por Fecha Estado" [ref=e80]:
+                - columnheader "N° Orden" [ref=e81]
+                - columnheader "Proveedor" [ref=e82]
+                - columnheader "Creado por" [ref=e83]
+                - columnheader "Fecha" [ref=e84]
+                - columnheader "Estado" [ref=e85]
+                - columnheader [ref=e86]
+              - row "OC-2026-0065 Agroquímica y Fertilizantes del Valle S.A. admin 07/06/2026 19:08 Aprobada" [ref=e90] [cursor=pointer]:
+                - cell "OC-2026-0065" [ref=e91]:
+                  - generic [ref=e92]: OC-2026-0065
+                - cell "Agroquímica y Fertilizantes del Valle S.A." [ref=e93]:
+                  - generic [ref=e94]: Agroquímica y Fertilizantes del Valle S.A.
+                - cell "admin" [ref=e95]
+                - cell "07/06/2026 19:08" [ref=e96]
+                - cell "Aprobada" [ref=e97]:
+                  - generic [ref=e98]: Aprobada
+                - cell [ref=e99]:
+                  - button [ref=e100]:
+                    - img [ref=e101]: open_in_new
+                  - button [ref=e104]:
+                    - img [ref=e105]: done_all
+            - group [ref=e108]:
+              - generic [ref=e110]:
+                - generic [ref=e111]:
+                  - generic [ref=e112]: "Items per page:"
+                  - combobox "Items per page:" [ref=e117] [cursor=pointer]:
+                    - generic [ref=e118]:
+                      - generic [ref=e120]: "20"
+                      - img [ref=e123]
+                - generic [ref=e126]:
+                  - status [ref=e127]: 1 – 1 of 1
+                  - button "Previous page" [disabled] [ref=e128]:
+                    - img [ref=e129]
+                  - button "Next page" [disabled] [ref=e133]:
+                    - img [ref=e134]

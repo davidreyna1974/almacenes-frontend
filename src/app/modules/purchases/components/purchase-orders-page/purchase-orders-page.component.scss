@@ -1,0 +1,127 @@
+.orders-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--space-3);
+  gap: var(--space-2);
+
+  &__progress { flex-shrink: 0; margin: 0 calc(-1 * var(--space-3)); }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+  }
+
+  &__search {
+    flex: 1;
+    max-width: 340px;
+    .mat-mdc-form-field-subscript-wrapper { display: none; }
+  }
+
+  &__title { font-size: 20px; font-weight: 600; color: #6B3C6B; margin: 0; }
+
+  &__tabs { flex-shrink: 0; }
+
+  &__tab-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background: #6B3C6B;
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 0 5px;
+    margin-left: 6px;
+  }
+
+  &__table-wrapper {
+    flex: 1;
+    overflow: auto;
+    border-radius: 8px;
+    border: 1px solid var(--color-divider);
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__table {
+    width: 100%;
+    min-width: 750px;
+
+    .mat-mdc-header-cell {
+      font-weight: 600;
+      color: #6B3C6B;
+      background: #F2E4F2;
+      white-space: nowrap;
+    }
+  }
+
+  &__order-num {
+    font-family: monospace;
+    font-size: 13px;
+    color: #6B3C6B;
+    font-weight: 500;
+  }
+
+  &__truncate {
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+  }
+
+  &__num-header { text-align: right !important; }
+  &__num        { text-align: right; font-variant-numeric: tabular-nums; }
+
+  &__row {
+    cursor: pointer;
+    &:hover td { background: #faf5fa; }
+  }
+
+  &__actions-cell { white-space: nowrap; }
+
+  // ── Estado vacío ──────────────────────────────────────────────────────
+
+  &__empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--color-text-secondary);
+    padding: var(--space-4);
+  }
+
+  &__empty-icon {
+    font-size: 56px;
+    width: 56px;
+    height: 56px;
+    color: #6B3C6B;
+    opacity: 0.3;
+  }
+
+  &__empty-title { font-size: 16px; font-weight: 500; color: #6B3C6B; margin: 0; }
+}
+
+// ── Chips de estado ───────────────────────────────────────────────────────────
+
+.status--pending   { background: #FFF3E0; color: #E65100; }
+.status--approved  { background: #E3F2FD; color: #1565C0; }
+.status--received  { background: #E8F5E9; color: #2E7D32; }
+.status--cancelled { background: #FFEBEE; color: #C62828; }
+
+.status--pending, .status--approved, .status--received, .status--cancelled {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}

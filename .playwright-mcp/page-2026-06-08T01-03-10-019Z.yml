@@ -1,0 +1,106 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Nueva orden" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Nueva orden
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: test_mgr
+            - 'generic "Rol: MANAGER" [ref=e25]': MANAGER
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+        - button "Expandir menú" [ref=e42] [cursor=pointer]:
+          - img [ref=e43]: chevron_right
+      - main [ref=e44]:
+        - generic [ref=e47]:
+          - generic [ref=e48]:
+            - button [ref=e49] [cursor=pointer]:
+              - img [ref=e50]: arrow_back
+            - heading "Nueva orden de compra" [level=2] [ref=e54]
+          - generic [ref=e56]:
+            - generic [ref=e57]:
+              - heading "Información de la orden" [level=3] [ref=e58]
+              - generic [ref=e59]:
+                - generic [ref=e62] [cursor=pointer]:
+                  - generic [ref=e63]:
+                    - text: Proveedor
+                    - generic [ref=e64]: "*"
+                  - combobox "Proveedor" [ref=e66]:
+                    - generic [ref=e67]:
+                      - generic [ref=e225]: Climatización e Instalaciones Térmicas S.A.
+                      - img [ref=e71]
+                - generic [ref=e195]:
+                  - generic [ref=e196]: Notas
+                  - textbox "Notas" [ref=e198]:
+                    - /placeholder: Observaciones opcionales
+            - generic [ref=e200]:
+              - generic [ref=e201]:
+                - heading "Líneas de detalle" [level=3] [ref=e202]
+                - button "Agregar línea" [disabled]:
+                  - img: add
+                  - generic: Agregar línea
+              - generic [ref=e228]:
+                - generic [ref=e229]:
+                  - generic [ref=e231]:
+                    - generic [ref=e232]: Producto
+                    - combobox "Producto" [expanded] [active] [ref=e234]: tub
+                  - listbox "Producto" [ref=e262]:
+                    - 'option "[PLOM-TUB2-020] Tubo CPVC 1/2\" x 3m Temperatura disponible: 300" [ref=e263] [cursor=pointer]':
+                      - generic [ref=e264]:
+                        - text: "[PLOM-TUB2-020] Tubo CPVC 1/2\" x 3m Temperatura"
+                        - generic [ref=e265]: "disponible: 300"
+                - generic [ref=e236]:
+                  - generic [ref=e239]:
+                    - generic [ref=e240]:
+                      - text: Cantidad
+                      - generic [ref=e241]: "*"
+                    - spinbutton "Cantidad" [ref=e243]: "1"
+                  - generic [ref=e247]:
+                    - generic [ref=e248]:
+                      - text: Precio unitario
+                      - generic [ref=e249]: "*"
+                    - generic: $
+                    - spinbutton "Precio unitario" [ref=e251]
+                - generic [ref=e253]:
+                  - generic [ref=e254]: "Subtotal:"
+                  - generic [ref=e255]: $0.00
+                - generic [ref=e256]:
+                  - button "Cancelar" [ref=e257]:
+                    - generic [ref=e258]: Cancelar
+                  - button "Agregar línea" [disabled]:
+                    - img: add
+                    - generic: Agregar línea
+              - table [ref=e211]:
+                - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e212]:
+                  - columnheader "SKU" [ref=e213]
+                  - columnheader "Producto" [ref=e214]
+                  - columnheader "Cantidad" [ref=e215]
+                  - columnheader "Precio unitario" [ref=e216]
+                  - columnheader "Subtotal" [ref=e217]
+                  - columnheader [ref=e218]
+            - generic [ref=e219]:
+              - button "Crear orden" [disabled]:
+                - img: save
+                - generic: Crear orden
+              - button "Cancelar" [ref=e220]:
+                - generic [ref=e221]: Cancelar

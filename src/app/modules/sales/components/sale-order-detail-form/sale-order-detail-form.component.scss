@@ -1,0 +1,64 @@
+.detail-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: var(--space-2) 0;
+  min-width: 420px;
+
+  &__field--full  { width: 100%; }
+  &__field--half  { flex: 1; }
+
+  &__row {
+    display: flex;
+    gap: 12px;
+  }
+
+  &__product-sku {
+    font-family: monospace;
+    font-size: 12px;
+    color: #6B3C6B;
+    font-weight: 500;
+    margin-right: 4px;
+  }
+
+  &__product-stock {
+    float: right;
+    margin-left: 16px;
+    font-size: 11px;
+    color: var(--color-text-secondary);
+
+    &--low { color: #E65100; font-weight: 500; }
+  }
+
+  &__warning {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    color: #E65100;
+    font-size: 12px;
+    margin: 0;
+    padding: 8px 12px;
+    background: #FFF3E0;
+    border-radius: 6px;
+
+    mat-icon { font-size: 18px; width: 18px; height: 18px; flex-shrink: 0; }
+  }
+
+  &__subtotal {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    background: #F2E4F2;
+    border-radius: 6px;
+  }
+
+  &__subtotal-label { font-size: 13px; color: var(--color-text-secondary); }
+
+  &__subtotal-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: #6B3C6B;
+    font-variant-numeric: tabular-nums;
+  }
+}

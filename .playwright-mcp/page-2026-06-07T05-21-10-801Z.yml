@@ -1,0 +1,307 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e443] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e444] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e445]:
+            - img [ref=e15]: chevron_right
+            - text: Inventario → Categorías
+        - generic [ref=e16]:
+          - button [ref=e446] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e447]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - generic [ref=e448]: ADMIN
+      - generic [ref=e28]:
+        - navigation [ref=e449]:
+          - menubar [ref=e32]:
+            - menuitem [expanded] [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button [ref=e450] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - heading [level=2] [ref=e451]: Categorías
+              - generic [ref=e52]:
+                - button [ref=e452]:
+                  - img [ref=e54]: shopping_bag
+                  - generic [ref=e55]: Productos
+                - button [ref=e453]:
+                  - img [ref=e59]: add
+                  - generic [ref=e60]: Nueva categoría
+            - generic [ref=e63]:
+              - table [ref=e64]:
+                - rowgroup [ref=e65]:
+                  - row [ref=e454]:
+                    - columnheader [ref=e455]: Nombre
+                    - columnheader [ref=e456]: Descripción
+                    - columnheader [ref=e457]: Creado por
+                    - columnheader [ref=e70]
+                - rowgroup [ref=e71]:
+                  - row [ref=e458] [cursor=pointer]:
+                    - cell [ref=e459]: Artículos de Limpieza
+                    - cell [ref=e460]: Detergentes, desinfectantes, escobas, trapeadores, cubetas y jabones.
+                    - cell [ref=e461]: admin
+                    - cell [ref=e462]:
+                      - button [ref=e463]:
+                        - img [ref=e78]: shopping_bag
+                      - button [ref=e464]:
+                        - img [ref=e82]: edit
+                      - button [ref=e465]:
+                        - img [ref=e86]: delete_outline
+                  - row [ref=e466] [cursor=pointer]:
+                    - cell [ref=e467]: Calzado Industrial
+                    - cell [ref=e468]: Botas de casquillo, botas dieléctricas, zapatos antideslizantes y plantillas.
+                    - cell [ref=e469]: admin
+                    - cell [ref=e470]:
+                      - button [ref=e471]:
+                        - img [ref=e95]: shopping_bag
+                      - button [ref=e472]:
+                        - img [ref=e99]: edit
+                      - button [ref=e473]:
+                        - img [ref=e103]: delete_outline
+                  - row [ref=e474] [cursor=pointer]:
+                    - cell [ref=e475]: Cat-Int-23178
+                    - cell [ref=e476]: test
+                    - cell [ref=e477]: admin
+                    - cell [ref=e478]:
+                      - button [ref=e479]:
+                        - img [ref=e112]: shopping_bag
+                      - button [ref=e480]:
+                        - img [ref=e116]: edit
+                      - button [ref=e481]:
+                        - img [ref=e120]: delete_outline
+                  - row [ref=e482] [cursor=pointer]:
+                    - cell [ref=e483]: Cat-Int-35904
+                    - cell [ref=e484]: test
+                    - cell [ref=e485]: admin
+                    - cell [ref=e486]:
+                      - button [ref=e487]:
+                        - img [ref=e129]: shopping_bag
+                      - button [ref=e488]:
+                        - img [ref=e133]: edit
+                      - button [ref=e489]:
+                        - img [ref=e137]: delete_outline
+                  - row [ref=e490] [cursor=pointer]:
+                    - cell [ref=e491]: Cat-Int-40143
+                    - cell [ref=e492]: test
+                    - cell [ref=e493]: admin
+                    - cell [ref=e494]:
+                      - button [ref=e495]:
+                        - img [ref=e146]: shopping_bag
+                      - button [ref=e496]:
+                        - img [ref=e150]: edit
+                      - button [ref=e497]:
+                        - img [ref=e154]: delete_outline
+                  - row [ref=e498] [cursor=pointer]:
+                    - cell [ref=e499]: Cat-Int-57543
+                    - cell [ref=e500]: test
+                    - cell [ref=e501]: admin
+                    - cell [ref=e502]:
+                      - button [ref=e503]:
+                        - img [ref=e163]: shopping_bag
+                      - button [ref=e504]:
+                        - img [ref=e167]: edit
+                      - button [ref=e505]:
+                        - img [ref=e171]: delete_outline
+                  - row [ref=e506] [cursor=pointer]:
+                    - cell [ref=e507]: Cat-Int-94230
+                    - cell [ref=e508]: test
+                    - cell [ref=e509]: admin
+                    - cell [ref=e510]:
+                      - button [ref=e511]:
+                        - img [ref=e180]: shopping_bag
+                      - button [ref=e512]:
+                        - img [ref=e184]: edit
+                      - button [ref=e513]:
+                        - img [ref=e188]: delete_outline
+                  - row [ref=e514] [cursor=pointer]:
+                    - cell [ref=e515]: Cat-Mgr-R24138
+                    - cell [ref=e516]: Categoría de MANAGER
+                    - cell [ref=e517]: mgrR24138
+                    - cell [ref=e518]:
+                      - button [ref=e519]:
+                        - img [ref=e197]: shopping_bag
+                      - button [ref=e520]:
+                        - img [ref=e201]: edit
+                      - button [ref=e521]:
+                        - img [ref=e205]: delete_outline
+                  - row [ref=e522] [cursor=pointer]:
+                    - cell [ref=e523]: Cat-Mgr-R36816
+                    - cell [ref=e524]: Categoría de MANAGER
+                    - cell [ref=e525]: mgrR36816
+                    - cell [ref=e526]:
+                      - button [ref=e527]:
+                        - img [ref=e214]: shopping_bag
+                      - button [ref=e528]:
+                        - img [ref=e218]: edit
+                      - button [ref=e529]:
+                        - img [ref=e222]: delete_outline
+                  - row [ref=e530] [cursor=pointer]:
+                    - cell [ref=e531]: Cat-Mgr-R41075
+                    - cell [ref=e532]: Categoría de MANAGER
+                    - cell [ref=e533]: mgrR41075
+                    - cell [ref=e534]:
+                      - button [ref=e535]:
+                        - img [ref=e231]: shopping_bag
+                      - button [ref=e536]:
+                        - img [ref=e235]: edit
+                      - button [ref=e537]:
+                        - img [ref=e239]: delete_outline
+                  - row [ref=e538] [cursor=pointer]:
+                    - cell [ref=e539]: Cat-Mgr-R58523
+                    - cell [ref=e540]: Categoría de MANAGER
+                    - cell [ref=e541]: mgrR58523
+                    - cell [ref=e542]:
+                      - button [ref=e543]:
+                        - img [ref=e248]: shopping_bag
+                      - button [ref=e544]:
+                        - img [ref=e252]: edit
+                      - button [ref=e545]:
+                        - img [ref=e256]: delete_outline
+                  - row [ref=e546] [cursor=pointer]:
+                    - cell [ref=e547]: Cat-Mgr-R95214
+                    - cell [ref=e548]: Categoría de MANAGER
+                    - cell [ref=e549]: mgrR95214
+                    - cell [ref=e550]:
+                      - button [ref=e551]:
+                        - img [ref=e265]: shopping_bag
+                      - button [ref=e552]:
+                        - img [ref=e269]: edit
+                      - button [ref=e553]:
+                        - img [ref=e273]: delete_outline
+                  - row [ref=e554] [cursor=pointer]:
+                    - cell [ref=e555]: Climatización y Ventilación
+                    - cell [ref=e556]: Aires acondicionados, ventiladores industriales, extractores y calefactores.
+                    - cell [ref=e557]: admin
+                    - cell [ref=e558]:
+                      - button [ref=e559]:
+                        - img [ref=e282]: shopping_bag
+                      - button [ref=e560]:
+                        - img [ref=e286]: edit
+                      - button [ref=e561]:
+                        - img [ref=e290]: delete_outline
+                  - row [ref=e562] [cursor=pointer]:
+                    - cell [ref=e563]: Computación y Periféricos
+                    - cell [ref=e564]: Laptops, desktops, teclados, ratones, monitores y accesorios de cómputo.
+                    - cell [ref=e565]: admin
+                    - cell [ref=e566]:
+                      - button [ref=e567]:
+                        - img [ref=e299]: shopping_bag
+                      - button [ref=e568]:
+                        - img [ref=e303]: edit
+                      - button [ref=e569]:
+                        - img [ref=e307]: delete_outline
+                  - row [ref=e570] [cursor=pointer]:
+                    - cell [ref=e571]: Electricidad e Iluminación
+                    - cell [ref=e572]: Cables, interruptores, contactos, lámparas LED, reflectores y tableros.
+                    - cell [ref=e573]: admin
+                    - cell [ref=e574]:
+                      - button [ref=e575]:
+                        - img [ref=e316]: shopping_bag
+                      - button [ref=e576]:
+                        - img [ref=e320]: edit
+                      - button [ref=e577]:
+                        - img [ref=e324]: delete_outline
+                  - row [ref=e578] [cursor=pointer]:
+                    - cell [ref=e579]: Electrodomésticos de Línea Blanca
+                    - cell [ref=e580]: Refrigeradores, lavadoras, secadoras, lavavajillas y hornos de cocina.
+                    - cell [ref=e581]: admin
+                    - cell [ref=e582]:
+                      - button [ref=e583]:
+                        - img [ref=e333]: shopping_bag
+                      - button [ref=e584]:
+                        - img [ref=e337]: edit
+                      - button [ref=e585]:
+                        - img [ref=e341]: delete_outline
+                  - row [ref=e586] [cursor=pointer]:
+                    - cell [ref=e587]: Electrodomésticos de Línea Café
+                    - cell [ref=e588]: Cafeteras, licuadoras, tostadoras, microondas y pequeños electrodomésticos.
+                    - cell [ref=e589]: admin
+                    - cell [ref=e590]:
+                      - button [ref=e591]:
+                        - img [ref=e350]: shopping_bag
+                      - button [ref=e592]:
+                        - img [ref=e354]: edit
+                      - button [ref=e593]:
+                        - img [ref=e358]: delete_outline
+                  - row [ref=e594] [cursor=pointer]:
+                    - cell [ref=e595]: Electrónica
+                    - cell [ref=e596]: duplicado
+                    - cell [ref=e597]: admin
+                    - cell [ref=e598]:
+                      - button [ref=e599]:
+                        - img [ref=e367]: shopping_bag
+                      - button [ref=e600]:
+                        - img [ref=e371]: edit
+                      - button [ref=e601]:
+                        - img [ref=e375]: delete_outline
+                  - row [ref=e602] [cursor=pointer]:
+                    - cell [ref=e603]: Electrónica de Consumo
+                    - cell [ref=e604]: Televisores, reproductores, audífonos y dispositivos de entretenimiento.
+                    - cell [ref=e605]: admin
+                    - cell [ref=e606]:
+                      - button [ref=e607]:
+                        - img [ref=e384]: shopping_bag
+                      - button [ref=e608]:
+                        - img [ref=e388]: edit
+                      - button [ref=e609]:
+                        - img [ref=e392]: delete_outline
+                  - row [ref=e610] [cursor=pointer]:
+                    - cell [ref=e611]: Embalaje e Insumos Logísticos
+                    - cell [ref=e612]: Cajas de cartón, cintas, esquineros, estiramiento y materiales de empaque.
+                    - cell [ref=e613]: admin
+                    - cell [ref=e614]:
+                      - button [ref=e615]:
+                        - img [ref=e401]: shopping_bag
+                      - button [ref=e616]:
+                        - img [ref=e405]: edit
+                      - button [ref=e617]:
+                        - img [ref=e409]: delete_outline
+              - group [ref=e618]:
+                - generic [ref=e414]:
+                  - generic [ref=e415]:
+                    - generic [ref=e416]: "Items per page:"
+                    - combobox [ref=e619] [cursor=pointer]:
+                      - generic [ref=e422]:
+                        - generic [ref=e424]: "20"
+                        - img [ref=e427]
+                  - generic [ref=e430]:
+                    - status [ref=e431]: 1 – 20 of 40
+                    - button [disabled] [ref=e620]:
+                      - img [ref=e433]
+                    - button [ref=e621] [cursor=pointer]:
+                      - img [ref=e438]
+  - dialog [ref=e625]:
+    - generic [ref=e630]:
+      - heading "Nueva categoría" [level=3] [ref=e631]
+      - generic [ref=e634]:
+        - generic [ref=e635]:
+          - generic [ref=e636]: Nombre *
+          - generic [ref=e637]: "*"
+        - textbox "Nombre *" [active] [ref=e639]
+      - generic [ref=e643]:
+        - generic [ref=e644]: Descripción
+        - textbox "Descripción" [ref=e646]
+      - generic [ref=e648]:
+        - button "Cancelar" [ref=e649]:
+          - generic [ref=e650]: Cancelar
+        - button "Crear categoría" [disabled]:
+          - generic: Crear categoría

@@ -1,0 +1,71 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Proveedores" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Proveedores
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e50]:
+          - generic [ref=e51]:
+            - generic [ref=e52]:
+              - generic [ref=e55]:
+                - generic [ref=e56]: Buscar proveedor
+                - img [ref=e58]: search
+                - textbox "Buscar proveedor" [active] [ref=e60]:
+                  - /placeholder: RFC o razón social
+                  - text: Ferretera
+              - button "Nuevo proveedor" [ref=e61]:
+                - img [ref=e62]: add
+                - generic [ref=e63]: Nuevo proveedor
+            - table [ref=e66]:
+              - row "RFC Razón social Contacto Teléfono" [ref=e67]:
+                - columnheader "RFC" [ref=e68]
+                - columnheader "Razón social" [ref=e69]
+                - columnheader "Contacto" [ref=e70]
+                - columnheader "Teléfono" [ref=e71]
+                - columnheader [ref=e72]
+              - row "FERR860720RS6 Ferretera Industrial del Norte S.A. de C.V. Sr. Juan Pablo Ortiz Morales 6181-7890" [ref=e157] [cursor=pointer]:
+                - cell "FERR860720RS6" [ref=e158]:
+                  - generic [ref=e159]: FERR860720RS6
+                - cell "Ferretera Industrial del Norte S.A. de C.V." [ref=e160]:
+                  - generic [ref=e161]: Ferretera Industrial del Norte S.A. de C.V.
+                - cell "Sr. Juan Pablo Ortiz Morales" [ref=e162]
+                - cell "6181-7890" [ref=e163]
+                - cell [ref=e164]:
+                  - button [ref=e165]:
+                    - img [ref=e166]: edit
+          - generic [ref=e770]:
+            - img [ref=e771]: local_shipping
+            - paragraph [ref=e772]: Selecciona un proveedor para ver los detalles
+            - button "Nuevo proveedor" [ref=e773]:
+              - img [ref=e774]: add
+              - generic [ref=e775]: Nuevo proveedor

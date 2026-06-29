@@ -1,0 +1,56 @@
+<div class="profile-page">
+
+  @if (loading) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  }
+
+  @if (profile) {
+    <mat-card class="profile-card">
+      <mat-card-header>
+        <div mat-card-avatar class="profile-card__avatar">
+          <mat-icon>account_circle</mat-icon>
+        </div>
+        <mat-card-title>{{ profile.username }}</mat-card-title>
+        <mat-card-subtitle>{{ profile.email }}</mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card-content>
+        <mat-divider class="profile-card__divider"></mat-divider>
+
+        <div class="profile-card__section">
+          <p class="profile-card__label">Roles asignados</p>
+          <div class="profile-card__roles">
+            @for (role of profile.roles; track role) {
+              <span class="profile-card__role-chip"
+                    [style.background-color]="roleColor(role)">
+                {{ roleLabel(role) }}
+              </span>
+            }
+          </div>
+        </div>
+
+        <div class="profile-card__section">
+          <p class="profile-card__label">Miembro desde</p>
+          <p class="profile-card__value">{{ profile.createdAt | date:'dd/MM/yyyy' }}</p>
+        </div>
+
+        <div class="profile-card__section">
+          <p class="profile-card__label">Última actualización</p>
+          <p class="profile-card__value">
+            {{ profile.updatedAt ? (profile.updatedAt | date:'dd/MM/yyyy') : '—' }}
+          </p>
+        </div>
+      </mat-card-content>
+
+      <mat-divider></mat-divider>
+
+      <mat-card-actions class="profile-card__actions">
+        <button mat-stroked-button color="primary" (click)="openChangePassword()">
+          <mat-icon>lock</mat-icon>
+          Cambiar contraseña
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  }
+
+</div>

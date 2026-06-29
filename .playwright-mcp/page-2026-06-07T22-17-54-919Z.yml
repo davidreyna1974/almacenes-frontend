@@ -1,0 +1,25 @@
+- generic [active] [ref=e1]:
+  - main [ref=e433]:
+    - generic [ref=e434]:
+      - generic [ref=e435]: Almacenes
+      - paragraph [ref=e436]: Inicia sesión para continuar
+    - generic [ref=e437]:
+      - generic [ref=e440]:
+        - generic [ref=e441]:
+          - text: Usuario
+          - generic [ref=e442]: "*"
+        - textbox "Usuario" [ref=e444]: manager
+        - img [ref=e446]: person_outline
+      - generic [ref=e450]:
+        - generic [ref=e451]:
+          - text: Contraseña
+          - generic [ref=e452]: "*"
+        - textbox "Contraseña" [ref=e454]: manager123
+        - button "Mostrar contraseña" [ref=e456] [cursor=pointer]:
+          - img [ref=e457]: visibility_off
+      - button "Iniciar sesión" [ref=e461] [cursor=pointer]:
+        - generic [ref=e462]: Iniciar sesión
+  - generic [ref=e471]:
+    - generic [ref=e472]: Credenciales incorrectas.
+    - button "Cerrar" [ref=e474]:
+      - generic [ref=e475]: Cerrar

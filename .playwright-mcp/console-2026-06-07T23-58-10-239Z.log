@@ -1,0 +1,14 @@
+[      77ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-KDRVKD3Y.js?v=d3bb7404:11231
+[   71816ms] [ERROR] ERROR TypeError: term.toLowerCase is not a function
+    at _PurchaseOrderDetailFormComponent.filterProducts (http://localhost:4200/chunk-WGWF4VTF.js:2034:20)
+    at Object.next (http://localhost:4200/chunk-WGWF4VTF.js:2021:117)
+    at ConsumerObserver2.next (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-U7EDC2PH.js?v=d3bb7404:588:25)
+    at Subscriber2._next (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-U7EDC2PH.js?v=d3bb7404:558:22)
+    at Subscriber2.next (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-U7EDC2PH.js?v=d3bb7404:531:12)
+    at ConsumerObserver2.next (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-U7EDC2PH.js?v=d3bb7404:588:25)
+    at Subscriber2._next (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-U7EDC2PH.js?v=d3bb7404:558:22)
+    at Subscriber2.next (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-U7EDC2PH.js?v=d3bb7404:531:12)
+    at http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-U7EDC2PH.js?v=d3bb7404:992:22
+    at errorContext (http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-U7EDC2PH.js?v=d3bb7404:498:5) @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-QTYF2Q3W.js?v=d3bb7404:3169
+[  160889ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-KDRVKD3Y.js?v=d3bb7404:11231
+[  165462ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-KDRVKD3Y.js?v=d3bb7404:11231

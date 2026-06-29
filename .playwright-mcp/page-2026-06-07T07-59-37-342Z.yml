@@ -1,0 +1,36 @@
+- generic [ref=e1868]:
+  - link "Ir al contenido principal" [ref=e1869] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e1870]:
+    - banner [ref=e1872]:
+      - generic [ref=e1873]:
+        - button "Alternar menú lateral" [ref=e1874] [cursor=pointer]:
+          - img [ref=e1875]: menu
+        - generic [ref=e1878]: Almacenes
+      - generic [ref=e1879]:
+        - button "Notificaciones" [ref=e1880] [cursor=pointer]:
+          - img [ref=e1881]: notifications_none
+        - button "Menú de usuario" [ref=e1884]:
+          - img [ref=e1885]: arrow_drop_down
+          - generic [ref=e1886]:
+            - text: testwh11497
+            - 'generic "Rol: WAREHOUSEMAN" [ref=e1888]': WAREHOUSEMAN
+    - generic [ref=e1891]:
+      - navigation "Navegación principal" [ref=e1894]:
+        - menubar [ref=e1895]:
+          - menuitem "Inventario" [ref=e1896] [cursor=pointer]:
+            - img [ref=e1897]: inventory_2
+            - generic [ref=e1898]: Inventario
+            - img [ref=e1899]: expand_more
+          - menuitem "Compras" [ref=e1900] [cursor=pointer]:
+            - img [ref=e1901]: shopping_cart
+            - generic [ref=e1902]: Compras
+          - menuitem "Ventas" [ref=e1903] [cursor=pointer]:
+            - img [ref=e1904]: point_of_sale
+            - generic [ref=e1905]: Ventas
+          - menuitem "Reportes" [ref=e1906] [cursor=pointer]:
+            - img [ref=e1907]: bar_chart
+            - generic [ref=e1908]: Reportes
+        - button "Colapsar menú" [ref=e1910] [cursor=pointer]:
+          - img [ref=e1911]: chevron_left
+      - main [ref=e1912]

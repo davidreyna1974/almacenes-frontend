@@ -1,0 +1,1027 @@
+================================================================================
+PROPUESTA DE DESARROLLO — MÓDULO 5: REPORTES (FRONTEND)
+Sistema de Gestión de Almacenes — Frontend Angular
+Fecha: 2026-06-15
+Autor: David Reyna Pineda
+Estado: PENDIENTE DE APROBACIÓN
+================================================================================
+
+────────────────────────────────────────────────────────────────────────────────
+1. CONTEXTO Y JUSTIFICACIÓN
+────────────────────────────────────────────────────────────────────────────────
+
+El módulo de Reportes es el módulo 5 (último) del sistema. A diferencia de los
+módulos anteriores (Auth, Inventory, Purchases, Sales), este módulo es de SOLO
+LECTURA: no tiene operaciones de escritura propias — consume los datos
+transaccionales generados por los módulos 1-4 y los presenta en forma de
+indicadores, gráficas y tablas de análisis.
+
+El backend ya está completo: 12 endpoints GET en `/api/v1/reports/`, todos
+verificados directamente en el código fuente. No hay paginación en ninguna
+respuesta; los resultados son listas planas o DTOs simples.
+
+Este módulo cierra el sistema y habilita la toma de decisiones para los 4
+perfiles de usuario (ADMIN, MANAGER, WAREHOUSEMAN, SALES).
+
+────────────────────────────────────────────────────────────────────────────────
+2. OBJETIVOS DEL MÓDULO
+────────────────────────────────────────────────────────────────────────────────
+
+2.1  Mostrar indicadores financieros y operativos clave (KPIs) adaptados al rol
+     del usuario autenticado.
+
+2.2  Proveer al ADMIN un dashboard ejecutivo con visión P&L simplificada
+     (revenue, COGS, margen bruto), valuación de inventario y alertas de
+     órdenes pendientes.
+
+2.3  Proveer al MANAGER herramientas de análisis: rentabilidad por período,
+     top productos, análisis ABC, tendencia de ventas por día/semana/mes,
+     compras por proveedor y rotación de inventario.
+
+2.4  Proveer al WAREHOUSEMAN las herramientas operativas que le son propias:
+     alertas de stock bajo, Kardex por producto y resumen de movimientos de
+     stock.
+
+2.5  Proveer a todos los roles (incluyendo SALES) una vista de operaciones
+     pendientes (compras y ventas en estado PENDING/APPROVED).
+
+2.6  Garantizar que ningún rol pueda acceder a datos de otros roles — ni por
+     URL directa ni por elementos del DOM ocultos.
+
+────────────────────────────────────────────────────────────────────────────────
+3. ALCANCE FUNCIONAL — 12 REPORTES EN 4 VISTAS
+────────────────────────────────────────────────────────────────────────────────
+
+El módulo se organiza en 4 vistas, cada una bajo su propia subruta protegida,
+agrupadas por RBAC de menor a mayor restricción:
+
+┌─────────────────────────────┬────────┬─────────┬──────────────┬───────┐
+│ Vista / Reporte             │ ADMIN  │ MANAGER │ WAREHOUSEMAN │ SALES │
+├─────────────────────────────┼────────┼─────────┼──────────────┼───────┤
+│ V4 — Dashboard Ejecutivo    │        │         │              │       │
+│   E1 - KPIs ejecutivos      │   ✓   │    —    │      —       │   —   │
+│   E2 - Valuación inventario │   ✓   │    —    │      —       │   —   │
+├─────────────────────────────┼────────┼─────────┼──────────────┼───────┤
+│ V3 — Dashboard Analítico    │        │         │              │       │
+│   E3 - Rentabilidad ventas  │   ✓   │    ✓   │      —       │   —   │
+│   G1 - Top productos        │   ✓   │    ✓   │      —       │   —   │
+│   G2 - Análisis ABC         │   ✓   │    ✓   │      —       │   —   │
+│   G4 - Compras x proveedor  │   ✓   │    ✓   │      —       │   —   │
+│   G5 - Tendencia de ventas  │   ✓   │    ✓   │      —       │   —   │
+├─────────────────────────────┼────────┼─────────┼──────────────┼───────┤
+│ V2 — Reportes Operativos    │        │         │              │       │
+│   G3 - Rotación inventario  │   ✓   │    ✓   │      ✓      │   —   │
+│   O1 - Stock bajo mínimo    │   ✓   │    ✓   │      ✓      │   —   │
+│   O2 - Kardex por producto  │   ✓   │    ✓   │      ✓      │   —   │
+│   O4 - Resumen movimientos  │   ✓   │    ✓   │      ✓      │   —   │
+├─────────────────────────────┼────────┼─────────┼──────────────┼───────┤
+│ V1 — Operaciones Pendientes │        │         │              │       │
+│   O3 - Compras pendientes   │   ✓   │    ✓   │      ✓      │   ✓  │
+│   O3 - Ventas pendientes    │   ✓   │    ✓   │      ✓      │   ✓  │
+└─────────────────────────────┴────────┴─────────┴──────────────┴───────┘
+
+NOTA: La vista V4 (solo ADMIN) incluye E2 (Valuación) que en el backend está
+bajo `/reports/inventory/valuation` con acceso ADMIN+MANAGER. Se decide mostrar
+la Valuación en el Dashboard Ejecutivo (acceso solo ADMIN) dado que su función
+principal es el snapshot financiero del inventario, no una herramienta operativa.
+El MANAGER accede a datos equivalentes de rentabilidad en V3.
+
+────────────────────────────────────────────────────────────────────────────────
+4. CONTRATOS API VERIFICADOS (backend — código fuente)
+────────────────────────────────────────────────────────────────────────────────
+
+Base: GET /api/v1/reports/...   HTTP: 200 OK siempre   Sin paginación
+
+4.1  E1 — Dashboard ejecutivo
+     Ruta:    GET /reports/dashboard/executive
+     Roles:   ADMIN
+     Params:  ?from=YYYY-MM-DD  ?to=YYYY-MM-DD  (ambos opcionales)
+     Sin fechas → desde 2000-01-01 hasta mañana.
+     Response: ExecutiveDashboardDTO {
+       totalRevenue, totalCogs, grossMargin,
+       grossMarginPct (null si totalRevenue=0),
+       inventoryValue (snapshot actual, independiente del período),
+       pendingPurchaseOrders (Long), pendingSaleOrders (Long),
+       generatedAt (LocalDateTime)
+     }
+
+4.2  E2 — Valuación del inventario
+     Ruta:    GET /reports/inventory/valuation
+     Roles:   ADMIN, MANAGER
+     Params:  ninguno (snapshot en tiempo real)
+     Response: InventoryValuationDTO {
+       totalValue, generatedAt,
+       categories: [ { categoryId, categoryName, productCount,
+                       categoryValue, pct } ]  ← ordenado DESC por categoryValue
+     }
+
+4.3  E3 — Rentabilidad de ventas
+     Ruta:    GET /reports/sales/profitability
+     Roles:   ADMIN, MANAGER
+     Params:  ?from=YYYY-MM-DD  ?to=YYYY-MM-DD  (AMBOS OBLIGATORIOS)
+     ⚠️  El servicio lanza excepción (→ 500) si from o to son null o si from > to.
+         El frontend DEBE deshabilitar el botón hasta que ambas fechas sean válidas.
+     Response: SalesProfitabilityDTO {
+       from, to, totalRevenue, totalCogs, grossMargin,
+       grossMarginPct (null), deliveredOrderCount, avgTicket (null), generatedAt
+     }
+
+4.4  G1 — Top productos
+     Ruta:    GET /reports/products/top-performers
+     Roles:   ADMIN, MANAGER
+     Params:  ?from=  ?to=  ?limit=N (default 10, backend aplica max 50)
+     Response: TopProductDTO[] {
+       rank, productId, sku, name, categoryName,
+       totalQuantitySold, totalRevenue, totalCogs, grossMargin,
+       grossMarginPct (null)
+     }
+     Lista vacía [] si no hay ventas en el período.
+
+4.5  G2 — Análisis ABC
+     Ruta:    GET /reports/inventory/abc
+     Roles:   ADMIN, MANAGER
+     Params:  ?from=  ?to=
+     Response: AbcProductDTO[] {
+       classification ('A'|'B'|'C'), productId, sku, name,
+       totalRevenue, revenuePct, cumulativePct
+     }
+     A: cumulativePct ≤ 80%, B: ≤ 95%, C: resto. Ordenado revenue DESC.
+
+4.6  G3 — Rotación de inventario
+     Ruta:    GET /reports/inventory/turnover
+     Roles:   ADMIN, MANAGER, WAREHOUSEMAN
+     Params:  ?from=  ?to=
+     Response: InventoryTurnoverItemDTO[] {
+       productId, sku, name, categoryName,
+       cogsInPeriod, currentInventoryValue,
+       turnoverRate (null si currentInventoryValue=0),
+       interpretation ('Alta'|'Media'|'Baja'|'Sin datos')
+     }
+
+4.7  G4 — Compras por proveedor
+     Ruta:    GET /reports/purchases/by-supplier
+     Roles:   ADMIN, MANAGER
+     Params:  ?from=  ?to=  (filtrado por receivedAt de la orden)
+     ⚠️  Solo órdenes con status=RECEIVED (dinero desembolsado).
+     Response: PurchaseBySupplierDTO[] {
+       supplierId, supplierName, rfc, orderCount,
+       totalAmount, avgOrderAmount (BigDecimal.ZERO, nunca null),
+       lastOrderDate (null si sin órdenes RECEIVED)
+     }
+
+4.8  G5 — Tendencia de ventas
+     Ruta:    GET /reports/sales/trend
+     Roles:   ADMIN, MANAGER
+     Params:  ?from=  ?to=  ?groupBy=DAY|WEEK|MONTH (default MONTH)
+     ⚠️  Backend lanza excepción si groupBy tiene otro valor.
+     Response: SalesTrendItemDTO[] {
+       period (String: "2026-01" MONTH | "2026-03" WEEK | "2026-01-15" DAY),
+       revenue, orderCount, avgTicket (null)
+     }
+     Ordenado por period ASC — listo para gráfica de línea.
+
+4.9  O1 — Stock bajo mínimo
+     Ruta:    GET /reports/inventory/low-stock
+     Roles:   ADMIN, MANAGER, WAREHOUSEMAN
+     Params:  ninguno (snapshot en tiempo real)
+     ⚠️  El criterio es availableStock (= currentStock - reservedStock) ≤ minimumStock,
+         NO currentStock bruto. Mostrar availableStock como el dato crítico.
+     Response: LowStockReportItemDTO[] {
+       productId, sku, name, categoryName,
+       currentStock, minimumStock, availableStock, reservedStock,
+       deficit  ← (minimumStock - currentStock), ordenado DESC por el backend
+     }
+
+4.10 O2 — Kardex de producto
+     Ruta:    GET /reports/inventory/kardex/{productId}
+     Roles:   ADMIN, MANAGER, WAREHOUSEMAN
+     Params:  {productId} en path; ?from=  ?to= opcionales
+     ⚠️  Lanza RuntimeException si productId no existe → frontend debe capturar 404.
+     Response: KardexReportDTO {
+       productId, sku, name, from, to,
+       openingStock, closingStock, totalIn, totalOut,
+       movements: [ { date, type ('IN'|'OUT'), quantity, reason,
+                      balance, createdByUsername } ]
+     }
+     movements ordenado por date ASC.
+
+4.11 O3 — Operaciones pendientes
+     Ruta:    GET /reports/operations/pending
+     Roles:   ADMIN, MANAGER, WAREHOUSEMAN, SALES
+     Params:  ninguno
+     Response: PendingOperationsDTO {
+       pendingPurchaseOrders: [ { orderId, orderNumber ('OC-YYYY-NNNN'),
+                                  status ('PENDING'|'APPROVED'), counterpartName,
+                                  createdAt, totalAmount, detailCount } ],
+       pendingSaleOrders:     [ { orderId, orderNumber ('OV-YYYY-NNNN'),
+                                  status, counterpartName, createdAt,
+                                  totalAmount, detailCount } ],
+       totalPendingPurchases, totalPendingSales
+     }
+
+4.12 O4 — Resumen de movimientos de stock
+     Ruta:    GET /reports/inventory/movements
+     Roles:   ADMIN, MANAGER, WAREHOUSEMAN
+     Params:  ?from=  ?to=
+     Response: MovementsSummaryDTO {
+       from, to, totalIn, totalOut,
+       netMovement  ← totalIn - totalOut (positivo = creció el inventario)
+     }
+     totalIn y totalOut nunca son null (COALESCE en el backend).
+
+────────────────────────────────────────────────────────────────────────────────
+5. ARQUITECTURA DEL MÓDULO FRONTEND
+────────────────────────────────────────────────────────────────────────────────
+
+5.1  Estructura de archivos propuesta
+     ─────────────────────────────────
+     src/app/modules/reports/
+     ├── reports.component.ts              ← Shell: solo <router-outlet />
+     ├── reports.routes.ts                 ← REPORTS_ROUTES con 4 rutas hijas
+     ├── models/
+     │   └── report.model.ts              ← Interfaces TS de los 12 DTOs
+     ├── services/
+     │   ├── report.service.ts            ← 12 métodos, un servicio único
+     │   └── report.service.spec.ts
+     └── components/
+         ├── pending-report/              ← V1: todos los roles
+         │   ├── pending-report.component.ts
+         │   ├── pending-report.component.html
+         │   └── pending-report.component.scss
+         ├── operational-report/          ← V2: ADMIN+MANAGER+WAREHOUSEMAN
+         │   ├── operational-report.component.ts
+         │   ├── operational-report.component.html
+         │   └── operational-report.component.scss
+         ├── analytics-dashboard/         ← V3: ADMIN+MANAGER
+         │   ├── analytics-dashboard.component.ts
+         │   ├── analytics-dashboard.component.html
+         │   └── analytics-dashboard.component.scss
+         └── executive-dashboard/         ← V4: solo ADMIN
+             ├── executive-dashboard.component.ts
+             ├── executive-dashboard.component.html
+             └── executive-dashboard.component.scss
+
+     NOTA: Un solo ReportService centraliza los 12 endpoints. No se crean
+     servicios por vista — todos son read-only, sin estado de escritura.
+
+5.2  Routing (reports.routes.ts)
+     ─────────────────────────────
+     Todas las subrutas aplican Propuesta C (gate de seguridad):
+
+     REPORTS_ROUTES: Routes = [
+       { path: '',            redirectTo: 'pending',    pathMatch: 'full' },
+       { path: 'pending',     component: PendingReportComponent },
+         ← sin guard adicional (el padre /reports ya tiene todos los roles)
+       { path: 'operational', component: OperationalReportComponent,
+         canActivate: [authGuard],
+         data: { roles: ['ROLE_ADMIN','ROLE_MANAGER','ROLE_WAREHOUSEMAN'] } },
+       { path: 'analytics',   component: AnalyticsDashboardComponent,
+         canActivate: [authGuard],
+         data: { roles: ['ROLE_ADMIN','ROLE_MANAGER'] } },
+       { path: 'executive',   component: ExecutiveDashboardComponent,
+         canActivate: [authGuard],
+         data: { roles: ['ROLE_ADMIN'] } },
+     ]
+
+     Registro en app.routes.ts:
+     { path: 'reports',
+       canActivate: [authGuard],
+       data: { roles: ['ROLE_ADMIN','ROLE_MANAGER','ROLE_WAREHOUSEMAN','ROLE_SALES'] },
+       loadChildren: () => import('./modules/reports/reports.routes')
+                             .then(m => m.REPORTS_ROUTES) }
+
+5.3  Sidebar (modificación de sidebar.component.ts)
+     ─────────────────────────────────────────────────
+     El ítem "Reportes" ya existe en ALL_NAV_ITEMS con route: '/reports'.
+     Se convierte a grupo con children filtrados por rol:
+
+     { label: 'Reportes', icon: 'bar_chart',
+       roles: ['ROLE_ADMIN','ROLE_MANAGER','ROLE_WAREHOUSEMAN','ROLE_SALES'],
+       children: [
+         { label: 'Dashboard Ejecutivo', icon: 'dashboard',
+           route: '/reports/executive',
+           roles: ['ROLE_ADMIN'] },
+         { label: 'Dashboard Analítico', icon: 'analytics',
+           route: '/reports/analytics',
+           roles: ['ROLE_ADMIN','ROLE_MANAGER'] },
+         { label: 'Operativo',           icon: 'inventory_2',
+           route: '/reports/operational',
+           roles: ['ROLE_ADMIN','ROLE_MANAGER','ROLE_WAREHOUSEMAN'] },
+         { label: 'Pendientes',          icon: 'pending_actions',
+           route: '/reports/pending',
+           roles: ['ROLE_ADMIN','ROLE_MANAGER','ROLE_WAREHOUSEMAN','ROLE_SALES'] },
+       ]
+     }
+
+     El sidebar ya tiene lógica buildNavItems() que filtra por rol. Solo modificar
+     la entrada de "Reportes" para incluir children[].
+
+5.4  Tecnología de gráficas
+     ──────────────────────────
+     El proyecto usa Angular Material para UI, pero no tiene librería de gráficas.
+     Se propone añadir: ng2-charts (wrapper Angular de Chart.js).
+
+     Instalación:
+       npm install chart.js ng2-charts
+
+     Justificación:
+     - Chart.js es la librería de gráficas más estándar en el ecosistema web.
+     - ng2-charts ofrece componentes standalone compatibles con Angular 17+.
+     - Licencia MIT, sin costo.
+     - Ligera (~200KB minified). No interfiere con Angular Material.
+     - Solo se necesitan 3 tipos de gráficas: línea, dona (donut) y barras.
+
+     Gráficas a implementar por pantalla:
+     - V4 (Ejecutivo): 1 dona de inventario por categoría, 1 barra comparando
+       revenue vs COGS (si el período tiene datos).
+     - V3 (Analítico): 1 línea de tendencia de ventas (eje X: período, eje Y: revenue).
+     - V2 y V1: sin gráficas (tablas y tarjetas de métricas son suficientes).
+
+────────────────────────────────────────────────────────────────────────────────
+6. ESPECIFICACIÓN DE VISTAS
+────────────────────────────────────────────────────────────────────────────────
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+V1 — OPERACIONES PENDIENTES (/reports/pending)
+Roles: ADMIN, MANAGER, WAREHOUSEMAN, SALES
+Endpoints: O3 — GET /reports/operations/pending
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Objetivo: vista operativa de "qué está pendiente de procesar" para todos los
+roles. La pantalla más sencilla del módulo — ideal como punto de partida.
+
+Layout:
+  ┌──────────────────────────────────────────────────────────────┐
+  │  Operaciones Pendientes        [🔄 Actualizar]               │
+  │  Datos al: 2026-06-15 14:30    2 compras · 5 ventas         │
+  ├───────────────────────┬──────────────────────────────────────┤
+  │ ÓRDENES DE COMPRA (2) │ ÓRDENES DE VENTA (5)                 │
+  │ # | Nº orden | Estado | Proveedor | Fecha | Total | Items   │
+  │ 1   OC-...   PENDING   ...        ...     $...    3        │
+  │ 2   OC-...   APPROVED  ...        ...     $...    1        │
+  ├───────────────────────┴──────────────────────────────────────┤
+  │ (repeat estructura para ventas pendientes)                   │
+  └──────────────────────────────────────────────────────────────┘
+
+Componentes:
+- Header con: título, timestamp "Datos al: [generatedAt]", resumen de totales,
+  botón "Actualizar" (recarga el endpoint sin filtros de fecha).
+- Dos tablas MatTable una debajo de la otra (o en dos columnas en pantalla 1280+).
+  Mismas columnas para ambas (mismo DTO PendingOrderSummaryDTO): orderNumber,
+  status badge, counterpartName, createdAt (formateado dd/MM/yyyy HH:mm),
+  totalAmount (moneda), detailCount.
+- La columna orderNumber es clickeable y navega a la orden correspondiente
+  (a /purchases/orders/:id o /sales/orders/:id) para contexto completo.
+- Status badge: PENDING = naranja (warning), APPROVED = azul (info).
+- Estado vacío en cada tabla si no hay registros en esa categoría.
+- Sin filtros de período (el backend devuelve snapshot actual).
+- Sin paginación (el backend devuelve lista completa).
+- El botón "Actualizar" llama al load() del componente (no es auto-refresh).
+
+UX RBAC:
+- Todos los roles ven lo mismo: compras y ventas pendientes.
+- Los montos (totalAmount) son visibles para todos los roles
+  (O3 no tiene restricción de campos dentro del DTO, solo de endpoint).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+V2 — REPORTES OPERATIVOS (/reports/operational)
+Roles: ADMIN, MANAGER, WAREHOUSEMAN
+Endpoints: G3, O1, O2, O4
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Objetivo: herramientas de control de inventario en tiempo real y por período.
+
+Layout principal: una sola página con TABS horizontales (MatTabGroup):
+  Tab 1: "Stock Bajo"       → O1 (low-stock)
+  Tab 2: "Kardex"           → O2 (kardex/{productId})
+  Tab 3: "Movimientos"      → O4 (movements summary)
+  Tab 4: "Rotación"         → G3 (turnover)
+
+  ┌─────────────────────────────────────────────────────────────┐
+  │ Reportes Operativos                                         │
+  │ [Stock Bajo (8)] [Kardex] [Movimientos] [Rotación]          │
+  ├─────────────────────────────────────────────────────────────┤
+  │ (contenido del tab activo)                                  │
+  └─────────────────────────────────────────────────────────────┘
+
+  El badge numérico en "Stock Bajo" muestra el conteo de productos en alerta.
+
+TAB 1 — Stock Bajo (O1):
+  - Carga automáticamente al entrar (sin parámetros).
+  - Tabla: sku, nombre, categoría, stock disponible (availableStock, destacado),
+    stock reservado, stock físico (currentStock), mínimo, déficit.
+  - Columna "Disponible" (availableStock) en rojo si <= minimumStock.
+    Usar la clase `.row-low-stock` ya definida en global.scss.
+  - La columna "Déficit" muestra el faltante en rojo; valores negativos
+    (stock sobre mínimo pero bajo por reservas) en gris con tooltip explicativo.
+  - MatProgressBar en cada fila mostrando availableStock/minimumStock
+    (valor normalizados a %), con color 'warn' (rojo) si déficit > 0.
+  - Estado vacío: "Todos los productos tienen stock suficiente" (mensaje positivo,
+    no usar el componente EmptyState con variant='empty' — crear mensaje inline).
+  - Botón "Actualizar" en la barra del tab.
+
+TAB 2 — Kardex (O2):
+  - Requiere seleccionar un producto primero (MatAutocomplete que llama a
+    ProductService.searchByName() — reutilizar el servicio existente en inventory).
+  - Dos DatePicker opcionales (from / to).
+  - Botón "Consultar" habilitado solo cuando se selecciona un producto.
+  - Una vez cargado, muestra:
+    * Tarjeta de resumen: nombre del producto, SKU, stock apertura, stock cierre,
+      total IN (verde), total OUT (rojo), período consultado.
+    * Tabla de movimientos: fecha (dd/MM/yyyy HH:mm), tipo (IN/OUT con ícono
+      arrow_downward/arrow_upward), cantidad, motivo (reason), saldo (balance),
+      usuario.
+    * Columna "Tipo" con badge verde para IN y rojo para OUT.
+    * Columna "Saldo" en negrita.
+  - Estado vacío si movements[] está vacío: "Sin movimientos en el período".
+  - Error si productId no existe: snackbar rojo "Producto no encontrado".
+    (El backend devuelve RuntimeException → 500; se captura en el error handler).
+
+TAB 3 — Movimientos (O4):
+  - Dos DatePicker opcionales (from / to).
+  - Botón "Consultar" (o recarga automática al cambiar fechas con debounce).
+  - Sin paginación (el backend devuelve un único objeto resumen).
+  - Tres tarjetas de métrica:
+    * Entradas totales (totalIn): ícono arrow_downward, color verde.
+    * Salidas totales (totalOut): ícono arrow_upward, color rojo.
+    * Movimiento neto (netMovement): ícono trending_up/trending_down según signo,
+      verde si positivo, rojo si negativo, gris si cero.
+  - Texto "Datos al [generatedAt]" o indicación del período consultado.
+
+TAB 4 — Rotación (G3):
+  - Dos DatePicker opcionales (from / to).
+  - Tabla: sku, nombre, categoría, COGS del período, valor de inventario actual,
+    tasa de rotación (turnoverRate, 4 decimales, "—" si null),
+    interpretación con badge de color:
+      Alta   → verde (#2E7D32, #E8F5E9)
+      Media  → azul  (#1565C0, #E3F2FD)
+      Baja   → naranja (#E65100, #FFF3E0)
+      Sin datos → gris neutro
+  - Ordenar por turnoverRate DESC por defecto (en el frontend; el backend ya
+    devuelve solo productos con COGS en el período).
+  - Estado vacío: "Sin movimientos de ventas en el período seleccionado".
+
+Filtros de período (patrón compartido en V2 y V3):
+  - Componente inline (no shared) con dos campos MatDatepicker: "Desde" / "Hasta".
+  - Validación: si from > to, deshabilitar el botón y mostrar mat-error inline.
+  - Formato de envío al backend: YYYY-MM-DD (Angular DatePipe o date-fns).
+  - Sin fechas = omitir parámetros del query string (el backend usa defaults internos).
+  - EXCEPCIÓN: E3 (rentabilidad) requiere ambas fechas — ver V3.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+V3 — DASHBOARD ANALÍTICO (/reports/analytics)
+Roles: ADMIN, MANAGER
+Endpoints: E3, G1, G2, G4, G5
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Objetivo: herramientas de análisis gerencial para tomar decisiones sobre
+ventas, rentabilidad, desempeño de productos y proveedores.
+
+Layout: TABS horizontales:
+  Tab 1: "Rentabilidad"         → E3
+  Tab 2: "Tendencia de Ventas"  → G5
+  Tab 3: "Top Productos"        → G1
+  Tab 4: "Análisis ABC"         → G2
+  Tab 5: "Por Proveedor"        → G4
+
+TAB 1 — Rentabilidad (E3):
+  - ⚠️ PERÍODO OBLIGATORIO: ambas fechas requeridas antes de habilitar consulta.
+  - DatePicker "Desde" + DatePicker "Hasta" + botón "Consultar".
+  - Validación: from y to requeridos; from ≤ to. Botón deshabilitado si inválido.
+  - Cuatro tarjetas de KPI en fila:
+    * Revenue total: $XXX,XXX.XX  (ícono: attach_money, color: primary)
+    * COGS: $XXX,XXX.XX           (ícono: shopping_cart, color: secondary)
+    * Margen Bruto: $XXX,XXX.XX   (ícono: trending_up, color: success)
+    * Margen %: XX.XX%            (ícono: percent, color según valor:
+                                    ≥ 30% verde, 15-30% azul, < 15% naranja, null = "—")
+  - Segunda fila: dos tarjetas menores:
+    * Órdenes entregadas: N
+    * Ticket promedio: $XXX.XX (o "—" si null)
+  - Texto "Período: dd/MM/yyyy – dd/MM/yyyy"
+  - Estado inicial (sin datos): instrucción "Selecciona un período y presiona Consultar".
+  - Estado vacío (período sin ventas): "Sin ventas entregadas en el período seleccionado."
+
+TAB 2 — Tendencia de Ventas (G5):
+  - Filtros: DatePicker from/to + Selector groupBy (MatSelect: Día / Semana / Mes).
+  - Gráfica de línea (ng2-charts LineChart):
+    * Eje X: períodos (formatear el String "2026-01" → "Ene 2026", "2026-03" → "Sem 3"
+      + "2026-W03" si WEEK, "2026-01-15" → "15 Ene" si DAY).
+    * Eje Y izquierdo: revenue (en miles, ej. "$12.5K").
+    * Segunda serie: orderCount (eje Y derecho opcional, color secundario).
+    * Tooltips con: período formateado, revenue ($), ticket promedio (si no null),
+      número de órdenes.
+  - Botones de selección rápida de período: "Últimos 7 días" / "Últimos 30 días"
+    / "Últimos 3 meses" / "Último año" (calculan from/to automáticamente).
+  - Estado vacío: "Sin ventas en el período. Ajusta los filtros." (con el componente
+    EmptyState o un mensaje inline sobre el área de la gráfica vacía).
+
+TAB 3 — Top Productos (G1):
+  - Filtros: DatePicker from/to + selector de límite (MatSelect: Top 5 / 10 / 20 / 50).
+  - Tabla (MatTable):
+    * Rank (con ícono de medalla para 1°, 2°, 3°), nombre, SKU, categoría,
+      unidades vendidas, revenue, COGS, margen $, margen % (null → "—").
+    * Ordenada por rank (rank 1 = mayor revenue).
+  - Badge de color en la columna Rank: oro (1), plata (2), bronce (3), gris (resto).
+  - Sin paginación (máximo 50 items, generalmente 10).
+
+TAB 4 — Análisis ABC (G2):
+  - Filtros: DatePicker from/to.
+  - Tabla con columna "Clasificación" como badge de color:
+    * A → verde (#2E7D32 / #E8F5E9): "top 80% del revenue"
+    * B → azul  (#1565C0 / #E3F2FD): "15% siguiente"
+    * C → naranja (#E65100 / #FFF3E0): "último 5%"
+  - Columnas: Clasificación, SKU, nombre, revenue del período, % individual
+    (revenuePct), % acumulado (cumulativePct).
+  - Barra de progreso en la columna "% acumulado" (MatProgressBar) hasta 100%.
+  - Encabezados de grupo: "Clase A (N productos)", "Clase B (M productos)",
+    "Clase C (K productos)" — agrupar visualmente con `mat-row-group` o secciones
+    en el template sin mat-row-group real.
+  - Tooltip en badge de clasificación explicando el criterio (A: ≤ 80%...).
+
+TAB 5 — Por Proveedor (G4):
+  - Filtros: DatePicker from/to. Nota explicativa: "Incluye solo órdenes recibidas."
+  - Tabla: nombre del proveedor, RFC, Nº órdenes, monto total,
+    monto promedio, fecha última orden (dd/MM/yyyy o "—" si null).
+  - Fila destacada con mayor totalAmount (background lavanda).
+  - Sin paginación (lista completa de proveedores con compras en el período).
+  - Estado vacío: "Sin órdenes recibidas en el período seleccionado."
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+V4 — DASHBOARD EJECUTIVO (/reports/executive)
+Roles: ADMIN únicamente
+Endpoints: E1, E2 (valuación de inventario)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Objetivo: resumen P&L de alto nivel para ADMIN, con snapshot del estado actual
+del negocio y accesos directos a los demás reportes.
+
+Layout: página de cards (sin tabs):
+
+  ┌─────────────────────────────────────────────────────────────────────────┐
+  │  Dashboard Ejecutivo             [Desde: ___] [Hasta: ___] [Consultar]  │
+  │  Datos al: 15/06/2026 14:30                                              │
+  ├───────────────────────────────────────────────────────────────────────── │
+  │  [💰 Revenue]  [🏭 COGS]  [📈 Margen $]  [% Margen]  [📦 Inventario]   │
+  │  $120,000      $85,000     $35,000         29.17%       $230,000         │
+  ├───────────────────────────────────────────────────────────────────────── │
+  │  [⏳ Compras pendientes: 3]   [⏳ Ventas pendientes: 7]                  │
+  ├──────────────────────────────────┬─────────────────────────────────────  │
+  │  INVENTARIO POR CATEGORÍA        │  ACCESOS RÁPIDOS                      │
+  │  (gráfica donut)                 │  [→ Reportes Analíticos]              │
+  │  Herramientas: $80K (35%)        │  [→ Reportes Operativos]              │
+  │  Pinturas: $60K (26%)            │  [→ Operaciones Pendientes]           │
+  │  ...                             │                                       │
+  └──────────────────────────────────┴────────────────────────────────────── ┘
+
+Detalle de elementos:
+
+  KPI Cards (primera fila — 5 tarjetas):
+  - Revenue: $XXX,XXX.XX (color: primary #6B3C6B)
+  - COGS: $XXX,XXX.XX (color: gris secundario)
+  - Margen Bruto: $XXX,XXX.XX (color success si > 0, error si < 0)
+  - Margen %: XX.XX% (color según rango; "N/A" si grossMarginPct == null)
+  - Valor de Inventario: $XXX,XXX.XX (snapshot independiente del período,
+    aclarar con tooltip: "Valuación actual del inventario en tiempo real")
+
+  Alertas (segunda fila — 2 chips/badges):
+  - "Compras pendientes: N" → al hacer click, navega a /reports/pending.
+  - "Ventas pendientes: N" → ídem. Color warning si N > 0, success si N == 0.
+
+  Gráfica donut (InventoryValuationDTO — siempre snapshot, sin filtro de fechas):
+  - ng2-charts DoughnutChart.
+  - Una porción por categoría (categoryName + categoryValue).
+  - Colores: paleta de 8 colores distintos usando la paleta del sistema
+    (#6B3C6B, #CE6EEB, #F2E4F2, #1565C0, #2E7D32, #E65100, #C62828, #9B4FAB).
+  - Leyenda debajo de la gráfica: nombre, valor ($) y porcentaje (pct).
+  - Tooltip en cada porción: nombre y monto exacto.
+
+  Filtro de período (solo afecta a E1, no a E2 — valuación):
+  - DatePicker from/to opcionales.
+  - Sin período = todo el historial (defecto del backend desde 2000-01-01).
+  - Botones de acceso rápido: "Este mes" / "Este año" / "Todo".
+
+────────────────────────────────────────────────────────────────────────────────
+7. MODELO DE DATOS — INTERFACES TYPESCRIPT
+────────────────────────────────────────────────────────────────────────────────
+
+Archivo: src/app/modules/reports/models/report.model.ts
+
+Cabecera obligatoria:
+  // Contratos exactos del backend: ReportsController + DTOs
+  // Fuente: código fuente verificado directamente — 2026-06-15
+
+Todas las interfaces correspondientes a los 12 endpoints listados en §4,
+con los nombres de campo EXACTOS del backend (campo por campo).
+BigDecimal → number. LocalDateTime → string (ISO). LocalDate → string.
+
+Campos null documentados explícitamente:
+  grossMarginPct?: number | null;     // null si totalRevenue == 0
+  avgTicket?: number | null;          // null si deliveredOrderCount == 0
+  turnoverRate?: number | null;       // null si currentInventoryValue == 0
+  lastOrderDate?: string | null;      // null si proveedor sin órdenes RECEIVED
+
+Type unions para valores enumerados del backend:
+  export type AbcClassification = 'A' | 'B' | 'C';
+  export type MovementType = 'IN' | 'OUT';
+  export type TurnoverInterpretation = 'Alta' | 'Media' | 'Baja' | 'Sin datos';
+  export type OrderStatus = 'PENDING' | 'APPROVED';
+  export type TrendGroupBy = 'DAY' | 'WEEK' | 'MONTH';
+
+────────────────────────────────────────────────────────────────────────────────
+8. SERVICIO HTTP — ReportService
+────────────────────────────────────────────────────────────────────────────────
+
+Un solo @Injectable({ providedIn: 'root' }) con 12 métodos. Todos retornan
+Observable<T> — nunca se suscribe dentro del servicio.
+
+Firma de los métodos principales:
+
+  getExecutiveDashboard(from?: string, to?: string): Observable<ExecutiveDashboardDTO>
+  getInventoryValuation(): Observable<InventoryValuationDTO>
+  getSalesProfitability(from: string, to: string): Observable<SalesProfitabilityDTO>
+    → from y to son REQUIRED (no opcionales en la firma TypeScript — el backend lanza error)
+  getTopProducts(from?: string, to?: string, limit?: number): Observable<TopProductDTO[]>
+  getAbcAnalysis(from?: string, to?: string): Observable<AbcProductDTO[]>
+  getInventoryTurnover(from?: string, to?: string): Observable<InventoryTurnoverItemDTO[]>
+  getPurchasesBySupplier(from?: string, to?: string): Observable<PurchaseBySupplierDTO[]>
+  getSalesTrend(from?: string, to?: string, groupBy?: TrendGroupBy): Observable<SalesTrendItemDTO[]>
+  getLowStock(): Observable<LowStockReportItemDTO[]>
+  getKardex(productId: number, from?: string, to?: string): Observable<KardexReportDTO>
+  getPendingOperations(): Observable<PendingOperationsDTO>
+  getMovementsSummary(from?: string, to?: string): Observable<MovementsSummaryDTO>
+
+Construcción de HttpParams: omitir el parámetro si el valor es null/undefined
+(para que el backend use sus defaults internos). Nunca enviar "null" como string.
+
+────────────────────────────────────────────────────────────────────────────────
+9. VALIDACIONES DE FORMULARIO / FILTROS
+────────────────────────────────────────────────────────────────────────────────
+
+9.1  Período de fechas (compartido en V2, V3, V4)
+     - FormGroup con dos FormControl: 'from' y 'to'.
+     - Validador personalizado (cross-field): si ambas tienen valor,
+       from debe ser ≤ to.
+     - Botón de consulta deshabilitado si el FormGroup es inválido.
+     - mat-error inline debajo del campo 'to' cuando from > to:
+       "La fecha de inicio no puede ser posterior a la fecha de fin."
+     - EXCEPCIÓN ESPECIAL (E3 — rentabilidad):
+       Validators.required en AMBOS campos. El botón "Consultar" solo se
+       habilita cuando from y to están presentes Y from ≤ to.
+
+9.2  Selector groupBy (G5 — tendencia)
+     - MatSelect con opciones fijas: DAY / WEEK / MONTH.
+     - Valor por defecto: MONTH.
+     - No se envía si el usuario no cambia el valor (se deja que el backend
+       use su default MONTH).
+     - Cualquier valor no in('DAY','WEEK','MONTH') provoca error 500 en el backend.
+       Se garantiza enviando solo los valores del MatSelect.
+
+9.3  Selector de límite (G1 — top productos)
+     - MatSelect con opciones: 5 / 10 / 20 / 50.
+     - Valor por defecto: 10.
+
+9.4  Kardex — búsqueda de producto
+     - MatAutocomplete vinculado a ProductService (ya existe en inventory).
+     - Mínimo 2 caracteres para disparar la búsqueda.
+     - debounceTime(350) igual que en los demás módulos.
+     - Botón "Consultar" deshabilitado hasta que se seleccione un producto válido
+       del autocomplete (no solo que el campo tenga texto).
+     - Al limpiar el campo, resetear los resultados del Kardex.
+
+────────────────────────────────────────────────────────────────────────────────
+10. RBAC — SEGURIDAD EN EL FRONTEND (L29, L34)
+────────────────────────────────────────────────────────────────────────────────
+
+10.1 Protección de rutas (Propuesta C — gate de seguridad)
+     Cada subruta tiene canActivate: [authGuard] + data.roles (ver §5.2).
+     Un MANAGER que navega directamente a /reports/executive → redirigido.
+     Un SALES que navega a /reports/operational → redirigido.
+
+10.2 Sidebar filtrado (buildNavItems())
+     Los sub-ítems de "Reportes" ya están filtrados por buildNavItems() usando
+     item.roles. Un SALES ve solo "Pendientes". Un WAREHOUSEMAN ve "Operativo"
+     y "Pendientes". Un MANAGER ve todo excepto "Dashboard Ejecutivo".
+
+10.3 Datos sensibles (L29)
+     En Reports, la segregación es por ENDPOINT ENTERO, no por campo dentro
+     del DTO. El backend devuelve 403 si el rol no tiene acceso al endpoint.
+     El frontend solo muestra los sub-ítems del sidebar apropiados.
+     NO hay campos financieros compartidos en el mismo DTO entre roles con
+     y sin acceso (a diferencia de inventory donde unitCost debía redactarse).
+     Por tanto, L29 aplica como "documentar la matriz en §4 de la memoria
+     técnica" sin necesidad de redacción por campo.
+
+10.4 Topbar — breadcrumb
+     Registrar /reports/executive → "Dashboard Ejecutivo" etc. en el array de
+     breadcrumbs de topbar.component.ts (siguiendo el patrón existente).
+
+────────────────────────────────────────────────────────────────────────────────
+11. MANEJO DE ERRORES Y ESTADOS DE UI
+────────────────────────────────────────────────────────────────────────────────
+
+11.1 Errores del backend a manejar explícitamente:
+     a) E3 (rentabilidad) — from o to nulos, o from > to:
+        El backend lanza RuntimeException → probablemente 500.
+        Prevenir enviando solo cuando ambas fechas son válidas (§9.1).
+        Si llega igual el 500: snackbar rojo "Período inválido. Verifica las fechas."
+
+     b) G5 (tendencia) — groupBy inválido:
+        Prevenir usando solo el MatSelect con opciones válidas.
+
+     c) O2 (kardex) — productId no encontrado:
+        El backend lanza RuntimeException → 500.
+        Capturar en el error handler del componente:
+        snackbar rojo "Producto no encontrado. Verifica el SKU o nombre."
+
+     d) Backend apagado / sin respuesta:
+        El error interceptor global ya maneja 0/503. Ver comportamiento actual.
+        En componentes de reporte: mostrar EmptyState con variante personalizada
+        "error de conexión" o snackbar rojo "Error al cargar el reporte."
+
+11.2 Campos null en la respuesta (ver §4, notas ⚠️):
+     - grossMarginPct == null → mostrar "N/A" o "—", nunca "0%" ni crash.
+     - avgTicket == null → "—".
+     - turnoverRate == null → "—" con tooltip "Sin inventario actual".
+     - lastOrderDate == null → "—".
+     - Lists vacías → EmptyStateComponent (variant='empty') con mensaje
+       contextual según el reporte (no genérico).
+
+11.3 Estado de carga:
+     MatProgressBar indeterminado en la parte superior del panel, igual que
+     en los módulos anteriores (patrón `loading = false; markForCheck()`).
+     En el Dashboard Ejecutivo, si se cargan dos endpoints en paralelo
+     (E1 + E2 vía forkJoin), el loading está activo hasta que ambos resuelven.
+
+11.4 forkJoin en V4 (L33):
+     El dashboard ejecutivo carga E1 y E2 simultáneamente. Dado que ambos
+     son accesibles solo por ADMIN, no hay divergencia de RBAC. Sin embargo,
+     aplicar `catchError(() => of(null))` por observable de todas formas
+     para que un fallo parcial no bloquee el dashboard completo:
+
+     forkJoin({
+       executive:  this.reportService.getExecutiveDashboard(from, to)
+                     .pipe(catchError(() => of(null))),
+       valuation:  this.reportService.getInventoryValuation()
+                     .pipe(catchError(() => of(null))),
+     })
+
+────────────────────────────────────────────────────────────────────────────────
+12. CONVENCIONES DE VISUALIZACIÓN PARA DATOS FINANCIEROS
+────────────────────────────────────────────────────────────────────────────────
+
+12.1 Formato de moneda:
+     - Angular CurrencyPipe: {{ value | currency:'MXN':'symbol':'1.2-2':'es-MX' }}
+       o ajustar según la moneda del sistema. Usar un pipe consistente en todo
+       el módulo (el mismo que en Purchases y Sales).
+     - Valores null/undefined: mostrar "—" (no "$0.00"), usando una directiva o
+       pipe custom que maneje el null antes de pasar a currency.
+
+12.2 Formato de porcentaje:
+     - {{ value | number:'1.2-2' }}% — con 2 decimales.
+     - null → "—".
+
+12.3 Formato de fechas:
+     - DatePicker: formato dd/MM/yyyy en pantalla (Angular Material DateAdapter).
+     - Enviar al backend: YYYY-MM-DD (ISO).
+     - generatedAt (timestamp): dd/MM/yyyy HH:mm.
+
+12.4 Valores grandes:
+     - Cantidades > 1,000,000 → abreviar en KPI cards: "$1.2M", "$850K".
+       Solo en cards; en tablas usar el valor completo.
+
+12.5 Tendencia positiva / negativa:
+     - netMovement > 0 → verde + ícono trending_up.
+     - netMovement < 0 → rojo + ícono trending_down.
+     - grossMarginPct ≥ 30% → verde; 15-30% → azul; < 15% → naranja.
+
+12.6 Interpretación de colores en gráficas (Chart.js):
+     - Línea de tendencia: color #6B3C6B (primary), relleno rgba(107,60,107,0.1).
+     - Segunda serie (orderCount): color #CE6EEB (accent).
+     - Donut categories: paleta del sistema en orden:
+       ['#6B3C6B','#CE6EEB','#1565C0','#2E7D32','#E65100','#C62828','#9B4FAB','#F2E4F2']
+     - Eje X y Y: tipografía Roboto, color #757575.
+     - Tooltips: fondo #212121 con texto #FFFFFF, bordes redondeados.
+
+────────────────────────────────────────────────────────────────────────────────
+13. ESTÁNDARES DE IMPLEMENTACIÓN (patrones del proyecto — L29..L35)
+────────────────────────────────────────────────────────────────────────────────
+
+L29 — Datos sensibles × roles:
+     Documentar en §4 de la memoria técnica del módulo qué vistas son
+     accesibles por qué roles (ya detallado en §10 de esta propuesta).
+     No se requiere redacción de campos (la separación es por endpoint).
+
+L30 — 401/403:
+     No se añaden endpoints de autenticación. Verificar que el interceptor de
+     errores global (error.interceptor.ts) sigue activo y no fue revertido.
+
+L31 — Diálogos y paginador:
+     Reports no tiene diálogos con formularios. Si en el futuro se añade un
+     diálogo de exportación (out of scope ahora), usar disableClose: true.
+     No hay listas paginadas (los endpoints devuelven listas completas). Si se
+     decide añadir paginación local (MatPaginator sobre datos ya cargados),
+     resetear a página 0 al cambiar los filtros.
+
+L32 — Mixin SCSS:
+     Todas las tablas de los 4 componentes usan @include mixins.catalog-table-header.
+     Nunca copiar los estilos manualmente.
+
+L33 — forkJoin + datos de prueba:
+     Ver §11.4 para el patrón de forkJoin en V4.
+     Todos los datos de prueba creados en QA se prefijan [QA] y se limpian
+     antes del cierre del módulo.
+
+L34 — Patrón de acciones en tablas:
+     Reports es de solo lectura — no hay acciones editar/desactivar en filas.
+     Si una fila es clickeable (ej. tabla de pendientes navega a la orden),
+     usar el patrón mat-row con (click) y class catalog-row--clickable.
+     No hay botones de acción por fila excepto los de navegación.
+
+L35 — Usuarios QA permanentes:
+     Usar qa_manager / qa_sales / qa_warehouse (ya creados y documentados)
+     para la verificación RBAC browser de las 4 vistas.
+
+────────────────────────────────────────────────────────────────────────────────
+14. PLAN DE DESARROLLO POR FASES
+────────────────────────────────────────────────────────────────────────────────
+
+De menor a mayor complejidad. Cada fase se cierra con el checklist de Propuesta
+B (todos los casos ✅ PASS en el browser con los 4 roles) antes de pasar a la
+siguiente.
+
+──────────────────────────────────────────
+FASE 0 — Infraestructura del módulo
+Duración estimada: 1 sesión
+──────────────────────────────────────────
+0.1  Crear rama: git checkout -b feature/reports
+0.2  Crear archivos de documentación de apertura:
+       - casos_de_prueba_modulo_reports.md (copiando TEMPLATE)
+       - memoria_tecnica_modulo_reports_frontend.md (estructura de 10 secciones)
+     Nota: esta propuesta es el artefacto equivalente a propuesta_modulo_X.txt.
+0.3  Instalar ng2-charts + chart.js: npm install chart.js ng2-charts
+0.4  Crear estructura de directorios del módulo (sin contenido aún).
+0.5  Crear reports.component.ts (shell router-outlet).
+0.6  Crear reports.routes.ts (rutas vacías → componentes stub).
+0.7  Registrar /reports en app.routes.ts (lazy-load).
+0.8  Actualizar sidebar para que "Reportes" tenga sub-ítems con RBAC.
+0.9  Crear report.model.ts con todos los interfaces (sin código de componentes).
+0.10 Crear report.service.ts con los 12 métodos (sin implementar componentes).
+0.11 Ejecutar ng test --no-watch → verificar que las 383 specs anteriores pasan.
+0.12 Registrar la ruta /reports/* en topbar.component.ts (breadcrumbs).
+0.13 Verificar con el browser (4 roles) que el sidebar muestra los sub-ítems
+     correctos y que los guards redirigen correctamente (caso SEC de cada ruta).
+
+──────────────────────────────────────────
+FASE 1 — V1: Operaciones Pendientes
+Duración estimada: 1 sesión
+──────────────────────────────────────────
+1.1  Implementar PendingReportComponent (tabla de compras + tabla de ventas).
+1.2  Conectar con report.service.getPendingOperations().
+1.3  Loading bar, error handling, estado vacío por tabla.
+1.4  Badge de conteo en el título de cada tabla.
+1.5  Links de fila hacia /purchases/orders/:id y /sales/orders/:id.
+1.6  Status badge (PENDING/APPROVED) con colores semánticos.
+1.7  Pruebas browser: 4 roles — todos deben ver esta vista. Verificar SEC
+     (acceso directo con cada rol), UI (todos los botones y links), RBAC
+     (no hay diferencias por rol en esta vista específica), ERR (backend apagado).
+
+──────────────────────────────────────────
+FASE 2 — V2: Reportes Operativos
+Duración estimada: 2-3 sesiones
+──────────────────────────────────────────
+2.1  OperationalReportComponent con MatTabGroup (4 tabs).
+2.2  Tab Stock Bajo: tabla con MatProgressBar por fila, colores de alerta.
+2.3  Tab Kardex: MatAutocomplete (ProductService) + DatePickers + tabla de
+     movimientos con IN/OUT diferenciados.
+2.4  Tab Movimientos: DatePickers + 3 tarjetas de métrica.
+2.5  Tab Rotación: DatePickers + tabla con badges de interpretación.
+2.6  Filtros de fecha compartidos (inline, no shared component — YAGNI).
+2.7  Pruebas browser: ADMIN, MANAGER, WAREHOUSEMAN (los 3 roles con acceso).
+     Verificar SEC con qa_sales (debe redirigir). Verificar Kardex con
+     productId inexistente. Verificar fechas invertidas. Verificar estado vacío
+     (stock bajo: ningún producto en alerta vs. lista con alertas).
+
+──────────────────────────────────────────
+FASE 3 — V3: Dashboard Analítico
+Duración estimada: 2-3 sesiones
+──────────────────────────────────────────
+3.1  AnalyticsDashboardComponent con MatTabGroup (5 tabs).
+3.2  Tab Rentabilidad: DatePickers REQUERIDOS, validación cross-field,
+     4 tarjetas KPI + 2 métricas secundarias.
+3.3  Tab Tendencia: LineChart (ng2-charts), selector groupBy, formato de eje X,
+     botones de acceso rápido de período.
+3.4  Tab Top Productos: tabla con rank badges, selector de límite.
+3.5  Tab ABC: tabla con badges de color por clasificación, barra de progreso
+     acumulativa.
+3.6  Tab Por Proveedor: tabla, fila destacada por mayor monto.
+3.7  Pruebas browser: ADMIN y MANAGER (con qa_manager). Verificar SEC con
+     qa_warehouse y qa_sales (deben redirigir). Verificar tab Rentabilidad con
+     fechas faltantes / invertidas / sin ventas en el período.
+
+──────────────────────────────────────────
+FASE 4 — V4: Dashboard Ejecutivo
+Duración estimada: 1-2 sesiones
+──────────────────────────────────────────
+4.1  ExecutiveDashboardComponent.
+4.2  forkJoin(E1 + E2) con catchError individual (L33).
+4.3  5 KPI cards (fila superior).
+4.4  2 chips de alerta → navegan a /reports/pending.
+4.5  DoughnutChart de valuación por categoría (ng2-charts).
+4.6  Panel de accesos rápidos a las otras 3 vistas.
+4.7  DatePickers opcionales con botones de período rápido.
+4.8  Pruebas browser: SOLO ADMIN. Verificar SEC con qa_manager, qa_warehouse,
+     qa_sales (todos deben redirigir a su landing o a /reports/pending).
+     Verificar gráfica con 0 categorías. Verificar KPIs con período sin ventas
+     (grossMarginPct null, avgTicket null, etc.).
+
+──────────────────────────────────────────
+FASE 5 — Cierre y Propuesta D
+Duración estimada: 1 sesión
+──────────────────────────────────────────
+5.1  Suite ng test --no-watch → cobertura ≥ 70% statements.
+5.2  ng build --configuration=production sin errores.
+5.3  Verificación browser de los 4 roles con todos los casos del documento
+     de pruebas completados (columna Estado = ✅ PASS en todos).
+5.4  Actualizar memoria_tecnica_modulo_reports_frontend.md §10.
+5.5  Actualizar memoria_tecnica_global_proyecto.md.
+5.6  Actualizar CLAUDE.md (si hay nuevas lecciones transversales).
+5.7  merge --no-ff feature/reports → develop → push.
+
+────────────────────────────────────────────────────────────────────────────────
+15. DEPENDENCIAS Y PREREQUISITOS
+────────────────────────────────────────────────────────────────────────────────
+
+15.1 Dependencias nuevas a instalar:
+     npm install chart.js ng2-charts
+     (verificar compatibilidad con la versión de Angular instalada —
+      ng2-charts ≥ 5.x es compatible con Angular 17+)
+
+15.2 Servicios existentes a reutilizar:
+     - ProductService (ya en inventory) → para el autocomplete del Kardex.
+     - AuthService → para hasRole() y RBAC en componentes.
+     - LayoutService → para collapse() del sidebar en ngOnInit.
+
+15.3 Componentes shared a importar:
+     - EmptyStateComponent
+     - (ConfirmDialogComponent no aplica — no hay operaciones destructivas)
+
+15.4 Pipes a reutilizar:
+     - statusLabel pipe (PENDING→"Pendiente", APPROVED→"Aprobado" etc.)
+       para la vista de operaciones pendientes.
+
+15.5 El backend está 100% operativo y disponible. No hay dependencias de
+     desarrollo del backend para este módulo.
+
+────────────────────────────────────────────────────────────────────────────────
+16. CHECKLIST DE APERTURA DEL MÓDULO (Propuesta A + CLAUDE.md)
+────────────────────────────────────────────────────────────────────────────────
+
+[ ] Esta propuesta aprobada por el usuario.
+[ ] Rama feature/reports creada: git checkout -b feature/reports
+[ ] casos_de_prueba_modulo_reports.md creada copiando el template:
+    cp casos_de_prueba_modulo_TEMPLATE.md casos_de_prueba_modulo_reports.md
+    (completar todos los marcadores [...] antes de escribir código)
+    (categorías: SEC, RBAC, CRUD, VAL, BSRCH, UI, FLOW, RN, ERR, EMPTY, VIS)
+[ ] memoria_tecnica_modulo_reports_frontend.md iniciada (10 secciones).
+[ ] ng2-charts + chart.js instalados y verificados.
+[ ] Gate de seguridad verificado para las 4 rutas (Propuesta C):
+    [ ] /reports → todos los roles
+    [ ] /reports/operational → ADMIN, MANAGER, WAREHOUSEMAN
+    [ ] /reports/analytics → ADMIN, MANAGER
+    [ ] /reports/executive → ADMIN
+[ ] L29 — Matriz de campos sensibles × roles documentada en §4 memoria técnica
+    (en Reports la separación es por endpoint, no por campo dentro del DTO).
+[ ] L32 — Verificar que _mixins.scss ya tiene catalog-table-header definido.
+[ ] Contratos API verificados y documentados en §4 de la memoria técnica
+    (ya están verificados en esta propuesta — transcribir a la memoria técnica).
+
+────────────────────────────────────────────────────────────────────────────────
+17. DECISIONES TÉCNICAS PENDIENTES DE CONFIRMAR
+────────────────────────────────────────────────────────────────────────────────
+
+D1  [RECOMENDADO: ng2-charts + Chart.js]
+    ¿Se aprueba instalar ng2-charts para las gráficas de línea y dona?
+    Alternativa: CSS-only (progress bars y tablas) — elimina la dependencia
+    pero pierde la gráfica de tendencia de ventas.
+
+D2  [RECOMENDADO: 4 rutas hijas]
+    ¿Se aprueba la estructura de 4 subrutas (/pending, /operational,
+    /analytics, /executive) con el sidebar mostrando sub-ítems?
+    Alternativa: 1 sola ruta /reports con tabs a nivel de página (pero
+    requeriría lazy-loading dentro del componente, menos limpio).
+
+D3  [RECOMENDADO: filtros inline por componente]
+    ¿Se aprueba no crear un DateRangePickerComponent shared?
+    Justificación: YAGNI — cada componente de reporte tiene sutilezas propias
+    (E3 requiere campos requeridos, O2 tiene el autocomplete de producto).
+    Alternativa: crear un shared component para reutilizar — pero agrega
+    complejidad y flexibilidad que no se necesita aún.
+
+D4  [RECOMENDADO: no exportar a CSV/Excel en esta fase]
+    ¿Se aprueba dejar la exportación de datos fuera del alcance de este módulo?
+    Los datos ya son accesibles vía Swagger para análisis externo.
+    Si se quiere en el futuro, se puede añadir como un fix/ posterior.
+
+================================================================================
+FIN DE LA PROPUESTA
+================================================================================

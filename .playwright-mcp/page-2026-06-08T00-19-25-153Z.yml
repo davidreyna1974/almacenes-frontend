@@ -1,0 +1,115 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Compras → Órdenes de compra" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Compras → Órdenes de compra
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e25]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [expanded] [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e44] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e429]:
+          - generic [ref=e430]:
+            - button [ref=e431] [cursor=pointer]:
+              - img [ref=e432]: arrow_back
+            - generic [ref=e435]:
+              - heading "OC-2026-0058" [level=2] [ref=e436]
+              - generic [ref=e437]: Recibida
+          - generic [ref=e438]:
+            - generic [ref=e439]:
+              - generic [ref=e440]:
+                - heading "Información de la orden" [level=3] [ref=e441]
+                - generic [ref=e442]:
+                  - generic [ref=e443]:
+                    - generic:
+                      - generic:
+                        - generic [ref=e444]:
+                          - text: Proveedor
+                          - generic [ref=e445]: "*"
+                        - generic:
+                          - combobox "Proveedor" [disabled]:
+                            - generic:
+                              - generic:
+                                - generic: Químicos y Lubricantes Industriales S.A.
+                              - generic:
+                                - generic:
+                                  - img
+                  - generic [ref=e447]:
+                    - generic:
+                      - generic:
+                        - generic [ref=e448]: Notas
+                        - textbox "Notas" [disabled] [ref=e449]:
+                          - /placeholder: Observaciones opcionales
+              - generic [ref=e451]:
+                - heading "Líneas de detalle" [level=3] [ref=e453]
+                - table [ref=e454]:
+                  - row "SKU Producto Cantidad Precio unitario Subtotal" [ref=e455]:
+                    - columnheader "SKU" [ref=e456]
+                    - columnheader "Producto" [ref=e457]
+                    - columnheader "Cantidad" [ref=e458]
+                    - columnheader "Precio unitario" [ref=e459]
+                    - columnheader "Subtotal" [ref=e460]
+                    - columnheader [ref=e461]
+                  - row "LUBR-ACE20-035 Aceite Lubricante Motor 20W-50 Galón 15 $230.00 $3,450.00" [ref=e462]:
+                    - cell "LUBR-ACE20-035" [ref=e463]:
+                      - generic [ref=e464]: LUBR-ACE20-035
+                    - cell "Aceite Lubricante Motor 20W-50 Galón" [ref=e465]:
+                      - generic [ref=e466]: Aceite Lubricante Motor 20W-50 Galón
+                    - cell "15" [ref=e467]
+                    - cell "$230.00" [ref=e468]
+                    - cell "$3,450.00" [ref=e469]
+                    - cell [ref=e470]
+                - generic [ref=e471]:
+                  - generic [ref=e472]: "Total de la orden:"
+                  - generic [ref=e473]: $3,450.00
+            - generic [ref=e474]:
+              - generic [ref=e475]:
+                - heading "Historial de estado" [level=3] [ref=e476]
+                - generic [ref=e477]:
+                  - generic [ref=e478]:
+                    - img [ref=e479]: add_circle
+                    - generic [ref=e480]:
+                      - generic [ref=e481]: Creada
+                      - generic [ref=e482]: admin
+                      - generic [ref=e483]: 07/06/2026 18:08
+                  - generic [ref=e484]:
+                    - img [ref=e485]: check_circle
+                    - generic [ref=e486]:
+                      - generic [ref=e487]: Aprobada
+                      - generic [ref=e488]: admin
+                      - generic [ref=e489]: 07/06/2026 18:09
+                  - generic [ref=e490]:
+                    - img [ref=e491]: done_all
+                    - generic [ref=e492]:
+                      - generic [ref=e493]: Recibida
+                      - generic [ref=e494]: admin
+                      - generic [ref=e495]: 07/06/2026 18:10
+              - generic [ref=e496]:
+                - generic [ref=e497]: "Última modificación:"
+                - generic [ref=e498]: 07/06/2026 18:10

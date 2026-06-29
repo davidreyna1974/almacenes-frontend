@@ -1,0 +1,13 @@
+// ============================================================
+// MIXINS COMPARTIDOS — Almacenes (L32)
+// ============================================================
+
+// Estilo estándar de los headers de mat-table en pantallas de catálogo.
+// Uso: @include catalog-table-header; dentro de .catalog-table { ... }
+@mixin catalog-table-header {
+  .mat-mdc-header-cell {
+    font-weight: 600;
+    color: #6B3C6B;
+    background: #F2E4F2;
+  }
+}

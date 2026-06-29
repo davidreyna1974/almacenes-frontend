@@ -1,0 +1,20 @@
+<div class="master-detail">
+
+  <div class="master-detail__master">
+    <ng-content select="[slot=master]"></ng-content>
+  </div>
+
+  <div class="master-detail__divider" aria-hidden="true"></div>
+
+  <div class="master-detail__detail">
+    @if (showDetail) {
+      <ng-content select="[slot=detail]"></ng-content>
+    } @else {
+      <div class="master-detail__empty" role="status" [attr.aria-label]="emptyDetailMessage">
+        <mat-icon class="master-detail__empty-icon" aria-hidden="true">touch_app</mat-icon>
+        <p class="master-detail__empty-text">{{ emptyDetailMessage }}</p>
+      </div>
+    }
+  </div>
+
+</div>

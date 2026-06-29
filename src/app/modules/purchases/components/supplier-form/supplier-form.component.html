@@ -1,0 +1,74 @@
+<form [formGroup]="form" (ngSubmit)="submit()" class="supplier-form">
+
+  <div class="supplier-form__grid">
+    <mat-form-field appearance="outline" class="supplier-form__field--half">
+      <mat-label>RFC</mat-label>
+      <input matInput formControlName="rfc" maxlength="13">
+      <mat-error *ngIf="form.get('rfc')?.hasError('required')">El RFC es obligatorio</mat-error>
+      <mat-error *ngIf="form.get('rfc')?.hasError('minlength')">El RFC debe tener al menos 12 caracteres</mat-error>
+      <mat-error *ngIf="form.get('rfc')?.hasError('maxlength')">Máximo 13 caracteres</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="supplier-form__field--half">
+      <mat-label>Razón social</mat-label>
+      <input matInput formControlName="companyName" maxlength="150">
+      <mat-error *ngIf="form.get('companyName')?.hasError('required')">La razón social es obligatoria</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="supplier-form__field--half">
+      <mat-label>Nombre de contacto</mat-label>
+      <input matInput formControlName="contactName" maxlength="100">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="supplier-form__field--half">
+      <mat-label>Teléfono</mat-label>
+      <input matInput formControlName="phone" maxlength="20">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="supplier-form__field--half">
+      <mat-label>Correo electrónico</mat-label>
+      <input matInput formControlName="email" type="email" maxlength="100">
+      <mat-error *ngIf="form.get('email')?.hasError('email')">Formato de correo inválido</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="supplier-form__field--full">
+      <mat-label>Dirección</mat-label>
+      <textarea matInput formControlName="address" rows="2"></textarea>
+    </mat-form-field>
+  </div>
+
+  @if (isEdit && supplier) {
+    <div class="supplier-form__audit">
+      <span class="supplier-form__audit-item">
+        <mat-icon>person</mat-icon>
+        Creado por {{ supplier.createdByUsername ?? '—' }}
+      </span>
+      @if (supplier.updatedByUsername) {
+        <span class="supplier-form__audit-item">
+          <mat-icon>edit</mat-icon>
+          Actualizado por {{ supplier.updatedByUsername }}
+        </span>
+      }
+    </div>
+  }
+
+  <div class="supplier-form__actions">
+    @if (canDeactivate && isEdit) {
+      <button mat-stroked-button color="warn" type="button"
+              (click)="deactivate.emit()"
+              matTooltip="Desactivar proveedor">
+        <mat-icon>block</mat-icon> Desactivar
+      </button>
+    }
+    <span class="supplier-form__spacer"></span>
+    <button mat-button type="button" (click)="cancel.emit()">Cancelar</button>
+    @if (canWrite) {
+      <button mat-raised-button color="primary" type="submit"
+              [disabled]="form.invalid || loading">
+        <mat-icon>save</mat-icon>
+        {{ isEdit ? 'Guardar cambios' : 'Crear proveedor' }}
+      </button>
+    }
+  </div>
+
+</form>

@@ -1,0 +1,310 @@
+<div class="order-detail">
+
+  @if (loading) {
+    <mat-progress-bar mode="indeterminate" class="order-detail__progress"></mat-progress-bar>
+  }
+
+  <!-- ── Cabecera de página ──────────────────────────────────────────── -->
+  <div class="order-detail__page-header">
+    <button mat-icon-button (click)="goBack()" matTooltip="Volver a órdenes">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+
+    <div class="order-detail__page-title-group">
+      <h2 class="order-detail__page-title">
+        {{ isNew ? 'Nueva orden de compra' : (order?.orderNumber ?? '—') }}
+      </h2>
+      @if (!isNew && order) {
+        <span class="order-detail__status-chip {{ getStatusClass(order.status) }}">
+          {{ getStatusLabel(order.status) }}
+        </span>
+      }
+    </div>
+
+    <!-- Acciones de transición -->
+    @if (!isNew && order) {
+      <div class="order-detail__page-actions">
+        @if (canApprove()) {
+          <button mat-raised-button color="primary" (click)="approve()" [disabled]="loading">
+            <mat-icon>check_circle</mat-icon> Aprobar
+          </button>
+        }
+        @if (canReceive()) {
+          <button mat-raised-button color="primary" (click)="receive()" [disabled]="loading">
+            <mat-icon>done_all</mat-icon> Recibir mercancía
+          </button>
+        }
+        @if (canCancel()) {
+          <button mat-stroked-button color="warn" (click)="cancel()" [disabled]="loading">
+            <mat-icon>cancel</mat-icon> Cancelar orden
+          </button>
+        }
+      </div>
+    }
+  </div>
+
+  <!-- ── Cuerpo principal ───────────────────────────────────────────── -->
+  <div class="order-detail__body">
+
+    <!-- Columna izquierda: formulario + detalles -->
+    <div class="order-detail__main-col">
+
+      <!-- Card: Información de la orden -->
+      <div class="order-detail__card">
+        <h3 class="order-detail__card-title">Información de la orden</h3>
+
+        <form [formGroup]="headerForm" class="order-detail__header-form">
+
+          <mat-form-field appearance="outline" class="order-detail__field--full">
+            <mat-label>Proveedor</mat-label>
+            <mat-select formControlName="supplierId">
+              @for (s of suppliers; track s.id) {
+                <mat-option [value]="s.id">{{ s.companyName }}</mat-option>
+              }
+            </mat-select>
+            <mat-error>Selecciona un proveedor</mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="order-detail__field--full">
+            <mat-label>Notas</mat-label>
+            <textarea matInput formControlName="notes" rows="2"
+                      placeholder="Observaciones opcionales"></textarea>
+          </mat-form-field>
+
+          @if (!isNew && canEditHeader()) {
+            <div class="order-detail__form-actions">
+              <button mat-raised-button color="primary" type="button"
+                      [disabled]="headerForm.invalid || !headerForm.dirty || loading"
+                      (click)="saveHeader()">
+                <mat-icon>save</mat-icon> Guardar cambios
+              </button>
+            </div>
+          }
+
+        </form>
+      </div>
+
+      <!-- Card: Líneas de detalle -->
+      <div class="order-detail__card">
+        <div class="order-detail__section-header">
+          <h3 class="order-detail__card-title">Líneas de detalle</h3>
+          @if (canEditDetails() || isNew) {
+            <button mat-stroked-button color="primary"
+                    [disabled]="showDetailForm"
+                    (click)="openAddDetail()">
+              <mat-icon>add</mat-icon> Agregar línea
+            </button>
+          }
+        </div>
+
+        <!-- Formulario inline de detalle (agregar / editar) -->
+        @if (showDetailForm) {
+          <div class="order-detail__inline-form">
+            <app-purchase-order-detail-form
+              [detail]="editingDetail"
+              [existingProductIds]="existingProductIds"
+              (save)="onDetailSave($event)"
+              (cancel)="showDetailForm = false; editingDetail = null">
+            </app-purchase-order-detail-form>
+          </div>
+        }
+
+        <!-- Tabla de detalles -->
+        @if (!isNew && (order?.details ?? []).length === 0 && !showDetailForm) {
+          <div class="order-detail__empty-details">
+            <mat-icon>playlist_add</mat-icon>
+            <p>Sin líneas de detalle — agrega al menos un producto</p>
+          </div>
+        }
+
+        <mat-table [dataSource]="isNew ? pendingDetailRows : (order?.details ?? [])"
+                   class="order-detail__detail-table">
+
+          <ng-container matColumnDef="productSku">
+            <mat-header-cell *matHeaderCellDef>SKU</mat-header-cell>
+            <mat-cell *matCellDef="let d">
+              <span class="order-detail__sku">{{ d.productSku }}</span>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="productName">
+            <mat-header-cell *matHeaderCellDef>Producto</mat-header-cell>
+            <mat-cell *matCellDef="let d">
+              <span class="order-detail__truncate" [matTooltip]="d.productName">{{ d.productName }}</span>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="quantity">
+            <mat-header-cell *matHeaderCellDef class="order-detail__num-header">Cantidad</mat-header-cell>
+            <mat-cell *matCellDef="let d" class="order-detail__num">{{ d.quantity }}</mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="unitPrice">
+            <mat-header-cell *matHeaderCellDef class="order-detail__num-header">Precio unitario</mat-header-cell>
+            <mat-cell *matCellDef="let d" class="order-detail__num">
+              {{ d.unitPrice | currency:'MXN':'symbol-narrow':'1.2-2' }}
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="subtotal">
+            <mat-header-cell *matHeaderCellDef class="order-detail__num-header">Subtotal</mat-header-cell>
+            <mat-cell *matCellDef="let d" class="order-detail__num order-detail__num--bold">
+              {{ d.subtotal | currency:'MXN':'symbol-narrow':'1.2-2' }}
+            </mat-cell>
+          </ng-container>
+
+          <!-- Acciones para órdenes existentes (edit + delete via API) — solo en PENDING -->
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let d" class="order-detail__detail-actions">
+              @if (canEditDetails()) {
+                <button mat-icon-button color="primary" matTooltip="Editar línea"
+                        (click)="openEditDetail(d)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" matTooltip="Eliminar línea"
+                        (click)="removeDetail(d)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              }
+            </mat-cell>
+          </ng-container>
+
+          <!-- Acciones para pending rows en modo Nueva orden (solo eliminar de memoria) -->
+          <ng-container matColumnDef="pendingActions">
+            <mat-header-cell *matHeaderCellDef></mat-header-cell>
+            <mat-cell *matCellDef="let d" class="order-detail__detail-actions">
+              <button mat-icon-button color="warn" matTooltip="Quitar línea"
+                      (click)="removePendingDetail(d)">
+                <mat-icon>remove_circle_outline</mat-icon>
+              </button>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="detailColumnsForRole"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: detailColumnsForRole;"></mat-row>
+
+        </mat-table>
+
+        <!-- Total de la orden -->
+        @if (canSeePrices() && !isNew && order && (order.details?.length ?? 0) > 0) {
+          <div class="order-detail__total-row">
+            <span class="order-detail__total-label">Total de la orden:</span>
+            <span class="order-detail__total-value">
+              {{ order.totalAmount | currency:'MXN':'symbol-narrow':'1.2-2' }}
+            </span>
+          </div>
+        }
+
+      </div>
+
+      <!-- Botón Crear orden (modo nuevo) -->
+      @if (isNew) {
+        <div class="order-detail__create-actions">
+          <button mat-raised-button color="primary"
+                  [disabled]="headerForm.invalid || pendingDetailRows.length === 0 || loading"
+                  (click)="createOrder()">
+            <mat-icon>save</mat-icon> Crear orden
+          </button>
+          <button mat-stroked-button (click)="goBack()" [disabled]="loading">
+            Cancelar
+          </button>
+        </div>
+      }
+
+    </div>
+
+    <!-- Columna derecha: historial de estado -->
+    @if (!isNew && order) {
+      <div class="order-detail__side-col">
+
+        <!-- Panel de confirmación de recepción (aparece automáticamente, sin clic) -->
+        @if (justReceived) {
+          <div class="order-detail__card order-detail__card--receipt">
+            <div class="order-detail__receipt-header">
+              <mat-icon class="order-detail__receipt-icon">inventory_2</mat-icon>
+              <div>
+                <h3 class="order-detail__receipt-title">Stock actualizado</h3>
+                <p class="order-detail__receipt-subtitle">
+                  {{ order.details.length }} producto{{ order.details.length !== 1 ? 's' : '' }} recibido{{ order.details.length !== 1 ? 's' : '' }}
+                </p>
+              </div>
+            </div>
+            <div class="order-detail__receipt-list">
+              @for (d of order.details; track d.id) {
+                <div class="order-detail__receipt-item">
+                  <span class="order-detail__receipt-name" [matTooltip]="d.productName">{{ d.productName }}</span>
+                  <span class="order-detail__receipt-qty">+{{ d.quantity }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <div class="order-detail__card">
+          <h3 class="order-detail__card-title">Historial de estado</h3>
+
+          <div class="order-detail__timeline">
+
+            <div class="order-detail__timeline-item order-detail__timeline-item--done">
+              <mat-icon class="order-detail__timeline-icon">add_circle</mat-icon>
+              <div class="order-detail__timeline-content">
+                <span class="order-detail__timeline-label">Creada</span>
+                <span class="order-detail__timeline-user">{{ order.createdByUsername }}</span>
+                <span class="order-detail__timeline-date">{{ order.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+            </div>
+
+            <div class="order-detail__timeline-item"
+                 [class.order-detail__timeline-item--done]="order.approvedAt">
+              <mat-icon class="order-detail__timeline-icon">check_circle</mat-icon>
+              <div class="order-detail__timeline-content">
+                <span class="order-detail__timeline-label">Aprobada</span>
+                @if (order.approvedAt) {
+                  <span class="order-detail__timeline-user">{{ order.approvedByUsername }}</span>
+                  <span class="order-detail__timeline-date">{{ order.approvedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                } @else {
+                  <span class="order-detail__timeline-pending">Pendiente</span>
+                }
+              </div>
+            </div>
+
+            <div class="order-detail__timeline-item"
+                 [class.order-detail__timeline-item--done]="order.receivedAt"
+                 [class.order-detail__timeline-item--cancelled]="order.cancelledAt">
+              <mat-icon class="order-detail__timeline-icon">
+                {{ order.cancelledAt ? 'cancel' : 'done_all' }}
+              </mat-icon>
+              <div class="order-detail__timeline-content">
+                @if (order.cancelledAt) {
+                  <span class="order-detail__timeline-label order-detail__timeline-label--cancelled">Cancelada</span>
+                  <span class="order-detail__timeline-user">{{ order.cancelledByUsername }}</span>
+                  <span class="order-detail__timeline-date">{{ order.cancelledAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                } @else {
+                  <span class="order-detail__timeline-label">Recibida</span>
+                  @if (order.receivedAt) {
+                    <span class="order-detail__timeline-user">{{ order.receivedByUsername }}</span>
+                    <span class="order-detail__timeline-date">{{ order.receivedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+                  } @else {
+                    <span class="order-detail__timeline-pending">Pendiente</span>
+                  }
+                }
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Metadatos de auditoría -->
+        @if (order.updatedAt) {
+          <div class="order-detail__card order-detail__card--meta">
+            <span class="order-detail__meta-label">Última modificación:</span>
+            <span class="order-detail__meta-value">{{ order.updatedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        }
+
+      </div>
+    }
+
+  </div>
+</div>

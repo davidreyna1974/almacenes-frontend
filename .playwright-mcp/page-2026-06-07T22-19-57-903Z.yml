@@ -1,0 +1,20 @@
+- main [ref=e188]:
+  - generic [ref=e189]:
+    - generic [ref=e190]: Almacenes
+    - paragraph [ref=e191]: Inicia sesión para continuar
+  - generic [ref=e192]:
+    - generic [ref=e195]:
+      - generic [ref=e196]:
+        - text: Usuario
+        - generic [ref=e197]: "*"
+      - textbox "Usuario" [ref=e199]: test_mgr
+      - img [ref=e201]: person_outline
+    - generic [ref=e205]:
+      - generic [ref=e206]:
+        - text: Contraseña
+        - generic [ref=e207]: "*"
+      - textbox "Contraseña" [ref=e209]: Test123!
+      - button "Mostrar contraseña" [ref=e211] [cursor=pointer]:
+        - img [ref=e212]: visibility_off
+    - button "Iniciar sesión" [ref=e216]:
+      - generic [ref=e217]: Iniciar sesión

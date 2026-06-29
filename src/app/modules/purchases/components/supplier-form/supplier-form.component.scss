@@ -1,0 +1,42 @@
+.supplier-form {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--space-3);
+  gap: var(--space-2);
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 16px;
+  }
+
+  &__field--half { grid-column: span 1; }
+  &__field--full  { grid-column: span 2; }
+
+  &__audit {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    padding: 4px 0;
+  }
+
+  &__audit-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    mat-icon { font-size: 14px; width: 14px; height: 14px; }
+  }
+
+  &__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-top: var(--space-1);
+    border-top: 1px solid var(--color-divider);
+  }
+
+  &__spacer { flex: 1; }
+}

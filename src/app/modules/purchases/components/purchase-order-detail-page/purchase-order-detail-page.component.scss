@@ -1,0 +1,402 @@
+.order-detail {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--space-3);
+  gap: var(--space-3);
+
+  &__progress { flex-shrink: 0; margin: 0 calc(-1 * var(--space-3)); }
+
+  // ── Cabecera de página ──────────────────────────────────────────────────
+
+  &__page-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+
+  &__page-title-group {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__page-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #6B3C6B;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__page-actions {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    margin-left: auto;
+  }
+
+  // ── Chips de estado ─────────────────────────────────────────────────────
+
+  &__status-chip {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  // ── Layout principal ────────────────────────────────────────────────────
+
+  &__body {
+    display: flex;
+    gap: var(--space-3);
+    flex: 1;
+    overflow: auto;
+    align-items: flex-start;
+  }
+
+  &__main-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-width: 0;
+  }
+
+  &__side-col {
+    width: 280px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+
+    @media (max-width: 900px) {
+      width: 100%;
+    }
+  }
+
+  // ── Cards ───────────────────────────────────────────────────────────────
+
+  &__card {
+    background: #fff;
+    border: 1px solid var(--color-divider);
+    border-radius: 8px;
+    padding: var(--space-3);
+
+    &--meta {
+      padding: var(--space-2) var(--space-3);
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    &--receipt {
+      background: #E8F5E9;
+      border-color: #A5D6A7;
+    }
+  }
+
+  // ── Panel de recepción ───────────────────────────────────────────────────
+
+  &__receipt-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: var(--space-2);
+  }
+
+  &__receipt-icon {
+    font-size: 24px;
+    width: 24px;
+    height: 24px;
+    color: #2E7D32;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  &__receipt-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1B5E20;
+    margin: 0;
+  }
+
+  &__receipt-subtitle {
+    font-size: 12px;
+    color: #388E3C;
+    margin: 2px 0 0 0;
+  }
+
+  &__receipt-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  &__receipt-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+    border-bottom: 1px solid #C8E6C9;
+
+    &:last-child { border-bottom: none; }
+  }
+
+  &__receipt-name {
+    font-size: 13px;
+    color: #212121;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+    margin-right: 8px;
+  }
+
+  &__receipt-qty {
+    font-size: 13px;
+    font-weight: 600;
+    color: #2E7D32;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+
+  &__card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #6B3C6B;
+    margin: 0 0 var(--space-2) 0;
+  }
+
+  // ── Formulario de cabecera ───────────────────────────────────────────────
+
+  &__header-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  &__field--full { width: 100%; }
+
+  &__form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-2);
+    margin-top: var(--space-1);
+  }
+
+  // ── Sección de detalles ──────────────────────────────────────────────────
+
+  &__section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-2);
+  }
+
+  &__inline-form {
+    background: #F2E4F2;
+    border-radius: 6px;
+    padding: var(--space-2) var(--space-3);
+    margin-bottom: var(--space-2);
+  }
+
+  &__empty-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: var(--space-3);
+    color: var(--color-text-secondary);
+
+    mat-icon {
+      font-size: 40px;
+      width: 40px;
+      height: 40px;
+      color: #6B3C6B;
+      opacity: 0.35;
+    }
+
+    p { margin: 0; font-size: 14px; }
+  }
+
+  // ── Tabla de detalles ────────────────────────────────────────────────────
+
+  &__detail-table {
+    width: 100%;
+
+    .mat-mdc-header-cell {
+      font-weight: 600;
+      color: #6B3C6B;
+      background: #F2E4F2;
+    }
+  }
+
+  &__sku {
+    font-family: monospace;
+    font-size: 12px;
+    color: #6B3C6B;
+    font-weight: 500;
+  }
+
+  &__truncate {
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: block;
+  }
+
+  &__num-header { text-align: right !important; }
+  &__num        { text-align: right; font-variant-numeric: tabular-nums; }
+  &__num--bold  { font-weight: 600; }
+
+  &__detail-actions { white-space: nowrap; }
+
+  // ── Fila total ───────────────────────────────────────────────────────────
+
+  &__total-row {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-top: 2px solid #F2E4F2;
+    margin-top: 4px;
+  }
+
+  &__total-label {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+  }
+
+  &__total-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #6B3C6B;
+    font-variant-numeric: tabular-nums;
+  }
+
+  // ── Botones crear orden ──────────────────────────────────────────────────
+
+  &__create-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-2);
+    flex-shrink: 0;
+  }
+
+  // ── Timeline de historial ────────────────────────────────────────────────
+
+  &__timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  &__timeline-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding-bottom: 16px;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 24px;
+      bottom: 0;
+      width: 2px;
+      background: var(--color-divider);
+    }
+
+    &:last-child::before { display: none; }
+
+    &--done {
+      .order-detail__timeline-icon { color: #2E7D32; }
+      &::before { background: #2E7D32; }
+    }
+
+    &--cancelled {
+      .order-detail__timeline-icon { color: #C62828; }
+    }
+  }
+
+  &__timeline-icon {
+    font-size: 22px;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    color: var(--color-text-secondary);
+    opacity: 0.5;
+    margin-top: 2px;
+  }
+
+  &__timeline-item--done &__timeline-icon { opacity: 1; }
+
+  &__timeline-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  &__timeline-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #212121;
+
+    &--cancelled { color: #C62828; }
+  }
+
+  &__timeline-user {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+  }
+
+  &__timeline-date {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  &__timeline-pending {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    font-style: italic;
+  }
+
+  // ── Metadatos ────────────────────────────────────────────────────────────
+
+  &__meta-label {
+    font-size: 11px;
+    color: var(--color-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  &__meta-value {
+    font-size: 12px;
+    color: #212121;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// ── Chips globales de estado ────────────────────────────────────────────────
+
+.status--pending   { background: #FFF3E0; color: #E65100; }
+.status--approved  { background: #E3F2FD; color: #1565C0; }
+.status--received  { background: #E8F5E9; color: #2E7D32; }
+.status--cancelled { background: #FFEBEE; color: #C62828; }

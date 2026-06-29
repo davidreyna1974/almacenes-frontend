@@ -1,0 +1,118 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e205] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e206] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e207]:
+            - img [ref=e15]: chevron_right
+            - text: Compras → Órdenes de compra
+        - generic [ref=e16]:
+          - button [ref=e208] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e209]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: test_wh
+              - generic [ref=e210]: WAREHOUSEMAN
+      - generic [ref=e28]:
+        - navigation [ref=e211]:
+          - menubar [ref=e32]:
+            - menuitem [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [expanded] [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+          - button [ref=e212] [cursor=pointer]:
+            - img [ref=e43]: chevron_right
+        - main [ref=e44]:
+          - generic [ref=e139]:
+            - generic [ref=e140]:
+              - button [ref=e141] [cursor=pointer]:
+                - img [ref=e142]: arrow_back
+              - generic [ref=e145]:
+                - heading [level=2] [ref=e213]: OC-2026-0065
+                - generic [ref=e147]: Aprobada
+              - button [ref=e214]:
+                - img [ref=e150]: done_all
+                - generic [ref=e151]: Recibir mercancía
+            - generic [ref=e154]:
+              - generic [ref=e155]:
+                - generic [ref=e156]:
+                  - heading [level=3] [ref=e215]: Información de la orden
+                  - generic [ref=e158]:
+                    - generic [ref=e159]:
+                      - generic:
+                        - generic:
+                          - generic [ref=e160]:
+                            - text: Proveedor
+                            - generic [ref=e161]: "*"
+                          - generic:
+                            - combobox [disabled]:
+                              - generic:
+                                - generic:
+                                  - generic: Agroquímica y Fertilizantes del Valle S.A.
+                                - generic:
+                                  - generic:
+                                    - img
+                    - generic [ref=e163]:
+                      - generic:
+                        - generic:
+                          - generic [ref=e164]: Notas
+                          - textbox [disabled] [ref=e216]:
+                            - /placeholder: Observaciones opcionales
+                            - text: Orden test WAREHOUSEMAN
+                - generic [ref=e167]:
+                  - heading [level=3] [ref=e217]: Líneas de detalle
+                  - table [ref=e170]:
+                    - row [ref=e218]:
+                      - columnheader [ref=e219]: SKU
+                      - columnheader [ref=e220]: Producto
+                      - columnheader [ref=e221]: Cantidad
+                    - row [ref=e222]:
+                      - cell [ref=e223]:
+                        - generic [ref=e177]: ELEC-TV55-001
+                      - cell [ref=e224]:
+                        - generic [ref=e179]: Televisor LED 55" 4K Smart TV
+                      - cell [ref=e225]: "2"
+              - generic [ref=e181]:
+                - generic [ref=e182]:
+                  - heading [level=3] [ref=e226]: Historial de estado
+                  - generic [ref=e184]:
+                    - generic [ref=e185]:
+                      - img [ref=e186]: add_circle
+                      - generic [ref=e187]:
+                        - generic [ref=e188]: Creada
+                        - generic [ref=e189]: admin
+                        - generic [ref=e190]: 07/06/2026 19:08
+                    - generic [ref=e191]:
+                      - img [ref=e192]: check_circle
+                      - generic [ref=e193]:
+                        - generic [ref=e194]: Aprobada
+                        - generic [ref=e195]: admin
+                        - generic [ref=e196]: 07/06/2026 19:08
+                    - generic [ref=e197]:
+                      - img [ref=e198]: done_all
+                      - generic [ref=e199]:
+                        - generic [ref=e200]: Recibida
+                        - generic [ref=e201]: Pendiente
+                - generic [ref=e202]:
+                  - generic [ref=e203]: "Última modificación:"
+                  - generic [ref=e204]: 07/06/2026 19:08
+  - dialog "Recibir mercancía" [ref=e230]:
+    - generic [ref=e233]:
+      - heading "Recibir mercancía" [level=2] [ref=e234]
+      - paragraph [ref=e236]: ¿Confirmar recepción? Se incrementará el stock de todos los productos de la orden.
+      - generic [ref=e237]:
+        - button "Cancelar" [active] [ref=e238]:
+          - generic [ref=e239]: Cancelar
+        - button "Recibir" [ref=e242]:
+          - generic [ref=e243]: Recibir

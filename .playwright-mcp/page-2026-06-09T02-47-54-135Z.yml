@@ -1,0 +1,138 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e9] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Bajo stock" [ref=e14]':
+          - img [ref=e15]: chevron_right
+          - text: Inventario → Bajo stock
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e17] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e21]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: test_mgr
+            - 'generic "Rol: MANAGER" [ref=e25]': MANAGER
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e31]:
+        - menubar [ref=e32]:
+          - menuitem [expanded] [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+        - button "Expandir menú" [ref=e42] [cursor=pointer]:
+          - img [ref=e43]: chevron_right
+      - main [ref=e44]:
+        - generic [ref=e47]:
+          - generic [ref=e48]:
+            - generic [ref=e49]:
+              - img [ref=e50]: remove_shopping_cart
+              - text: 2 sin stock
+            - generic [ref=e51]:
+              - img [ref=e52]: warning_amber
+              - text: 3 críticos
+          - table [ref=e54]:
+            - rowgroup [ref=e55]:
+              - row "Nivel SKU Nombre Categoría Proveedor Físico Reservado Disponible Mínimo Déficit Costo unit." [ref=e56]:
+                - columnheader "Nivel" [ref=e57]
+                - columnheader "SKU" [ref=e58]
+                - columnheader "Nombre" [ref=e59]
+                - columnheader "Categoría" [ref=e60]
+                - columnheader "Proveedor" [ref=e61]
+                - columnheader "Físico" [ref=e62]
+                - columnheader "Reservado" [ref=e63]
+                - columnheader "Disponible" [ref=e64]
+                - columnheader "Mínimo" [ref=e65]
+                - columnheader "Déficit" [ref=e66]
+                - columnheader "Costo unit." [ref=e67]
+                - columnheader [ref=e68]
+            - rowgroup [ref=e69]:
+              - row "Crítico HELEC-SIE-048 Sierra Circular 7-1/4\" 1800W Herramientas Eléctricas Herramientas y Maquinaria del Pacífico S.A. 3 0 3 8 +5 $1,750.00" [ref=e70]:
+                - cell "Crítico" [ref=e71]:
+                  - generic [ref=e72]: Crítico
+                - cell "HELEC-SIE-048" [ref=e73]
+                - cell "Sierra Circular 7-1/4\" 1800W" [ref=e74]
+                - cell "Herramientas Eléctricas" [ref=e75]
+                - cell "Herramientas y Maquinaria del Pacífico S.A." [ref=e76]
+                - cell "3" [ref=e77]
+                - cell "0" [ref=e78]
+                - cell "3" [ref=e79]
+                - cell "8" [ref=e80]
+                - cell "+5" [ref=e81]
+                - cell "$1,750.00" [ref=e82]
+                - cell [ref=e83]:
+                  - button [ref=e84] [cursor=pointer]:
+                    - img [ref=e85]: add_circle
+              - row "Crítico PINT-BAR5G-049 Barniz marino 5 galones para exteriores Pinturas y Recubrimientos Constructora y Suministros del Bajío S.A. 6 0 6 10 +4 $1,300.00" [ref=e88]:
+                - cell "Crítico" [ref=e89]:
+                  - generic [ref=e90]: Crítico
+                - cell "PINT-BAR5G-049" [ref=e91]
+                - cell "Barniz marino 5 galones para exteriores" [ref=e92]
+                - cell "Pinturas y Recubrimientos" [ref=e93]
+                - cell "Constructora y Suministros del Bajío S.A." [ref=e94]
+                - cell "6" [ref=e95]
+                - cell "0" [ref=e96]
+                - cell "6" [ref=e97]
+                - cell "10" [ref=e98]
+                - cell "+4" [ref=e99]
+                - cell "$1,300.00" [ref=e100]
+                - cell [ref=e101]:
+                  - button [ref=e102] [cursor=pointer]:
+                    - img [ref=e103]: add_circle
+              - row "Crítico SEGV-NVR16-050 NVR 16 Canales 4K PoE 16 Puertos Seguridad y Vigilancia Seguridad y Vigilancia Electrónica S.A. 1 0 1 4 +3 $5,500.00" [ref=e106]:
+                - cell "Crítico" [ref=e107]:
+                  - generic [ref=e108]: Crítico
+                - cell "SEGV-NVR16-050" [ref=e109]
+                - cell "NVR 16 Canales 4K PoE 16 Puertos" [ref=e110]
+                - cell "Seguridad y Vigilancia" [ref=e111]
+                - cell "Seguridad y Vigilancia Electrónica S.A." [ref=e112]
+                - cell "1" [ref=e113]
+                - cell "0" [ref=e114]
+                - cell "1" [ref=e115]
+                - cell "4" [ref=e116]
+                - cell "+3" [ref=e117]
+                - cell "$5,500.00" [ref=e118]
+                - cell [ref=e119]:
+                  - button [ref=e120] [cursor=pointer]:
+                    - img [ref=e121]: add_circle
+              - row "Sin stock ELEC-PRO-043 Proyector Laser 4K 3500 Lúmenes Electrónica de Consumo Distribuidora México Digital S.A. de C.V. 0 0 0 2 +2 $30,000.00" [ref=e124]:
+                - cell "Sin stock" [ref=e125]:
+                  - generic [ref=e126]: Sin stock
+                - cell "ELEC-PRO-043" [ref=e127]
+                - cell "Proyector Laser 4K 3500 Lúmenes" [ref=e128]
+                - cell "Electrónica de Consumo" [ref=e129]
+                - cell "Distribuidora México Digital S.A. de C.V." [ref=e130]
+                - cell "0" [ref=e131]
+                - cell "0" [ref=e132]
+                - cell "0" [ref=e133]
+                - cell "2" [ref=e134]
+                - cell "+2" [ref=e135]
+                - cell "$30,000.00" [ref=e136]
+                - cell [ref=e137]:
+                  - button [ref=e138] [cursor=pointer]:
+                    - img [ref=e139]: add_circle
+              - row "Sin stock BLAN-SEC10-045 Secadora de Ropa 10kg Carga Frontal Electrodomésticos de Línea Blanca Electro Industrial del Centro S.A. de C.V. 0 0 0 2 +2 $7,800.00" [ref=e142]:
+                - cell "Sin stock" [ref=e143]:
+                  - generic [ref=e144]: Sin stock
+                - cell "BLAN-SEC10-045" [ref=e145]
+                - cell "Secadora de Ropa 10kg Carga Frontal" [ref=e146]
+                - cell "Electrodomésticos de Línea Blanca" [ref=e147]
+                - cell "Electro Industrial del Centro S.A. de C.V." [ref=e148]
+                - cell "0" [ref=e149]
+                - cell "0" [ref=e150]
+                - cell "0" [ref=e151]
+                - cell "2" [ref=e152]
+                - cell "+2" [ref=e153]
+                - cell "$7,800.00" [ref=e154]
+                - cell [ref=e155]:
+                  - button [ref=e156] [cursor=pointer]:
+                    - img [ref=e157]: add_circle

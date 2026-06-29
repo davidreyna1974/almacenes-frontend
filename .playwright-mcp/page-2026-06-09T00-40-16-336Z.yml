@@ -1,0 +1,446 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - link [ref=e6486] [cursor=pointer]:
+      - /url: "#main-content"
+      - text: Ir al contenido principal
+    - generic [ref=e5]:
+      - banner [ref=e7]:
+        - generic [ref=e8]:
+          - button [ref=e6487] [cursor=pointer]:
+            - img [ref=e10]: menu
+          - generic [ref=e13]: Almacenes
+          - generic [ref=e6488]:
+            - img [ref=e15]: chevron_right
+            - text: Inventario → Productos
+        - generic [ref=e16]:
+          - button [ref=e6489] [cursor=pointer]:
+            - img [ref=e18]: notifications_none
+          - button [ref=e6490]:
+            - img [ref=e22]: arrow_drop_down
+            - generic [ref=e23]:
+              - text: admin
+              - generic [ref=e6491]: ADMIN
+      - generic [ref=e28]:
+        - navigation [ref=e6492]:
+          - menubar [ref=e32]:
+            - menuitem [expanded] [ref=e33] [cursor=pointer]:
+              - img [ref=e34]: inventory_2
+            - menuitem [ref=e35] [cursor=pointer]:
+              - img [ref=e36]: shopping_cart
+            - menuitem [ref=e37] [cursor=pointer]:
+              - img [ref=e38]: point_of_sale
+            - menuitem [ref=e39] [cursor=pointer]:
+              - img [ref=e40]: bar_chart
+            - menuitem [ref=e41] [cursor=pointer]:
+              - img [ref=e42]: manage_accounts
+          - button [ref=e6493] [cursor=pointer]:
+            - img [ref=e45]: chevron_right
+        - main [ref=e46]:
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - generic [ref=e51]:
+                - generic [ref=e54]:
+                  - generic [ref=e55]: Buscar por código o nombre
+                  - textbox [ref=e6494]
+                  - img [ref=e59]: search
+                - generic [ref=e63] [cursor=pointer]:
+                  - generic [ref=e64]: Categoría
+                  - combobox [ref=e6495]:
+                    - img [ref=e72]
+                - generic [ref=e77] [cursor=pointer]:
+                  - generic [ref=e78]: Estado
+                  - combobox [ref=e6496]:
+                    - img [ref=e86]
+                - generic [ref=e91] [cursor=pointer]:
+                  - generic [ref=e92]: Proveedor
+                  - combobox [ref=e6497]:
+                    - img [ref=e100]
+              - button [ref=e6498]:
+                - img [ref=e105]: add
+                - generic [ref=e106]: Nuevo producto
+            - generic [ref=e865]:
+              - table [ref=e866]:
+                - rowgroup [ref=e867]:
+                  - row [ref=e6499]:
+                    - columnheader [ref=e6500]: Código
+                    - columnheader [ref=e6501]: Nombre
+                    - columnheader [ref=e6502]: Categoría
+                    - columnheader [ref=e6503]: Proveedor
+                    - columnheader [ref=e6504]: Stock
+                    - columnheader [ref=e6505]: Precio
+                    - columnheader [ref=e6506]: Costo unit.
+                    - columnheader [ref=e6507]: Estado
+                    - columnheader [ref=e877]
+                - rowgroup [ref=e878]:
+                  - row [ref=e6508] [cursor=pointer]:
+                    - cell [ref=e6509]: LUBR-ACE20-035
+                    - cell [ref=e6510]: Aceite Lubricante Motor 20W-50 Galón
+                    - cell [ref=e6511]: Lubricantes y Químicos
+                    - cell [ref=e6512]: Químicos y Lubricantes Industriales S.A.
+                    - cell [ref=e6513]:
+                      - status [ref=e6514]: "149"
+                    - cell [ref=e6515]: $380.00
+                    - cell [ref=e6516]: $220.00
+                    - cell [ref=e6517]:
+                      - generic [ref=e5106]: Disponible
+                    - cell [ref=e6518]:
+                      - button [ref=e6519]:
+                        - img [ref=e5109]: swap_vert
+                  - row [ref=e6520] [cursor=pointer]:
+                    - cell [ref=e6521]: HELEC-AMO-015
+                    - cell [ref=e6522]: Amoladora Angular 4.5" 1400W
+                    - cell [ref=e6523]: Herramientas Eléctricas
+                    - cell [ref=e6524]: Herramientas y Maquinaria del Pacífico S.A.
+                    - cell [ref=e6525]:
+                      - status [ref=e6526]: "68"
+                    - cell [ref=e6527]: $980.00
+                    - cell [ref=e6528]: $590.00
+                    - cell [ref=e6529]:
+                      - generic [ref=e5123]: Disponible
+                    - cell [ref=e6530]:
+                      - button [ref=e6531]:
+                        - img [ref=e5126]: swap_vert
+                  - row [ref=e6532] [cursor=pointer]:
+                    - cell [ref=e6533]: PINT-BAR5G-049
+                    - cell [ref=e6534]: Barniz marino 5 galones para exteriores
+                    - cell [ref=e6535]: Pinturas y Recubrimientos
+                    - cell [ref=e6536]: Constructora y Suministros del Bajío S.A.
+                    - cell [ref=e6537]:
+                      - status [ref=e6538]: "6"
+                    - cell [ref=e6539]: $2,100.00
+                    - cell [ref=e6540]: $1,300.00
+                    - cell [ref=e6541]:
+                      - generic [ref=e5140]: Disponible
+                    - cell [ref=e6542]:
+                      - button [ref=e6543]:
+                        - img [ref=e5143]: swap_vert
+                  - row [ref=e6544] [cursor=pointer]:
+                    - cell [ref=e6545]: ELEC-SP40-002
+                    - cell [ref=e6546]: Bocina Inalámbrica Bluetooth 40W
+                    - cell [ref=e6547]: Electrónica de Consumo
+                    - cell [ref=e6548]: Distribuidora México Digital S.A. de C.V.
+                    - cell [ref=e6549]:
+                      - status [ref=e6550]: "82"
+                    - cell [ref=e6551]: $1,299.00
+                    - cell [ref=e6552]: $780.00
+                    - cell [ref=e6553]:
+                      - generic [ref=e5157]: Disponible
+                    - cell [ref=e6554]:
+                      - button [ref=e6555]:
+                        - img [ref=e5160]: swap_vert
+                  - row [ref=e6556] [cursor=pointer]:
+                    - cell [ref=e6557]: PAPE-BOL-030
+                    - cell [ref=e6558]: Bolígrafo Retráctil Azul Caja x 50
+                    - cell [ref=e6559]: Papelería y Oficina
+                    - cell [ref=e6560]: Papelería y Artículos de Oficina Nacional S.A.
+                    - cell [ref=e6561]:
+                      - status [ref=e6562]: "80"
+                    - cell [ref=e6563]: $195.00
+                    - cell [ref=e6564]: $115.00
+                    - cell [ref=e6565]:
+                      - generic [ref=e5174]: Disponible
+                    - cell [ref=e6566]:
+                      - button [ref=e6567]:
+                        - img [ref=e5177]: swap_vert
+                  - row [ref=e6568] [cursor=pointer]:
+                    - cell [ref=e6569]: ELUM-CAB12-022
+                    - cell [ref=e6570]: Cable Duplex THW 12 AWG Rollo 100m
+                    - cell [ref=e6571]: Electricidad e Iluminación
+                    - cell [ref=e6572]: Electro Industrial del Centro S.A. de C.V.
+                    - cell [ref=e6573]:
+                      - status [ref=e6574]: "70"
+                    - cell [ref=e6575]: $1,250.00
+                    - cell [ref=e6576]: $780.00
+                    - cell [ref=e6577]:
+                      - generic [ref=e5191]: Disponible
+                    - cell [ref=e6578]:
+                      - button [ref=e6579]:
+                        - img [ref=e5194]: swap_vert
+                  - row [ref=e6580] [cursor=pointer]:
+                    - cell [ref=e6581]: CAFE-CAF-010
+                    - cell [ref=e6582]: Cafetera Espresso Automática 19 bar
+                    - cell [ref=e6583]: Electrodomésticos de Línea Café
+                    - cell [ref=e6584]: Electro Industrial del Centro S.A. de C.V.
+                    - cell [ref=e6585]:
+                      - status [ref=e6586]: "35"
+                    - cell [ref=e6587]: $3,200.00
+                    - cell [ref=e6588]: $2,100.00
+                    - cell [ref=e6589]:
+                      - generic [ref=e5208]: Disponible
+                    - cell [ref=e6590]:
+                      - button [ref=e6591]:
+                        - img [ref=e5211]: swap_vert
+                  - row [ref=e6592] [cursor=pointer]:
+                    - cell [ref=e6593]: EMBA-CAJA-031
+                    - cell [ref=e6594]: Caja de Cartón Corrugado 60x40x40 cm
+                    - cell [ref=e6595]: Embalaje e Insumos Logísticos
+                    - cell [ref=e6596]: Empaques y Embalajes del Sureste S.A.
+                    - cell [ref=e6597]:
+                      - status [ref=e6598]: "1000"
+                    - cell [ref=e6599]: $28.50
+                    - cell [ref=e6600]: $16.00
+                    - cell [ref=e6601]:
+                      - generic [ref=e5225]: Disponible
+                    - cell [ref=e6602]:
+                      - button [ref=e6603]:
+                        - img [ref=e5228]: swap_vert
+                  - row [ref=e6604] [cursor=pointer]:
+                    - cell [ref=e6605]: SEGV-CAM4K-023
+                    - cell [ref=e6606]: Cámara Domo IP 4K PoE Exterior
+                    - cell [ref=e6607]: Seguridad y Vigilancia
+                    - cell [ref=e6608]: Seguridad y Vigilancia Electrónica S.A.
+                    - cell [ref=e6609]:
+                      - status [ref=e6610]: "35"
+                    - cell [ref=e6611]: $2,850.00
+                    - cell [ref=e6612]: $1,750.00
+                    - cell [ref=e6613]:
+                      - generic [ref=e5242]: Disponible
+                    - cell [ref=e6614]:
+                      - button [ref=e6615]:
+                        - img [ref=e5245]: swap_vert
+                  - row [ref=e6616] [cursor=pointer]:
+                    - cell [ref=e6617]: SOLD-MAS-041
+                    - cell [ref=e6618]: Careta para Soldar Fotosensible
+                    - cell [ref=e6619]: Soldadura y Corte
+                    - cell [ref=e6620]: Soldadura y Equipos Industriales S.A.
+                    - cell [ref=e6621]:
+                      - status [ref=e6622]: "40"
+                    - cell [ref=e6623]: $950.00
+                    - cell [ref=e6624]: $580.00
+                    - cell [ref=e6625]:
+                      - generic [ref=e5259]: Disponible
+                    - cell [ref=e6626]:
+                      - button [ref=e6627]:
+                        - img [ref=e5262]: swap_vert
+                  - row [ref=e6628] [cursor=pointer]:
+                    - cell [ref=e6629]: EPP-CAS-033
+                    - cell [ref=e6630]: Casco de Seguridad Industrial HDPE Blanco
+                    - cell [ref=e6631]: Equipos de Protección Personal
+                    - cell [ref=e6632]: Ropa de Protección y EPP S.A. de C.V.
+                    - cell [ref=e6633]:
+                      - status [ref=e6634]: "100"
+                    - cell [ref=e6635]: $185.00
+                    - cell [ref=e6636]: $105.00
+                    - cell [ref=e6637]:
+                      - generic [ref=e5276]: Disponible
+                    - cell [ref=e6638]:
+                      - button [ref=e6639]:
+                        - img [ref=e5279]: swap_vert
+                  - row [ref=e6640] [cursor=pointer]:
+                    - cell [ref=e6641]: CONS-CEM50-016
+                    - cell [ref=e6642]: Cemento Portland Tipo I Saco 50kg
+                    - cell [ref=e6643]: Material de Construcción
+                    - cell [ref=e6644]: Constructora y Suministros del Bajío S.A.
+                    - cell [ref=e6645]:
+                      - status [ref=e6646]: "500"
+                    - cell [ref=e6647]: $185.00
+                    - cell [ref=e6648]: $120.00
+                    - cell [ref=e6649]:
+                      - generic [ref=e5293]: Disponible
+                    - cell [ref=e6650]:
+                      - button [ref=e6651]:
+                        - img [ref=e5296]: swap_vert
+                  - row [ref=e6652] [cursor=pointer]:
+                    - cell [ref=e6653]: HMAN-DES-013
+                    - cell [ref=e6654]: Desarmador de Impacto Manual 6 en 1
+                    - cell [ref=e6655]: Herramientas Manuales
+                    - cell [ref=e6656]: Ferretera Industrial del Norte S.A. de C.V.
+                    - cell [ref=e6657]:
+                      - status [ref=e6658]: "90"
+                    - cell [ref=e6659]: $320.00
+                    - cell [ref=e6660]: $180.00
+                    - cell [ref=e6661]:
+                      - generic [ref=e5310]: Disponible
+                    - cell [ref=e6662]:
+                      - button [ref=e6663]:
+                        - img [ref=e5313]: swap_vert
+                  - row [ref=e6664] [cursor=pointer]:
+                    - cell [ref=e6665]: LIMP-DES5L-027
+                    - cell [ref=e6666]: Desinfectante Multiusos Cítrico 5L
+                    - cell [ref=e6667]: (editado)
+                    - cell [ref=e6668]: Limpieza Profesional e Higiene S.A. de C.V.
+                    - cell [ref=e6669]:
+                      - status [ref=e6670]: "200"
+                    - cell [ref=e6671]: $185.00
+                    - cell [ref=e6672]: $110.00
+                    - cell [ref=e6673]:
+                      - generic [ref=e5327]: Disponible
+                    - cell [ref=e6674]:
+                      - button [ref=e6675]:
+                        - img [ref=e5330]: swap_vert
+                  - row [ref=e6676] [cursor=pointer]:
+                    - cell [ref=e6677]: SEGV-DVR8-024
+                    - cell [ref=e6678]: DVR 8 Canales 4K Ultra HD H.265+
+                    - cell [ref=e6679]: Seguridad y Vigilancia
+                    - cell [ref=e6680]: Seguridad y Vigilancia Electrónica S.A.
+                    - cell [ref=e6681]:
+                      - status [ref=e6682]: "15"
+                    - cell [ref=e6683]: $4,500.00
+                    - cell [ref=e6684]: $2,900.00
+                    - cell [ref=e6685]:
+                      - generic [ref=e5344]: Disponible
+                    - cell [ref=e6686]:
+                      - button [ref=e6687]:
+                        - img [ref=e5347]: swap_vert
+                  - row [ref=e6688] [cursor=pointer]:
+                    - cell [ref=e6689]: SOLD-ELE-040
+                    - cell [ref=e6690]: Electrodos Acero Suave 6011 Caja 5kg
+                    - cell [ref=e6691]: Soldadura y Corte
+                    - cell [ref=e6692]: Soldadura y Equipos Industriales S.A.
+                    - cell [ref=e6693]:
+                      - status [ref=e6694]: "60"
+                    - cell [ref=e6695]: $380.00
+                    - cell [ref=e6696]: $225.00
+                    - cell [ref=e6697]:
+                      - generic [ref=e5361]: Disponible
+                    - cell [ref=e6698]:
+                      - button [ref=e6699]:
+                        - img [ref=e5364]: swap_vert
+                  - row [ref=e6700] [cursor=pointer]:
+                    - cell [ref=e6701]: MOFI-ESC-026
+                    - cell [ref=e6702]: Escritorio en L 160x120 cm Wengué
+                    - cell [ref=e6703]: Muebles de Oficina
+                    - cell [ref=e6704]: Muebles y Equipos Corporativos S.A. de C.V.
+                    - cell [ref=e6705]:
+                      - status [ref=e6706]: "13"
+                    - cell [ref=e6707]: $4,200.00
+                    - cell [ref=e6708]: $2,750.00
+                    - cell [ref=e6709]:
+                      - generic [ref=e5378]: Disponible
+                    - cell [ref=e6710]:
+                      - button [ref=e6711]:
+                        - img [ref=e5381]: swap_vert
+                  - row [ref=e6712] [cursor=pointer]:
+                    - cell [ref=e6713]: PINT-ESM1G-019
+                    - cell [ref=e6714]: Esmalte Sintético Rojo Inglés 1 Galón
+                    - cell [ref=e6715]: Pinturas y Recubrimientos
+                    - cell [ref=e6716]: Constructora y Suministros del Bajío S.A.
+                    - cell [ref=e6717]:
+                      - status [ref=e6718]: "40"
+                    - cell [ref=e6719]: $380.00
+                    - cell [ref=e6720]: $230.00
+                    - cell [ref=e6721]:
+                      - generic [ref=e5395]: Disponible
+                    - cell [ref=e6722]:
+                      - button [ref=e6723]:
+                        - img [ref=e5398]: swap_vert
+                  - row [ref=e6724] [cursor=pointer]:
+                    - cell [ref=e6725]: EPP-GUAC-034
+                    - cell [ref=e6726]: Guantes de Carnaza para Soldador Par
+                    - cell [ref=e6727]: Equipos de Protección Personal
+                    - cell [ref=e6728]: Ropa de Protección y EPP S.A. de C.V.
+                    - cell [ref=e6729]:
+                      - status [ref=e6730]: "150"
+                    - cell [ref=e6731]: $145.00
+                    - cell [ref=e6732]: $82.00
+                    - cell [ref=e6733]:
+                      - generic [ref=e5412]: Disponible
+                    - cell [ref=e6734]:
+                      - button [ref=e6735]:
+                        - img [ref=e5415]: swap_vert
+                  - row [ref=e6736] [cursor=pointer]:
+                    - cell [ref=e6737]: COMP-USB2-047
+                    - cell [ref=e6738]: Hub USB 2.0 de 7 Puertos (Descontinuado)
+                    - cell [ref=e6739]: Computación y Periféricos
+                    - cell [ref=e6740]: TechSupply México S.A. de C.V.
+                    - cell [ref=e6741]:
+                      - status [ref=e6742]: "3"
+                    - cell [ref=e6743]: $185.00
+                    - cell [ref=e6744]: $90.00
+                    - cell [ref=e6745]:
+                      - generic [ref=e5429]: Descontinuado
+                    - cell [ref=e6746]:
+                      - button [ref=e6747]:
+                        - img [ref=e5432]: swap_vert
+              - group [ref=e6748]:
+                - generic [ref=e898]:
+                  - generic [ref=e899]:
+                    - generic [ref=e900]: "Items per page:"
+                    - combobox [ref=e6749] [cursor=pointer]:
+                      - generic [ref=e906]:
+                        - generic [ref=e908]: "20"
+                        - img [ref=e911]
+                  - generic [ref=e914]:
+                    - status [ref=e915]: 1 – 20 of 108
+                    - button [disabled] [ref=e6750]:
+                      - img [ref=e917]
+                    - button [ref=e6751] [cursor=pointer]:
+                      - img [ref=e922]
+  - dialog [ref=e6755]:
+    - generic [ref=e6760]:
+      - tablist [ref=e6763]:
+        - generic [ref=e6764]:
+          - tab "Datos" [selected] [ref=e6765] [cursor=pointer]:
+            - generic [ref=e6767]: Datos
+          - tab "Kardex" [ref=e6768] [cursor=pointer]:
+            - generic [ref=e6770]: Kardex
+      - generic [ref=e6771]:
+        - tabpanel "Datos" [ref=e6772]:
+          - generic [ref=e6775]:
+            - heading "Nuevo producto" [level=3] [ref=e6776]
+            - generic [ref=e6777]:
+              - generic [ref=e6780]:
+                - generic [ref=e6781]:
+                  - text: SKU
+                  - generic [ref=e6782]: "*"
+                - textbox "SKU" [ref=e6784]: TEST-QA-999
+              - generic [ref=e6788]:
+                - generic [ref=e6789]:
+                  - text: Nombre
+                  - generic [ref=e6790]: "*"
+                - textbox "Nombre" [ref=e6792]: Producto Prueba QA
+              - generic [ref=e6796]:
+                - generic [ref=e6797]:
+                  - text: Precio
+                  - generic [ref=e6798]: "*"
+                - generic [ref=e6799]: $
+                - spinbutton "Precio" [ref=e6801]: "150"
+              - generic [ref=e6805]:
+                - generic [ref=e6806]:
+                  - text: Costo unitario
+                  - generic [ref=e6807]: "*"
+                - generic [ref=e6808]: $
+                - spinbutton "Costo unitario" [ref=e6810]: "90"
+              - generic [ref=e6814]:
+                - generic [ref=e6815]:
+                  - text: Stock inicial
+                  - generic [ref=e6816]: "*"
+                - spinbutton "Stock inicial" [ref=e6818]: "0"
+              - generic [ref=e6822]:
+                - generic [ref=e6823]:
+                  - text: Stock mínimo
+                  - generic [ref=e6824]: "*"
+                - spinbutton "Stock mínimo" [ref=e6826]: "0"
+              - generic [ref=e6830] [cursor=pointer]:
+                - generic [ref=e6831]:
+                  - text: Estado
+                  - generic [ref=e6832]: "*"
+                - combobox "Estado" [ref=e6834]:
+                  - generic [ref=e6835]:
+                    - generic [ref=e6837]: Disponible
+                    - img [ref=e6840]
+              - generic [ref=e6845] [cursor=pointer]:
+                - generic [ref=e6846]:
+                  - text: Categoría
+                  - generic [ref=e6847]: "*"
+                - combobox "Categoría" [ref=e6849]:
+                  - generic [ref=e6850]:
+                    - generic [ref=e7029]: (editado)
+                    - img [ref=e6855]
+              - generic [ref=e6860] [cursor=pointer]:
+                - generic [ref=e6861]:
+                  - text: Proveedor
+                  - generic [ref=e6862]: "*"
+                - combobox "Proveedor" [active] [ref=e6864]:
+                  - generic [ref=e6865]:
+                    - generic [ref=e7073]: Agroquímica y Fertilizantes del Valle S.A.
+                    - img [ref=e6870]
+              - generic [ref=e6875]:
+                - generic [ref=e6876]: Descripción
+                - textbox "Descripción" [ref=e6878]
+            - generic [ref=e6881]:
+              - button "Cancelar" [ref=e6882]:
+                - generic [ref=e6883]: Cancelar
+              - button "Crear producto" [ref=e7074]:
+                - generic [ref=e7075]: Crear producto
+        - tabpanel [ref=e6886]

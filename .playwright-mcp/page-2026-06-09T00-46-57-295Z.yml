@@ -1,0 +1,184 @@
+- generic [ref=e3]:
+  - link "Ir al contenido principal" [ref=e418] [cursor=pointer]:
+    - /url: "#main-content"
+  - generic [ref=e5]:
+    - banner [ref=e7]:
+      - generic [ref=e8]:
+        - button "Alternar menú lateral" [ref=e419] [cursor=pointer]:
+          - img [ref=e10]: menu
+        - generic [ref=e13]: Almacenes
+        - 'generic "Ubicación actual: Inventario → Categorías" [ref=e420]':
+          - img [ref=e15]: chevron_right
+          - text: Inventario → Categorías
+      - generic [ref=e16]:
+        - button "Notificaciones" [ref=e421] [cursor=pointer]:
+          - img [ref=e18]: notifications_none
+        - button "Menú de usuario" [ref=e422]:
+          - img [ref=e22]: arrow_drop_down
+          - generic [ref=e23]:
+            - text: admin
+            - 'generic "Rol: ADMIN" [ref=e423]': ADMIN
+    - generic [ref=e28]:
+      - navigation "Navegación principal" [ref=e424]:
+        - menubar [ref=e32]:
+          - menuitem [expanded] [ref=e33] [cursor=pointer]:
+            - img [ref=e34]: inventory_2
+          - menuitem [ref=e35] [cursor=pointer]:
+            - img [ref=e36]: shopping_cart
+          - menuitem [ref=e37] [cursor=pointer]:
+            - img [ref=e38]: point_of_sale
+          - menuitem [ref=e39] [cursor=pointer]:
+            - img [ref=e40]: bar_chart
+          - menuitem [ref=e41] [cursor=pointer]:
+            - img [ref=e42]: manage_accounts
+        - button "Expandir menú" [ref=e425] [cursor=pointer]:
+          - img [ref=e45]: chevron_right
+      - main [ref=e46]:
+        - generic [ref=e49]:
+          - generic [ref=e50]:
+            - heading "Categorías" [level=2] [ref=e426]
+            - button "Nueva categoría" [ref=e427]:
+              - img [ref=e54]: add
+              - generic [ref=e55]: Nueva categoría
+          - generic [ref=e58]:
+            - table [ref=e59]:
+              - rowgroup [ref=e60]:
+                - row "Nombre Descripción" [ref=e428]:
+                  - columnheader "Nombre" [ref=e429]
+                  - columnheader "Descripción" [ref=e430]
+                  - columnheader [ref=e64]
+              - rowgroup [ref=e65]:
+                - row "Calzado Industrial Botas de casquillo, botas dieléctricas, zapatos antideslizantes y plantillas. Ver productos de Calzado Industrial" [ref=e431] [cursor=pointer]:
+                  - cell "Calzado Industrial" [ref=e432]
+                  - cell "Botas de casquillo, botas dieléctricas, zapatos antideslizantes y plantillas." [ref=e433]
+                  - cell "Ver productos de Calzado Industrial" [ref=e434]:
+                    - button "Ver productos de Calzado Industrial" [ref=e435]:
+                      - img [ref=e436]: shopping_bag
+                - row "Cat-Int-12406 test Ver productos de Cat-Int-12406" [ref=e439] [cursor=pointer]:
+                  - cell "Cat-Int-12406" [ref=e440]
+                  - cell "test" [ref=e441]
+                  - cell "Ver productos de Cat-Int-12406" [ref=e442]:
+                    - button "Ver productos de Cat-Int-12406" [ref=e443]:
+                      - img [ref=e444]: shopping_bag
+                - row "Cat-Int-16394 test Ver productos de Cat-Int-16394" [ref=e447] [cursor=pointer]:
+                  - cell "Cat-Int-16394" [ref=e448]
+                  - cell "test" [ref=e449]
+                  - cell "Ver productos de Cat-Int-16394" [ref=e450]:
+                    - button "Ver productos de Cat-Int-16394" [ref=e451]:
+                      - img [ref=e452]: shopping_bag
+                - row "Cat-Int-19434 test Ver productos de Cat-Int-19434" [ref=e455] [cursor=pointer]:
+                  - cell "Cat-Int-19434" [ref=e456]
+                  - cell "test" [ref=e457]
+                  - cell "Ver productos de Cat-Int-19434" [ref=e458]:
+                    - button "Ver productos de Cat-Int-19434" [ref=e459]:
+                      - img [ref=e460]: shopping_bag
+                - row "Cat-Int-23178 test Ver productos de Cat-Int-23178" [ref=e463] [cursor=pointer]:
+                  - cell "Cat-Int-23178" [ref=e464]
+                  - cell "test" [ref=e465]
+                  - cell "Ver productos de Cat-Int-23178" [ref=e466]:
+                    - button "Ver productos de Cat-Int-23178" [ref=e467]:
+                      - img [ref=e468]: shopping_bag
+                - row "Cat-Int-25584 test Ver productos de Cat-Int-25584" [ref=e471] [cursor=pointer]:
+                  - cell "Cat-Int-25584" [ref=e472]
+                  - cell "test" [ref=e473]
+                  - cell "Ver productos de Cat-Int-25584" [ref=e474]:
+                    - button "Ver productos de Cat-Int-25584" [ref=e475]:
+                      - img [ref=e476]: shopping_bag
+                - row "Cat-Int-2902 test Ver productos de Cat-Int-2902" [ref=e479] [cursor=pointer]:
+                  - cell "Cat-Int-2902" [ref=e480]
+                  - cell "test" [ref=e481]
+                  - cell "Ver productos de Cat-Int-2902" [ref=e482]:
+                    - button "Ver productos de Cat-Int-2902" [ref=e483]:
+                      - img [ref=e484]: shopping_bag
+                - row "Cat-Int-35135 test Ver productos de Cat-Int-35135" [ref=e487] [cursor=pointer]:
+                  - cell "Cat-Int-35135" [ref=e488]
+                  - cell "test" [ref=e489]
+                  - cell "Ver productos de Cat-Int-35135" [ref=e490]:
+                    - button "Ver productos de Cat-Int-35135" [ref=e491]:
+                      - img [ref=e492]: shopping_bag
+                - row "Cat-Int-35904 test Ver productos de Cat-Int-35904" [ref=e495] [cursor=pointer]:
+                  - cell "Cat-Int-35904" [ref=e496]
+                  - cell "test" [ref=e497]
+                  - cell "Ver productos de Cat-Int-35904" [ref=e498]:
+                    - button "Ver productos de Cat-Int-35904" [ref=e499]:
+                      - img [ref=e500]: shopping_bag
+                - row "Cat-Int-38227 test Ver productos de Cat-Int-38227" [ref=e503] [cursor=pointer]:
+                  - cell "Cat-Int-38227" [ref=e504]
+                  - cell "test" [ref=e505]
+                  - cell "Ver productos de Cat-Int-38227" [ref=e506]:
+                    - button "Ver productos de Cat-Int-38227" [ref=e507]:
+                      - img [ref=e508]: shopping_bag
+                - row "Cat-Int-40143 test Ver productos de Cat-Int-40143" [ref=e511] [cursor=pointer]:
+                  - cell "Cat-Int-40143" [ref=e512]
+                  - cell "test" [ref=e513]
+                  - cell "Ver productos de Cat-Int-40143" [ref=e514]:
+                    - button "Ver productos de Cat-Int-40143" [ref=e515]:
+                      - img [ref=e516]: shopping_bag
+                - row "Cat-Int-44000 test Ver productos de Cat-Int-44000" [ref=e519] [cursor=pointer]:
+                  - cell "Cat-Int-44000" [ref=e520]
+                  - cell "test" [ref=e521]
+                  - cell "Ver productos de Cat-Int-44000" [ref=e522]:
+                    - button "Ver productos de Cat-Int-44000" [ref=e523]:
+                      - img [ref=e524]: shopping_bag
+                - row "Cat-Int-57543 test Ver productos de Cat-Int-57543" [ref=e527] [cursor=pointer]:
+                  - cell "Cat-Int-57543" [ref=e528]
+                  - cell "test" [ref=e529]
+                  - cell "Ver productos de Cat-Int-57543" [ref=e530]:
+                    - button "Ver productos de Cat-Int-57543" [ref=e531]:
+                      - img [ref=e532]: shopping_bag
+                - row "Cat-Int-6074 test Ver productos de Cat-Int-6074" [ref=e535] [cursor=pointer]:
+                  - cell "Cat-Int-6074" [ref=e536]
+                  - cell "test" [ref=e537]
+                  - cell "Ver productos de Cat-Int-6074" [ref=e538]:
+                    - button "Ver productos de Cat-Int-6074" [ref=e539]:
+                      - img [ref=e540]: shopping_bag
+                - row "Cat-Int-70042 test Ver productos de Cat-Int-70042" [ref=e543] [cursor=pointer]:
+                  - cell "Cat-Int-70042" [ref=e544]
+                  - cell "test" [ref=e545]
+                  - cell "Ver productos de Cat-Int-70042" [ref=e546]:
+                    - button "Ver productos de Cat-Int-70042" [ref=e547]:
+                      - img [ref=e548]: shopping_bag
+                - row "Cat-Int-7162 test Ver productos de Cat-Int-7162" [ref=e551] [cursor=pointer]:
+                  - cell "Cat-Int-7162" [ref=e552]
+                  - cell "test" [ref=e553]
+                  - cell "Ver productos de Cat-Int-7162" [ref=e554]:
+                    - button "Ver productos de Cat-Int-7162" [ref=e555]:
+                      - img [ref=e556]: shopping_bag
+                - row "Cat-Int-86360 test Ver productos de Cat-Int-86360" [ref=e559] [cursor=pointer]:
+                  - cell "Cat-Int-86360" [ref=e560]
+                  - cell "test" [ref=e561]
+                  - cell "Ver productos de Cat-Int-86360" [ref=e562]:
+                    - button "Ver productos de Cat-Int-86360" [ref=e563]:
+                      - img [ref=e564]: shopping_bag
+                - row "Cat-Int-94230 test Ver productos de Cat-Int-94230" [ref=e567] [cursor=pointer]:
+                  - cell "Cat-Int-94230" [ref=e568]
+                  - cell "test" [ref=e569]
+                  - cell "Ver productos de Cat-Int-94230" [ref=e570]:
+                    - button "Ver productos de Cat-Int-94230" [ref=e571]:
+                      - img [ref=e572]: shopping_bag
+                - row "Cat-Int-96839 test Ver productos de Cat-Int-96839" [ref=e575] [cursor=pointer]:
+                  - cell "Cat-Int-96839" [ref=e576]
+                  - cell "test" [ref=e577]
+                  - cell "Ver productos de Cat-Int-96839" [ref=e578]:
+                    - button "Ver productos de Cat-Int-96839" [ref=e579]:
+                      - img [ref=e580]: shopping_bag
+                - row "Cat-Int-99146 test Ver productos de Cat-Int-99146" [ref=e583] [cursor=pointer]:
+                  - cell "Cat-Int-99146" [ref=e584]
+                  - cell "test" [ref=e585]
+                  - cell "Ver productos de Cat-Int-99146" [ref=e586]:
+                    - button "Ver productos de Cat-Int-99146" [ref=e587]:
+                      - img [ref=e588]: shopping_bag
+            - group "Paginación de categorías" [ref=e591]:
+              - generic [ref=e228]:
+                - generic [ref=e229]:
+                  - generic [ref=e230]: "Items per page:"
+                  - combobox "Items per page:" [ref=e592] [cursor=pointer]:
+                    - generic [ref=e236]:
+                      - generic [ref=e238]: "20"
+                      - img [ref=e241]
+                - generic [ref=e244]:
+                  - status [ref=e245]: 1 – 20 of 69
+                  - button "Previous page" [disabled] [ref=e593]:
+                    - img [ref=e247]
+                  - button "Next page" [ref=e594] [cursor=pointer]:
+                    - img [ref=e252]

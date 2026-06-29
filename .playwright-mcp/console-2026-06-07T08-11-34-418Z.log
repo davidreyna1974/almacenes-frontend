@@ -1,0 +1,13 @@
+[      75ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-KDRVKD3Y.js?v=9c0196f8:11231
+[     128ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8080/api/v1/purchases/suppliers/active:0
+[     134ms] [ERROR] ERROR HttpErrorResponse @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-QTYF2Q3W.js?v=9c0196f8:3169
+[  748954ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8080/api/v1/purchases/suppliers/active:0
+[  748956ms] [ERROR] ERROR HttpErrorResponse @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-QTYF2Q3W.js?v=9c0196f8:3169
+[  767005ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8080/api/v1/purchases/suppliers/active:0
+[  767007ms] [ERROR] ERROR HttpErrorResponse @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-QTYF2Q3W.js?v=9c0196f8:3169
+[  854545ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-KDRVKD3Y.js?v=9c0196f8:11231
+[  854603ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8080/api/v1/purchases/suppliers/active:0
+[  854610ms] [ERROR] ERROR HttpErrorResponse @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-QTYF2Q3W.js?v=9c0196f8:3169
+[  860393ms] [LOG] Angular is running in development mode. @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-KDRVKD3Y.js?v=9c0196f8:11231
+[  860436ms] [ERROR] Failed to load resource: the server responded with a status of 403 () @ http://localhost:8080/api/v1/purchases/suppliers/active:0
+[  860446ms] [ERROR] ERROR HttpErrorResponse @ http://localhost:4200/@fs/Users/davidreynapineda/Documents/Proyecto%20desarrollo/codigo/frontend/almacenes/.angular/cache/21.2.14/almacenes/vite/deps/chunk-QTYF2Q3W.js?v=9c0196f8:3169

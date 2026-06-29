@@ -1,0 +1,534 @@
+================================================================================
+PROPUESTA MÓDULO 3 — COMPRAS (FRONTEND)
+Sistema de Gestión de Almacenes — Angular 21
+================================================================================
+
+Fecha de creación  : 2026-06-07
+Autor              : David Reyna Pineda
+Estado             : PROPUESTA — pendiente de aprobación antes de codificar
+Rama de trabajo    : feature/purchases
+Referencia backend : módulo `purchases` — completo (43 A + 25 B tests, 0 fallos)
+
+--------------------------------------------------------------------------------
+0. CHECKLIST OBLIGATORIO PRE-CÓDIGO (CLAUDE.md)
+--------------------------------------------------------------------------------
+
+[x] Leí memoria_tecnica_global_proyecto.md (sección 3 — contratos de integración)
+[x] Leí controladores del backend: SupplierController.java, PurchaseOrderController.java
+[x] Para cada endpoint: verifiqué ruta exacta, método HTTP y código de respuesta
+[x] Para cada response: verifiqué si es PageResponse<T>, lista simple, objeto o void (204)
+[x] Para cada DTO: verifiqué nombres exactos de campos del backend — ninguno asumido
+[x] Contratos verificados documentados en Sección 4 de la memoria técnica
+[x] Para cada regla de negocio del backend: identificar componente UI, verificar dato correcto,
+    validación preventiva y mensaje de error útil (ver tabla R1-R7 en sección 2)
+[x] Verifiqué campos de solo lectura (totalAmount, orderNumber, subtotal, timestamps — sección 2)
+[x] Verifiqué columnas sensibles (unitPrice, subtotal, totalAmount) y restricción por rol (sección 5)
+[x] Protocolo de cierre documentado — CLAUDE.md §Protocolo post-código + estandares_referencia §3.10
+
+--------------------------------------------------------------------------------
+1. CONTEXTO Y JUSTIFICACIÓN
+--------------------------------------------------------------------------------
+
+El Módulo 3 — Compras gestiona el ciclo de vida completo de las órdenes de
+compra: desde la creación hasta la recepción física de mercancía en el almacén.
+Es el punto de integración crítico entre proveedores e inventario.
+
+El backend está completamente implementado y probado (0 fallos). El frontend
+consume 13 endpoints de órdenes + 4 endpoints de proveedores.
+
+Audiencias:
+  - ADMIN / MANAGER : acceso completo (CRUD proveedores, crear/aprobar/recibir/cancelar órdenes)
+  - WAREHOUSEMAN    : solo recepción de órdenes aprobadas (PATCH /receive)
+  - SALES           : sin acceso al módulo
+
+La recepción de una orden APPROVED es la única acción que incrementa el
+inventario físico de forma automática (registerStockMovement IN por detalle).
+
+--------------------------------------------------------------------------------
+2. CONTRATOS DE API VERIFICADOS
+--------------------------------------------------------------------------------
+
+BASE URL: http://localhost:8080/api/v1
+
+─── PROVEEDORES ─────────────────────────────────────────────────────────────
+
+  POST   /purchases/suppliers              → 201  SupplierDTO
+  GET    /purchases/suppliers/active       → 200  PageResponse<SupplierDTO>
+  GET    /purchases/suppliers/{id}         → 200  SupplierDTO
+  PUT    /purchases/suppliers/{id}         → 200  SupplierDTO
+  DELETE /purchases/suppliers/{id}         → 204  void
+
+  RBAC backend:
+    GET  → ADMIN, MANAGER, WAREHOUSEMAN  (SALES no tiene acceso a purchases)
+    POST, PUT, DELETE → ADMIN, MANAGER
+
+─── ÓRDENES DE COMPRA ───────────────────────────────────────────────────────
+
+  POST   /purchases/orders                          → 201  PurchaseOrderResponseDTO
+  GET    /purchases/orders/{id}                     → 200  PurchaseOrderResponseDTO
+  GET    /purchases/orders/status/{status}          → 200  PageResponse<PurchaseOrderResponseDTO>
+  GET    /purchases/orders/supplier/{supplierId}    → 200  List<PurchaseOrderResponseDTO>  (no paginada)
+  GET    /purchases/orders/supplier/{sid}/status/{s}→ 200  List<PurchaseOrderResponseDTO>  (no paginada)
+  GET    /purchases/orders/product/{productId}      → 200  List<PurchaseOrderResponseDTO>  (no paginada)
+  PUT    /purchases/orders/{id}                     → 200  PurchaseOrderResponseDTO
+  PATCH  /purchases/orders/{id}/approve             → 200  PurchaseOrderResponseDTO  (sin body)
+  PATCH  /purchases/orders/{id}/receive             → 200  PurchaseOrderResponseDTO  (sin body)
+  PATCH  /purchases/orders/{id}/cancel              → 200  PurchaseOrderResponseDTO  (sin body)
+  POST   /purchases/orders/{id}/details             → 201  PurchaseOrderResponseDTO  (orden completa)
+  PUT    /purchases/orders/{id}/details/{detailId}  → 200  PurchaseOrderResponseDTO  (orden completa)
+  DELETE /purchases/orders/{id}/details/{detailId}  → 204  void
+
+  RBAC backend:
+    GET      → ADMIN, MANAGER, WAREHOUSEMAN
+    PATCH /receive → ADMIN, MANAGER, WAREHOUSEMAN
+    POST, PUT, PATCH (aprobar/cancelar), DELETE → ADMIN, MANAGER
+
+─── DTOs VERIFICADOS (nombres exactos de campos) ────────────────────────────
+
+  SupplierDTO:
+    id, rfc, companyName, contactName, phone, email, address, active
+    createdAt, createdById, createdByUsername
+    updatedAt, updatedById, updatedByUsername
+
+  PurchaseOrderRequestDTO (body de creación):
+    supplierId (Long, requerido)
+    notes (String, opcional, max 500)
+    details (List<PurchaseOrderDetailRequestDTO>, @NotEmpty)
+      └─ productId (Long, requerido)
+         quantity (int, min 1, requerido)
+         unitPrice (BigDecimal, min 0.01, requerido)
+
+  PurchaseOrderResponseDTO:
+    id, orderNumber, status, notes, totalAmount
+    supplierId, supplierName
+    createdById, createdByUsername, createdAt, updatedAt
+    approvedAt, approvedById, approvedByUsername
+    receivedAt, receivedById, receivedByUsername
+    cancelledAt, cancelledById, cancelledByUsername
+    details (List<PurchaseOrderDetailResponseDTO>)
+      └─ id, quantity, unitPrice, subtotal
+         productId, productSku, productName
+
+  PurchaseOrderUpdateRequestDTO (body de PUT /{id}):
+    supplierId (Long, requerido)
+    notes (String, opcional)
+
+  PurchaseOrderDetailUpdateRequestDTO (body de PUT /{id}/details/{detailId}):
+    quantity (int, min 1, requerido)
+    unitPrice (BigDecimal, min 0.01, requerido)
+    — productId NO se incluye (cambio de producto = delete + add)
+
+─── CAMPOS DE SOLO LECTURA (el backend los ignora o los genera) ─────────────
+
+  orderNumber   → generado por el servicio (OC-YYYY-NNNN) — nunca editable
+  totalAmount   → calculado por el servicio (suma de subtotales) — nunca editable
+  subtotal      → calculado por el servicio (quantity × unitPrice) — nunca editable
+  status        → solo cambia por PATCH /approve, /receive, /cancel — no editable directo
+  createdAt/updatedAt/approvedAt/receivedAt/cancelledAt → auditoría — solo lectura
+  createdBy*, approvedBy*, receivedBy*, cancelledBy* → auditoría — solo lectura
+
+─── REGLAS DE NEGOCIO DEL BACKEND (PurchaseOrderServiceImpl) ────────────────
+
+  R1. Edición solo en PENDING: PUT /{id}, POST /{id}/details, PUT y DELETE details
+      → si status != PENDING → error 422
+  R2. Aprobación requiere al menos un detalle → si details.isEmpty() → error 422
+  R3. Recepción solo desde APPROVED → error 422 si status != APPROVED
+  R4. Cancelación desde PENDING o APPROVED (no desde RECEIVED) → error 422 si RECEIVED
+  R5. Desactivar proveedor bloquea si tiene órdenes PENDING o APPROVED → error 422
+  R6. Producto duplicado en misma orden al hacer addDetail → error (validación de servicio)
+  R7. unitPrice en el detalle es el precio pactado — puede diferir de Product.price
+
+─── TRAZABILIDAD REGLAS → COMPONENTES UI ────────────────────────────────────
+
+  R1 → botones Editar/Agregar detalle/Eliminar detalle: solo visibles cuando status=PENDING
+  R2 → botón Aprobar: deshabilitado preventivamente si details está vacío
+  R3 → botón Recibir: solo visible cuando status=APPROVED
+  R4 → botón Cancelar: visible en PENDING y APPROVED, oculto en RECEIVED y CANCELLED
+  R5 → modal de desactivación de proveedor: advierte si tiene órdenes activas; el backend
+       retorna 422 con mensaje — mostrar en snackbar rojo
+  R6 → selector de producto en addDetail: deshabilitar productos ya en la orden
+  R7 → campo unitPrice del detalle: editable, pre-rellenado con Product.price pero modificable
+
+--------------------------------------------------------------------------------
+3. DISEÑO DE MÓDULO Y VISTAS
+--------------------------------------------------------------------------------
+
+Estructura de rutas:
+  /purchases                     → PurchasesComponent (shell con sidebar activo)
+    /purchases/suppliers         → SuppliersPageComponent
+    /purchases/orders            → PurchaseOrdersPageComponent
+    /purchases/orders/:id        → PurchaseOrderDetailPageComponent
+
+Estructura de archivos (src/app/modules/purchases/):
+  purchases.component.ts/.html
+  purchases.routes.ts
+  services/
+    supplier.service.ts
+    purchase-order.service.ts
+  models/
+    supplier.model.ts
+    purchase-order.model.ts
+  components/
+    suppliers-page/
+      suppliers-page.component.ts/.html/.scss/.spec.ts
+    supplier-form/                            (componente dumb)
+      supplier-form.component.ts/.html/.scss/.spec.ts
+    purchase-orders-page/
+      purchase-orders-page.component.ts/.html/.scss/.spec.ts
+    purchase-order-detail-page/
+      purchase-order-detail-page.component.ts/.html/.scss/.spec.ts
+    purchase-order-form/                      (componente dumb)
+      purchase-order-form.component.ts/.html/.scss/.spec.ts
+    purchase-order-detail-form/               (componente dumb)
+      purchase-order-detail-form.component.ts/.html/.scss/.spec.ts
+
+Sidebar (actualización):
+  - Compras se expande como grupo con dos hijos:
+      • Proveedores  →  /purchases/suppliers
+      • Órdenes de compra  →  /purchases/orders
+  - Compras visible para ADMIN, MANAGER, WAREHOUSEMAN (SALES no ve este módulo)
+
+Breadcrumb (topbar):
+  /purchases/suppliers   →  "Compras → Proveedores"
+  /purchases/orders      →  "Compras → Órdenes de compra"
+  /purchases/orders/:id  →  "Compras → Detalle de orden"
+
+─── VISTA A: PROVEEDORES (/purchases/suppliers) ─────────────────────────────
+
+  Layout: master-detail (igual que categorías en inventory)
+    Panel izquierdo (~40%): tabla paginada de proveedores activos
+      Columnas: RFC, Razón social, Contacto, Teléfono, Email, Acciones
+      Botón "Nuevo proveedor" (solo ADMIN/MANAGER)
+      Búsqueda por razón social o RFC (debounce 400ms, filtro local sobre la página actual)
+      Fila seleccionada: fondo #F2E4F2
+
+    Panel derecho (~60%): formulario de proveedor (dumb: SupplierFormComponent)
+      Campos: RFC, Razón social, Nombre de contacto, Teléfono, Email, Dirección
+      Modo creación: todos los campos habilitados
+      Modo edición: todos los campos editables (los campos de auditoría no se muestran)
+      Botón Guardar (solo ADMIN/MANAGER), Cancelar, Desactivar (solo ADMIN)
+      Desactivar: ConfirmDialogComponent antes del DELETE — advierte si hay órdenes activas
+      Para WAREHOUSEMAN: panel de solo lectura (sin botones de acción)
+
+  RBAC:
+    ADMIN/MANAGER : CRUD completo + desactivar
+    WAREHOUSEMAN  : solo lectura (necesita ver proveedores para contexto de órdenes)
+
+─── VISTA B: LISTA DE ÓRDENES (/purchases/orders) ───────────────────────────
+
+  Layout: pantalla completa con tabs de estado (no master-detail)
+  Razón: las órdenes tienen muchos campos y cada detalle merece su propia página
+
+  Tabs de estado:
+    [Pendientes | Aprobadas | Recibidas | Canceladas]
+    Cada tab muestra el conteo de órdenes en ese estado
+    Tab activo por defecto: Pendientes
+
+  Tabla por tab:
+    Columnas: N° Orden, Proveedor, Total, Creado por, Fecha, Estado, Acciones
+    totalAmount visible para ADMIN/MANAGER; oculto para WAREHOUSEMAN
+    Acciones:
+      ADMIN/MANAGER en PENDING    : Ver detalle, Aprobar, Cancelar
+      ADMIN/MANAGER en APPROVED   : Ver detalle, Recibir, Cancelar
+      ADMIN/MANAGER en RECEIVED   : Ver detalle
+      ADMIN/MANAGER en CANCELLED  : Ver detalle
+      WAREHOUSEMAN  en APPROVED   : Ver detalle, Recibir
+      WAREHOUSEMAN  en otros      : Ver detalle
+
+  Botón "Nueva orden" (solo ADMIN/MANAGER) — abre /purchases/orders con modal de creación
+    o navega a una ruta de creación (decidir en implementación)
+
+─── VISTA C: DETALLE DE ORDEN (/purchases/orders/:id) ───────────────────────
+
+  Layout: pantalla completa dividida en dos secciones verticales:
+    Sección superior: datos de la orden (cabecera)
+    Sección inferior: tabla de detalles (líneas de productos)
+
+  Cabecera de la orden (solo lectura excepto en PENDING para ADMIN/MANAGER):
+    N° Orden, Estado (badge), Proveedor, Notas
+    Totales: Total de orden (monto), fecha creación, usuario creador
+    Historial de estado (si aplica): aprobado por / recibido por / cancelado por + timestamp
+
+  Campos editables en estado PENDING (ADMIN/MANAGER):
+    Proveedor (MatSelect de activos), Notas
+    Resto: solo lectura
+
+  Botones de acción (según estado y rol):
+    PENDING  + ADMIN/MANAGER : Editar, Aprobar, Cancelar
+    APPROVED + ADMIN/MANAGER : Recibir, Cancelar
+    APPROVED + WAREHOUSEMAN  : Recibir (único rol adicional con este acceso)
+    RECEIVED / CANCELLED     : ningún botón de transición
+
+  Tabla de detalles:
+    Columnas: Producto (SKU + Nombre), Cantidad, Precio unitario, Subtotal, Acciones
+    Precio unitario y Subtotal visibles solo para ADMIN/MANAGER
+    PENDING + ADMIN/MANAGER: botón Agregar detalle, iconos Editar y Eliminar por fila
+    Otros estados / WAREHOUSEMAN: solo lectura
+
+  Diálogo Agregar/Editar detalle (PurchaseOrderDetailFormComponent):
+    productId    → MatSelect de productos activos; deshabilitar los ya en la orden
+                   Mostrar: "[SKU] — Nombre del producto (disponible: N unidades)"
+    quantity     → number input, min 1
+    unitPrice    → number input (currency), pre-rellenado con Product.price, editable
+    subtotal     → texto calculado en tiempo real (sin campo editable)
+
+  Badge de estado (reutilizar StatusLabelPipe ya existente):
+    PENDING    → fondo #FFF3E0, texto #E65100, ícono schedule
+    APPROVED   → fondo #E3F2FD, texto #1565C0, ícono check_circle
+    RECEIVED   → fondo #E8F5E9, texto #2E7D32, ícono done_all
+    CANCELLED  → fondo #FFEBEE, texto #C62828, ícono cancel
+
+--------------------------------------------------------------------------------
+4. SERVICIOS Y CONTRATOS ANGULAR
+--------------------------------------------------------------------------------
+
+  SupplierService:
+    getActive(page, size)         → Observable<PageResponse<SupplierDTO>>
+    getById(id)                   → Observable<SupplierDTO>
+    create(dto)                   → Observable<SupplierDTO>
+    update(id, dto)               → Observable<SupplierDTO>
+    deactivate(id)                → Observable<void>
+
+  PurchaseOrderService:
+    create(dto)                   → Observable<PurchaseOrderResponseDTO>
+    getById(id)                   → Observable<PurchaseOrderResponseDTO>
+    getByStatus(status, p, size)  → Observable<PageResponse<PurchaseOrderResponseDTO>>
+    getBySupplierId(sid)          → Observable<PurchaseOrderResponseDTO[]>
+    update(id, dto)               → Observable<PurchaseOrderResponseDTO>
+    approve(id)                   → Observable<PurchaseOrderResponseDTO>
+    receive(id)                   → Observable<PurchaseOrderResponseDTO>
+    cancel(id)                    → Observable<PurchaseOrderResponseDTO>
+    addDetail(id, dto)            → Observable<PurchaseOrderResponseDTO>
+    updateDetail(id, dId, dto)    → Observable<PurchaseOrderResponseDTO>
+    removeDetail(id, dId)         → Observable<void>
+
+--------------------------------------------------------------------------------
+5. RBAC FRONTEND — MATRIZ DE VISIBILIDAD
+--------------------------------------------------------------------------------
+
+  Módulo visible en sidebar:
+    ADMIN, MANAGER, WAREHOUSEMAN — SALES no ve Compras
+
+  Proveedores:
+    ADMIN/MANAGER  : CRUD completo + desactivar
+    WAREHOUSEMAN   : solo lectura (lista + detalle sin botones de edición)
+
+  Lista de órdenes:
+    ADMIN/MANAGER  : ve todas las tabs; ve totalAmount; puede crear/aprobar/cancelar/recibir
+    WAREHOUSEMAN   : ve todas las tabs; NO ve totalAmount; solo puede recibir (APPROVED)
+
+  Detalle de orden:
+    ADMIN/MANAGER  : ve todos los campos incluyendo precios y totales; controles de edición
+    WAREHOUSEMAN   : ve todos excepto precios (unitPrice, subtotal, totalAmount ocultos);
+                     solo botón Recibir cuando status=APPROVED
+
+  Columnas sensibles (precio/costo):
+    unitPrice de detalle    → visible solo ADMIN/MANAGER
+    subtotal de detalle     → visible solo ADMIN/MANAGER
+    totalAmount de orden    → visible solo ADMIN/MANAGER
+
+  Método helper en componente:
+    canWrite():          hasRole(ADMIN) || hasRole(MANAGER)
+    canReceive():        hasRole(ADMIN) || hasRole(MANAGER) || hasRole(WAREHOUSEMAN)
+    canDeactivate():     hasRole(ADMIN)   (para proveedores)
+
+--------------------------------------------------------------------------------
+6. PATRONES UX/UI A APLICAR
+--------------------------------------------------------------------------------
+
+  Heredados del Módulo 2 (todos los estándares verificados aplican):
+    - MatProgressBar indeterminado en la parte superior durante cargas
+    - MatSnackBar: verde #2E7D32 para éxito (3 seg), rojo #C62828 para error
+    - ConfirmDialogComponent antes de acciones destructivas (desactivar, cancelar orden)
+    - EmptyStateComponent en listas sin resultados
+    - Fila seleccionada: fondo #F2E4F2
+    - StatusLabelPipe para estados de orden en español
+    - Skeleton loading en tablas (filas grises animadas)
+    - takeUntilDestroyed() en todas las suscripciones
+    - ChangeDetectionStrategy.OnPush en todos los componentes
+    - No asteriscos manuales (AM los genera con Validators.required)
+    - subscriptSizing="dynamic" en campos con hints de altura variable
+    - Campos read-only: disabled() + mat-hint con ícono lock azul (#1565C0)
+
+  Específicos de este módulo:
+    - Tab activa con indicador visual (borde inferior #6B3C6B, texto bold)
+    - Conteo de órdenes en cada tab como badge (número dentro de parens o chip)
+    - Badge de estado de orden: colores del CLAUDE.md (PENDING/APPROVED/RECEIVED/CANCELLED)
+    - En el detalle de orden: timeline/historial de estado al pie con timestamps y usuarios
+    - En el selector de productos del formulario de detalle: mostrar el stock disponible
+      del producto junto al nombre — ayuda al manager a estimar cantidades adecuadas
+    - Subtotal calculado en tiempo real al cambiar quantity o unitPrice (no requiere submit)
+    - Total de la orden actualizado en el header al agregar/editar/eliminar detalles
+
+  Protección UX contra errores de negocio:
+    - Botón Aprobar deshabilitado visualmente cuando la lista de detalles está vacía
+    - Botón Recibir solo aparece cuando status=APPROVED (no en otras transiciones)
+    - Botón Cancelar oculto cuando status=RECEIVED o CANCELLED
+    - Si el backend rechaza (422), mostrar err.error?.message en snackbar rojo
+    - Confirmación explícita antes de Recibir (acción irreversible que impacta inventario)
+    - Confirmación explícita antes de Cancelar (acción irreversible)
+
+--------------------------------------------------------------------------------
+7. PLAN DE IMPLEMENTACIÓN POR FASES
+--------------------------------------------------------------------------------
+
+Rama de trabajo: feature/purchases
+Merge a develop con --no-ff al completar el módulo
+
+FASE 1 — Modelos, servicios y rutas (sin UI)
+  [ ] Crear src/app/modules/purchases/
+  [ ] Modelos TypeScript: supplier.model.ts, purchase-order.model.ts
+  [ ] SupplierService con tests (supplier.service.spec.ts)
+  [ ] PurchaseOrderService con tests (purchase-order.service.spec.ts)
+  [ ] purchases.routes.ts (lazy loading)
+  [ ] Actualizar app.routes.ts con loadChildren
+  [ ] Actualizar sidebar: Compras con dos hijos (Proveedores, Órdenes de compra)
+  [ ] Actualizar topbar: breadcrumbs de Compras
+  [ ] ng test --no-watch → 0 fallos (regresión)
+
+FASE 2 — Proveedores (CRUD completo)
+  [ ] SuppliersPageComponent (smart)
+  [ ] SupplierFormComponent (dumb) con specs
+  [ ] RBAC: canWrite(), canDeactivate()
+  [ ] Soft delete con ConfirmDialogComponent
+  [ ] Protocolo de cierre: tests + browser 3 roles (ADMIN, MANAGER, WAREHOUSEMAN)
+
+FASE 3 — Lista de órdenes con tabs
+  [ ] PurchaseOrdersPageComponent con tabs PENDING/APPROVED/RECEIVED/CANCELLED
+  [ ] Llamadas getByStatus por cada tab (carga on demand al seleccionar tab)
+  [ ] Botones de transición de estado condicionados a rol y estado actual
+  [ ] RBAC: totalAmount oculto para WAREHOUSEMAN
+  [ ] Protocolo de cierre: tests + browser 3 roles
+
+FASE 4 — Detalle de orden + gestión de detalles
+  [ ] PurchaseOrderDetailPageComponent
+  [ ] PurchaseOrderDetailFormComponent (dumb) con specs — formulario add/edit detalle
+  [ ] Lógica de edición: campos editables solo en PENDING
+  [ ] Subtotal calculado en tiempo real
+  [ ] Productos ya en la orden deshabilitados en el selector
+  [ ] ConfirmDialogComponent antes de Recibir y Cancelar
+  [ ] Protocolo de cierre: tests + browser 3 roles + reglas de negocio R1-R7
+
+FASE 5 — Cierre de módulo
+  [ ] ng test --no-watch → 0 fallos, suite completa
+  [ ] Verificación de seguridad backend (curl) todos los endpoints del módulo
+  [ ] Regresión completa: módulos 0-2 siguen en 0 fallos
+  [ ] Cobertura ≥ 70% statements (ng test --coverage)
+  [ ] Actualizar memoria_tecnica_modulo_compras_frontend.md §7 y §10
+  [ ] Actualizar memoria_tecnica_global_proyecto.md
+  [ ] Actualizar estandares_referencia_desarrollo.md si hay nuevos patrones
+  [ ] Actualizar CLAUDE.md con bugs/lecciones del módulo
+  [ ] Merge --no-ff a develop + push
+
+--------------------------------------------------------------------------------
+8. PLAN DE TESTS
+--------------------------------------------------------------------------------
+
+  Tipo A — Tests unitarios de servicios:
+    supplier.service.spec.ts:
+      getActive() — verifica params page/size
+      create() — verifica body y URL POST
+      update() — verifica URL PUT y body
+      deactivate() — verifica 204 void
+    purchase-order.service.spec.ts:
+      create() — verifica body con details array
+      getByStatus() — verifica URL con status path param
+      approve() — verifica PATCH sin body
+      receive() — verifica PATCH /receive
+      cancel() — verifica PATCH /cancel
+      addDetail() — verifica POST /{id}/details
+      updateDetail() — verifica PUT /{id}/details/{detailId}
+      removeDetail() — verifica DELETE y 204 void
+
+  Tipo A — Tests unitarios de componentes dumb:
+    supplier-form.component.spec.ts:
+      output save emite SupplierDTO correcto
+      output cancel emite
+      output deactivate emite (solo visible con canDeactivate=true e isEdit=true)
+      precarga con setInput('supplier', mockSupplier) → form populado
+      form inválido: save no emite
+    purchase-order-form.component.spec.ts:
+      requiere supplierId para poder guardar
+    purchase-order-detail-form.component.spec.ts:
+      subtotal calculado en tiempo real (quantity × unitPrice)
+      output save emite con valores correctos
+
+  Tipo B — Tests de seguridad RBAC (browser / curl):
+    Suppliers: POST → WAREHOUSEMAN 403, SALES 403; GET → WAREHOUSEMAN 200
+    Orders: PATCH /receive → SALES 403; GET → ADMIN 200; POST → WAREHOUSEMAN 403
+
+  Cobertura esperada: ≥ 70% statements en el módulo
+
+  Suite total estimada post-módulo: ~140 specs (111 actuales + ~29 nuevos)
+
+--------------------------------------------------------------------------------
+9. LECCIONES DEL MÓDULO 2 APLICADAS A ESTE MÓDULO
+--------------------------------------------------------------------------------
+
+  L8 (Contratos pre-código):
+    → Todos los DTOs verificados contra controladores Java antes de escribir
+      las interfaces TypeScript. Sin asunciones de nombres de campos.
+    → Confirmado que List<PurchaseOrderResponseDTO> (no paginada) aplica a
+      findBySupplierId, findBySupplierIdAndStatus, findOrdersByProduct.
+    → Confirmado que PageResponse<PurchaseOrderResponseDTO> aplica a findByStatus.
+
+  L9 (Excepciones tipadas):
+    → El backend lanza excepciones de negocio que retornan 422 con mensaje
+      descriptivo. El frontend siempre leerá err.error?.message en el catchError.
+    → Confirmado en PurchaseOrderServiceImpl: mensajes claros en español para
+      cada regla de negocio (R1-R7).
+
+  L11 (setInput() en tests de @Input):
+    → Todo test de componente dumb que use ngOnChanges usará
+      fixture.componentRef.setInput() para disparar el hook.
+
+  L14 (Campos inmutables):
+    → orderNumber, totalAmount, subtotal, status, timestamps son de solo lectura.
+    → El formulario de edición de orden (PENDING) solo expone supplierId y notes.
+    → El formulario de detalle solo expone quantity y unitPrice (no productId en edición).
+    → Mostrar orderNumber y totalAmount como texto informativo, no como inputs.
+
+  L15 (Sin asteriscos dobles):
+    → Ningún label tendrá <span class="required">. AM genera el * automáticamente.
+
+  Protocolo de cierre (CLAUDE.md):
+    → Ejecutar el checklist completo antes de declarar cada componente y el módulo done.
+    → Verificar browser para ADMIN, MANAGER y WAREHOUSEMAN (SALES no tiene acceso).
+    → Verificar trazabilidad R1-R7 → componente UI responsable → dato correcto → validación preventiva.
+
+  Complejidad nueva (no en Módulo 2):
+    → Máquina de estados PENDING→APPROVED→RECEIVED/CANCELLED — mayor cuidado en
+      los guards de botones condicionales por estado.
+    → Subtotal/total calculados en tiempo real en el formulario — patrón nuevo,
+      usar valueChanges observable en el form group del detalle.
+    → Tabs de estado: usar MatTabGroup con lazy loading de contenido por tab.
+    → La acción "Recibir" es irreversible y dispara stock — confirmar siempre antes.
+
+--------------------------------------------------------------------------------
+10. DECISIONES RESUELTAS (2026-06-07)
+--------------------------------------------------------------------------------
+
+  D1. Creación de orden → RUTA /purchases/orders/new
+      Justificación: la orden necesita formulario de cabecera + gestión de detalles
+      (tabla editable con agregar/quitar líneas) en la misma vista. Un MatDialog
+      quedaría demasiado comprimido para esa complejidad.
+
+  D2. Tab activa por defecto → PENDIENTES
+      Justificación: las órdenes PENDING son las que requieren acción inmediata
+      (aprobar, agregar detalles). Es el estado más frecuente en el flujo diario
+      del MANAGER, que es el usuario principal del módulo.
+
+  D3. Selector de producto en detalle → MATAUTOCOMPLETE con búsqueda
+      El usuario escribe parte del SKU o nombre y filtra en tiempo real.
+      Formato de opción: "[SKU] — Nombre del producto (disponible: N unidades)".
+      Opciones ya presentes en la orden se muestran deshabilitadas.
+
+  D4. Historial de estado de la orden → TABLA DE 3 FILAS
+      Columnas: Estado | Usuario | Fecha.
+      Filas: Aprobado / Recibido / Cancelado.
+      Si el estado no fue alcanzado, mostrar "—" en usuario y fecha.
+      Consistente con el estilo de tabla del proyecto; sin CSS custom adicional.
+
+================================================================================
+FIN DE PROPUESTA
+================================================================================
