@@ -967,14 +967,19 @@ ng build --configuration=production
 
 ## Estado actual
 
-**Fase**: inicialización — directorio y repositorio creados, pendiente de implementación.
+**Fase**: ✅ **Completo y QA-certificado** (campaña de 4 fases cerrada 2026-06-28).
 
-**Próximos pasos:**
-1. Instalar Angular CLI y crear el proyecto base con Angular Material
-2. Configurar tema personalizado con la paleta `#6B3C6B / #CE6EEB / #F2E4F2`
-3. Implementar estructura de layout (sidebar + top bar + main-layout)
-4. Implementar módulo de autenticación (login, JWT interceptor, guards)
-5. Implementar módulos de negocio por audiencia según RBAC
+Frontend Angular 21 implementado en su totalidad: layout (sidebar + topbar + main-layout), autenticación
+(login, JWT interceptor, error interceptor, authGuard), y los módulos de negocio Inventory, Purchases, Sales,
+Reports y Auth/Usuarios. **Suite: 462 specs · 0 fallos · 88.94% statements** (backend 406/406).
+
+**Campaña de QA — todos los módulos CERTIFICADOS bajo Propuesta D** (Protocolo de 4 fases):
+Compras (R5), Inventario (R6), Ventas (R7), Reportes (R10 — Fase 3 estricta), Auth/Usuarios (R2).
+Total: **704 casos · 0 FAIL · 0 bugs funcionales.** Detalle en `docs/pruebas/` y
+`docs/global/memoria_tecnica_global_proyecto.md` §8.
+
+**Mantenimiento:** ante cualquier cambio nuevo, seguir el Protocolo de 4 fases
+(`docs/pruebas/protocolo_verificacion_4_fases.md`) y actualizar la memoria técnica del módulo + la global.
 
 ---
 

@@ -220,6 +220,7 @@ Distribución final por pantalla:
 | BUG-REP-01 | `operational-report.component.ts` | `TypeError: params.search?.trim is not a function` en autocomplete del Kardex al seleccionar un producto del dropdown. Causa: `switchMap` no descartaba valores objeto `ProductResponseDTO`. | `typeof value !== 'string' \|\| value.length < 2` en el guard del switchMap |
 | BUG-REP-02 | `operational-report.component.html` | Tab "Rotación" visible para WAREHOUSEMAN; el backend retorna 403 porque `SecurityConfig` solo autoriza ADMIN y MANAGER en ese endpoint. | `*ngIf="canViewTurnover"` en el `mat-tab`; getter `canViewTurnover` verifica `ROLE_ADMIN \|\| ROLE_MANAGER` |
 | BUG-REP-03 | `operational-report.component.html` | Botón "Consultar" en tab Movimientos (y Rotación) no se deshabilitaba cuando `from > to` — solo tenía `[disabled]="movLoading"`, sin validación de rango de fechas. | Agregar `\|\| datesInvalidError(movFromCtrl.value, movToCtrl.value)` a la condición `[disabled]` de ambos botones |
+| BUG-REP-05 | `app.config.ts` + `core/date/dd-mm-yyyy-date-adapter.ts` | **(Ronda 8/10, 2026-06-28)** Los MatDatepicker mostraban y parseaban en `M/d/yyyy` (default en-US del adapter nativo), en contra del estándar `dd/MM/yyyy` (CLAUDE.md). Un primer fix con `MAT_DATE_LOCALE='es-PE'` + `MAT_DATE_FORMATS` corrigió solo el **formato de salida**; la Fase 3 estricta destapó que el adapter nativo **parsea el tecleo con `new Date()` ignorando el locale** (desajuste parse/display: teclear "31/12/2026" → rechazado). | `DdMmYyyyDateAdapter extends NativeDateAdapter` (override de `parse()` para dd/MM/yyyy con validación de fecha real) + provisto en `app.config.ts`. **Blast radius global** (todos los datepickers; solo Reportes los usa). 6 specs en `dd-mm-yyyy-date-adapter.spec.ts`. _(El fix complementario backend de CYBER-05 — `MethodArgumentTypeMismatchException`→400 — está en la memoria del módulo reports del backend.)_ |
 
 ---
 
@@ -239,10 +240,11 @@ Distribución final por pantalla:
 
 ### Checklist Propuesta D — Condiciones para declarar "done"
 
-- [✓] Todos los 94 casos de `casos_de_prueba_modulo_reports.md` con ✅ PASS o N/A (0 PENDIENTE) — 82 PASS + 12 N/A — 2026-06-16
-- [✓] `ng test --no-watch --coverage` → 401 specs, 0 fallos; 89.89% statements (≥ 70%) — 2026-06-16
-- [✓] Prueba browser con los 4 roles documentada — 2026-06-15/16
-- [✓] Columna Estado del documento de casos completamente llena (ningún ⏳ PENDIENTE) — 2026-06-16
+- [✓] Todos los casos de `casos_de_prueba_modulo_reports.md` con ✅ PASS o N/A (0 PENDIENTE) — **R10 estricta 2026-06-28: 96 PASS + 13 N/A** (109 casos con CYBER); ronda 1: 82+12 (2026-06-16)
+- [✓] `ng test --no-watch --coverage` → **462 specs, 0 fallos; 88.94% statements** (≥ 70%) — 2026-06-28; `mvn test` 406/406
+- [✓] Prueba browser con los 4 roles documentada — R10 lectura literal estricta 2026-06-28
+- [✓] Columna Estado del documento de casos completamente llena (ningún ⏳ PENDIENTE) — 2026-06-28
+- [✓] **Fixes Fase 2 (BUG-REP-05 fecha + CYBER-05 backend 400)** aplicados, gatekeeper verde, Fase 3 estricta re-ejecutada — 2026-06-28
 
 ### Estado por fase
 
