@@ -305,7 +305,14 @@ Verificación ejecutada el 2026-06-16 con el servidor de desarrollo (`ng serve`)
 | Snackbars éxito y error | ERR-USR-01 a 08 | ✅ PASS |
 | Visual general | VIS-USR-06/07, VIS-GEN-05/08 | ✅ PASS |
 
-**Resultado final:** 90 casos ✅ PASS, 1 N/A (EMPTY-USR-01), 0 ⏳ PENDIENTE.
+**Resultado final (Ronda 1, 2026-06-16):** 90 casos ✅ PASS, 1 N/A, 0 ⏳ PENDIENTE.
+
+**Re-certificación (Ronda 2, 2026-06-28)** bajo Protocolo 4 fases (Fase 1 código congelado, 0 bugs):
+**103 ✅ PASS · 0 ❌ FAIL · 3 N/A · 0 ⏳ PENDIENTE** (106 casos con la sección CYBER añadida). Verificación en
+vivo completa, incluyendo una pasada de cierre de gaps (snackbars de editar/duplicado/cambio-contraseña,
+crear con múltiples roles, FLOW-USR-03 en navegador, ERR-USR-07 con apagado controlado del backend).
+Rate limiting confirmado (6º login fallido → 429). Gatekeeper: `ng build` 0 AOT · `ng test` 462/462 88.94% ·
+`mvn test` 406/406. Detalle en `docs/pruebas/casos_de_prueba_modulo_usuarios.md`.
 
 ---
 
