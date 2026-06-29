@@ -30,7 +30,7 @@ Consume el backend REST API del repositorio `almacenes-backend` (GitHub: davidre
 Para entender el sistema completo (visión, decisiones arquitectónicas, contratos
 de integración, RBAC transversal, guía de configuración y roadmap) consultar:
 
-**`docs/global/memoria_tecnica_global_proyecto.md`** — disponible **localmente en este repositorio**  
+**`docs/arquitectura/memoria_tecnica_global_proyecto.md`** — disponible **localmente en este repositorio**  
 *(copia de origen: `github.com/davidreyna1974/almacenes-backend`)*
 
 ⚠️ **Esta es la fuente de contexto primaria para cualquier sesión de desarrollo.**  
@@ -72,7 +72,7 @@ git push origin develop
 
 Todo módulo nuevo requiere **tres archivos** en `docs/` antes de implementar:
 - `docs/modulos/<nombre>/propuesta_modulo_<nombre>_frontend.txt` — planificación previa al código
-- `docs/pruebas/docs/pruebas/casos_de_prueba_modulo_<nombre>.md` — definición de casos ANTES de codificar *(ver sección Protocolo de pruebas)*
+- `docs/qa/casos_de_prueba_modulo_<nombre>.md` — definición de casos ANTES de codificar *(ver sección Protocolo de pruebas)*
 - `docs/modulos/<nombre>/memoria_tecnica_modulo_<nombre>_frontend.md` — documento vivo con 10 secciones
 
 **Secciones de la memoria técnica** (actualizar al finalizar cada fase):
@@ -105,14 +105,14 @@ Todo módulo nuevo requiere **tres archivos** en `docs/` antes de implementar:
 
 ### Propuesta A — Documento de casos de prueba por módulo (pre-código)
 
-`docs/pruebas/docs/pruebas/casos_de_prueba_modulo_<nombre>.md` se crea **antes de escribir una sola línea de
+`docs/qa/casos_de_prueba_modulo_<nombre>.md` se crea **antes de escribir una sola línea de
 implementación**, junto con la propuesta del módulo.
 
 **Uso obligatorio del template:**
 ```bash
-cp docs/pruebas/casos_de_prueba_modulo_TEMPLATE.md docs/pruebas/docs/pruebas/casos_de_prueba_modulo_<nombre>.md
+cp docs/qa/casos_de_prueba_modulo_TEMPLATE.md docs/qa/casos_de_prueba_modulo_<nombre>.md
 ```
-El archivo `docs/pruebas/casos_de_prueba_modulo_TEMPLATE.md` contiene la
+El archivo `docs/qa/casos_de_prueba_modulo_TEMPLATE.md` contiene la
 estructura completa con casos genéricos para todas las categorías, los patrones
 que han causado bugs reales (L25, L26, L27) y el checklist de cierre (Propuesta D).
 **No crear el documento de casos desde cero — siempre partir del template.**
@@ -201,8 +201,8 @@ indicar explícitamente qué condición falta antes de avanzar.
 
 ```
 [ ] docs/modulos/<nombre>/propuesta_modulo_<nombre>_frontend.txt creada
-[ ] docs/pruebas/docs/pruebas/casos_de_prueba_modulo_<nombre>.md creada COPIANDO el template:
-    cp docs/pruebas/casos_de_prueba_modulo_TEMPLATE.md docs/pruebas/docs/pruebas/casos_de_prueba_modulo_<nombre>.md
+[ ] docs/qa/casos_de_prueba_modulo_<nombre>.md creada COPIANDO el template:
+    cp docs/qa/casos_de_prueba_modulo_TEMPLATE.md docs/qa/casos_de_prueba_modulo_<nombre>.md
     (completar todos los marcadores [...] antes de escribir código)
     (categorías obligatorias: SEC, RBAC, CRUD, VAL, BSRCH, UI, FLOW, RN, ERR, EMPTY, VIS)
 [ ] docs/modulos/<nombre>/memoria_tecnica_modulo_<nombre>_frontend.md iniciada
@@ -220,7 +220,7 @@ difíciles de detectar que solo aparecen en el browser con datos reales.**
 ### Pasos obligatorios
 
 **1. Obtener los contratos de la API** (en orden de preferencia):
-   - Leer `docs/global/memoria_tecnica_global_proyecto.md` — sección 3 (contratos ya documentados)
+   - Leer `docs/arquitectura/memoria_tecnica_global_proyecto.md` — sección 3 (contratos ya documentados)
    - Leer la memoria técnica del módulo — sección 4 (contratos específicos del módulo)
    - Si no están documentados: consultar Swagger UI en `http://localhost:8080/swagger-ui/index.html`
    - Alternativa programática: `GET http://localhost:8080/v3/api-docs` (OpenAPI JSON)
@@ -257,7 +257,7 @@ difíciles de detectar que solo aparecen en el browser con datos reales.**
 > usaba `LOWER()` en JPQL, que elimina mayúsculas pero NO diacríticos. "galon" no encontraba
 > "Galón". Fix: PostgreSQL `unaccent` extension + función `f_unaccent(text)` inmutable + query
 > nativa en el repositorio. Este estándar aplica a TODAS las búsquedas LIKE del sistema.
-> Ver §7 de `docs/global/memoria_tecnica_global_proyecto.md` — "Estándar de búsqueda de texto".
+> Ver §7 de `docs/arquitectura/memoria_tecnica_global_proyecto.md` — "Estándar de búsqueda de texto".
 
 **5. Verificar trazabilidad regla-de-negocio → componente UI** — para cada validación del backend
 (`*ServiceImpl`), identificar el componente UI responsable y confirmar que:
@@ -299,7 +299,7 @@ verificaciones. No basta con que el código compile y los tests unitarios pasen.
 ### Checklist de cierre por componente (Propuesta B)
 
 ```
-[ ] Todos los casos del documento docs/pruebas/casos_de_prueba_modulo_<nombre>.md para ESTA
+[ ] Todos los casos del documento docs/qa/casos_de_prueba_modulo_<nombre>.md para ESTA
     pantalla/componente tienen estado ✅ PASS — ninguno ⏳ PENDIENTE
 [ ] Los casos cubren las categorías: SEC, RBAC, CRUD, VAL, BSRCH, UI, FLOW, RN, ERR, EMPTY
 [ ] ng test --no-watch ejecutado → 0 fallos en la suite completa
@@ -347,10 +347,10 @@ verificaciones. No basta con que el código compile y los tests unitarios pasen.
 
 > Origen L29-L33: revisión completa de bugs del módulo Inventory (BUG-INV-07/09/10/11/12/13/14/17/18).
 > Origen L34-L35: homologación Clientes↔Proveedores y verificación RBAC completa (2026-06-14).
-> Detalle completo en `docs/global/memoria_tecnica_global_proyecto.md` §9 (L29-L33) y §5 (L35 — usuarios QA).
+> Detalle completo en `docs/arquitectura/memoria_tecnica_global_proyecto.md` §9 (L29-L33) y §5 (L35 — usuarios QA).
 > Estas reglas son
 > **mandatorias desde el diseño inicial** de cualquier módulo nuevo (Sales en adelante) —
-> no son correcciones retroactivas opcionales. El `docs/pruebas/casos_de_prueba_modulo_TEMPLATE.md`
+> no son correcciones retroactivas opcionales. El `docs/qa/casos_de_prueba_modulo_TEMPLATE.md`
 > incluye los casos de prueba correspondientes (`(L29)`..`(L33)`) y un checklist de
 > cierre adicional.
 
@@ -385,7 +385,7 @@ verificaciones. No basta con que el código compile y los tests unitarios pasen.
   patrón (origen: BUG-M5-01, homologación `Clientes` ↔ `Proveedores`, 2026-06-14).
 - **L35 — Usuarios QA permanentes para pruebas RBAC**: no crear usuarios de prueba
   efímeros con contraseñas aleatorias para verificar los 4 roles en browser. Usar/mantener
-  los usuarios QA documentados en `docs/global/memoria_tecnica_global_proyecto.md` §5
+  los usuarios QA documentados en `docs/arquitectura/memoria_tecnica_global_proyecto.md` §5
   (`qa_manager`/`QaManager123!`, `qa_sales`/`QaSales123!`, `qa_warehouse`/`QaWarehouse123!`,
   además de `admin`/`Admin123!`). Si no existen, crearlos vía `POST /api/v1/auth/users`
   (JWT de `admin`) y documentar las credenciales antes de iniciar la verificación.
@@ -410,8 +410,8 @@ verificaciones. No basta con que el código compile y los tests unitarios pasen.
 > verificación futura (no solo nuevos módulos, sino también re-ejecuciones de módulos
 > existentes y verificaciones post-fix).
 >
-> Documento completo: `docs/pruebas/protocolo_verificacion_4_fases.md`
-> Estado de la sesión activa: `docs/pruebas/estado_sesion_activa.md`
+> Documento completo: `docs/qa/protocolo_verificacion_4_fases.md`
+> Estado de la sesión activa: `docs/qa/_bitacora/estado_sesion_activa.md`
 
 ### Regla fundamental (inamovible)
 
@@ -452,13 +452,13 @@ verificaciones. No basta con que el código compile y los tests unitarios pasen.
   y el dev server sirve el código actual — no un bundle stale; ante duda, reinicio limpio).
 - El **catálogo de técnicas de verificación por categoría** (tecleo real vs. inyección JS,
   `getComputedStyle` con RGB exacto, ausencia en DOM, `curl` con JWT por rol para redacción
-  server-side, server-side vs client-side search) está en `docs/pruebas/protocolo_verificacion_4_fases.md`.
+  server-side, server-side vs client-side search) está en `docs/qa/protocolo_verificacion_4_fases.md`.
 
 **FASE 4 — Certificación**
 - `ng build` → 0 errores AOT; `ng test --no-watch --coverage` → cobertura ≥ 70%, 0 fallos
   (el builder `@angular/build:unit-test` usa `--coverage`, **no** `--code-coverage`)
 - Backend `mvn test` → 0 fallos (o solo los preexistentes documentados con justificación)
-- Actualizar `docs/pruebas/estado_sesion_activa.md` con resultado CERTIFICADO
+- Actualizar `docs/qa/_bitacora/estado_sesion_activa.md` con resultado CERTIFICADO
 - Actualizar el resumen de cobertura en cada documento de casos afectado
 - Hacer commit con mensaje `chore(qa): verificación completa 4 fases — <fecha>`
 
@@ -477,7 +477,7 @@ verificaciones. No basta con que el código compile y los tests unitarios pasen.
 
 ### Estado de la sesión activa
 
-El archivo `docs/pruebas/estado_sesion_activa.md` es un documento vivo que se actualiza
+El archivo `docs/qa/_bitacora/estado_sesion_activa.md` es un documento vivo que se actualiza
 al completar cada módulo/fase. **Leer siempre al iniciar una sesión de pruebas** para
 saber exactamente dónde continuar. Si la sesión se interrumpe (límite de uso de Claude Code,
 cierre de ventana, etc.), el estado queda persistido en ese archivo y la siguiente sesión
@@ -921,7 +921,7 @@ a una ruta no autorizada, se redirige a su pantalla de inicio con mensaje de acc
 costos, márgenes, límites de crédito, descuentos, etc.) debe tener su propia matriz de
 visibilidad por rol documentada en la Sección 4 de la memoria técnica del módulo, con
 redacción aplicada por el backend (no solo ocultada en el frontend) — ver
-`docs/global/memoria_tecnica_global_proyecto.md` L29.
+`docs/arquitectura/memoria_tecnica_global_proyecto.md` L29.
 
 ---
 
@@ -975,11 +975,11 @@ Reports y Auth/Usuarios. **Suite: 462 specs · 0 fallos · 88.94% statements** (
 
 **Campaña de QA — todos los módulos CERTIFICADOS bajo Propuesta D** (Protocolo de 4 fases):
 Compras (R5), Inventario (R6), Ventas (R7), Reportes (R10 — Fase 3 estricta), Auth/Usuarios (R2).
-Total: **704 casos · 0 FAIL · 0 bugs funcionales.** Detalle en `docs/pruebas/` y
-`docs/global/memoria_tecnica_global_proyecto.md` §8.
+Total: **704 casos · 0 FAIL · 0 bugs funcionales.** Detalle en `docs/qa/` y
+`docs/arquitectura/memoria_tecnica_global_proyecto.md` §8.
 
 **Mantenimiento:** ante cualquier cambio nuevo, seguir el Protocolo de 4 fases
-(`docs/pruebas/protocolo_verificacion_4_fases.md`) y actualizar la memoria técnica del módulo + la global.
+(`docs/qa/protocolo_verificacion_4_fases.md`) y actualizar la memoria técnica del módulo + la global.
 
 ---
 

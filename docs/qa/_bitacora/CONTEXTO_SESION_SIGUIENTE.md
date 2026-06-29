@@ -37,7 +37,7 @@
 
 ## Punto de inicio: FASE 1 — Inventario
 
-**Documento:** `/docs/pruebas/casos_de_prueba_modulo_inventario.md` (198 casos, estado ⏳ PENDIENTE)
+**Documento:** `/docs/qa/casos_de_prueba_modulo_inventario.md` (198 casos, estado ⏳ PENDIENTE)
 
 **Secuencia de categorías (en este orden):**
 1. **SEC** (6 casos) — Seguridad de rutas
@@ -113,7 +113,7 @@ Estos archivos se cargarán automáticamente en `/Users/davidreynapineda/.claude
 Archivos locales a leer:
 - `estado_sesion_activa.md` — Estado exacto de dónde estamos
 - `CONTEXTO_SESION_SIGUIENTE.md` — Este archivo
-- `docs/pruebas/casos_de_prueba_modulo_inventario.md` — Documento de casos
+- `docs/qa/casos_de_prueba_modulo_inventario.md` — Documento de casos
 
 ---
 

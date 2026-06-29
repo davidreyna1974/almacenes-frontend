@@ -663,7 +663,7 @@ JWT_SECRET=...       # mínimo 64 caracteres hex (openssl rand -hex 32)
 ### Campaña de QA — Protocolo de 4 fases (cierre 2026-06-28)
 
 Verificación completa de los **6 documentos de casos de prueba** bajo el Protocolo de 4 fases
-(`docs/pruebas/protocolo_verificacion_4_fases.md`). **Todos los módulos CERTIFICADOS bajo Propuesta D:**
+(`docs/qa/protocolo_verificacion_4_fases.md`). **Todos los módulos CERTIFICADOS bajo Propuesta D:**
 
 | Módulo | Ronda | Casos (PASS·FAIL·N/A) | Notas de cierre |
 |---|---|---|---|
@@ -1444,7 +1444,7 @@ limpia sistemáticamente.
 **Origen (2026-06-22)**: una primera ronda de casos de prueba encontró bugs, se corrigieron,
 y la segunda ronda encontró nuevos bugs — algunos causados por los fixes. Causa raíz: las fases
 de "probar" y "corregir" estaban mezcladas. La respuesta sistémica es el
-`docs/pruebas/protocolo_verificacion_4_fases.md` (Fase 1 inventario → Fase 2 corrección +
+`docs/qa/protocolo_verificacion_4_fases.md` (Fase 1 inventario → Fase 2 corrección +
 gatekeeper → Fase 3 re-ejecución sobre código congelado → Fase 4 certificación). Aplica a
 TODAS las rondas de verificación de TODOS los módulos.
 
@@ -1472,7 +1472,7 @@ TODAS las rondas de verificación de TODOS los módulos.
 ```
 
 **Catálogo de técnicas de verificación por categoría** (SEC/RBAC/CRUD/VAL/BSRCH/UI/FLOW/RN/
-ERR/EMPTY/VIS/CYBER): documentado en `docs/pruebas/protocolo_verificacion_4_fases.md`,
+ERR/EMPTY/VIS/CYBER): documentado en `docs/qa/protocolo_verificacion_4_fases.md`,
 reutilizable en todos los módulos. Claves: **tecleo real** (no inyección JS de eventos `input`,
 que tiene carrera con `debounceTime`) para búsquedas/formularios; **`getComputedStyle()` con RGB
 exacto** para VIS (no inspección visual); **ausencia en el DOM** (no `display:none`) para datos
@@ -1589,8 +1589,8 @@ Ver L28 en §9 para el detalle completo de cada cabecera.
 
 ## 11. Protocolo de verificación en 4 fases (establecido 2026-06-22)
 
-> Ver documento completo: `docs/pruebas/protocolo_verificacion_4_fases.md` (frontend)
-> Estado de sesión activa: `docs/pruebas/estado_sesion_activa.md` (frontend)
+> Ver documento completo: `docs/qa/protocolo_verificacion_4_fases.md` (frontend)
+> Estado de sesión activa: `docs/qa/_bitacora/estado_sesion_activa.md` (frontend)
 
 ### Por qué existe
 
@@ -1622,7 +1622,7 @@ Cada fix tiene un blast radius que determina qué módulos hay que re-probar en 
 
 ### Manejo de interrupciones de sesión
 
-El archivo `docs/pruebas/estado_sesion_activa.md` actúa como "punto de guardado" para
+El archivo `docs/qa/_bitacora/estado_sesion_activa.md` actúa como "punto de guardado" para
 las sesiones de prueba. Se actualiza al completar cada módulo/categoría. Si Claude Code
 se interrumpe por límite de uso, la siguiente sesión lee ese archivo y retoma exactamente
 donde se quedó, sin pérdida de contexto.

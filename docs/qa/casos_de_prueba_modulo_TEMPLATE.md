@@ -40,7 +40,7 @@
 ## ⚠️ Protocolo obligatorio de ejecución — 4 fases (permanente)
 
 > Toda ronda de verificación de este documento sigue el protocolo completo documentado en
-> `docs/pruebas/protocolo_verificacion_4_fases.md`. Referencia rápida:
+> `docs/qa/protocolo_verificacion_4_fases.md`. Referencia rápida:
 
 **FASE 1 — Inventario (código congelado)**
 - Ejecutar TODOS los casos sin tocar código. Documentar bugs como `⚠️ ABIERTO`. No corregir nada.
@@ -62,7 +62,7 @@
 - `ng test --no-watch --coverage` → 0 fallos, ≥ 70% statements (flag `--coverage`, NO `--code-coverage`)
 - `mvn test` → 0 fallos nuevos
 - Commit `chore(qa): verificación completa 4 fases [Módulo] — YYYY-MM-DD`
-- Actualizar `docs/pruebas/estado_sesion_activa.md` con resultado CERTIFICADO
+- Actualizar `docs/qa/_bitacora/estado_sesion_activa.md` con resultado CERTIFICADO
 
 > **Lectura estricta vs. por blast radius**: la nota de cierre de cada ronda DEBE declarar cuál
 > se aplicó. **Solo una Fase 3 de lectura estricta** (todos los casos en una sola sesión continua
@@ -73,7 +73,7 @@
 > en DOM, `curl` con JWT por rol, server-side vs client-side search, monkey-patch `alert()` para XSS)
 > en `protocolo_verificacion_4_fases.md` — usarlo como guía de CÓMO probar cada categoría.
 >
-> **`docs/pruebas/estado_sesion_activa.md`** — leer al iniciar cada sesión de pruebas para saber
+> **`docs/qa/_bitacora/estado_sesion_activa.md`** — leer al iniciar cada sesión de pruebas para saber
 > exactamente en qué fase y categoría se debe continuar. Actualizar al completar cada categoría.
 
 ---

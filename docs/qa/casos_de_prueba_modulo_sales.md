@@ -36,7 +36,7 @@ no por ruta, excepto `/sales/orders/new`)
 ## ⚠️ Protocolo obligatorio de ejecución — 4 fases (permanente)
 
 > Toda ronda de verificación de este documento sigue el protocolo completo en
-> `docs/pruebas/protocolo_verificacion_4_fases.md`. Referencia rápida:
+> `docs/qa/protocolo_verificacion_4_fases.md`. Referencia rápida:
 
 **FASE 1 — Inventario (código congelado)**: ejecutar TODOS los casos sin tocar código. Documentar bugs como `⚠️ ABIERTO`. No corregir nada.
 
