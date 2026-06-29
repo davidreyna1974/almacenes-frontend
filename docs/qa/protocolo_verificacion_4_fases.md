@@ -4,7 +4,7 @@
 **Fecha de creación**: 2026-06-22  
 **Aplica a**: toda ronda de verificación en browser (nuevos módulos, re-ejecuciones, post-fix)  
 **Referencia en CLAUDE.md**: sección "⚠️ Protocolo obligatorio de verificación en 4 fases"  
-**Estado de sesión activa**: `docs/pruebas/estado_sesion_activa.md`
+**Estado de sesión activa**: `docs/qa/_bitacora/estado_sesion_activa.md`
 
 ---
 
@@ -165,7 +165,7 @@ cd /Users/davidreynapineda/Documents/Proyecto\ desarrollo/codigo/backend/almacen
 
 **Hacer commit**:
 ```bash
-git add docs/pruebas/estado_sesion_activa.md
+git add docs/qa/_bitacora/estado_sesion_activa.md
 git commit -m "chore(qa): verificación completa 4 fases — $(date +%Y-%m-%d)
 
 Fase 1 (inventario), Fase 2 (correcciones), Fase 3 (re-ejecución),

@@ -1,59 +1,194 @@
-# Almacenes
+# Almacenes — Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.5.
+> Aplicación web para la **gestión de almacenes**: inventario, compras, ventas, reportes y administración de usuarios, con control de acceso por rol (RBAC) de extremo a extremo.
 
-## Development server
+![versión](https://img.shields.io/badge/versión-1.0.0-6B3C6B)
+![Angular](https://img.shields.io/badge/Angular-21-DD0031)
+![tests](https://img.shields.io/badge/tests-462%20passing-2E7D32)
+![cobertura](https://img.shields.io/badge/cobertura-88.94%25%20statements-2E7D32)
+![QA](https://img.shields.io/badge/QA-certificado%20(4%20fases)-1565C0)
+![licencia](https://img.shields.io/badge/licencia-MIT-757575)
 
-To start a local development server, run:
+Este repositorio contiene el **frontend Angular**. Es parte de un sistema de dos capas:
 
+| Capa | Repositorio | Tecnología |
+|---|---|---|
+| **Frontend** (este repo) | `almacenes-frontend` | Angular 21 + Angular Material |
+| Backend (API REST) | [`almacenes-backend`](https://github.com/davidreyna1974/almacenes-backend) | Spring Boot 3 + PostgreSQL |
+| Visión del sistema completo | [`almacenes`](https://github.com/davidreyna1974/almacenes) | Documentación / portafolio |
+
+---
+
+## 📋 Tabla de contenidos
+- [Descripción](#-descripción)
+- [Capturas](#-capturas)
+- [Stack tecnológico](#-stack-tecnológico)
+- [Arquitectura](#-arquitectura)
+- [Características](#-características)
+- [Cómo ejecutar](#-cómo-ejecutar)
+- [Calidad y QA](#-calidad-y-qa)
+- [Estructura del proyecto](#-estructura-del-proyecto)
+- [Documentación](#-documentación)
+- [Licencia](#-licencia)
+
+---
+
+## 🎯 Descripción
+
+**Almacenes** es un sistema de gestión de inventario de escala media diseñado para operar un almacén
+real: registra productos y categorías, controla el stock mediante movimientos (Kardex), gestiona
+órdenes de compra y de venta con sus máquinas de estado, y ofrece reportes ejecutivos, analíticos
+y operativos. El acceso a cada funcionalidad está segregado por **4 roles** (Administrador, Gerente,
+Almacenista, Ventas).
+
+El frontend consume la API REST del backend (`http://localhost:8080/api/v1`) con autenticación JWT,
+interceptores HTTP y guards de ruta por rol.
+
+---
+
+## 🖼️ Capturas
+
+> _Las capturas se encuentran en [`docs/recursos/`](docs/recursos/). Para añadirlas, ver
+> [docs/recursos/README.md](docs/recursos/README.md)._
+
+| Login | Inventario | Dashboard Ejecutivo |
+|---|---|---|
+| `docs/recursos/login.png` | `docs/recursos/inventario.png` | `docs/recursos/dashboard.png` |
+
+---
+
+## 🛠️ Stack tecnológico
+
+- **Framework:** Angular 21 (standalone components, signals, `inject()`)
+- **UI:** Angular Material (tema personalizado púrpura `#6B3C6B`)
+- **Lenguaje:** TypeScript (strict mode)
+- **Estilos:** SCSS + theming de Angular Material
+- **Estado:** RxJS + servicios con `BehaviorSubject` (sin NgRx — escala media)
+- **HTTP:** `HttpClient` con interceptores (JWT + manejo global de errores)
+- **Gráficas:** ng2-charts + Chart.js
+- **Fechas:** `MatDatepicker` con adapter propio (`DdMmYyyyDateAdapter`) → formato `dd/MM/yyyy`
+- **Tests:** Vitest (unit) + verificación E2E en navegador
+- **Observabilidad:** Sentry (opcional vía env)
+
+---
+
+## 🏗️ Arquitectura
+
+Arquitectura por capas con módulos de negocio, núcleo transversal (auth, layout, interceptores)
+y componentes compartidos. Diagrama y decisiones detalladas en
+[`docs/arquitectura/`](docs/arquitectura/) — ver el
+[diagrama de arquitectura](docs/arquitectura/diagrama_arquitectura.md).
+
+```
+src/app/
+├── core/        auth (service, guard, interceptores), layout (sidebar/topbar), shared
+└── modules/     auth · inventory · purchases · sales · reports
+```
+
+---
+
+## ✨ Características
+
+- **Autenticación JWT** con re-login al expirar (2 h) y rate limiting en backend.
+- **RBAC de 4 roles** aplicado en rutas (guards), UI (visibilidad) y datos (redacción de campos sensibles).
+- **Inventario:** categorías, productos, movimientos de stock (Kardex), alertas de stock bajo.
+- **Compras:** proveedores y órdenes con máquina de estados `PENDING → APPROVED → RECEIVED / CANCELLED`.
+- **Ventas:** clientes, órdenes y reservaciones, con control de stock disponible y bloqueo optimista.
+- **Reportes:** dashboard ejecutivo (KPIs + donut de valuación), analítico (rentabilidad, tendencia,
+  top productos, ABC, por proveedor) y operativo (stock bajo, Kardex, movimientos, rotación).
+- **Gestión de usuarios y perfil** (solo Administrador para usuarios; perfil propio para todos).
+- **UX cuidada:** vista maestro-detalle, validaciones inline, snackbars semánticos, estados vacíos
+  diferenciados, búsqueda accent/case-insensitive.
+
+Matriz RBAC completa en [`docs/arquitectura/memoria_tecnica_global_proyecto.md`](docs/arquitectura/memoria_tecnica_global_proyecto.md).
+
+---
+
+## 🚀 Cómo ejecutar
+
+### Requisitos
+- Node.js 20+ y npm
+- Angular CLI 21 (`npm install -g @angular/cli`)
+- El [backend](https://github.com/davidreyna1974/almacenes-backend) corriendo en `http://localhost:8080`
+
+### Pasos
 ```bash
+# 1. Instalar dependencias
+npm install
+
+# 2. Servidor de desarrollo (http://localhost:4200)
 ng serve
+
+# 3. Tests unitarios
+ng test --no-watch
+
+# 4. Tests con cobertura
+ng test --no-watch --coverage
+
+# 5. Build de producción
+ng build --configuration=production
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+**Usuarios de prueba** (requieren el backend con datos seed):
 
-## Code scaffolding
+| Usuario | Contraseña | Rol |
+|---|---|---|
+| `admin` | `Admin123!` | Administrador |
+| `qa_manager` | `QaManager123!` | Gerente |
+| `qa_warehouse` | `QaWarehouse123!` | Almacenista |
+| `qa_sales` | `QaSales123!` | Ventas |
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+---
 
-```bash
-ng generate component component-name
+## ✅ Calidad y QA
+
+Este proyecto se sometió a una **campaña de QA formal bajo un Protocolo de 4 fases** (congelamiento de
+código, corrección con gatekeeper, re-ejecución y certificación). Es el principal sello de rigor del proyecto.
+
+- **462 tests unitarios** · 0 fallos · **88.94% statements**
+- **704 casos de prueba** documentados (SEC, RBAC, CRUD, VAL, BSRCH, UI, FLOW, RN, ERR, EMPTY, VIS, CYBER)
+- **5 módulos CERTIFICADOS** · 0 FAIL · 0 bugs funcionales
+- Verificación de regresión cruzada final: 0 regresiones
+
+📄 **Reporte completo:** [`docs/qa/REPORTE_QA.md`](docs/qa/REPORTE_QA.md) ·
+**Protocolo:** [`docs/qa/protocolo_verificacion_4_fases.md`](docs/qa/protocolo_verificacion_4_fases.md)
+
+---
+
+## 📁 Estructura del proyecto
+
+```
+almacenes-frontend/
+├── src/                  código Angular (core + modules)
+├── docs/                 documentación (ver docs/README.md)
+│   ├── arquitectura/     memoria técnica global, estándares, diagrama
+│   ├── modulos/          memoria técnica por módulo
+│   ├── qa/               protocolo 4 fases, casos de prueba, reporte de QA
+│   ├── planificacion/    propuesta y plan de trabajo
+│   ├── guias/            guía de usuario
+│   └── recursos/         capturas y diagramas
+├── CLAUDE.md             guía para asistentes de IA / convenciones del repo
+├── CHANGELOG.md          historial de versiones
+└── README.md            este archivo
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+---
 
-```bash
-ng generate --help
-```
+## 📚 Documentación
 
-## Building
+Toda la documentación está indexada en **[`docs/README.md`](docs/README.md)**. Destacados:
 
-To build the project run:
+- [Memoria técnica global](docs/arquitectura/memoria_tecnica_global_proyecto.md) — visión, decisiones, contratos, RBAC.
+- [Reporte de QA](docs/qa/REPORTE_QA.md) — resultados de la campaña de certificación.
+- [Memorias técnicas por módulo](docs/modulos/) — decisiones de diseño y bugs por módulo.
+- [Guía rápida de usuario](docs/guias/guia_rapida_usuario.md).
 
-```bash
-ng build
-```
+---
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## 📄 Licencia
 
-## Running unit tests
+Distribuido bajo licencia **MIT**. Ver [`LICENSE`](LICENSE).
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+---
 
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+<sub>Proyecto de portafolio — David Reyna Pineda · 2026</sub>

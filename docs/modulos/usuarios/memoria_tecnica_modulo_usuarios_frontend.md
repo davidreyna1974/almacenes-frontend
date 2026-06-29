@@ -312,7 +312,7 @@ Verificación ejecutada el 2026-06-16 con el servidor de desarrollo (`ng serve`)
 vivo completa, incluyendo una pasada de cierre de gaps (snackbars de editar/duplicado/cambio-contraseña,
 crear con múltiples roles, FLOW-USR-03 en navegador, ERR-USR-07 con apagado controlado del backend).
 Rate limiting confirmado (6º login fallido → 429). Gatekeeper: `ng build` 0 AOT · `ng test` 462/462 88.94% ·
-`mvn test` 406/406. Detalle en `docs/pruebas/casos_de_prueba_modulo_usuarios.md`.
+`mvn test` 406/406. Detalle en `docs/qa/casos_de_prueba_modulo_usuarios.md`.
 
 ---
 
