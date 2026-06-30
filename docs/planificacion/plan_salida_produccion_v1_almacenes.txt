@@ -76,13 +76,13 @@ RESUMEN DEL ESTADO ACTUAL (2026-06-30)
       - OPS-B1/B2  Backup diario + recuperación ante desastres   (ver §10)
       - OPS-B3     Carga inicial de datos del cliente            (ver §9 PASO 7)
       - OPS-B5     Cambiar contraseñas de prod + desactivar QA   (ver §11)
-  · ⚠️ EXCEPCIÓN A VERIFICAR — Spring Boot Actuator (BACK-I8, ver §8.1 [19]):
-      La configuración 'management:' está en application-prod.yaml, PERO la
-      dependencia 'spring-boot-starter-actuator' NO está en pom.xml y SecurityConfig
-      no abre '/actuator/health'. Tal como está, /actuator/health NO responde y los
-      smoke tests de §9 (verify) y §11 que lo usan FALLARÁN. Antes del go-live:
-      agregar la dependencia + permitir la ruta, O sustituir el health check por
-      el endpoint de login (ver §11, nota de smoke test).
+  · ✅ Spring Boot Actuator (BACK-I8) — RESUELTO el 2026-06-30 (ver §8.1 [19]):
+      se agregó la dependencia spring-boot-starter-actuator (pom.xml) y SecurityConfig
+      abre /actuator/health, /actuator/health/** y /actuator/info sin autenticación.
+      Validado con ActuatorHealthTest (HTTP real → 200 {"status":"UP"}) y mvn clean
+      test → 408 tests, 0 fallos, 0 regresiones. Los smoke tests de §9 (05-verify) y
+      §11 ya funcionan. VERIFICAR en el servidor:
+        wget -qO- http://localhost:8080/actuator/health   → {"status":"UP"}
 
 REFERENCIA AUTORITATIVA DE AUTOMATIZACIÓN
 ------------------------------------------
@@ -875,7 +875,8 @@ COLUMNA ESTADO  (interpretación para el ingeniero de despliegue)
   🔄 EN PROGRESO | ❌ REVERTIDA = estados de desarrollo (no deberían quedar al
                    momento del go-live).
   Las 3 brechas ⏳ PENDIENTE son: [32] OPS-B1/B2, [33] OPS-B3, [34] OPS-B5.
-  Excepción a verificar con atención: [19] BACK-I8 (Actuator) — ver su nota.
+  Nota: [19] BACK-I8 (Actuator) — antes marcada como excepción, RESUELTA el
+  2026-06-30; queda como verificación normal (ver su ficha).
 
 ================================================================================
 BACKEND — Brechas 1-17
@@ -1527,37 +1528,29 @@ Tests a ejecutar:
   No requiere rama separada.
 
 ──────────────────────────────────────────────────────────────────────────────
-[19] BACK-I8 — Spring Boot Actuator (/actuator/health)  Estado: ⚠️ VERIFICAR / INCOMPLETO
+[19] BACK-I8 — Spring Boot Actuator (/actuator/health)  Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
-  ⚠️ HALLAZGO (2026-06-30): la configuración 'management:' SÍ está en
-     application-prod.yaml, PERO el endpoint /actuator/health NO FUNCIONA porque:
-       · pom.xml NO incluye la dependencia spring-boot-starter-actuator
-         (verificar: grep -c actuator pom.xml  → debe ser > 0; hoy es 0)
-       · SecurityConfig NO abre la ruta /actuator/** (verificar:
-         grep -rn actuator src/main/java  → hoy: sin resultados)
-     Sin la dependencia, la sección 'management:' es inerte y
-     `wget http://localhost:8080/actuator/health` devuelve 404, no {"status":"UP"}.
-     Esto hace FALLAR el smoke test de §9 (05-verify.sh) y de §11.
+  Implementado el 2026-06-30 (opción A — habilitar Actuator). Cambios aplicados:
+    1. pom.xml: agregada la dependencia spring-boot-starter-actuator.
+    2. SecurityConfig: .requestMatchers("/actuator/health", "/actuator/health/**",
+       "/actuator/info").permitAll()  (solo añade rutas públicas; no toca RBAC).
+    3. application-prod.yaml: management.endpoints.web.exposure.include: health,info
+       y management.endpoint.health.show-details: never (ya estaban).
+    4. Test ActuatorHealthTest (@SpringBootTest RANDOM_PORT + HTTP real) que valida
+       200 + {"status":"UP"} sin autenticación y que no se filtran 'components'.
 
-  ACCIÓN ANTES DEL GO-LIVE (elegir una):
-   A) Habilitar Actuator (recomendado para health probes):
-      1. pom.xml:  <dependency>
-                     <groupId>org.springframework.boot</groupId>
-                     <artifactId>spring-boot-starter-actuator</artifactId>
-                   </dependency>
-      2. SecurityConfig (filterChain):
-                   .requestMatchers("/actuator/health").permitAll()
-      3. mantener en application-prod.yaml:
-                   management.endpoints.web.exposure.include: health,info
-                   management.endpoint.health.show-details: never
-      4. Verificar:  mvn test  → 0 fallos;  arrancar perfil prod;
-                     wget -qO- http://localhost:8080/actuator/health → {"status":"UP"}
-   B) No usar Actuator: eliminar la sección 'management:' de application-prod.yaml
-      y sustituir el health check de §9/§11 por el smoke test de login
-      (POST /api/v1/auth/login → 200), que no requiere Actuator.
+  VALIDACIÓN EJECUTADA:
+    · mvn clean test → 408 tests, 0 fallos, BUILD SUCCESS (406 previos + 2 nuevos).
+    · ActuatorHealthTest → 2/2 OK (health responde 200 {"status":"UP"} sin JWT).
+    · Regresión: SecurityFilterTest y RbacIntegrationTest (RBAC 401/403 por rol)
+      siguen en verde → 0 regresiones de autorización.
 
-  Criterio de éxito: el comando de health del §11 responde lo esperado según la
-  opción elegida (A → {"status":"UP"} ; B → login responde 200 con token).
+  VERIFICAR EN EL SERVIDOR (smoke test del go-live):
+    · grep -c actuator pom.xml                         → > 0
+    · grep -rn actuator src/main/java/.../SecurityConfig.java  → ruta presente
+    · wget -qO- http://localhost:8080/actuator/health  → {"status":"UP"}
+
+  Criterio de éxito: /actuator/health responde 200 {"status":"UP"} sin autenticación.
 
 ──────────────────────────────────────────────────────────────────────────────
 [20] BACK-I7 — Configurar HikariCP en application-prod  Estado: ✅ RESUELTA
@@ -2359,8 +2352,8 @@ PROCESOS OPERATIVOS — Brechas 33-39
 [39] OPS-B7 — Smoke tests post-deploy                  Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
   Resuelta: scripts/05-verify.sh implementa los smoke tests post-deploy
-  documentados en §9. VERIFICAR con: bash scripts/05-verify.sh. Nota: si alguno
-  de los checks usa /actuator/health, depende de BACK-I8 (§8.1 [19]).
+  documentados en §9. VERIFICAR con: bash scripts/05-verify.sh. Nota: el check de
+  /actuator/health ya funciona (BACK-I8 resuelto el 2026-06-30, ver §8.1 [19]).
 
 ================================================================================
 RESUMEN DE SECUENCIA Y DEPENDENCIAS
@@ -2372,7 +2365,8 @@ RESUMEN DE SECUENCIA Y DEPENDENCIAS
   [15] BACK-B1 → [16] BACK-B3   (schema primero, luego ddl-auto: validate en prod.yaml)
   [16] BACK-B3 → [17] BACK-B4   (✅ ya resuelta dentro de B3 — sin acción adicional)
   [16] BACK-B3 → [18] BACK-I2   (✅ ya resuelta dentro de B3 — sin acción adicional)
-  [16] BACK-B3 → [19] BACK-I8   (✅ ya resuelta dentro de B3 — sin acción adicional)
+  [16] BACK-B3 → [19] BACK-I8   (✅ resuelta el 2026-06-30: la config estaba en B3
+                                 pero faltaba la dependencia + ruta; ver §8.1 [19])
   [16] BACK-B3 → [20] BACK-I7   (HikariCP se agrega al yaml creado en BACK-B3)
   [21] BACK-I4 → [22] BACK-I5   (handler genérico antes de limpiar RuntimeExceptions)
   [27] FRONT-I2 → [38] FRONT-M5 (GlobalErrorHandler como base de la integración Sentry)
@@ -2449,8 +2443,7 @@ SCRIPTS DE AUTOMATIZACIÓN (almacenes-backend/scripts/)
     05-verify.sh           (bash 05-verify.sh)
       Ejecuta los smoke tests: contenedores activos, health del backend, HTTP→HTTPS
       301, HTTPS 200, SSL válido, API accesible, SPA routing, puerto 8080 cerrado.
-      ⚠️ Si valida /actuator/health, depende de BACK-I8 (§8.1 [19]); con Actuator
-      ausente, ajustar este check al smoke test de login.
+      ✅ El check de /actuator/health ya funciona (BACK-I8 resuelto el 2026-06-30).
 
     maint-db.sh            (bash maint-db.sh)
       Inicialización/mantenimiento de la BD: extensión unaccent, función
@@ -2916,15 +2909,8 @@ DÍA DEL GO-LIVE
       docker compose -f /opt/almacenes/docker-compose.yml \
           exec backend wget -qO- http://localhost:8080/actuator/health
       → Responde: {"status":"UP"}
-      ⚠️ DEPENDE DE BACK-I8 (§8.1 [19]): hoy Actuator NO está habilitado (falta la
-         dependencia en pom.xml). Si no se habilita antes del go-live, este check
-         devuelve 404. Alternativa sin Actuator — verificar que el backend responde
-         vía login (no requiere Actuator):
-           curl -s -o /dev/null -w "%{http_code}" -X POST \
-             https://almacenes.codigo2enter.com/api/v1/auth/login \
-             -H "Content-Type: application/json" \
-             -d '{"username":"admin","password":"CONTRASEÑA_DE_PRODUCCION"}'
-           → 200
+      ✅ BACK-I8 RESUELTO (2026-06-30): Actuator está habilitado y validado
+         (ActuatorHealthTest, 408 tests en verde). Este check ya funciona.
 
   [ ] SMOKE TEST LOGIN (vía nginx — mismo dominio que el frontend):
       curl -X POST https://almacenes.codigo2enter.com/api/v1/auth/login \
