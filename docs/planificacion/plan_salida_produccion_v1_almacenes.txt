@@ -1,14 +1,31 @@
 ================================================================================
-  PLAN DE SALIDA A PRODUCCIÓN v1.0
-  SISTEMA DE GESTIÓN DE ALMACENES — "Almacenes"
+  GUÍA DE PUESTA EN PRODUCCIÓN  (verificación + ejecución)
+  SISTEMA DE GESTIÓN DE ALMACENES — "Almacenes" v1.0.0
   Empresa: codigoCodigoEnter
   Dominio de producción: https://almacenes.codigo2enter.com
   Fecha de elaboración: 2026-06-17
-  Versión del documento: 1.0
+  Última actualización:  2026-06-30
+  Versión del documento: 2.0
 ================================================================================
+
+  PARA QUIÉN ES ESTE DOCUMENTO
+  ----------------------------
+  Guía/procedimiento/recordatorio dirigido al INGENIERO ENCARGADO DE LA PUESTA EN
+  PRODUCCIÓN del sistema Almacenes. Su objetivo es que identifique, reconozca y
+  aprenda TODOS los requerimientos técnicos necesarios (acciones previas,
+  validaciones, instrucciones, comandos, seguridad y buenas prácticas) para una
+  puesta en servicio correcta.
+
+  IMPORTANTE — la mayoría de estos requerimientos YA ESTÁN IMPLEMENTADOS y el
+  sistema está QA-CERTIFICADO (release v1.0.0). El trabajo del ingeniero es, en
+  esencia:
+    1) VERIFICAR/VALIDAR lo ya realizado con los comandos indicados en cada punto.
+    2) EJECUTAR lo que falta (tareas operativas del día de despliegue).
+  No es una lista de desarrollo pendiente: es una guía de verificación y ejecución.
 
 ÍNDICE
 ------
+0.  Cómo usar esta guía (verificar vs ejecutar)
 1.  Resumen ejecutivo
 2.  Descripción del sistema y alcance v1.0
 3.  Estado actual del sistema
@@ -22,6 +39,57 @@
 11. Checklist de go-live
 12. Alcance funcional declarado v1.0 y restricciones conocidas
 13. Deuda técnica documentada para v1.1+
+
+
+================================================================================
+0. CÓMO USAR ESTA GUÍA (VERIFICAR VS EJECUTAR)
+================================================================================
+
+FLUJO DE TRABAJO RECOMENDADO PARA EL INGENIERO
+-----------------------------------------------
+  1. Lee §1 (resumen) y §2 (alcance) para entender qué se despliega.
+  2. Recorre §8.1 de arriba a abajo: cada brecha indica si está IMPLEMENTADA
+     (solo verificar) o si está POR EJECUTAR (acción en el despliegue). Usa los
+     comandos de "Tests a ejecutar" / "Criterios de éxito" de cada punto para
+     VALIDAR lo implementado.
+  3. Ejecuta el procedimiento de instalación §9 (los scripts de
+     almacenes-backend/scripts/ automatizan casi todo).
+  4. Configura backup §10 y completa el CHECKLIST DE GO-LIVE §11.
+  5. Consulta §12 (alcance/restricciones) y §13 (deuda técnica) como referencia.
+
+LEYENDA DE ESTADOS (semántica de ingeniero de despliegue)
+----------------------------------------------------------
+  ✅ IMPLEMENTADO — VERIFICAR
+        El requerimiento ya está en el código/configuración. Tu tarea es
+        confirmarlo con el comando indicado en el punto. (En el documento puede
+        aparecer rotulado como "RESUELTA": es lo mismo — ya hecho, solo validar.)
+  ⚙️ POR EJECUTAR EN DESPLIEGUE
+        Tarea operativa que se realiza en el servidor el día del go-live
+        (no es código). Marcada como ⏳ PENDIENTE en §8.1.
+  ⚠️ VERIFICAR CON ATENCIÓN
+        Implementado parcialmente o con un matiz: leer la nota y validar/corregir.
+
+RESUMEN DEL ESTADO ACTUAL (2026-06-30)
+---------------------------------------
+  · 36 de 39 requerimientos del §8 están IMPLEMENTADOS y verificables en el código.
+  · 3 son operativos de día de go-live (⚙️ POR EJECUTAR):
+      - OPS-B1/B2  Backup diario + recuperación ante desastres   (ver §10)
+      - OPS-B3     Carga inicial de datos del cliente            (ver §9 PASO 7)
+      - OPS-B5     Cambiar contraseñas de prod + desactivar QA   (ver §11)
+  · ⚠️ EXCEPCIÓN A VERIFICAR — Spring Boot Actuator (BACK-I8, ver §8.1 [19]):
+      La configuración 'management:' está en application-prod.yaml, PERO la
+      dependencia 'spring-boot-starter-actuator' NO está en pom.xml y SecurityConfig
+      no abre '/actuator/health'. Tal como está, /actuator/health NO responde y los
+      smoke tests de §9 (verify) y §11 que lo usan FALLARÁN. Antes del go-live:
+      agregar la dependencia + permitir la ruta, O sustituir el health check por
+      el endpoint de login (ver §11, nota de smoke test).
+
+REFERENCIA AUTORITATIVA DE AUTOMATIZACIÓN
+------------------------------------------
+  Los scripts reales de despliegue viven en  almacenes-backend/scripts/  y su
+  instructivo detallado es  scripts/INSTRUCTIVO_puesta_produccion_almacenes.md.
+  Ante cualquier diferencia de nombres/comandos, confirma con  `ls scripts/`  y
+  con ese INSTRUCTIVO: son la fuente de verdad operativa.
 
 
 ================================================================================
@@ -50,15 +118,19 @@ BACK-M4 y funcionalidades WMS no críticas) son deuda técnica conocida. Las
 brechas WMS "Resolver según alcance con el cliente" (ubicaciones, lotes,
 devoluciones) están fuera del alcance de v1.0.
 
-MÉTRICAS ACTUALES DEL SISTEMA:
+MÉTRICAS ACTUALES DEL SISTEMA (release v1.0.0 — QA certificado, 2026-06-28):
   Frontend (Angular 21 + Vitest)
-    · 401 specs, 0 fallos, 89.89% statements, 87.11% branches
+    · 462 specs, 0 fallos, 88.94% statements
     · 7 módulos: Infraestructura, Auth, Inventario, Compras, Ventas, Reportes,
       Usuarios — todos con Propuesta D (protocolo de cierre) completada
   Backend (Spring Boot 3.5 + JUnit 5)
-    · 405 tests, 0 fallos, 84.6% líneas, 87.5% métodos
+    · 406 tests, 0 fallos, BUILD SUCCESS
     · JaCoCo con umbral mínimo del 70% configurado en pom.xml
-  RBAC verificado en browser con 4 roles reales para todos los módulos.
+  Campaña de QA de 4 fases: 704 casos de prueba, 5 módulos CERTIFICADOS, 0 bugs
+  funcionales, 0 regresiones. RBAC verificado en browser con 4 roles reales.
+  Ambos repositorios etiquetados v1.0.0 (rama main).
+  NOTA: las cifras 401/405 de versiones previas de este documento corresponden a
+  un corte anterior a la certificación; las vigentes son 462/406.
 
 
 ================================================================================
@@ -149,13 +221,17 @@ FORTALEZAS CONFIRMADAS POR ANÁLISIS DE CÓDIGO
   ✔ Documentación técnica exhaustiva: 15+ memorias técnicas, 500+ casos de
     prueba en browser con 4 roles, 20+ lecciones transversales.
 
-ADVERTENCIA SOBRE DOCUMENTACIÓN GLOBAL
----------------------------------------
-  El archivo memoria_tecnica_global_proyecto.md (§5) contiene una nota del
-  2026-06-14 que indica que la ruta /admin/users "no existe en app.routes.ts".
-  Esa nota es OBSOLETA: el Módulo 6 (Usuarios) se implementó posteriormente y
-  la ruta /admin con admin.routes lazy SÍ existe en app.routes.ts (línea 44).
-  ACCIÓN: actualizar §5 de memoria_tecnica_global_proyecto.md antes del go-live.
+NOTA SOBRE DOCUMENTACIÓN GLOBAL (ya resuelta)
+----------------------------------------------
+  La nota obsoleta del 2026-06-14 que indicaba que /admin/users "no existe" YA FUE
+  CORREGIDA (OPS-I1, ver §8.1 [2]). El Módulo 6 (Usuarios) está implementado y la
+  ruta /admin con admin.routes lazy existe. Verificación: la memoria global ya no
+  contiene esa nota.
+  NOTA DE RUTAS: tras la reorganización de documentación (2026-06-28), la memoria
+  global vive en  docs/arquitectura/memoria_tecnica_global_proyecto.md  (antes
+  docs/global/). Las referencias "docs/global/..." de versiones previas de esta
+  guía deben leerse como  docs/arquitectura/...  (o docs/guias/ para la guía de
+  usuario). La carpeta docs/global/ ya no existe.
 
 
 ================================================================================
@@ -791,9 +867,15 @@ ESTRATEGIA DE ROLLBACK
   · Para brechas de BD (BACK-B1): el script DDL solo se aplica una vez en el
     primer despliegue; en desarrollo el checkpoint es pg_dump antes de aplicarlo.
 
-COLUMNA ESTADO
---------------
-  ⏳ PENDIENTE | 🔄 EN PROGRESO | ✅ RESUELTA | ❌ REVERTIDA
+COLUMNA ESTADO  (interpretación para el ingeniero de despliegue)
+----------------------------------------------------------------
+  ✅ RESUELTA    = IMPLEMENTADO. No requiere desarrollo: solo VERIFICAR con los
+                   comandos de "Tests a ejecutar" / "Criterios de éxito" del punto.
+  ⏳ PENDIENTE   = POR EJECUTAR EN EL DESPLIEGUE (tarea operativa del go-live).
+  🔄 EN PROGRESO | ❌ REVERTIDA = estados de desarrollo (no deberían quedar al
+                   momento del go-live).
+  Las 3 brechas ⏳ PENDIENTE son: [32] OPS-B1/B2, [33] OPS-B3, [34] OPS-B5.
+  Excepción a verificar con atención: [19] BACK-I8 (Actuator) — ver su nota.
 
 ================================================================================
 BACKEND — Brechas 1-17
@@ -807,8 +889,11 @@ NIVEL 1 — TRIVIALES   Brechas 1-6
 ──────────────────────────────────────────────────────────────────────────────
 [1] OPS-B4 — Guía rápida de uso por rol               Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Crear docs/global/guia_rapida_usuario.md con secciones por rol:
+Verificación (ya implementado — confirmar que el archivo existe y cubre los 4 roles):
+  · Ubicación actual: docs/guias/guia_rapida_usuario.md (frontend). [Nota: en
+    versiones previas de esta guía figuraba como docs/global/; la carpeta global
+    fue retirada en la reorg del 2026-06-28.]
+  · Contenido esperado — secciones por rol:
     - ADMIN: gestión de usuarios, acceso a todos los módulos.
     - MANAGER: inventario, compras, ventas, reportes.
     - WAREHOUSEMAN: ver inventario, recibir OC, entregar OV.
@@ -827,15 +912,17 @@ Criterios de éxito:
 ──────────────────────────────────────────────────────────────────────────────
 [2] OPS-I1 — Actualizar §5 de memoria_tecnica_global  Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
-  · Archivo: docs/global/memoria_tecnica_global_proyecto.md (en ambos repos)
-  · En la sección §5 (usuarios del sistema): eliminar la nota obsoleta que dice
-    que /admin/users no existe. El Módulo 6 (Usuarios) fue implementado.
-  · Actualizar la lista de funcionalidades de gestión de usuarios para reflejar
-    el estado actual: CRUD de usuarios, cambio de contraseña, gestión de roles.
+Verificación (ya resuelto — confirmar que la nota obsoleta no existe):
+  · Archivo: docs/arquitectura/memoria_tecnica_global_proyecto.md (en ambos repos;
+    antes docs/global/, retirado en la reorg del 2026-06-28).
+  · En §5 (usuarios del sistema) ya NO está la nota obsoleta sobre /admin/users.
+    Verificar con: grep -ni "no existe en app.routes" docs/arquitectura/memoria_tecnica_global_proyecto.md
+    (resultado esperado: sin coincidencias).
+  · La sección refleja el estado actual: CRUD de usuarios, cambio de contraseña,
+    gestión de roles (Módulo 6 implementado).
 
 Archivos afectados:
-  · docs/global/memoria_tecnica_global_proyecto.md (en frontend y backend repos)
+  · docs/arquitectura/memoria_tecnica_global_proyecto.md (en frontend y backend repos)
 
 Daño colateral posible:
   · Ninguno — solo actualización de documentación.
@@ -874,7 +961,7 @@ Criterios de éxito:
 
 Tests a ejecutar:
   · mvn test -Dtest=DataInitializerTest (si existe) → 0 fallos.
-  · Suite completa: mvn test → 405 tests, 0 fallos.
+  · Suite completa: mvn test → 406 tests, 0 fallos.
   · Arrancar con BD vacía, verificar logs, hacer login con admin/Admin123!
   · curl POST /api/v1/auth/login con admin/Admin123! → 200 + JWT válido.
 
@@ -992,10 +1079,10 @@ Criterios de éxito:
   · Backend arranca con perfil prod y los logs de aplicación van a archivo.
   · El archivo de log existe y se puede leer: tail -f /var/log/almacenes/app.log.
   · No hay logs con nivel DEBUG visibles en producción.
-  · mvn test → 405 tests, 0 fallos.
+  · mvn test → 406 tests, 0 fallos.
 
 Tests a ejecutar:
-  · mvn test → 405 tests, 0 fallos.
+  · mvn test → 406 tests, 0 fallos.
   · Arrancar con perfil prod dentro del contenedor.
   · docker compose exec backend cat /var/log/almacenes/app.log
   · Hacer varias operaciones (login, crear producto) y verificar que aparecen en log.
@@ -1269,12 +1356,12 @@ Criterios de éxito:
   · curl -I al backend retorna X-Frame-Options: DENY, X-Content-Type-Options: nosniff.
   · Todos los tests de seguridad RBAC siguen en verde (endpoints protegidos siguen
     protegidos, endpoints públicos siguen accesibles).
-  · No hay regresión en los 405 tests.
+  · No hay regresión en los 406 tests.
 
 Tests a ejecutar:
   · mvn test -Dtest=CategoryControllerSecurityTest,ProductControllerSecurityTest,
       UserControllerTest,ClientControllerTest,SaleOrderControllerTest → 0 fallos.
-  · Suite completa: mvn test → 405 tests, 0 fallos.
+  · Suite completa: mvn test → 406 tests, 0 fallos.
   · curl -I http://localhost:8080/api/v1/auth/login (verificar headers presentes).
 
 ──────────────────────────────────────────────────────────────────────────────
@@ -1353,7 +1440,7 @@ Cómo evitarlo:
   · NUNCA dejar ddl-auto: create en application-prod.yaml.
   · Ejecutar el script SOLO en una BD vacía (primer despliegue).
   · Verificar que el schema incluye la extensión unaccent y la función
-    f_unaccent (si no, el script 04-init-db.sh las agrega separado).
+    f_unaccent (si no, el script maint-db.sh las agrega por separado).
 
 Checkpoint/rollback:
   · Este paso no modifica código de la aplicación — solo genera un artefacto.
@@ -1371,7 +1458,7 @@ Criterios de éxito:
 Tests a ejecutar:
   · Aplicar schema.sql en BD de prueba (docker compose exec -T db psql < schema.sql).
   · Levantar backend en modo validate y verificar: "Started AlmacenesApplication".
-  · mvn test → debe pasar los 405 tests sin cambios.
+  · mvn test → debe pasar los 406 tests sin cambios.
   · curl -s http://localhost:8080/actuator/health | verificar UP.
 
 ──────────────────────────────────────────────────────────────────────────────
@@ -1424,7 +1511,7 @@ Criterios de éxito:
 Tests a ejecutar:
   · SPRING_PROFILES_ACTIVE=prod mvn spring-boot:run (en dev apuntando a BD local)
   · Verificar logs: sin "Hibernate: select" ni "Swagger" en startup.
-  · mvn test → 405 tests, 0 fallos (este archivo no toca lógica Java).
+  · mvn test → 406 tests, 0 fallos (este archivo no toca lógica Java).
   · curl http://localhost:8080/swagger-ui/index.html → debe retornar 404.
 
 ──────────────────────────────────────────────────────────────────────────────
@@ -1440,11 +1527,37 @@ Tests a ejecutar:
   No requiere rama separada.
 
 ──────────────────────────────────────────────────────────────────────────────
-[19] BACK-I8 — Spring Boot Actuator (/actuator/health)  Estado: ✅ RESUELTA
+[19] BACK-I8 — Spring Boot Actuator (/actuator/health)  Estado: ⚠️ VERIFICAR / INCOMPLETO
 ──────────────────────────────────────────────────────────────────────────────
-  Resuelta junto con BACK-B3: management.endpoints en application-prod.yaml.
-  Verificar que SecurityConfig permite /actuator/health sin autenticación.
-  Si no: agregar .requestMatchers("/actuator/health").permitAll() en SecurityConfig.
+  ⚠️ HALLAZGO (2026-06-30): la configuración 'management:' SÍ está en
+     application-prod.yaml, PERO el endpoint /actuator/health NO FUNCIONA porque:
+       · pom.xml NO incluye la dependencia spring-boot-starter-actuator
+         (verificar: grep -c actuator pom.xml  → debe ser > 0; hoy es 0)
+       · SecurityConfig NO abre la ruta /actuator/** (verificar:
+         grep -rn actuator src/main/java  → hoy: sin resultados)
+     Sin la dependencia, la sección 'management:' es inerte y
+     `wget http://localhost:8080/actuator/health` devuelve 404, no {"status":"UP"}.
+     Esto hace FALLAR el smoke test de §9 (05-verify.sh) y de §11.
+
+  ACCIÓN ANTES DEL GO-LIVE (elegir una):
+   A) Habilitar Actuator (recomendado para health probes):
+      1. pom.xml:  <dependency>
+                     <groupId>org.springframework.boot</groupId>
+                     <artifactId>spring-boot-starter-actuator</artifactId>
+                   </dependency>
+      2. SecurityConfig (filterChain):
+                   .requestMatchers("/actuator/health").permitAll()
+      3. mantener en application-prod.yaml:
+                   management.endpoints.web.exposure.include: health,info
+                   management.endpoint.health.show-details: never
+      4. Verificar:  mvn test  → 0 fallos;  arrancar perfil prod;
+                     wget -qO- http://localhost:8080/actuator/health → {"status":"UP"}
+   B) No usar Actuator: eliminar la sección 'management:' de application-prod.yaml
+      y sustituir el health check de §9/§11 por el smoke test de login
+      (POST /api/v1/auth/login → 200), que no requiere Actuator.
+
+  Criterio de éxito: el comando de health del §11 responde lo esperado según la
+  opción elegida (A → {"status":"UP"} ; B → login responde 200 con token).
 
 ──────────────────────────────────────────────────────────────────────────────
 [20] BACK-I7 — Configurar HikariCP en application-prod  Estado: ✅ RESUELTA
@@ -1483,7 +1596,7 @@ Criterios de éxito:
   · No hay errores de connection timeout en condiciones normales.
 
 Tests a ejecutar:
-  · mvn test → 405 tests, 0 fallos (configuración no afecta tests).
+  · mvn test → 406 tests, 0 fallos (configuración no afecta tests).
   · Arrancar con perfil prod y verificar en logs el nombre del pool.
   · Ejecutar 5-10 requests concurrentes al API y verificar ausencia de errores.
 
@@ -1534,7 +1647,7 @@ Criterios de éxito:
 Tests a ejecutar:
   · mvn test -Dtest=GlobalExceptionHandlerTest (si existe) → 0 fallos.
   · mvn test -Dtest=UserServiceImplTest,SupplierServiceImplTest → 0 fallos.
-  · Suite completa: mvn test → 405 tests, 0 fallos.
+  · Suite completa: mvn test → 406 tests, 0 fallos.
   · curl POST /api/v1/auth/users con username duplicado → verificar 409.
 
 ──────────────────────────────────────────────────────────────────────────────
@@ -1590,7 +1703,7 @@ Criterios de éxito:
   · grep -r "new RuntimeException" src/main/java/ retorna 0 resultados.
   · Ningún endpoint de negocio retorna HTTP 500 por errores de "not found".
   · Los endpoints de reporte retornan 422 para parámetros inválidos (from > to).
-  · mvn test → 405+ tests, 0 fallos (pueden agregarse tests nuevos).
+  · mvn test → 406+ tests, 0 fallos (pueden agregarse tests nuevos).
 
 Tests a ejecutar:
   · Después de cada archivo modificado:
@@ -1944,7 +2057,7 @@ Tests a ejecutar:
   · docker build -t test-backend ./backend/
   · docker run --rm -e SPRING_PROFILES_ACTIVE=dev -p 8080:8080 test-backend &
   · curl http://localhost:8080/actuator/health
-  · mvn test → sigue en 405 tests, 0 fallos (el Dockerfile no toca código Java).
+  · mvn test → sigue en 406 tests, 0 fallos (el Dockerfile no toca código Java).
 
 ──────────────────────────────────────────────────────────────────────────────
 [31] FRONT-I6 — Dockerfile + nginx.conf del frontend    Estado: ✅ RESUELTA
@@ -1997,11 +2110,12 @@ Cambios necesarios:
   · Crear /opt/almacenes/scripts/backup.sh en el servidor de producción.
   · Configurar /etc/cron.d/almacenes-backup (backup diario a las 2 AM).
   · Configurar almacenamiento remoto (S3 o SFTP) para copia offsite.
-  · Documentar el procedimiento de restauración en docs/global/.
+  · Documentar el procedimiento de restauración en docs/planificacion/.
 
 Archivos afectados:
   · Nuevo: script de backup en el servidor (no en el repositorio de código)
-  · Nuevo: docs/global/procedimiento_backup_restauracion.md (en el repositorio)
+  · Nuevo: docs/planificacion/procedimiento_backup_restauracion.md (en el repositorio)
+    [la carpeta docs/global/ fue retirada en la reorg del 2026-06-28]
 
 Daño colateral posible:
   · Si el cron de backup falla silenciosamente y no hay monitoreo, el primer
@@ -2244,8 +2358,9 @@ PROCESOS OPERATIVOS — Brechas 33-39
 ──────────────────────────────────────────────────────────────────────────────
 [39] OPS-B7 — Smoke tests post-deploy                  Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
-  Resuelta: scripts/verify.sh (creado en la sesión 2026-06-18) implementa
-  los 8 smoke tests post-deploy documentados en §9. No requiere acción adicional.
+  Resuelta: scripts/05-verify.sh implementa los smoke tests post-deploy
+  documentados en §9. VERIFICAR con: bash scripts/05-verify.sh. Nota: si alguno
+  de los checks usa /actuator/health, depende de BACK-I8 (§8.1 [19]).
 
 ================================================================================
 RESUMEN DE SECUENCIA Y DEPENDENCIAS
@@ -2299,11 +2414,16 @@ SCRIPTS DE AUTOMATIZACIÓN (almacenes-backend/scripts/)
   parte de los pasos manuales descritos a continuación. Se encuentran en:
     /almacenes-backend/scripts/
 
+  ⚠️ Verifica los nombres reales antes de ejecutar:  ls almacenes-backend/scripts/
+     (esta guía se actualizó al inventario real del 2026-06-30).
+
   Orden de ejecución en el primer despliegue:
     01-prepare-server.sh  →  02-ssl.sh  →  03-deploy.sh
-        →  04-init-db.sh  →  05-firewall.sh  →  verify.sh
+        →  04-firewall.sh  →  05-verify.sh
+    Scripts auxiliares: maint-db.sh (mantenimiento/inicialización de BD:
+    extensión unaccent, f_unaccent, índices) y seed_data.sql (datos de ejemplo).
 
-  Resumen de cada script:
+  Resumen de cada script (confirmar el detalle en el INSTRUCTIVO, fuente de verdad):
 
     01-prepare-server.sh   (sudo bash 01-prepare-server.sh)
       Instala Docker Engine + Docker Compose v2, agrega el usuario al grupo
@@ -2321,22 +2441,27 @@ SCRIPTS DE AUTOMATIZACIÓN (almacenes-backend/scripts/)
       Docker y levanta los contenedores. Espera a que el backend esté disponible.
       Equivale a los PASOS 3 y 4 del procedimiento manual.
 
-    04-init-db.sh          (bash 04-init-db.sh)
-      Instala extensión unaccent, crea f_unaccent(text) inmutable y los 10
-      índices de rendimiento del sistema. Opcionalmente carga un script SQL.
-      Equivale al PASO 5 del procedimiento manual.
-
-    05-firewall.sh         (sudo bash 05-firewall.sh)
+    04-firewall.sh         (sudo bash 04-firewall.sh)
       Configura ufw: permite 22/80/443, deniega 8080/5432, activa el firewall.
       Incluye advertencia de SSH y confirmación explícita antes de activar.
       Equivale al PASO 6 del procedimiento manual.
 
-    verify.sh              (bash verify.sh)
-      Ejecuta 8 smoke tests: contenedores activos, /actuator/health, HTTP→HTTPS
+    05-verify.sh           (bash 05-verify.sh)
+      Ejecuta los smoke tests: contenedores activos, health del backend, HTTP→HTTPS
       301, HTTPS 200, SSL válido, API accesible, SPA routing, puerto 8080 cerrado.
+      ⚠️ Si valida /actuator/health, depende de BACK-I8 (§8.1 [19]); con Actuator
+      ausente, ajustar este check al smoke test de login.
+
+    maint-db.sh            (bash maint-db.sh)
+      Inicialización/mantenimiento de la BD: extensión unaccent, función
+      f_unaccent(text) inmutable e índices de rendimiento (PASO 5 manual).
+
+    seed_data.sql          (psql ... < seed_data.sql)
+      Datos de ejemplo/semilla opcionales. NO cargar en producción real salvo
+      que sean los datos maestros definitivos del cliente.
 
   Instrucciones detalladas de uso y diagnóstico:
-    almacenes-backend/scripts/INSTRUCTIVO.md
+    almacenes-backend/scripts/INSTRUCTIVO_puesta_produccion_almacenes.md
 
   NOTA: los PASOS 1-7 a continuación documentan el procedimiento en detalle
   para comprensión y referencia; los scripts los automatizan en su totalidad.
@@ -2438,7 +2563,7 @@ PASO 4 — DESPLEGAR EL STACK DOCKER
 
 PASO 5 — INICIALIZAR LA BASE DE DATOS
 ----------------------------------------
-  → AUTOMATIZADO POR: 04-init-db.sh
+  → AUTOMATIZADO POR: maint-db.sh  (inicialización/mantenimiento de BD)
   5.1 Instalar extensión unaccent (OBLIGATORIO para búsquedas con acentos):
       docker compose exec db psql -U almacen_user -d almacen_db \
           -c "CREATE EXTENSION IF NOT EXISTS unaccent;"
@@ -2479,7 +2604,7 @@ PASO 5 — INICIALIZAR LA BASE DE DATOS
 
 PASO 6 — CONFIGURAR FIREWALL
 ------------------------------
-  → AUTOMATIZADO POR: 05-firewall.sh
+  → AUTOMATIZADO POR: 04-firewall.sh
       sudo ufw allow 22/tcp    # SSH
       sudo ufw allow 80/tcp    # HTTP → redirige a HTTPS dentro del contenedor
       sudo ufw allow 443/tcp   # HTTPS — servido por el contenedor frontend
@@ -2791,6 +2916,15 @@ DÍA DEL GO-LIVE
       docker compose -f /opt/almacenes/docker-compose.yml \
           exec backend wget -qO- http://localhost:8080/actuator/health
       → Responde: {"status":"UP"}
+      ⚠️ DEPENDE DE BACK-I8 (§8.1 [19]): hoy Actuator NO está habilitado (falta la
+         dependencia en pom.xml). Si no se habilita antes del go-live, este check
+         devuelve 404. Alternativa sin Actuator — verificar que el backend responde
+         vía login (no requiere Actuator):
+           curl -s -o /dev/null -w "%{http_code}" -X POST \
+             https://almacenes.codigo2enter.com/api/v1/auth/login \
+             -H "Content-Type: application/json" \
+             -d '{"username":"admin","password":"CONTRASEÑA_DE_PRODUCCION"}'
+           → 200
 
   [ ] SMOKE TEST LOGIN (vía nginx — mismo dominio que el frontend):
       curl -X POST https://almacenes.codigo2enter.com/api/v1/auth/login \
@@ -2888,9 +3022,9 @@ DECISIONES TÉCNICAS ACEPTADAS
   · JWT en localStorage: alternativa es HttpOnly cookie + endpoint de refresh,
     requiere cambios en frontend Y backend. Evaluar en v1.1 según el nivel
     de exposición de la aplicación a internet.
-  · Sin tests E2E automatizados: la cobertura unitaria es excelente (89.89%
-    statements). Los tests E2E manuales están documentados por protocolo
-    Propuesta A-D. Automatizar con Cypress en v1.1.
+  · Tests E2E automatizados: YA IMPLEMENTADOS (OPS-B6 resuelto — 6 specs en
+    frontend e2e/). La cobertura unitaria es excelente (88.94% statements).
+    Deuda v1.1: ampliar la batería E2E si se agregan flujos nuevos.
   · Sin Rate Limiting global (solo en login): agregar en v1.1 si hay exposición
     a internet con Spring Security Rate Limiter o API Gateway.
   · Tabla de auditoría general ausente: la trazabilidad actual por campos en
@@ -2905,7 +3039,9 @@ LECCIONES TRANSVERSALES DOCUMENTADAS (L1-L35)
 
 ================================================================================
 FIN DEL DOCUMENTO
-Plan de salida a producción v1.0 — Sistema Almacenes
-Elaborado: 2026-06-17 | Próxima revisión: antes del go-live o al completar
-los ítems del §8 BLOQUEANTES
+Guía de puesta en producción v2.0 — Sistema Almacenes v1.0.0 (QA certificado)
+Elaborado: 2026-06-17 | Actualizado: 2026-06-30 (enfoque verificación+ejecución)
+Antes del go-live: VERIFICAR los 36 ítems implementados con sus comandos y
+EJECUTAR los 3 operativos pendientes (OPS-B1/B2, OPS-B3, OPS-B5). Resolver la
+excepción BACK-I8 (Actuator) según §8.1 [19].
 ================================================================================
