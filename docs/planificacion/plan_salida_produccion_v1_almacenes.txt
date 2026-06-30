@@ -1076,10 +1076,16 @@ Daño colateral posible:
     y el volumen Docker no está limitado.
 
 Cómo evitarlo:
-  · El Dockerfile del backend debe crear el directorio:
+  · ✅ YA RESUELTO (fix 2026-06-30): el Dockerfile del backend crea el directorio
+    y lo asigna al usuario no-root ANTES de cambiar de usuario:
       RUN mkdir -p /var/log/almacenes && chown almacenes:almacenes /var/log/almacenes
-  · En docker-compose.yml: montar /var/log/almacenes como volumen nombrado.
-  · Limitar el nivel de log a WARN o INFO (no DEBUG) en prod.
+    VERIFICAR tras construir la imagen:
+      docker run --rm --entrypoint sh almacenes-backend -c \
+        'ls -ld /var/log/almacenes && touch /var/log/almacenes/app.log && echo OK'
+  · El docker-compose generado por 03-deploy.sh NO monta volumen sobre el backend,
+    por lo que el directorio de la imagen no se ve anulado (si se agregara un
+    volumen para los logs, habría que ajustar su propietario al usuario almacenes).
+  · Mantener el nivel de log en WARN o INFO (no DEBUG) en prod.
 
 Checkpoint/rollback:
   · Eliminar logback-spring.xml y Spring Boot vuelve a su configuración de log
@@ -2527,13 +2533,16 @@ PASO 3 — CONFIGURAR VARIABLES DE ENTORNO
 PASO 4 — DESPLEGAR EL STACK DOCKER
 -------------------------------------
   → AUTOMATIZADO POR: 03-deploy.sh
-  4.1 Copiar los archivos al servidor (o clonar los repositorios directamente):
+  4.1 Colocar el código en el servidor (clonar los repos es lo más limpio):
       # Estructura esperada en /opt/almacenes/:
-      #   docker-compose.yml
-      #   backend/   (código fuente del backend con su Dockerfile)
-      #   frontend/  (código fuente del frontend con Dockerfile y nginx.conf)
-      scp docker-compose.yml usuario@servidor:/opt/almacenes/
-      # Alternativa más limpia: git clone de ambos repos en /opt/almacenes/.
+      #   backend/   (repo del backend, con su Dockerfile)
+      #   frontend/  (repo del frontend, con Dockerfile y nginx.conf)
+      #   docker-compose.yml   ← NO se copia: lo GENERA 03-deploy.sh (heredoc)
+      git clone <repo-backend>  /opt/almacenes/backend
+      git clone <repo-frontend> /opt/almacenes/frontend
+      # Nota: el docker-compose.yml de §9 (más abajo) es solo de REFERENCIA; el
+      # archivo real lo crea 03-deploy.sh en /opt/almacenes/docker-compose.yml.
+      # Si ya existe uno, el script lo respeta (no lo sobrescribe).
 
   4.2 IMPORTANTE: actualizar environment.prod.ts con la URL real del API antes
       de construir la imagen. Con nginx en el mismo contenedor proxeando /api/,
@@ -2576,13 +2585,18 @@ PASO 5 — INICIALIZAR LA BASE DE DATOS
         RETURNS text LANGUAGE sql IMMUTABLE PARALLEL SAFE STRICT AS
         \$func\$ SELECT public.unaccent('public.unaccent', \$1) \$func\$;"
 
-  5.3 Crear el schema de la BD (HASTA QUE SE IMPLEMENTE FLYWAY — BACK-B1):
-      · Opción A: levantar el backend con ddl-auto: create (solo primer arranque
-        con BD vacía). ADVERTENCIA: DESTRUYE los datos existentes.
-      · Opción B (recomendada): generar el DDL con Maven en máquina de desarrollo,
-        copiar schema.sql al servidor y ejecutar:
+  5.3 Cargar el schema de la BD (BACK-B1 ya resuelto — el script schema.sql YA
+      EXISTE en el repositorio: almacenes-backend/src/main/resources/schema.sql,
+      ~1023 líneas, e incluye la función f_unaccent y los índices base):
+      · Recomendado (automatizado): copiar schema.sql al servidor y ejecutar
+          bash maint-db.sh --schema /ruta/al/schema.sql
+        (instala unaccent + f_unaccent + carga el schema en una sola operación).
+      · Manual equivalente:
           docker compose exec -T db psql -U almacen_user -d almacen_db < schema.sql
-        Luego cambiar ddl-auto a validate para todos los despliegues siguientes.
+      · El perfil de producción usa ddl-auto: validate — Hibernate NO crea tablas;
+        por eso el schema DEBE cargarse ANTES del primer arranque del backend.
+      · NUNCA usar ddl-auto: create en producción (destruye los datos existentes).
+        (Ya NO es necesario "generar" el DDL: schema.sql está versionado.)
 
   5.4 Crear índices funcionales para búsqueda insensible a acentos:
       docker compose exec db psql -U almacen_user -d almacen_db << 'SQL'
@@ -2657,6 +2671,11 @@ ARCHIVOS DOCKER (implementar como parte de BACK-B2 / FRONT-I6)
   RUN addgroup -S almacenes && adduser -S almacenes -G almacenes
   WORKDIR /app
   COPY --from=build /app/target/almacenes-*.jar app.jar
+  # /var/log/almacenes debe existir y pertenecer al usuario no-root ANTES de
+  # cambiar de usuario; logback (perfil prod) escribe ahí. (Fix 2026-06-30.)
+  RUN chown almacenes:almacenes app.jar \
+      && mkdir -p /var/log/almacenes \
+      && chown almacenes:almacenes /var/log/almacenes
   USER almacenes
   EXPOSE 8080
   ENTRYPOINT ["java", "-Xms512m", "-Xmx1g", "-jar", "app.jar"]
