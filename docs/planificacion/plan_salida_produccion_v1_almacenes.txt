@@ -124,13 +124,15 @@ MÉTRICAS ACTUALES DEL SISTEMA (release v1.0.0 — QA certificado, 2026-06-28):
     · 7 módulos: Infraestructura, Auth, Inventario, Compras, Ventas, Reportes,
       Usuarios — todos con Propuesta D (protocolo de cierre) completada
   Backend (Spring Boot 3.5 + JUnit 5)
-    · 406 tests, 0 fallos, BUILD SUCCESS
-    · JaCoCo con umbral mínimo del 70% configurado en pom.xml
+    · 406 tests en el release v1.0.0 certificado (línea base, rama main)
+    · 408 tests en develop tras el fix de Actuator (BACK-I8, +2 — ver §8.1 [19])
+    · 0 fallos, BUILD SUCCESS · JaCoCo con umbral mínimo del 70% en pom.xml
   Campaña de QA de 4 fases: 704 casos de prueba, 5 módulos CERTIFICADOS, 0 bugs
   funcionales, 0 regresiones. RBAC verificado en browser con 4 roles reales.
   Ambos repositorios etiquetados v1.0.0 (rama main).
   NOTA: las cifras 401/405 de versiones previas de este documento corresponden a
-  un corte anterior a la certificación; las vigentes son 462/406.
+  un corte anterior a la certificación; las vigentes son 462 (frontend) y
+  406 certificado / 408 en develop (backend).
 
 
 ================================================================================
@@ -237,6 +239,13 @@ NOTA SOBRE DOCUMENTACIÓN GLOBAL (ya resuelta)
 ================================================================================
 4. ANÁLISIS DE BRECHAS — BACKEND
 ================================================================================
+
+  ⓘ NOTA DE LECTURA (aplica a §4, §5, §6 y §7): estas secciones son el ANÁLISIS
+    ORIGINAL de brechas (corte 2026-06-17) y se conservan como diagnóstico
+    histórico. Describen los hallazgos tal como se detectaron (p.ej. "Sin X"),
+    NO el estado actual. El ESTADO VIGENTE de cada brecha (implementada / por
+    ejecutar) vive en §8.1, donde 36 de 39 están ✅ RESUELTAS. Para saber qué
+    falta hoy, mira §8.1 y el resumen del §0 — no el texto de estas secciones.
 
 --- BLOQUEANTES ---------------------------------------------------------------
 
