@@ -38,6 +38,7 @@ Cada módulo documenta contexto, decisiones de diseño, componentes, contratos, 
 | Documento | Contenido |
 |---|---|
 | [Propuesta y plan de trabajo](planificacion/propuesta_plan_trabajo_frontend.md) | Planificación previa al desarrollo del frontend. |
+| [Plan de salida a producción v1](planificacion/plan_salida_produccion_v1_almacenes.txt) | Checklist y pasos para la puesta en producción de la versión 1. |
 
 ## 📖 Guías
 | Documento | Contenido |
