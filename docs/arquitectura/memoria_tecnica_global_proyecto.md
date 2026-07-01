@@ -656,7 +656,8 @@ JWT_SECRET=...       # mínimo 64 caracteres hex (openssl rand -hex 32)
 | Módulo 5: Reports | ✓ Completo | 401 specs, 0 fallos (89.89% statements) + 94 casos browser (82 PASS + 12 N/A, 0 FAIL) + 4 roles RBAC | Propuesta D cerrada 2026-06-16. BUG-REP-01 (autocomplete TypeError), BUG-REP-02 (tab Rotación visible para WAREHOUSEMAN → 403), BUG-REP-03 (botón Consultar no deshabilitado con from > to en Movimientos/Rotación), BUG-REP-04 (currency pipe usaba PEN/USD en lugar de MXN — corregido en 7 templates Reports+Inventory) corregidos. ng2-charts + chart.js para gráficas. `turnoverQueried`/`trendQueried`/`topQueried`/`abcQueried`/`supplierQueried` flags para diferenciar "no consultado" vs "sin resultados". forkJoin con catchError en ExecutiveDashboard (L33). |
 
 **Suite total frontend (Módulos 0-5 + Usuarios)**: **462 specs — 0 fallos — 88.94% statements**
-(incluye 6 specs de `DdMmYyyyDateAdapter`). Backend: **406 tests — 0 fallos — BUILD SUCCESS**.
+(incluye 6 specs de `DdMmYyyyDateAdapter`). Backend: **408 tests — 0 fallos — BUILD SUCCESS**
+_(406 certificados en la campaña de QA + 2 de Actuator post-certificación)_.
 
 ---
 
@@ -1515,6 +1516,22 @@ El gatekeeper `ng build` cierra el hueco entre "los tests pasan" y "el producto 
 | `notifications` | Alertas automáticas por stock bajo, órdenes pendientes. Canal: email / websocket |
 | `locations` | Gestión de ubicaciones físicas (zona → pasillo → estante → posición) |
 | `shipping` | Gestión de transportistas, guías de envío, tracking |
+
+### Production-readiness / DevOps (v1.1+)
+
+Mejoras de infraestructura/operación evaluadas contra estándares de la industria
+(SRE Production Readiness Review, DORA, OWASP ASVS, 12-Factor, Well-Architected).
+No bloquean la escala declarada (un almacén, <100 usuarios); se difieren a v1.1+.
+Detalle completo en el plan de salida a producción, §13.
+
+| Área | Mejora | Prioridad |
+|---|---|---|
+| CI/CD (DORA) | Pipeline GitHub Actions (build + tests + lint por PR/push) en ambos repos | Alta |
+| Supply chain (OWASP) | Dependabot + npm audit / OWASP Dependency-Check + escaneo de secretos | Alta |
+| SRE | Drills en staging: despliegue completo, restauración de backup, rollback | Alta |
+| Observabilidad (SRE) | Métricas Actuator (metrics/prometheus) + alertas (caída, 5xx, disco) | Media |
+| Reliability | Límites cpu/mem en compose + `server.shutdown: graceful` + uptime externo | Media |
+| Performance | Prueba de carga básica (k6/JMeter) para la concurrencia esperada | Media |
 
 ---
 
