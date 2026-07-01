@@ -133,4 +133,11 @@ Tras certificar los 5 módulos, se ejecutó una pasada de regresión cruzada sob
 
 ---
 
+> **Nota (mantenimiento post-certificación, 2026-06-30):** las cifras de este reporte reflejan
+> la **campaña de QA que certificó el sistema** (462 frontend + 406 backend). Con posterioridad se
+> habilitó Spring Boot Actuator, que añadió 2 tests backend → **suite actual: 462 + 408**. Sin
+> cambios en el resultado de la campaña (0 FAIL, 0 bugs, 0 regresiones).
+
+---
+
 <sub>Reporte de QA — Sistema de Gestión de Almacenes · David Reyna Pineda · 2026</sub>

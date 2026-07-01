@@ -971,7 +971,7 @@ ng build --configuration=production
 
 Frontend Angular 21 implementado en su totalidad: layout (sidebar + topbar + main-layout), autenticación
 (login, JWT interceptor, error interceptor, authGuard), y los módulos de negocio Inventory, Purchases, Sales,
-Reports y Auth/Usuarios. **Suite: 462 specs · 0 fallos · 88.94% statements** (backend 406/406).
+Reports y Auth/Usuarios. **Suite: 462 specs · 0 fallos · 88.94% statements** (backend 408/408 — 406 certificados en la campaña de QA + 2 de Actuator post-certificación).
 
 **Campaña de QA — todos los módulos CERTIFICADOS bajo Propuesta D** (Protocolo de 4 fases):
 Compras (R5), Inventario (R6), Ventas (R7), Reportes (R10 — Fase 3 estricta), Auth/Usuarios (R2).
