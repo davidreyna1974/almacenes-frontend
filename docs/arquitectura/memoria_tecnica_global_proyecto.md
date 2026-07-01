@@ -656,7 +656,8 @@ JWT_SECRET=...       # mínimo 64 caracteres hex (openssl rand -hex 32)
 | Módulo 5: Reports | ✓ Completo | 401 specs, 0 fallos (89.89% statements) + 94 casos browser (82 PASS + 12 N/A, 0 FAIL) + 4 roles RBAC | Propuesta D cerrada 2026-06-16. BUG-REP-01 (autocomplete TypeError), BUG-REP-02 (tab Rotación visible para WAREHOUSEMAN → 403), BUG-REP-03 (botón Consultar no deshabilitado con from > to en Movimientos/Rotación), BUG-REP-04 (currency pipe usaba PEN/USD en lugar de MXN — corregido en 7 templates Reports+Inventory) corregidos. ng2-charts + chart.js para gráficas. `turnoverQueried`/`trendQueried`/`topQueried`/`abcQueried`/`supplierQueried` flags para diferenciar "no consultado" vs "sin resultados". forkJoin con catchError en ExecutiveDashboard (L33). |
 
 **Suite total frontend (Módulos 0-5 + Usuarios)**: **462 specs — 0 fallos — 88.94% statements**
-(incluye 6 specs de `DdMmYyyyDateAdapter`). Backend: **406 tests — 0 fallos — BUILD SUCCESS**.
+(incluye 6 specs de `DdMmYyyyDateAdapter`). Backend: **408 tests — 0 fallos — BUILD SUCCESS**
+_(406 certificados en la campaña de QA + 2 de Actuator post-certificación)_.
 
 ---
 
