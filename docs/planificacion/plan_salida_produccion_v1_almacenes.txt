@@ -2841,9 +2841,11 @@ POLÍTICA DE BACKUP
 ------------------
   · Tipo:       Lógico (pg_dump — SQL portable)
   · Frecuencia: Diario, a las 02:00 AM (horario de menor actividad)
-  · Retención:  Últimos 30 días diarios + 1 backup mensual por 12 meses
+  · Retención:  Local: últimos 30 días de backups diarios (RETENTION_DAYS=30).
+                Offsite (opcional): archivado mensual hasta 12 meses.
   · Verificación: Restaurar en entorno de prueba el primer lunes de cada mes
-  · Almacenamiento: Local (/var/backups/almacenes/) + copia remota (S3 o SFTP)
+  · Almacenamiento: Local + copia remota opcional (S3 o SFTP)
+                (el INSTRUCTIVO del backend es la referencia operativa del script)
 
 SCRIPT DE BACKUP (/opt/almacenes/scripts/backup.sh)
 ----------------------------------------------------
