@@ -3061,6 +3061,32 @@ DECISIONES TÉCNICAS ACEPTADAS
     las entidades es suficiente para v1.0. Una tabla audit_log completa
     (toda entidad, todos los campos) es v1.1+.
 
+PRODUCTION-READINESS / DEVOPS (v1.1+)
+  Evaluación contra estándares de la industria (SRE Production Readiness Review,
+  DORA, OWASP ASVS, 12-Factor, Well-Architected). Ninguno es bloqueante para la
+  escala declarada (un almacén, <100 usuarios), pero son las mejoras que llevarían
+  el sistema a un "production-ready" pleno. Se difieren conscientemente a v1.1+.
+
+  Prioridad alta (bajo esfuerzo, alto valor):
+    · CI/CD (GitHub Actions): pipeline que corra build + tests + lint en cada PR/push
+      en ambos repos. Hoy el gatekeeper es manual (DORA — automatización).
+    · Supply chain / seguridad de dependencias: Dependabot + npm audit / OWASP
+      Dependency-Check + escaneo de secretos (gitleaks) (OWASP ASVS).
+    · Drills de go-live ejecutados en staging antes de prod: ensayo del despliegue
+      completo, prueba de restauración de backup y prueba de rollback (SRE).
+
+  Prioridad media (observabilidad y resiliencia):
+    · Observabilidad: exponer métricas de Actuator (metrics/prometheus, hoy solo
+      health,info) + alertas mínimas (caída, tasa de 5xx, disco) (SRE).
+    · Monitoreo de uptime externo (synthetic check a /actuator/health o login).
+    · Reliability: límites de cpu/mem en docker-compose + server.shutdown: graceful.
+    · Performance: prueba de carga básica (k6/JMeter) para validar la concurrencia
+      esperada (los reportes analíticos son query-heavy).
+
+  Consideración no técnica:
+    · Protección de datos personales (clientes/proveedores — PII): revisar
+      obligaciones según jurisdicción (p. ej. LFPDPPP en México). Decisión de negocio.
+
 LECCIONES TRANSVERSALES DOCUMENTADAS (L1-L35)
   El archivo CLAUDE.md y memoria_tecnica_global_proyecto.md documentan 35
   lecciones aprendidas durante el desarrollo, incluyendo patrones de bugs
