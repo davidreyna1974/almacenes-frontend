@@ -2511,17 +2511,29 @@ PASO 2 — PREPARAR EL SERVIDOR
 
 PASO 3 — CONFIGURAR VARIABLES DE ENTORNO
 -----------------------------------------
-  → AUTOMATIZADO POR: 03-deploy.sh (solicita DB_PASSWORD interactivamente; JWT_SECRET se genera automáticamente)
-  Crear /opt/almacenes/.env (docker-compose lo lee automáticamente):
+  → AUTOMATIZADO POR: 03-deploy.sh (pide la contraseña de BD; genera JWT_SECRET y
+    crea el .env con TODAS las variables de abajo). Este bloque es de REFERENCIA:
+    las variables deben coincidir EXACTAMENTE con las que lee application-prod.yaml
+    (SPRING_DATASOURCE_*) y las que usa el contenedor de PostgreSQL (POSTGRES_*).
+  Contenido de /opt/almacenes/.env (docker compose lo lee automáticamente):
 
-      # Base de datos
-      DB_PASSWORD=contraseña_segura_de_produccion
+      # PostgreSQL (contenedor db)
+      POSTGRES_DB=almacenes_db
+      POSTGRES_USER=almacenes_user
+      POSTGRES_PASSWORD=contraseña_segura_de_produccion
+
+      # Backend (lo lee application-prod.yaml — NOMBRES EXACTOS, no usar DB_*)
+      SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/almacenes_db
+      SPRING_DATASOURCE_USERNAME=almacenes_user
+      SPRING_DATASOURCE_PASSWORD=contraseña_segura_de_produccion
+      SPRING_PROFILES_ACTIVE=prod
 
       # JWT (generar con: openssl rand -hex 64)
       JWT_SECRET=clave_hex_de_64_bytes_minimo_generada_con_openssl
 
       # CORS — dominio del frontend (sin barra final)
       CORS_ALLOWED_ORIGINS=https://almacenes.codigo2enter.com
+      DOMAIN=almacenes.codigo2enter.com
 
   Asegurar permisos restrictivos:
       chmod 600 /opt/almacenes/.env
@@ -2529,6 +2541,8 @@ PASO 3 — CONFIGURAR VARIABLES DE ENTORNO
   IMPORTANTE: NUNCA commitear .env al repositorio. Agregar .env al .gitignore.
   IMPORTANTE: JWT_SECRET debe tener al menos 64 caracteres hexadecimales.
               Generar con: openssl rand -hex 64
+  IMPORTANTE: el backend lee SPRING_DATASOURCE_URL/USERNAME/PASSWORD (no DB_HOST/
+              DB_NAME/DB_USERNAME). Si se usan nombres DB_*, el backend NO conecta.
 
 PASO 4 — DESPLEGAR EL STACK DOCKER
 -------------------------------------
@@ -2576,11 +2590,11 @@ PASO 5 — INICIALIZAR LA BASE DE DATOS
 ----------------------------------------
   → AUTOMATIZADO POR: maint-db.sh  (inicialización/mantenimiento de BD)
   5.1 Instalar extensión unaccent (OBLIGATORIO para búsquedas con acentos):
-      docker compose exec db psql -U almacen_user -d almacen_db \
+      docker compose exec db psql -U almacenes_user -d almacenes_db \
           -c "CREATE EXTENSION IF NOT EXISTS unaccent;"
 
   5.2 Crear función f_unaccent (OBLIGATORIO — usada por los índices):
-      docker compose exec db psql -U almacen_user -d almacen_db -c "
+      docker compose exec db psql -U almacenes_user -d almacenes_db -c "
         CREATE OR REPLACE FUNCTION f_unaccent(text)
         RETURNS text LANGUAGE sql IMMUTABLE PARALLEL SAFE STRICT AS
         \$func\$ SELECT public.unaccent('public.unaccent', \$1) \$func\$;"
@@ -2592,14 +2606,14 @@ PASO 5 — INICIALIZAR LA BASE DE DATOS
           bash maint-db.sh --schema /ruta/al/schema.sql
         (instala unaccent + f_unaccent + carga el schema en una sola operación).
       · Manual equivalente:
-          docker compose exec -T db psql -U almacen_user -d almacen_db < schema.sql
+          docker compose exec -T db psql -U almacenes_user -d almacenes_db < schema.sql
       · El perfil de producción usa ddl-auto: validate — Hibernate NO crea tablas;
         por eso el schema DEBE cargarse ANTES del primer arranque del backend.
       · NUNCA usar ddl-auto: create en producción (destruye los datos existentes).
         (Ya NO es necesario "generar" el DDL: schema.sql está versionado.)
 
   5.4 Crear índices funcionales para búsqueda insensible a acentos:
-      docker compose exec db psql -U almacen_user -d almacen_db << 'SQL'
+      docker compose exec db psql -U almacenes_user -d almacenes_db << 'SQL'
       CREATE INDEX IF NOT EXISTS idx_products_unaccent_name
           ON products (f_unaccent(lower(name)));
       CREATE INDEX IF NOT EXISTS idx_products_unaccent_sku
@@ -2631,7 +2645,7 @@ PASO 6 — CONFIGURAR FIREWALL
 PASO 7 — PRIMER ARRANQUE Y DATOS INICIALES
 -------------------------------------------
   7.1 Verificar que el schema fue creado:
-      docker compose exec db psql -U almacen_user -d almacen_db -c "\dt"
+      docker compose exec db psql -U almacenes_user -d almacenes_db -c "\dt"
       # Deben aparecer las tablas: users, products, categories, suppliers, etc.
 
   7.2 El DataInitializer crea automáticamente el usuario admin (Admin123!)
@@ -2770,13 +2784,13 @@ ARCHIVOS DOCKER (implementar como parte de BACK-B2 / FRONT-I6)
     db:
       image: postgres:16-alpine
       environment:
-        POSTGRES_DB: almacen_db
-        POSTGRES_USER: almacen_user
-        POSTGRES_PASSWORD: ${DB_PASSWORD}
+        POSTGRES_DB: ${POSTGRES_DB}
+        POSTGRES_USER: ${POSTGRES_USER}
+        POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       volumes:
         - pgdata:/var/lib/postgresql/data
       healthcheck:
-        test: ["CMD-SHELL", "pg_isready -U almacen_user -d almacen_db"]
+        test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
         interval: 10s
         timeout: 5s
         retries: 5
@@ -2789,14 +2803,14 @@ ARCHIVOS DOCKER (implementar como parte de BACK-B2 / FRONT-I6)
       expose:
         - "8080"         # Solo accesible en la red Docker interna; no expuesto al host
       environment:
-        SPRING_PROFILES_ACTIVE: prod
-        DB_HOST: db
-        DB_PORT: 5432
-        DB_NAME: almacen_db
-        DB_USERNAME: almacen_user
-        DB_PASSWORD: ${DB_PASSWORD}
-        JWT_SECRET: ${JWT_SECRET}
-        CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS}
+        # El backend lee estos nombres EXACTOS en application-prod.yaml.
+        # NO usar DB_HOST/DB_NAME/DB_USERNAME: el backend no los lee y no conecta.
+        SPRING_PROFILES_ACTIVE:     ${SPRING_PROFILES_ACTIVE}
+        SPRING_DATASOURCE_URL:      ${SPRING_DATASOURCE_URL}
+        SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+        SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+        JWT_SECRET:                 ${JWT_SECRET}
+        CORS_ALLOWED_ORIGINS:       ${CORS_ALLOWED_ORIGINS}
       depends_on:
         db:
           condition: service_healthy
@@ -2838,15 +2852,15 @@ SCRIPT DE BACKUP (/opt/almacenes/scripts/backup.sh)
 
   BACKUP_DIR="/var/backups/almacenes"
   TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-  FILENAME="almacen_db_${TIMESTAMP}.sql.gz"
+  FILENAME="almacenes_db_${TIMESTAMP}.sql.gz"
   RETENTION_DAYS=30
 
   # Crear directorio si no existe
   mkdir -p "${BACKUP_DIR}"
 
   # Generar backup comprimido
-  PGPASSWORD="${DB_PASSWORD}" pg_dump \
-      -h localhost -U almacen_user -d almacen_db \
+  PGPASSWORD="${POSTGRES_PASSWORD}" pg_dump \
+      -h localhost -U almacenes_user -d almacenes_db \
       --no-owner --no-acl \
       | gzip > "${BACKUP_DIR}/${FILENAME}"
 
@@ -2859,7 +2873,7 @@ SCRIPT DE BACKUP (/opt/almacenes/scripts/backup.sh)
   echo "Backup completado: ${BACKUP_DIR}/${FILENAME} ($(du -h "${BACKUP_DIR}/${FILENAME}" | cut -f1))"
 
   # Eliminar backups más antiguos que la retención configurada
-  find "${BACKUP_DIR}" -name "almacen_db_*.sql.gz" -mtime +${RETENTION_DAYS} -delete
+  find "${BACKUP_DIR}" -name "almacenes_db_*.sql.gz" -mtime +${RETENTION_DAYS} -delete
 
   # (Opcional) Copiar a almacenamiento remoto
   # aws s3 cp "${BACKUP_DIR}/${FILENAME}" s3://bucket-backups/almacenes/
@@ -2878,22 +2892,22 @@ PROCEDIMIENTO DE RESTAURACIÓN
      sudo systemctl stop almacenes-backend
 
   3. Crear una BD vacía nueva (o limpiar la existente):
-     sudo -u postgres psql -c "DROP DATABASE IF EXISTS almacen_db_restore;"
-     sudo -u postgres psql -c "CREATE DATABASE almacen_db_restore OWNER almacen_user;"
-     sudo -u postgres psql -c "\c almacen_db_restore; CREATE EXTENSION unaccent;"
-     sudo -u postgres psql -c "\c almacen_db_restore; CREATE OR REPLACE FUNCTION f_unaccent..."
+     sudo -u postgres psql -c "DROP DATABASE IF EXISTS almacenes_db_restore;"
+     sudo -u postgres psql -c "CREATE DATABASE almacenes_db_restore OWNER almacenes_user;"
+     sudo -u postgres psql -c "\c almacenes_db_restore; CREATE EXTENSION unaccent;"
+     sudo -u postgres psql -c "\c almacenes_db_restore; CREATE OR REPLACE FUNCTION f_unaccent..."
 
   4. Restaurar el backup:
-     gunzip -c /var/backups/almacenes/almacen_db_20260617_020000.sql.gz \
-         | PGPASSWORD="${DB_PASSWORD}" psql -h localhost -U almacen_user almacen_db_restore
+     gunzip -c /var/backups/almacenes/almacenes_db_20260617_020000.sql.gz \
+         | PGPASSWORD="${POSTGRES_PASSWORD}" psql -h localhost -U almacenes_user almacenes_db_restore
 
   5. Verificar la integridad básica:
-     PGPASSWORD="${DB_PASSWORD}" psql -h localhost -U almacen_user almacen_db_restore \
+     PGPASSWORD="${POSTGRES_PASSWORD}" psql -h localhost -U almacenes_user almacenes_db_restore \
          -c "SELECT COUNT(*) FROM products; SELECT COUNT(*) FROM sale_orders;"
 
   6. Si la restauración es correcta, hacer swap de la BD activa:
-     sudo -u postgres psql -c "ALTER DATABASE almacen_db RENAME TO almacen_db_old;"
-     sudo -u postgres psql -c "ALTER DATABASE almacen_db_restore RENAME TO almacen_db;"
+     sudo -u postgres psql -c "ALTER DATABASE almacenes_db RENAME TO almacenes_db_old;"
+     sudo -u postgres psql -c "ALTER DATABASE almacenes_db_restore RENAME TO almacenes_db;"
 
   7. Reiniciar el backend:
      sudo systemctl start almacenes-backend
@@ -2901,7 +2915,7 @@ PROCEDIMIENTO DE RESTAURACIÓN
   8. Ejecutar el smoke test (ver §11) para verificar el sistema.
 
   9. Una vez verificado, eliminar la BD vieja:
-     sudo -u postgres psql -c "DROP DATABASE almacen_db_old;"
+     sudo -u postgres psql -c "DROP DATABASE almacenes_db_old;"
 
 TIEMPO OBJETIVO DE RECUPERACIÓN (RTO)
 --------------------------------------
