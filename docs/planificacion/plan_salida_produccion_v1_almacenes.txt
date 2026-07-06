@@ -2119,7 +2119,7 @@ Tests a ejecutar:
 ──────────────────────────────────────────────────────────────────────────────
 Cambios necesarios:
   · El script de backup ya está documentado en §10 del plan.
-  · Crear /opt/almacenes/scripts/backup.sh en el servidor de producción.
+  · Crear /opt/almacenes/backup.sh en el servidor de producción.
   · Configurar /etc/cron.d/almacenes-backup (backup diario a las 2 AM).
   · Configurar almacenamiento remoto (S3 o SFTP) para copia offsite.
   · Documentar el procedimiento de restauración en docs/planificacion/.
@@ -2141,7 +2141,7 @@ Cómo evitarlo:
 
 Criterios de éxito:
   · El cron ejecuta el backup exitosamente en el primer ciclo nocturno.
-  · El archivo .sql.gz existe en /var/backups/almacenes/ y pesa > 0 bytes.
+  · El archivo .sql.gz existe en /opt/almacenes/backups/ y pesa > 0 bytes.
   · La restauración en un contenedor de prueba recrea la BD correctamente.
 
 Tests a ejecutar:
@@ -2876,23 +2876,26 @@ POLÍTICA DE BACKUP
   · Almacenamiento: Local + copia remota opcional (S3 o SFTP)
                 (el INSTRUCTIVO del backend es la referencia operativa del script)
 
-SCRIPT DE BACKUP (/opt/almacenes/scripts/backup.sh)
-----------------------------------------------------
+SCRIPT DE BACKUP (/opt/almacenes/backup.sh)   ← mismo path que el INSTRUCTIVO
+--------------------------------------------
   #!/bin/bash
   set -euo pipefail
 
-  BACKUP_DIR="/var/backups/almacenes"
+  DEPLOY_DIR="/opt/almacenes"
+  BACKUP_DIR="/opt/almacenes/backups"
   TIMESTAMP=$(date +%Y%m%d_%H%M%S)
   FILENAME="almacenes_db_${TIMESTAMP}.sql.gz"
   RETENTION_DAYS=30
 
-  # Crear directorio si no existe
+  # Cargar POSTGRES_USER/DB desde el .env de despliegue
+  source "${DEPLOY_DIR}/.env"
   mkdir -p "${BACKUP_DIR}"
 
-  # Generar backup comprimido
-  PGPASSWORD="${POSTGRES_PASSWORD}" pg_dump \
-      -h localhost -U almacenes_user -d almacenes_db \
-      --no-owner --no-acl \
+  # pg_dump DENTRO del contenedor db: PostgreSQL usa 'expose' (no 'ports'), por lo
+  # que 5432 NO está publicado en el host — un 'pg_dump -h localhost' desde el host
+  # fallaría. Se ejecuta vía 'docker compose exec' (igual que el INSTRUCTIVO).
+  docker compose -f "${DEPLOY_DIR}/docker-compose.yml" exec -T db \
+      pg_dump -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" --no-password \
       | gzip > "${BACKUP_DIR}/${FILENAME}"
 
   # Verificar que el archivo no está vacío
@@ -2912,12 +2915,12 @@ SCRIPT DE BACKUP (/opt/almacenes/scripts/backup.sh)
 CONFIGURAR CRON (/etc/cron.d/almacenes-backup)
 ----------------------------------------------
   # Backup diario a las 02:00 AM
-  0 2 * * * root /bin/bash /opt/almacenes/scripts/backup.sh >> /var/log/almacenes-backup.log 2>&1
+  0 2 * * * root /bin/bash /opt/almacenes/backup.sh >> /var/log/almacenes-backup.log 2>&1
 
 PROCEDIMIENTO DE RESTAURACIÓN
 ------------------------------
   1. Identificar el backup a restaurar:
-     ls -lh /var/backups/almacenes/
+     ls -lh /opt/almacenes/backups/
 
   2. Detener el backend para evitar escrituras durante la restauración:
      sudo systemctl stop almacenes-backend
@@ -2929,7 +2932,7 @@ PROCEDIMIENTO DE RESTAURACIÓN
      sudo -u postgres psql -c "\c almacenes_db_restore; CREATE OR REPLACE FUNCTION f_unaccent..."
 
   4. Restaurar el backup:
-     gunzip -c /var/backups/almacenes/almacenes_db_20260617_020000.sql.gz \
+     gunzip -c /opt/almacenes/backups/almacenes_db_20260617_020000.sql.gz \
          | PGPASSWORD="${POSTGRES_PASSWORD}" psql -h localhost -U almacenes_user almacenes_db_restore
 
   5. Verificar la integridad básica:
@@ -3012,7 +3015,7 @@ DÍA DEL GO-LIVE
 
   [ ] SMOKE TEST BACKUP:
       · Ejecutar manualmente el script de backup
-      · Verificar que se generó el archivo .sql.gz en /var/backups/almacenes/
+      · Verificar que se generó el archivo .sql.gz en /opt/almacenes/backups/
 
   [ ] SMOKE TEST CERTIFICADO SSL:
       · Verificar que https:// carga sin warnings de seguridad
@@ -3025,7 +3028,7 @@ POST GO-LIVE (primera semana)
       docker compose -f /opt/almacenes/docker-compose.yml logs --since 24h backend
   [ ] Verificar errores 500 en el backend:
       docker compose -f /opt/almacenes/docker-compose.yml logs backend | grep "ERROR"
-  [ ] Verificar que los backups se están ejecutando: ls -lh /var/backups/almacenes/
+  [ ] Verificar que los backups se están ejecutando: ls -lh /opt/almacenes/backups/
   [ ] Monitorear el uso de disco: df -h
   [ ] Verificar estado de los 3 contenedores: docker compose -f /opt/almacenes/docker-compose.yml ps
   [ ] Capacitar a los usuarios finales con la guía rápida por rol
