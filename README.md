@@ -99,6 +99,8 @@ src/app/
 - **Gestión de usuarios y perfil** (solo Administrador para usuarios; perfil propio para todos).
 - **UX cuidada:** vista maestro-detalle, validaciones inline, snackbars semánticos, estados vacíos
   diferenciados, búsqueda accent/case-insensitive.
+- **Build agnóstico del dominio:** `environment.prod.ts` usa `apiUrl` relativo (`/api/v1`); el mismo
+  build sirve para cualquier dominio/cliente/nube (nginx proxea `/api/` en el mismo origen, sin CORS).
 
 Matriz RBAC completa en [`docs/arquitectura/memoria_tecnica_global_proyecto.md`](docs/arquitectura/memoria_tecnica_global_proyecto.md).
 
