@@ -4,8 +4,8 @@
   Empresa: codigoCodigoEnter
   Dominio de producción: https://almacenes.codigo2enter.com
   Fecha de elaboración: 2026-06-17
-  Última actualización:  2026-06-30
-  Versión del documento: 2.0
+  Última actualización:  2026-07-06 (consistencia con la prueba de despliegue GCP)
+  Versión del documento: 2.1
 ================================================================================
 
   PARA QUIÉN ES ESTE DOCUMENTO
@@ -475,15 +475,19 @@ NOTA SOBRE DOCUMENTACIÓN GLOBAL (ya resuelta)
 
 [FRONT-B1] environment.prod.ts tiene URL de API placeholder (dominio ficticio)
   Archivo: src/environments/environment.prod.ts
-  Contenido actual: apiUrl: 'https://almacenes.codigo2enter.com/api/v1'
+  Contenido original (placeholder): apiUrl: 'https://almacenes.codigo2enter.com/api/v1'
   La URL queda compilada en el bundle de Angular. Si se hace ng build sin
   reemplazar esta URL, TODAS las peticiones HTTP fallarán en producción.
+  (Resolución final: se cambió a URL RELATIVA '/api/v1' — ver Acción abajo.)
   Angular no soporta configuración de URL en runtime sin un patrón específico.
-  Acción (opción 1 — simple, arquitectura Docker del §9): con nginx proxeando
-  /api/ al contenedor backend, el frontend y la API comparten el mismo dominio.
-  La URL puede ser una ruta relativa o la misma URL del frontend:
-    apiUrl: 'https://almacenes.codigo2enter.com/api/v1'
-  Ventaja adicional: al ser mismo origen, CORS no aplica (el browser no bloquea).
+  Acción (opción 1 — ELEGIDA, simple y agnóstica del dominio): con nginx proxeando
+  /api/ al contenedor backend, el frontend y la API comparten el MISMO origen, así
+  que la URL debe ser RELATIVA (no lleva dominio):
+    apiUrl: '/api/v1'
+  Ventaja: mismo origen → CORS no aplica; y el build es agnóstico del dominio (sirve
+  para producción, otro cliente o una prueba con DuckDNS sin recompilar).
+  ⚠️ NO usar la URL absoluta 'https://<dominio>/api/v1': hardcodearía el dominio en el
+  bundle y rompería el despliegue agnóstico (nginx resuelve el dominio vía ${DOMAIN}).
   Acción (opción 2 — para múltiples entornos): implementar un APP_INITIALIZER
   que cargue la config desde src/assets/config.json en runtime:
     { "apiUrl": "https://almacenes.codigo2enter.com/api/v1" }
@@ -1111,32 +1115,32 @@ NIVEL 2 — BAJOS   Brechas 7-14
 ──────────────────────────────────────────────────────────────────────────────
 [7] FRONT-B1 — URL real en environment.prod.ts         Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
-Cambios necesarios:
+Cambios necesarios (resolución final — URL RELATIVA, agnóstica del dominio):
   · Archivo: src/environments/environment.prod.ts
-  · Cambiar el placeholder por: apiUrl: 'https://almacenes.codigo2enter.com/api/v1'
+  · Usar una URL relativa: apiUrl: '/api/v1'  (mismo origen; nginx proxea /api/).
+    NO se pone el dominio: el build queda agnóstico (sirve para cualquier dominio/cliente/nube).
   · Verificar que environment.ts (dev) sigue apuntando a 'http://localhost:8080/api/v1'.
 
 Archivos afectados:
   · src/environments/environment.prod.ts (1 línea)
 
 Daño colateral posible:
-  · Si el dominio aún no resuelve (DNS no configurado), el build de producción
-    compilará correctamente pero el runtime fallará con "net::ERR_NAME_NOT_RESOLVED".
-  · Este es solo un riesgo de runtime en producción, no de build.
+  · Ninguno de DNS: al ser relativa, la URL no depende del dominio en tiempo de build.
+    En runtime las peticiones van al mismo origen desde el que se sirvió la SPA.
 
 Cómo evitarlo:
-  · Este cambio no puede probarse localmente (apunta al dominio de producción).
-  · Verificar en el build de producción que el archivo fue incluido:
+  · Verificar en el build de producción que NO quedó ningún dominio hardcodeado:
       ng build --configuration=production
-      grep -r "almacenes.codigo2enter.com" dist/
+      grep -r "codigo2enter.com" dist/     # esperado: 0 matches (URL relativa)
 
 Checkpoint/rollback:
   · git checkout HEAD -- src/environments/environment.prod.ts
 
 Criterios de éxito:
   · ng build --configuration=production → 0 errores.
-  · grep "almacenes.codigo2enter.com" dist/almacenes/browser/*.js → al menos 1 match.
-  · En producción: el login funciona y los requests van a https://almacenes.codigo2enter.com.
+  · grep "/api/v1" dist/almacenes/browser/*.js → al menos 1 match (URL relativa presente).
+  · grep "codigo2enter.com" dist/almacenes/browser/*.js → 0 matches (sin dominio hardcodeado).
+  · En producción: el login funciona y los requests van al mismo origen (/api/v1).
 
 Tests a ejecutar:
   · ng test → 445 specs, 0 fallos (los tests usan el mock del servicio, no la URL real).
@@ -2367,8 +2371,10 @@ PROCESOS OPERATIVOS — Brechas 33-39
 [39] OPS-B7 — Smoke tests post-deploy                  Estado: ✅ RESUELTA
 ──────────────────────────────────────────────────────────────────────────────
   Resuelta: scripts/05-verify.sh implementa los smoke tests post-deploy
-  documentados en §9. VERIFICAR con: bash scripts/05-verify.sh. Nota: el check de
-  /actuator/health ya funciona (BACK-I8 resuelto el 2026-06-30, ver §8.1 [19]).
+  documentados en §9 (9 pruebas). VERIFICAR con: bash scripts/05-verify.sh <DOMINIO>.
+  Nota: el endpoint /actuator/health está habilitado (BACK-I8, 2026-06-30). El SONDEO
+  del script se hace con wget, no curl: la imagen jre-alpine del backend no trae curl
+  (corregido en la prueba de despliegue GCP, 2026-07-06 — finding #9).
 
 ================================================================================
 RESUMEN DE SECUENCIA Y DEPENDENCIAS
@@ -2445,30 +2451,32 @@ SCRIPTS DE AUTOMATIZACIÓN (almacenes-backend/scripts/)
       docker, habilita Docker para inicio automático y crea /opt/almacenes/.
       Equivale a los PASOS 1 y 2 del procedimiento manual.
 
-    02-ssl.sh              (sudo bash 02-ssl.sh almacenes.codigo2enter.com)
-      Verifica DNS, instala certbot, obtiene el certificado SSL con Let's
-      Encrypt, y configura la renovación automática via cron.
+    02-ssl.sh              (sudo bash 02-ssl.sh <DOMINIO>)   ← el dominio es OBLIGATORIO
+      Verifica DNS, instala certbot, obtiene el certificado SSL con Let's Encrypt, y
+      configura la renovación automática con certbot.timer + renewal-hooks (NO cron).
       Equivale al PASO 1 del procedimiento manual.
 
-    03-deploy.sh           (bash 03-deploy.sh)
+    03-deploy.sh           (bash 03-deploy.sh <DOMINIO>)      ← el dominio es OBLIGATORIO
       Solicita DB_PASSWORD interactivamente, genera JWT_SECRET automáticamente
       (512 bits — openssl rand), crea .env con permisos 600, construye imágenes
-      Docker y levanta los contenedores. Espera a que el backend esté disponible.
-      Equivale a los PASOS 3 y 4 del procedimiento manual.
+      Docker, levanta los contenedores E INICIALIZA la BD (primer despliegue:
+      schema.sql → 12 tablas, 4 roles, 10 índices, unaccent). Espera al backend
+      (sonda con wget; MAX_WAIT 240s configurable). Equivale a los PASOS 3, 4 y 5.
 
     04-firewall.sh         (sudo bash 04-firewall.sh)
       Configura ufw: permite 22/80/443, deniega 8080/5432, activa el firewall.
       Incluye advertencia de SSH y confirmación explícita antes de activar.
       Equivale al PASO 6 del procedimiento manual.
 
-    05-verify.sh           (bash 05-verify.sh)
-      Ejecuta los smoke tests: contenedores activos, health del backend, HTTP→HTTPS
-      301, HTTPS 200, SSL válido, API accesible, SPA routing, puerto 8080 cerrado.
-      ✅ El check de /actuator/health ya funciona (BACK-I8 resuelto el 2026-06-30).
+    05-verify.sh           (bash 05-verify.sh <DOMINIO>)      ← el dominio es OBLIGATORIO
+      Ejecuta 9 smoke tests: contenedores activos, health del backend (vía wget, no
+      curl), HTTP→HTTPS 301, HTTPS 200, SSL válido, API accesible, SPA routing,
+      puerto 8080 cerrado, deploy-hook de renovación presente.
 
-    maint-db.sh            (bash maint-db.sh)
-      Inicialización/mantenimiento de la BD: extensión unaccent, función
-      f_unaccent(text) inmutable e índices de rendimiento (PASO 5 manual).
+    maint-db.sh            (bash maint-db.sh)                 ← mantenimiento/fallback
+      NO es parte de la secuencia (03-deploy YA inicializa la BD). Es una utilidad de
+      mantenimiento: extensión unaccent, función f_unaccent(text) e índices; o cargar
+      un dump con --schema (p.ej. tras un pg_restore, o si 03 no pudo inicializar).
 
     seed_data.sql          (psql ... < seed_data.sql)
       Datos de ejemplo/semilla opcionales. NO cargar en producción real salvo
@@ -2490,17 +2498,19 @@ PASO 1 — OBTENER CERTIFICADO SSL
       sudo apt-get install -y certbot
 
   1.2 Obtener el certificado SSL:
-      sudo certbot certonly --standalone -d almacenes.codigo2enter.com
-      # Certificados en: /etc/letsencrypt/live/almacenes.codigo2enter.com/
+      sudo certbot certonly --standalone -d <DOMINIO>
+      # Certificados en: /etc/letsencrypt/live/<DOMINIO>/
       #   fullchain.pem  → certificado público
       #   privkey.pem    → clave privada
 
-  1.3 Configurar renovación automática (cron detiene y reinicia el contenedor):
-      sudo crontab -e
-      # Agregar:
-      0 3 * * * certbot renew --quiet \
-          --pre-hook  "docker compose -f /opt/almacenes/docker-compose.yml stop frontend" \
-          --post-hook "docker compose -f /opt/almacenes/docker-compose.yml start frontend"
+  1.3 Configurar renovación automática (certbot.timer + renewal-hooks, NO cron manual):
+      # El paquete apt de certbot ya habilita certbot.timer (renueva 2×/día). Un cron
+      # manual es redundante y frágil. 02-ssl.sh crea renewal-hooks que, al renovar,
+      # liberan el puerto 80 y reinician el frontend para que nginx cargue el cert nuevo:
+      #   /etc/letsencrypt/renewal-hooks/pre/stop-frontend.sh     (libera el 80)
+      #   /etc/letsencrypt/renewal-hooks/deploy/reload-frontend.sh (reinicia + bitácora)
+      #   /etc/letsencrypt/renewal-hooks/post/start-frontend.sh   (red de seguridad)
+      # Probar sin renovar de verdad:  sudo certbot renew --run-deploy-hooks
 
 PASO 2 — PREPARAR EL SERVIDOR
 --------------------------------
@@ -2537,9 +2547,11 @@ PASO 3 — CONFIGURAR VARIABLES DE ENTORNO
       # JWT (generar con: openssl rand -hex 64)
       JWT_SECRET=clave_hex_de_64_bytes_minimo_generada_con_openssl
 
-      # CORS — dominio del frontend (sin barra final)
-      CORS_ALLOWED_ORIGINS=https://almacenes.codigo2enter.com
-      DOMAIN=almacenes.codigo2enter.com
+      # CORS + DOMAIN — 03-deploy.sh los deriva del <DOMINIO> que le pasas como
+      # argumento (no se editan a mano). DOMAIN lo usa nginx (envsubst) para la ruta
+      # del certificado. En modo prueba, tu subdominio DuckDNS.
+      CORS_ALLOWED_ORIGINS=https://<DOMINIO>
+      DOMAIN=<DOMINIO>
 
   Asegurar permisos restrictivos:
       chmod 600 /opt/almacenes/.env
@@ -2564,11 +2576,11 @@ PASO 4 — DESPLEGAR EL STACK DOCKER
       # archivo real lo crea 03-deploy.sh en /opt/almacenes/docker-compose.yml.
       # Si ya existe uno, el script lo respeta (no lo sobrescribe).
 
-  4.2 IMPORTANTE: actualizar environment.prod.ts con la URL real del API antes
-      de construir la imagen. Con nginx en el mismo contenedor proxeando /api/,
-      frontend y backend comparten dominio (mismo origen — CORS no aplica):
+  4.2 environment.prod.ts NO se edita: usa una URL RELATIVA agnóstica del dominio.
+      Con nginx en el mismo contenedor proxeando /api/, frontend y backend comparten
+      origen (CORS no aplica) y el build sirve para cualquier dominio sin recompilar:
       # src/environments/environment.prod.ts
-      # apiUrl: 'https://almacenes.codigo2enter.com/api/v1'
+      # apiUrl: '/api/v1'   (relativa — sin dominio hardcodeado)
 
   4.3 Construir las imágenes Docker (backend + frontend):
       cd /opt/almacenes
@@ -2594,7 +2606,11 @@ PASO 4 — DESPLEGAR EL STACK DOCKER
 
 PASO 5 — INICIALIZAR LA BASE DE DATOS
 ----------------------------------------
-  → AUTOMATIZADO POR: maint-db.sh  (inicialización/mantenimiento de BD)
+  → AUTOMATIZADO POR: 03-deploy.sh (en el primer despliegue detecta la BD vacía y
+    carga schema.sql + roles + índices + unaccent — ver PASO 3/4). NO ejecutes
+    maint-db.sh --schema después: schema.sql usa CREATE sin IF NOT EXISTS y daría
+    error al duplicar objetos. maint-db.sh queda como fallback/mantenimiento. Los
+    pasos 5.1-5.3 de abajo son la referencia MANUAL equivalente de lo que hace 03.
   5.1 Instalar extensión unaccent (OBLIGATORIO para búsquedas con acentos):
       docker compose exec db psql -U almacenes_user -d almacenes_db \
           -c "CREATE EXTENSION IF NOT EXISTS unaccent;"
@@ -2659,7 +2675,7 @@ PASO 7 — PRIMER ARRANQUE Y DATOS INICIALES
       IMPORTANTE: cambiar la contraseña del admin INMEDIATAMENTE después del
       primer arranque.
 
-  7.3 Entrar a https://almacenes.codigo2enter.com con admin/Admin123! y desde
+  7.3 Entrar a https://<DOMINIO> con admin/Admin123! y desde
       el módulo Usuarios cambiar la contraseña del admin por una segura.
 
   7.4 Crear los usuarios de producción desde el módulo Usuarios (ADMIN) con
@@ -2714,7 +2730,12 @@ ARCHIVOS DOCKER (implementar como parte de BACK-B2 / FRONT-I6)
   # Stage 2: Servir con nginx (~20 MB — sin Node.js en producción)
   FROM nginx:alpine
   COPY --from=build /app/dist/almacenes/browser /usr/share/nginx/html
-  COPY nginx.conf /etc/nginx/conf.d/default.conf
+  # nginx.conf es una PLANTILLA: envsubst sustituye ${DOMAIN} al arrancar el
+  # contenedor (NGINX_ENVSUBST_FILTER limita la sustitución solo a DOMAIN, para
+  # no tocar las variables propias de nginx como $host/$uri). Así el build es
+  # agnóstico del dominio: el mismo contenedor sirve para cualquier dominio.
+  ENV NGINX_ENVSUBST_FILTER=DOMAIN
+  COPY nginx.conf /etc/nginx/templates/default.conf.template
   EXPOSE 80 443
   CMD ["nginx", "-g", "daemon off;"]
 
@@ -2724,17 +2745,19 @@ ARCHIVOS DOCKER (implementar como parte de BACK-B2 / FRONT-I6)
 
   server {
       listen 80;
-      server_name almacenes.codigo2enter.com;
+      server_name _;
       return 301 https://$host$request_uri;
   }
 
   server {
-      listen 443 ssl http2;
-      server_name almacenes.codigo2enter.com;
+      listen 443 ssl;
+      server_name _;
 
-      # Certificados montados desde el host (volumen :ro en docker-compose.yml)
-      ssl_certificate     /etc/letsencrypt/live/almacenes.codigo2enter.com/fullchain.pem;
-      ssl_certificate_key /etc/letsencrypt/live/almacenes.codigo2enter.com/privkey.pem;
+      # ${DOMAIN} lo inyecta envsubst al arrancar el contenedor (agnóstico del dominio;
+      # 03-deploy.sh pasa DOMAIN al servicio frontend). Certificados montados desde el
+      # host (volumen :ro en docker-compose.yml):
+      ssl_certificate     /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
+      ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
       ssl_protocols       TLSv1.2 TLSv1.3;
       ssl_ciphers         HIGH:!aNULL:!MD5;
 
@@ -2951,7 +2974,7 @@ SEMANA ANTES DEL GO-LIVE
   [ ] Certificado SSL válido y configurado
   [ ] Firewall configurado (puertos 8080 y 5432 no accesibles desde internet)
   [ ] Dominio DNS apuntando al servidor de producción
-  [ ] environment.prod.ts con la URL real: https://almacenes.codigo2enter.com/api/v1
+  [ ] environment.prod.ts con URL RELATIVA agnóstica del dominio: apiUrl: '/api/v1'
 
 DÍA DEL GO-LIVE
 ----------------
@@ -2963,13 +2986,13 @@ DÍA DEL GO-LIVE
          (ActuatorHealthTest, 408 tests en verde). Este check ya funciona.
 
   [ ] SMOKE TEST LOGIN (vía nginx — mismo dominio que el frontend):
-      curl -X POST https://almacenes.codigo2enter.com/api/v1/auth/login \
+      curl -X POST https://<DOMINIO>/api/v1/auth/login \
           -H "Content-Type: application/json" \
           -d '{"username":"admin","password":"CONTRASEÑA_DE_PRODUCCION"}'
       → Responde JSON con campo "token"
 
   [ ] SMOKE TEST FRONTEND:
-      · Abrir https://almacenes.codigo2enter.com en el navegador
+      · Abrir https://<DOMINIO> en el navegador
       · La pantalla de login carga correctamente (sin errores en consola)
       · Login con admin → sidebar muestra todos los módulos
       · Navegar a Inventario → lista de productos carga
@@ -2977,10 +3000,15 @@ DÍA DEL GO-LIVE
       · Recargar la página en /inventory/products (F5) → no devuelve 404
         (verifica la configuración try_files de nginx)
 
-  [ ] SMOKE TEST RBAC:
-      · Login con qa_warehouse → no debe ver "Compras" en sidebar
-      · Login con qa_sales → no debe ver "Reportes Analíticos" en sidebar
-      · Navegar directamente a /admin/users con qa_sales → redirige a /
+  [ ] SMOKE TEST RBAC (verificado en la prueba de despliegue GCP, 2026-07-06):
+      · Login con qa_sales (SALES) → sidebar: Inventario, Ventas, Reportes;
+        NO ve "Compras" ni "Usuarios".
+      · Login con qa_warehouse (WAREHOUSEMAN) → sidebar: Inventario, Compras (recepción),
+        Ventas, Reportes; NO ve "Usuarios". (SÍ ve Compras — es su acceso de recepción.)
+      · Login con qa_manager (MANAGER) → sidebar: Inventario, Compras, Ventas, Reportes;
+        NO ve "Usuarios" (solo ADMIN).
+      · Navegar directamente a /admin/users con un rol no-ADMIN → redirige a
+        /access-denied (página 403), NO carga la pantalla (guard de ruta, Propuesta C).
 
   [ ] SMOKE TEST BACKUP:
       · Ejecutar manualmente el script de backup
@@ -2989,7 +3017,7 @@ DÍA DEL GO-LIVE
   [ ] SMOKE TEST CERTIFICADO SSL:
       · Verificar que https:// carga sin warnings de seguridad
       · Verificar que http:// redirige a https://
-      curl -I http://almacenes.codigo2enter.com → Location: https://...
+      curl -I http://<DOMINIO> → Location: https://...
 
 POST GO-LIVE (primera semana)
 ------------------------------
@@ -3101,9 +3129,11 @@ LECCIONES TRANSVERSALES DOCUMENTADAS (L1-L35)
 
 ================================================================================
 FIN DEL DOCUMENTO
-Guía de puesta en producción v2.0 — Sistema Almacenes v1.0.0 (QA certificado)
-Elaborado: 2026-06-17 | Actualizado: 2026-06-30 (enfoque verificación+ejecución)
+Guía de puesta en producción v2.1 — Sistema Almacenes v1.0.0 (QA certificado)
+Elaborado: 2026-06-17 | Actualizado: 2026-07-06 (consistencia con la prueba de
+despliegue GCP: URL relativa agnóstica del dominio, certbot.timer + renewal-hooks,
+sonda con wget, dominio como argumento, 03-deploy inicializa la BD).
 Antes del go-live: VERIFICAR los 36 ítems implementados con sus comandos y
-EJECUTAR los 3 operativos pendientes (OPS-B1/B2, OPS-B3, OPS-B5). Resolver la
-excepción BACK-I8 (Actuator) según §8.1 [19].
+EJECUTAR los 3 operativos pendientes (OPS-B1/B2, OPS-B3, OPS-B5).
+BACK-I8 (Actuator) ya está RESUELTO (§8.1 [19]).
 ================================================================================
