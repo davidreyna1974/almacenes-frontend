@@ -821,13 +821,8 @@ Documentación completa en `scripts/INSTRUCTIVO_puesta_produccion_almacenes.md`.
 | `02-ssl.sh` | Una sola vez (Let's Encrypt + cron de renovación) |
 | `03-deploy.sh` | Primer despliegue y cada re-despliegue |
 | `04-firewall.sh` | Una sola vez tras el primer despliegue |
-| `05-verify.sh` | Tras cada despliegue (8 smoke tests) |
+| `05-verify.sh` | Tras cada despliegue (9 smoke tests) |
 | `maint-db.sh` | Solo mantenimiento puntual (opcional) |
-
-### Beta local (`almacenes-backend/scripts_beta/`)
-
-Para validar el despliegue sin DNS real usando Lima (VM Ubuntu en Mac).
-Documentación en `scripts_beta/instructivo_beta.md`. Directorio autocontenido.
 
 ### Checklist pre-producción (L28)
 
