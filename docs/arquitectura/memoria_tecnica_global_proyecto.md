@@ -1560,29 +1560,13 @@ Documentada en detalle en `almacenes-backend/scripts/INSTRUCTIVO_puesta_producci
 | Script | Qué hace | Cuándo ejecutar |
 |---|---|---|
 | `01-prepare-server.sh` | Instala Docker, git, dependencias del SO | Una sola vez al configurar el servidor |
-| `02-ssl.sh` | Obtiene certificado Let's Encrypt (certbot standalone) | Una sola vez; renovación automática vía cron |
+| `02-ssl.sh` | Obtiene certificado Let's Encrypt (certbot standalone); exige el dominio como argumento | Una sola vez; renovación automática vía certbot.timer + renewal-hooks |
 | `03-deploy.sh` | Clona repos, genera `.env` y `docker-compose.yml`, construye imágenes, inicializa BD (extensión unaccent + schema.sql + roles + f_unaccent + 10 índices), levanta los 3 servicios | Primer despliegue y cada re-despliegue |
 | `04-firewall.sh` | Configura ufw: permite 22/80/443, deniega 8080/5432 | Una sola vez tras el primer despliegue |
-| `05-verify.sh` | 8 smoke tests: contenedores, actuator/health, HTTP→301, HTTPS→200, SSL, API, SPA routing, puerto 8080 bloqueado | Tras cada despliegue |
+| `05-verify.sh` | 9 smoke tests (exige el dominio): contenedores, actuator/health (vía wget), HTTP→301, HTTPS→200, SSL, API, SPA routing, puerto 8080 bloqueado, deploy-hook de renovación | Tras cada despliegue |
 | `maint-db.sh` | Utilidad opcional: re-crear índices, re-instalar f_unaccent, cargar dump en staging | Solo en mantenimiento puntual |
 
 **Prerequisito externo**: registro DNS del dominio `almacenes.codigo2enter.com` apuntando a la IP del servidor (requerido por Let's Encrypt y por `03-deploy.sh`).
-
-### Despliegue beta local (sin DNS ni Let's Encrypt)
-
-Para validar el despliegue completo en una VM Ubuntu local antes de tocar el servidor de producción. Documentado en `almacenes-backend/scripts_beta/instructivo_beta.md`.
-
-| Componente | Detalle |
-|---|---|
-| Hipervisor | Lima (macOS, usa Apple Virtualization.framework) |
-| VM | Ubuntu 24.04 LTS, 4 GiB RAM, 2 CPU, 30 GiB disco |
-| Dominio simulado | `almacenes.codigo2enter.com` vía `/etc/hosts` |
-| Certificado | Autofirmado (openssl req -x509) en mismo path que Let's Encrypt |
-| Puertos en Mac | `127.0.0.1:10080` → VM:80 · `127.0.0.1:10443` → VM:443 |
-| Scripts exclusivos beta | `02-ssl-local.sh` (reemplaza `02-ssl.sh`) · `05-verify-local.sh` (reemplaza `05-verify.sh`) |
-| Scripts idénticos a producción | `01-prepare-server.sh`, `03-deploy.sh`, `04-firewall.sh` |
-
-El directorio `scripts_beta/` es autocontenido: contiene todos los scripts necesarios.
 
 ### Checklist pre-producción (L28)
 
