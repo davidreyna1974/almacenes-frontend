@@ -126,13 +126,15 @@ MÉTRICAS ACTUALES DEL SISTEMA (release v1.0.0 — QA certificado, 2026-06-28):
   Backend (Spring Boot 3.5 + JUnit 5)
     · 406 tests en el release v1.0.0 certificado (línea base, rama main)
     · 408 tests en develop tras el fix de Actuator (BACK-I8, +2 — ver §8.1 [19])
+    · 412 tests (cifra ACTUAL) tras el RoleInitializer (+4 — sembrado automático de
+      los roles de referencia; corrección de raíz de roles, 2026-07-07)
     · 0 fallos, BUILD SUCCESS · JaCoCo con umbral mínimo del 70% en pom.xml
   Campaña de QA de 4 fases: 704 casos de prueba, 5 módulos CERTIFICADOS, 0 bugs
   funcionales, 0 regresiones. RBAC verificado en browser con 4 roles reales.
   Ambos repositorios etiquetados v1.0.0 (rama main).
   NOTA: las cifras 401/405 de versiones previas de este documento corresponden a
   un corte anterior a la certificación; las vigentes son 462 (frontend) y
-  406 certificado / 408 en develop (backend).
+  406 certificado / 412 en develop (backend).
 
 
 ================================================================================

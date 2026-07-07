@@ -633,7 +633,7 @@ JWT_SECRET=...       # mínimo 64 caracteres hex (openssl rand -hex 32)
 
 | Módulo | Estado | Tests | Notas |
 |---|---|---|---|
-| `auth` (RBAC) | ✓ Completo | 45 B* + 20 A + 12 B + 17 C | 4 roles, 9 endpoints, DataInitializer |
+| `auth` (RBAC) | ✓ Completo | 45 B* + 20 A + 12 B + 17 C | 4 roles (sembrados por `RoleInitializer`), 9 endpoints, `DataInitializer` |
 | `inventory` | ✓ Completo | 33 A + 19 B + 16 B* + 10 D | unitCost NOT NULL; B*=CategoryControllerSecurityTest(8)+ProductControllerSecurityTest(8); currentStock inmutable en PUT (@Mapping ignore) |
 | `purchases` | ✓ Completo | 43 A + 25 B | Máquina de estados PENDING→APPROVED→RECEIVED |
 | `sales` | ✓ Completo | 47 A + 25 B + 3 C + 5 D | Optimistic Locking, reservas |
@@ -656,8 +656,8 @@ JWT_SECRET=...       # mínimo 64 caracteres hex (openssl rand -hex 32)
 | Módulo 5: Reports | ✓ Completo | 401 specs, 0 fallos (89.89% statements) + 94 casos browser (82 PASS + 12 N/A, 0 FAIL) + 4 roles RBAC | Propuesta D cerrada 2026-06-16. BUG-REP-01 (autocomplete TypeError), BUG-REP-02 (tab Rotación visible para WAREHOUSEMAN → 403), BUG-REP-03 (botón Consultar no deshabilitado con from > to en Movimientos/Rotación), BUG-REP-04 (currency pipe usaba PEN/USD en lugar de MXN — corregido en 7 templates Reports+Inventory) corregidos. ng2-charts + chart.js para gráficas. `turnoverQueried`/`trendQueried`/`topQueried`/`abcQueried`/`supplierQueried` flags para diferenciar "no consultado" vs "sin resultados". forkJoin con catchError en ExecutiveDashboard (L33). |
 
 **Suite total frontend (Módulos 0-5 + Usuarios)**: **462 specs — 0 fallos — 88.94% statements**
-(incluye 6 specs de `DdMmYyyyDateAdapter`). Backend: **408 tests — 0 fallos — BUILD SUCCESS**
-_(406 certificados en la campaña de QA + 2 de Actuator post-certificación)_.
+(incluye 6 specs de `DdMmYyyyDateAdapter`). Backend: **412 tests — 0 fallos — BUILD SUCCESS**
+_(406 certificados en la campaña de QA + 2 de Actuator + 4 de RoleInitializer/seeding)_.
 
 ---
 
@@ -1561,7 +1561,7 @@ Documentada en detalle en `almacenes-backend/scripts/INSTRUCTIVO_puesta_producci
 |---|---|---|
 | `01-prepare-server.sh` | Instala Docker, git, dependencias del SO | Una sola vez al configurar el servidor |
 | `02-ssl.sh` | Obtiene certificado Let's Encrypt (certbot standalone); exige el dominio como argumento | Una sola vez; renovación automática vía certbot.timer + renewal-hooks |
-| `03-deploy.sh` | Clona repos, genera `.env` y `docker-compose.yml`, construye imágenes, inicializa BD (extensión unaccent + schema.sql + roles + f_unaccent + 10 índices), levanta los 3 servicios | Primer despliegue y cada re-despliegue |
+| `03-deploy.sh` | Clona repos, genera `.env` y `docker-compose.yml`, construye imágenes, inicializa BD (extensión unaccent + schema.sql + f_unaccent + 10 índices), levanta los 3 servicios. Los 4 roles los siembra la app al arrancar (`RoleInitializer`). | Primer despliegue y cada re-despliegue |
 | `04-firewall.sh` | Configura ufw: permite 22/80/443, deniega 8080/5432 | Una sola vez tras el primer despliegue |
 | `05-verify.sh` | 9 smoke tests (exige el dominio): contenedores, actuator/health (vía wget), HTTP→301, HTTPS→200, SSL, API, SPA routing, puerto 8080 bloqueado, deploy-hook de renovación | Tras cada despliegue |
 | `maint-db.sh` | Utilidad opcional: re-crear índices, re-instalar f_unaccent, cargar dump en staging | Solo en mantenimiento puntual |
