@@ -5,6 +5,7 @@
 ![versión](https://img.shields.io/badge/versión-1.0.0-6B3C6B)
 ![Angular](https://img.shields.io/badge/Angular-21-DD0031)
 ![tests](https://img.shields.io/badge/tests-462%20passing-2E7D32)
+![CI](https://github.com/davidreyna1974/almacenes-frontend/actions/workflows/ci.yml/badge.svg)
 ![cobertura](https://img.shields.io/badge/cobertura-88.94%25%20statements-2E7D32)
 ![QA](https://img.shields.io/badge/QA-certificado%20(4%20fases)-1565C0)
 ![licencia](https://img.shields.io/badge/licencia-MIT-757575)
