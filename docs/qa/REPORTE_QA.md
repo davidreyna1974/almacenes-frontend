@@ -135,8 +135,8 @@ Tras certificar los 5 módulos, se ejecutó una pasada de regresión cruzada sob
 
 > **Nota (mantenimiento post-certificación, 2026-06-30):** las cifras de este reporte reflejan
 > la **campaña de QA que certificó el sistema** (462 frontend + 406 backend). Con posterioridad se
-> habilitó Spring Boot Actuator, que añadió 2 tests backend → **suite actual: 462 + 408**. Sin
-> cambios en el resultado de la campaña (0 FAIL, 0 bugs, 0 regresiones).
+> habilitó Spring Boot Actuator (+2) y el `RoleInitializer` con sus tests (+4) →
+> **suite actual: 462 + 412**. Sin cambios en el resultado de la campaña (0 FAIL, 0 bugs, 0 regresiones).
 
 ---
 
