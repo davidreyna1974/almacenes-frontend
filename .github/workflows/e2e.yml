@@ -1,0 +1,111 @@
+name: E2E — Playwright (stack completo)
+# Pruebas End-to-End SEPARADAS del CI (no bloquean cada push). Levantan el stack
+# completo (Postgres + backend + frontend con datos) y corren los 6 specs de Playwright.
+# Solo se disparan a mano (workflow_dispatch). Brecha 1 (CI/CD) — FASE E.
+#
+# Prerrequisito: secret BACKEND_REPO_TOKEN (PAT de solo-lectura del repo backend) para
+# clonar almacenes-backend, ya que los E2E necesitan el backend corriendo.
+on:
+  workflow_dispatch:
+
+jobs:
+  e2e:
+    name: E2E Playwright (stack completo)
+    runs-on: ubuntu-latest
+    services:
+      postgres:                       # BD efímera para la corrida
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: almacen_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s --health-timeout 5s --health-retries 5
+    steps:
+      - name: Checkout frontend
+        uses: actions/checkout@v4
+
+      - name: Checkout backend (repo privado, con token)
+        uses: actions/checkout@v4
+        with:
+          repository: davidreyna1974/almacenes-backend
+          token: ${{ secrets.BACKEND_REPO_TOKEN }}
+          path: backend
+
+      - name: Set up JDK 17 + cache Maven
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Cargar esquema + datos semilla en la BD
+        env:
+          PGPASSWORD: postgres
+        run: |
+          psql -h localhost -U postgres -d almacen_db -v ON_ERROR_STOP=1 \
+            -f backend/src/main/resources/schema.sql
+          # Datos de ejemplo (categorías, proveedores, productos) para los flujos E2E.
+          # Los 4 roles NO se siembran aquí: los crea la app (RoleInitializer) al arrancar.
+          psql -h localhost -U postgres -d almacen_db \
+            -f backend/scripts/seed_data.sql
+
+      - name: Compilar y arrancar el backend (:8080)
+        working-directory: backend
+        env:
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/almacen_db
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: postgres
+        run: |
+          ./mvnw -B -ntp package -DskipTests
+          nohup java -jar target/almacenes-*.jar > backend.log 2>&1 &
+          echo "Esperando a que el backend esté UP..."
+          for i in $(seq 1 40); do
+            if wget -q -O- http://localhost:8080/actuator/health | grep -q '"status":"UP"'; then
+              echo "backend UP"; break
+            fi
+            sleep 3
+          done
+
+      - name: Crear usuarios QA (manager, sales, warehouse)
+        run: |
+          TOKEN=$(curl -s -X POST http://localhost:8080/api/v1/auth/login \
+            -H "Content-Type: application/json" \
+            -d '{"username":"admin","password":"Admin123!"}' | jq -r .token)
+          crear() {
+            curl -s -o /dev/null -X POST http://localhost:8080/api/v1/auth/users \
+              -H "Content-Type: application/json" \
+              -H "Authorization: Bearer $TOKEN" -d "$1"
+          }
+          crear '{"username":"qa_manager","password":"QaManager123!","email":"qa_manager@almacenes.com","roles":["ROLE_MANAGER"]}'
+          crear '{"username":"qa_sales","password":"QaSales123!","email":"qa_sales@almacenes.com","roles":["ROLE_SALES"]}'
+          crear '{"username":"qa_warehouse","password":"QaWarehouse123!","email":"qa_warehouse@almacenes.com","roles":["ROLE_WAREHOUSEMAN"]}'
+
+      - name: Set up Node 20 + cache npm
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - name: Instalar dependencias y navegador de Playwright
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: Servir el frontend (ng serve :4200)
+        run: nohup npx ng serve > ngserve.log 2>&1 &
+
+      - name: Esperar al frontend y correr los E2E
+        run: |
+          npx wait-on http://localhost:4200 -t 120000
+          npx playwright test
+
+      - name: Subir el reporte de Playwright
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
