@@ -1,0 +1,28 @@
+name: CI — Frontend
+# Integración Continua: build de producción (AOT strict) + 462 specs (Vitest).
+# Brecha 1 (CI/CD) — ver docs/planificacion/plan_implementacion_CI_CD_almacenes.txt
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    branches: [develop, main]
+permissions:
+  contents: read
+jobs:
+  build-test:
+    name: Build & Unit Tests (Node 20)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node 20 + cache npm
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm                   # cachea ~/.npm según package-lock.json
+      - name: Instalar dependencias (limpio y determinista)
+        run: npm ci
+      - name: Build producción (AOT strict — atrapa errores de template)
+        run: npx ng build --configuration production
+      - name: Unit tests + cobertura (Vitest)
+        run: npx ng test --no-watch --coverage
