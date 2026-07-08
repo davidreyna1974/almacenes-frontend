@@ -47,14 +47,16 @@ test.describe('E2E-05: Acceso por URL no autorizada → redirección', () => {
     await clearSession(page);
   });
 
-  test('URL inexistente — el guard protege el contenido y la app no crashea', async ({ page }) => {
+  test('URL inexistente — muestra la página 404 y la app no crashea', async ({ page }) => {
     await login(page, 'admin');
     await page.goto('/ruta-que-no-existe-xyz');
-    await page.waitForTimeout(1500);
-    // La app no muestra un error crítico (no debe haber texto de error Angular)
-    await expect(page.getByText(/Error\: /i)).not.toBeVisible({ timeout: 2000 }).catch(() => {});
-    // La sesión sigue activa (sidebar visible)
-    await expect(page.getByRole('navigation', { name: 'Navegación principal' })).toBeVisible({ timeout: 3000 });
+    // La ruta comodín (**) renderiza NotFoundComponent (página 404 standalone,
+    // fuera del layout). No debe crashear ni exponer contenido protegido.
+    await expect(page.getByText('404')).toBeVisible({ timeout: 5000 });
+    await expect(page.getByText(/página no encontrada/i)).toBeVisible();
+    // La sesión sigue activa: "Volver al inicio" regresa al layout con el sidebar.
+    await page.getByRole('button', { name: /volver al inicio/i }).click();
+    await expect(page.getByRole('navigation', { name: 'Navegación principal' })).toBeVisible({ timeout: 5000 });
     await clearSession(page);
   });
 });
