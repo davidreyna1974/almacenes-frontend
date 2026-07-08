@@ -37,11 +37,11 @@ test.describe('E2E-02: Crear producto → aparece en lista', () => {
     await form.getByLabel(/mínimo/i).fill('1');
 
     // Seleccionar categoría (primera disponible)
-    await form.getByLabel('Categoría').click();
+    await form.getByRole('combobox', { name: 'Categoría' }).click();
     await page.getByRole('option').first().click();
 
     // Seleccionar proveedor (primero disponible)
-    await form.getByLabel('Proveedor').click();
+    await form.getByRole('combobox', { name: 'Proveedor' }).click();
     await page.getByRole('option').first().click();
 
     // Guardar
