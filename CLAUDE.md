@@ -938,6 +938,31 @@ Cobertura mínima: **70% statements** por módulo (equivalente a JaCoCo en el ba
 
 ---
 
+## 🔁 CI/CD (GitHub Actions)
+
+Pipeline implementado (Brecha 1, 2026-07). Workflows en `.github/workflows/`:
+
+- **`ci.yml` — CI** (en cada `push`/`pull_request` a `develop`/`main`): `npm ci` +
+  `ng build --configuration production` (AOT estricto — atrapa errores que los tests no ven) +
+  `ng test --no-watch --coverage` (**462 specs** Vitest).
+- **`cd.yml` — CD** (push a `main` + `workflow_dispatch`): construye la imagen Docker (Angular
+  compilado + nginx con envsubst para `${DOMAIN}`) y la **publica en GHCR**
+  (`ghcr.io/davidreyna1974/almacenes-frontend`), etiquetada por **SHA** + `latest`. NO despliega.
+- **`e2e.yml` — E2E** (solo `workflow_dispatch`, **aparte** del gate de CI): levanta el stack
+  completo (Postgres + backend + usuarios QA + `seed_data` + `ng serve`) y corre los **15 tests
+  Playwright**. Requiere el secret `BACKEND_REPO_TOKEN` (PAT read-only del repo backend) para clonarlo.
+
+**Compuerta y capas de protección:**
+- Branch protection en `main`/`develop` (require PR + status check `Build & Unit Tests (Node 20)`) —
+  pero en **repo privado de plan gratuito GitHub NO la hace cumplir** (necesita Pro/Team/Enterprise o
+  repo público). Queda como intención documentada.
+- Capa local: hook `hooks/pre-commit` bloquea commits directos a `main`/`develop`.
+- El CI corre **después** del push; su resultado se liga al **SHA** del commit.
+
+Plan completo: `docs/planificacion/plan_implementacion_CI_CD_almacenes.txt`. Badges CI/CD/E2E en el README.
+
+---
+
 ## Comandos comunes
 
 ```bash

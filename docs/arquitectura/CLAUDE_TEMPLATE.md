@@ -72,6 +72,23 @@ git push origin develop
 
 ---
 
+## 🔁 CI/CD (GitHub Actions)
+
+<!-- GUÍA: el CI automatiza el gatekeeper en CADA cambio; el CD publica el artefacto listo para
+     desplegar. Reemplaza "correr los comandos a mano" por una compuerta repetible. -->
+
+- **CI** (`ci.yml`, push/PR a develop/main): ejecuta el gatekeeper (build + tests + lint) sobre el
+  commit, en **entorno limpio** (si los tests necesitan BD, levántala como service container y
+  siembra el esquema/datos de referencia en el workflow). Badge en el README.
+- **E2E** en workflow **aparte** (`e2e.yml`, manual/nocturno): stack completo, no bloquea el CI.
+- **CD** (`cd.yml`, push a main): construye y **publica** la imagen versionada (SHA + `latest`) a un
+  registry (GHCR). *Listo para desplegar*, no despliega (Continuous Delivery ≠ Deployment).
+- **Compuerta:** branch protection (require PR + check de CI) en develop/main. ⚠️ En repos privados
+  de plan gratuito **no se hace cumplir** → complementar con hook `pre-commit` local. El `git push`
+  no espera al CI (corre después); el candado vive en el **merge del PR**. El check se liga al **SHA**.
+
+---
+
 ## Documentación obligatoria por módulo
 
 Todo módulo nuevo requiere **tres archivos** en la raíz antes de implementar:
