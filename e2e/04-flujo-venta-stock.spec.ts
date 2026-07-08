@@ -26,7 +26,7 @@ test.describe('E2E-04: Flujo OV → Aprobar → Entregar → estado DELIVERED', 
       await page.waitForTimeout(500);
 
       // Seleccionar cliente
-      const clientLabel = page.getByLabel('Cliente');
+      const clientLabel = page.getByRole('combobox', { name: 'Cliente' });
       await clientLabel.click();
       await page.getByRole('option').first().click();
       await page.waitForTimeout(300);
@@ -38,7 +38,7 @@ test.describe('E2E-04: Flujo OV → Aprobar → Entregar → estado DELIVERED', 
 
       // En el dialog de detalle: seleccionar producto y cantidad
       const detailForm = page.locator('app-sale-order-detail-form, mat-dialog-container').first();
-      await detailForm.getByLabel('Producto').click();
+      await detailForm.getByRole('combobox', { name: 'Producto' }).click();
       await page.getByRole('option').first().click();
       await page.waitForTimeout(300);
       const cantInput = detailForm.getByLabel(/cantidad/i).first();
