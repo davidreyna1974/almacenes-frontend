@@ -32,7 +32,7 @@ test.describe('E2E-03: Flujo OC → Aprobar → Recibir → estado RECEIVED', ()
       await page.waitForTimeout(500);
 
       // Seleccionar proveedor
-      const supplierSelect = page.getByLabel('Proveedor');
+      const supplierSelect = page.getByRole('combobox', { name: 'Proveedor' });
       await supplierSelect.click();
       await page.getByRole('option').first().click();
       await page.waitForTimeout(300);
@@ -44,7 +44,7 @@ test.describe('E2E-03: Flujo OC → Aprobar → Recibir → estado RECEIVED', ()
 
       // En el dialog/form de detalle: seleccionar producto y cantidad
       const detailForm = page.locator('app-purchase-order-detail-form');
-      await detailForm.getByLabel('Producto').click();
+      await detailForm.getByRole('combobox', { name: 'Producto' }).click();
       await page.getByRole('option').first().click();
       await detailForm.getByLabel(/cantidad/i).fill('3');
 

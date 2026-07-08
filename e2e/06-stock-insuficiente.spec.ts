@@ -20,7 +20,7 @@ test.describe('E2E-06: OV con stock insuficiente → error visible', () => {
     await page.waitForURL(/\/sales\/orders\/new/, { timeout: 5000 });
 
     // Seleccionar cliente
-    const clientSelect = page.getByLabel('Cliente');
+    const clientSelect = page.getByRole('combobox', { name: 'Cliente' });
     await clientSelect.click();
     await page.getByRole('option').first().click();
 
@@ -29,7 +29,7 @@ test.describe('E2E-06: OV con stock insuficiente → error visible', () => {
     const detailDialog = page.locator('mat-dialog-container');
     await detailDialog.waitFor({ state: 'visible', timeout: 5000 });
 
-    await detailDialog.getByLabel('Producto').click();
+    await detailDialog.getByRole('combobox', { name: 'Producto' }).click();
     await page.getByRole('option').first().click();
     await page.waitForTimeout(300);
 
@@ -60,7 +60,7 @@ test.describe('E2E-06: OV con stock insuficiente → error visible', () => {
     await page.waitForURL(/\/sales\/orders\/new/, { timeout: 5000 });
 
     // Seleccionar cliente
-    const clientSelect = page.getByLabel('Cliente');
+    const clientSelect = page.getByRole('combobox', { name: 'Cliente' });
     await clientSelect.click();
     await page.getByRole('option').first().click();
 
@@ -70,7 +70,7 @@ test.describe('E2E-06: OV con stock insuficiente → error visible', () => {
     await detailDialog2.waitFor({ state: 'visible', timeout: 5000 });
 
     // Seleccionar producto
-    await detailDialog2.getByLabel('Producto').click();
+    await detailDialog2.getByRole('combobox', { name: 'Producto' }).click();
     await page.getByRole('option').first().click();
 
     // Verificar que el formulario informa el stock disponible
