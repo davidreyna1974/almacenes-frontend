@@ -41,16 +41,16 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Cargar esquema + datos semilla en la BD
+      - name: Cargar el esquema en la BD
         env:
           PGPASSWORD: postgres
         run: |
           psql -h localhost -U postgres -d almacen_db -v ON_ERROR_STOP=1 \
             -f backend/src/main/resources/schema.sql
-          # Datos de ejemplo (categorías, proveedores, productos) para los flujos E2E.
-          # Los 4 roles NO se siembran aquí: los crea la app (RoleInitializer) al arrancar.
-          psql -h localhost -U postgres -d almacen_db \
-            -f backend/scripts/seed_data.sql
+          # Los 4 roles y el admin los crea la app al arrancar (RoleInitializer +
+          # DataInitializer). Los datos de negocio se siembran DESPUÉS del arranque
+          # (paso "Sembrar datos de negocio"), para que DataInitializer vea la tabla
+          # users vacía y sí cree el admin.
 
       - name: Compilar y arrancar el backend (:8080)
         working-directory: backend
@@ -82,6 +82,31 @@ jobs:
           crear '{"username":"qa_manager","password":"QaManager123!","email":"qa_manager@almacenes.com","roles":["ROLE_MANAGER"]}'
           crear '{"username":"qa_sales","password":"QaSales123!","email":"qa_sales@almacenes.com","roles":["ROLE_SALES"]}'
           crear '{"username":"qa_warehouse","password":"QaWarehouse123!","email":"qa_warehouse@almacenes.com","roles":["ROLE_WAREHOUSEMAN"]}'
+
+      - name: Sembrar datos de negocio (categorías, proveedores, productos, clientes)
+        env:
+          PGPASSWORD: postgres
+        run: |
+          # seed_data.sql fija las columnas de auditoría created_by/updated_by a IDs de
+          # usuario de la BD de desarrollo (600,601,605,607,608). Se insertan como
+          # PLACEHOLDERS para que las FK pasen (nunca se usan para login). Se hace AQUÍ
+          # (post-arranque) para no inhibir la creación del admin por DataInitializer.
+          psql -h localhost -U postgres -d almacen_db -v ON_ERROR_STOP=1 -c "
+            INSERT INTO users (id, username, password, email) VALUES
+              (600,'seed_600','x','s600@almacenes.local'),
+              (601,'seed_601','x','s601@almacenes.local'),
+              (605,'seed_605','x','s605@almacenes.local'),
+              (607,'seed_607','x','s607@almacenes.local'),
+              (608,'seed_608','x','s608@almacenes.local')
+            ON CONFLICT (id) DO NOTHING;"
+          # Catálogo de ejemplo (30 categorías, 20 proveedores, 50 productos con stock).
+          psql -h localhost -U postgres -d almacen_db -v ON_ERROR_STOP=1 \
+            -f backend/scripts/seed_data.sql
+          # seed_data NO trae clientes; se crean para los flujos de venta (04, 06).
+          psql -h localhost -U postgres -d almacen_db -v ON_ERROR_STOP=1 -c "
+            INSERT INTO clients (name, rfc, email, active, created_by) VALUES
+              ('Cliente Demo E2E','XAXX010101000','cliente.e2e@almacenes.local',true,605),
+              ('Cliente Demo E2E 2','XAXX010101001','cliente.e2e2@almacenes.local',true,605);"
 
       - name: Set up Node 20 + cache npm
         uses: actions/setup-node@v4
