@@ -1568,6 +1568,25 @@ Documentada en detalle en `almacenes-backend/scripts/INSTRUCTIVO_puesta_producci
 
 **Prerequisito externo**: registro DNS del dominio `almacenes.codigo2enter.com` apuntando a la IP del servidor (requerido por Let's Encrypt y por `03-deploy.sh`).
 
+### CI/CD (GitHub Actions) — Brecha 1 (2026-07)
+
+Pipeline automatizado que complementa el despliegue manual con scripts. Workflows en
+`.github/workflows/` de cada repo:
+
+| Workflow | Repo | Dispara | Qué hace |
+|---|---|---|---|
+| `ci.yml` | backend | push/PR a develop/main | service `postgres:16` + `schema.sql` + `mvnw verify` (**412 tests** + JaCoCo). Los 4 roles los siembra la app (`RoleInitializer`), no el workflow. |
+| `ci.yml` | frontend | push/PR a develop/main | `ng build` (AOT estricto) + `ng test` (**462 specs** Vitest). |
+| `cd.yml` | ambos | push a `main` (+ manual) | build + publicación de la imagen en **GHCR** (`ghcr.io/davidreyna1974/almacenes-{backend,frontend}`), tag **SHA** + `latest`. NO despliega. |
+| `e2e.yml` | frontend | manual | stack completo (Postgres + backend + usuarios QA + `seed_data` + `ng serve`) + **15 tests Playwright**, aparte del CI. Secret `BACKEND_REPO_TOKEN`. |
+
+- **Compuerta:** branch protection (require PR + check de CI) en `main`/`develop`, PERO **no se hace
+  cumplir en repos privados de plan gratuito** (requiere GitHub Pro/Team/Enterprise o repo público);
+  complementada por el hook `pre-commit` local. El CI corre **tras** el push; su resultado se liga al SHA.
+- **Relación con el despliegue manual:** el CD deja la imagen *lista* en GHCR (`docker pull` + `up`);
+  el despliegue real sigue siendo manual con los scripts 01–05 (Continuous Delivery, no Deployment).
+- Plan: `docs/planificacion/plan_implementacion_CI_CD_almacenes.txt` (en los 3 repos).
+
 ### Checklist pre-producción (L28)
 
 Antes de cualquier despliegue al servidor real, verificar las cabeceras de seguridad HTTP:
