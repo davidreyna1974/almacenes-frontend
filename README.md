@@ -105,7 +105,7 @@ src/app/
 - **Build agnóstico del dominio:** `environment.prod.ts` usa `apiUrl` relativo (`/api/v1`); el mismo
   build sirve para cualquier dominio/cliente/nube (nginx proxea `/api/` en el mismo origen, sin CORS).
 
-Matriz RBAC completa en [`docs/arquitectura/memoria_tecnica_global_proyecto.md`](docs/arquitectura/memoria_tecnica_global_proyecto.md).
+Matriz RBAC completa en la [memoria técnica global](https://github.com/davidreyna1974/almacenes/blob/main/docs/memoria_tecnica_global_proyecto.md) (repo paraguas `almacenes`).
 
 ---
 
@@ -165,14 +165,12 @@ código, corrección con gatekeeper, re-ejecución y certificación). Es el prin
 ```
 almacenes-frontend/
 ├── src/                  código Angular (core + modules)
-├── docs/                 documentación (ver docs/README.md)
-│   ├── arquitectura/     memoria técnica global, estándares, diagrama
+├── docs/                 documentación propia del frontend (ver docs/README.md)
+│   ├── arquitectura/     estándares y diagrama (frontend)
 │   ├── modulos/          memoria técnica por módulo
 │   ├── qa/               protocolo 4 fases, casos de prueba, reporte de QA
-│   ├── planificacion/    propuesta y plan de trabajo
-│   ├── guias/            guía de usuario
+│   ├── planificacion/    propuesta y plan de trabajo del frontend
 │   └── recursos/         capturas y diagramas
-├── CLAUDE.md             guía para asistentes de IA / convenciones del repo
 ├── CHANGELOG.md          historial de versiones
 └── README.md            este archivo
 ```
@@ -183,10 +181,13 @@ almacenes-frontend/
 
 Toda la documentación está indexada en **[`docs/README.md`](docs/README.md)**. Destacados:
 
-- [Memoria técnica global](docs/arquitectura/memoria_tecnica_global_proyecto.md) — visión, decisiones, contratos, RBAC.
-- [Reporte de QA](docs/qa/REPORTE_QA.md) — resultados de la campaña de certificación.
+- [Reporte de QA (frontend)](docs/qa/REPORTE_QA.md) — resultados de la campaña de certificación.
 - [Memorias técnicas por módulo](docs/modulos/) — decisiones de diseño y bugs por módulo.
-- [Guía rápida de usuario](docs/guias/guia_rapida_usuario.md).
+- [Estándares de desarrollo (frontend)](docs/arquitectura/estandares_referencia_desarrollo.md).
+
+Documentación **general del sistema** (memoria técnica global, guía rápida de usuario, planes de
+producción/despliegue) en el repo paraguas
+[`almacenes`](https://github.com/davidreyna1974/almacenes/tree/main/docs).
 
 ---
 
