@@ -1580,9 +1580,11 @@ Pipeline automatizado que complementa el despliegue manual con scripts. Workflow
 | `cd.yml` | ambos | push a `main` (+ manual) | build + publicación de la imagen en **GHCR** (`ghcr.io/davidreyna1974/almacenes-{backend,frontend}`), tag **SHA** + `latest`. NO despliega. |
 | `e2e.yml` | frontend | manual | stack completo (Postgres + backend + usuarios QA + `seed_data` + `ng serve`) + **15 tests Playwright**, aparte del CI. Secret `BACKEND_REPO_TOKEN`. |
 
-- **Compuerta:** branch protection (require PR + check de CI) en `main`/`develop`, PERO **no se hace
-  cumplir en repos privados de plan gratuito** (requiere GitHub Pro/Team/Enterprise o repo público);
-  complementada por el hook `pre-commit` local. El CI corre **tras** el push; su resultado se liga al SHA.
+- **Compuerta:** branch protection (require PR + check de CI) en `main`/`develop`. Con los repos
+  **públicos** GitHub **sí la hace cumplir** (en repo privado de plan gratuito no se haría — requeriría
+  Pro/Team/Enterprise); `enforce_admins: false` deja al dueño bypassear para el flujo directo del
+  portafolio. Complementada por el hook `pre-commit` local. El CI corre **tras** el push; su resultado
+  se liga al SHA.
 - **Relación con el despliegue manual:** el CD deja la imagen *lista* en GHCR (`docker pull` + `up`);
   el despliegue real sigue siendo manual con los scripts 01–05 (Continuous Delivery, no Deployment).
 - Plan: `docs/planificacion/plan_implementacion_CI_CD_almacenes.txt` (en los 3 repos).
