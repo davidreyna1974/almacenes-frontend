@@ -84,8 +84,26 @@ git push origin develop
 - **CD** (`cd.yml`, push a main): construye y **publica** la imagen versionada (SHA + `latest`) a un
   registry (GHCR). *Listo para desplegar*, no despliega (Continuous Delivery ≠ Deployment).
 - **Compuerta:** branch protection (require PR + check de CI) en develop/main. ⚠️ En repos privados
-  de plan gratuito **no se hace cumplir** → complementar con hook `pre-commit` local. El `git push`
-  no espera al CI (corre después); el candado vive en el **merge del PR**. El check se liga al **SHA**.
+  de plan gratuito **no se hace cumplir** (sí en repos públicos o planes de pago) → complementar con
+  hook `pre-commit` local. El `git push` no espera al CI (corre después); el candado vive en el
+  **merge del PR**. El check se liga al **SHA**.
+
+---
+
+## 🏷️ Versionado y releases (SemVer + tags inmutables)
+
+<!-- GUÍA: cada merge develop→main que entrega valor es una RELEASE. Ver §CI/CD (el tag, como el
+     check, se ancla al SHA). -->
+
+- **SemVer `MAJOR.MINOR.PATCH`:** `PATCH` correcciones, `MINOR` funcionalidad retrocompatible,
+  `MAJOR` incompatible. CHANGELOG (*Keep a Changelog*) actualizado **antes** de tagear.
+- **Tag = puntero nombre→SHA**, no texto del commit. Usar **anotado** (`git tag -a vX.Y.Z -m "..."`);
+  apunta al commit de release en `main`.
+- **Regla de oro — un tag publicado es INMUTABLE.** Nunca `git tag -f` + `git push -f` (rompe la
+  trazabilidad). Una corrección sale como versión nueva (`vX.Y.Z+1`), no como re-etiquetado.
+- **GitHub Release:** objeto adjunto al tag con notas legibles; la más reciente = *Latest*.
+- **Flujo:** en `main`, con CHANGELOG + badge de versión ya commiteados →
+  `git tag -a vX.Y.Z -m "..."` (SIN `-f`) → `git push origin vX.Y.Z` → `gh release create vX.Y.Z ...`.
 
 ---
 
