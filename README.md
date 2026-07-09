@@ -2,7 +2,7 @@
 
 > Aplicación web para la **gestión de almacenes**: inventario, compras, ventas, reportes y administración de usuarios, con control de acceso por rol (RBAC) de extremo a extremo.
 
-![versión](https://img.shields.io/badge/versión-1.0.0-6B3C6B)
+![versión](https://img.shields.io/badge/versión-1.1.0-6B3C6B)
 ![Angular](https://img.shields.io/badge/Angular-21-DD0031)
 ![tests](https://img.shields.io/badge/tests-462%20passing-2E7D32)
 ![CI](https://github.com/davidreyna1974/almacenes-frontend/actions/workflows/ci.yml/badge.svg)
