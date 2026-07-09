@@ -8,8 +8,8 @@ ver el [README principal](../README.md).
 ## 🏗️ Arquitectura y decisiones
 | Documento | Contenido |
 |---|---|
-| [Memoria técnica global](arquitectura/memoria_tecnica_global_proyecto.md) | Visión del sistema, stack, decisiones arquitectónicas, contratos de integración, RBAC transversal, estado del proyecto, lecciones globales. |
-| [Diagrama de arquitectura](arquitectura/diagrama_arquitectura.md) | Diagramas Mermaid: capas, estructura interna, flujo de auth, máquinas de estado. |
+| [Memoria técnica global](https://github.com/davidreyna1974/almacenes/blob/main/docs/memoria_tecnica_global_proyecto.md) ↗ | Visión del sistema, decisiones, contratos, RBAC transversal, estado y lecciones globales. _(en el repo paraguas `almacenes`)_ |
+| [Diagrama de arquitectura (frontend)](arquitectura/diagrama_arquitectura.md) | Diagramas Mermaid: capas, estructura interna, flujo de auth, máquinas de estado. |
 | [Estándares de desarrollo](arquitectura/estandares_referencia_desarrollo.md) | Convenciones y buenas prácticas de referencia. |
 
 ## 🧩 Memorias técnicas por módulo
@@ -38,12 +38,6 @@ Cada módulo documenta contexto, decisiones de diseño, componentes, contratos, 
 | Documento | Contenido |
 |---|---|
 | [Propuesta y plan de trabajo](planificacion/propuesta_plan_trabajo_frontend.md) | Planificación previa al desarrollo del frontend. |
-| [Plan de salida a producción v1](planificacion/plan_salida_produccion_v1_almacenes.txt) | Checklist y pasos para la puesta en producción de la versión 1. |
-
-## 📖 Guías
-| Documento | Contenido |
-|---|---|
-| [Guía rápida de usuario](guias/guia_rapida_usuario.md) | Uso funcional de la aplicación. |
 
 ## 🖼️ Recursos
 | Carpeta | Contenido |
@@ -52,6 +46,11 @@ Cada módulo documenta contexto, decisiones de diseño, componentes, contratos, 
 
 ---
 
+> **Documentación general del sistema** (memoria técnica global, guía rápida de usuario, planes de
+> salida a producción y de despliegue) vive en el repo paraguas
+> [`almacenes`](https://github.com/davidreyna1974/almacenes/tree/main/docs). Este índice cubre solo la
+> documentación propia del frontend.
+>
 > **Convención de versionado/QA:** ante cualquier cambio nuevo se aplica el
 > [Protocolo de 4 fases](qa/protocolo_verificacion_4_fases.md) y se actualiza la memoria técnica
-> del módulo afectado + la global. Ver también [`../CLAUDE.md`](../CLAUDE.md) (convenciones del repo).
+> del módulo afectado + la global (en `almacenes`).
