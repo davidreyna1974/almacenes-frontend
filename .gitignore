@@ -55,3 +55,6 @@ src/environments/environment.local.ts
 
 # npm cache alternativo usado en desarrollo
 /tmp/npm-cache-almacenes
+
+# Claude Code — no se versionan (viven solo en disco / en templates)
+CLAUDE*.md
