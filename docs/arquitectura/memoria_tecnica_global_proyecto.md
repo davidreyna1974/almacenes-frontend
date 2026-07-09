@@ -1589,6 +1589,27 @@ Pipeline automatizado que complementa el despliegue manual con scripts. Workflow
   el despliegue real sigue siendo manual con los scripts 01–05 (Continuous Delivery, no Deployment).
 - Plan: `docs/planificacion/plan_implementacion_CI_CD_almacenes.txt` (en los 3 repos).
 
+### 6.2 Versionado y releases (Brecha 2 — cerrada 2026-07-08)
+
+Cada merge `develop → main` que entrega valor es una **release**. Esquema **SemVer**
+`MAJOR.MINOR.PATCH`; CHANGELOG (*Keep a Changelog*, versión más reciente arriba) actualizado **antes**
+de cortar el tag.
+
+- **Tag = puntero nombre→SHA** (no texto del commit). Se usan **anotados** (`git tag -a`), apuntando
+  al commit de release en `main`; igual que el check de CI, se anclan al SHA.
+- **Regla de oro — un tag publicado es INMUTABLE.** Nunca `git tag -f` + `git push -f`. Una corrección
+  sale como versión nueva, no como re-etiquetado. (Origen: durante el desarrollo el tag `v1.0.0` se
+  movió a la fuerza varias veces — anti-patrón corregido al cerrar la Brecha 2.)
+- **GitHub Releases:** objeto adjunto al tag con notas legibles; la más reciente = *Latest*.
+- Plan: `docs/planificacion/plan_implementacion_versionado_releases_almacenes.txt` (en los 3 repos).
+
+**Historial de versiones:**
+
+| Versión | Fecha | Commit `main` (backend / frontend) | Resumen |
+|---|---|---|---|
+| `v1.0.0` | 2026-06-28 | `6acdaa9` / `09ee046` | Sistema completo y **QA-certificado** (Protocolo de 4 fases). Inmutable. |
+| `v1.1.0` | 2026-07-08 | `7790a7a` / `a8aae22` | **CI/CD** (Brecha 1), **RoleInitializer** (sembrado de roles) y repos **públicos**. |
+
 ### Checklist pre-producción (L28)
 
 Antes de cualquier despliegue al servidor real, verificar las cabeceras de seguridad HTTP:
