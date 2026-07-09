@@ -953,9 +953,10 @@ Pipeline implementado (Brecha 1, 2026-07). Workflows en `.github/workflows/`:
   Playwright**. Requiere el secret `BACKEND_REPO_TOKEN` (PAT read-only del repo backend) para clonarlo.
 
 **Compuerta y capas de protección:**
-- Branch protection en `main`/`develop` (require PR + status check `Build & Unit Tests (Node 20)`) —
-  pero en **repo privado de plan gratuito GitHub NO la hace cumplir** (necesita Pro/Team/Enterprise o
-  repo público). Queda como intención documentada.
+- Branch protection en `main`/`develop` (require PR + status check `Build & Unit Tests (Node 20)`).
+  Con el **repo público** GitHub **sí la hace cumplir** (en repo privado de plan gratuito no se haría —
+  requeriría Pro/Team/Enterprise). `enforce_admins: false` → el dueño puede bypassear para el flujo
+  directo del portafolio.
 - Capa local: hook `hooks/pre-commit` bloquea commits directos a `main`/`develop`.
 - El CI corre **después** del push; su resultado se liga al **SHA** del commit.
 
