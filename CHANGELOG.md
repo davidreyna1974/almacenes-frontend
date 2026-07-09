@@ -4,6 +4,24 @@ Todas las modificaciones notables de este proyecto se documentan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto adopta [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.1.0] — 2026-07-08
+
+Pipeline de CI/CD (incl. E2E), consistencia documental y repositorio público.
+
+### Añadido
+- **CI/CD (GitHub Actions):** `ci.yml` (build AOT de producción + `ng test`, **462 specs**),
+  `cd.yml` (publica la imagen Docker en **GHCR**, tag SHA + `latest`) y `e2e.yml` (**15 tests
+  Playwright** sobre el stack completo, manual). Badges de CI/CD/E2E en el README.
+
+### Corregido
+- E2E: sembrado de datos de negocio (usuarios de auditoría + `seed_data` + clientes), locators de
+  autocomplete robustos (`getByRole('combobox')`) y corrección del test de URL inexistente (404).
+- Consistencia documental tras la corrección de raíz de roles en el backend y el conteo de tests.
+
+### Cambiado
+- Repositorio **público**; branch protection activa (require PR + check de CI).
+- Despliegue **agnóstico del dominio**: `environment.prod.ts` con `apiUrl` relativo (`/api/v1`).
+
 ## [1.0.0] — 2026-06-28
 
 Primera versión estable. Sistema completo y certificado bajo el Protocolo de QA de 4 fases.
