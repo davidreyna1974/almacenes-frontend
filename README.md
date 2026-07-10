@@ -104,6 +104,8 @@ src/app/
   diferenciados, búsqueda accent/case-insensitive.
 - **Build agnóstico del dominio:** `environment.prod.ts` usa `apiUrl` relativo (`/api/v1`); el mismo
   build sirve para cualquier dominio/cliente/nube (nginx proxea `/api/` en el mismo origen, sin CORS).
+- **Gobernanza de dependencias:** [`SECURITY.md`](SECURITY.md) (reporte vía GitHub Private Vulnerability
+  Reporting), **Dependabot** y **`npm audit`** en el CI (gate en `critical`).
 
 Matriz RBAC completa en la [memoria técnica global](https://github.com/davidreyna1974/almacenes/blob/main/docs/memoria_tecnica_global_proyecto.md) (repo paraguas `almacenes`).
 
