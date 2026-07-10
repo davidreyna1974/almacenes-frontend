@@ -4,6 +4,19 @@ Todas las modificaciones notables de este proyecto se documentan aquí.
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/)
 y el proyecto adopta [Versionado Semántico](https://semver.org/lang/es/).
 
+## [No publicado]
+
+Cambios de documentación posteriores a 1.1.0 (integrados en `main`, aún sin liberar;
+se publicarán como v1.1.1).
+
+### Cambiado
+- **Organización documental:** los archivos `CLAUDE*.md` dejan de versionarse (gitignorados;
+  la plantilla `CLAUDE_TEMPLATE.md` vive solo en el directorio de plantillas). La documentación
+  general del sistema (memoria técnica global, guía rápida de usuario y planes de producción /
+  despliegue / implementación) se centraliza en el repo paraguas `almacenes`; este repositorio
+  conserva solo su documentación propia (arquitectura y estándares frontend, módulos, QA del
+  frontend). Enlaces de los README e índices de `docs/` actualizados.
+
 ## [1.1.0] — 2026-07-08
 
 Pipeline de CI/CD (incl. E2E), consistencia documental y repositorio público.
@@ -55,4 +68,6 @@ Primera versión estable. Sistema completo y certificado bajo el Protocolo de QA
 - Verificación de regresión cruzada final: 0 regresiones.
 - Reporte completo en [`docs/qa/REPORTE_QA.md`](docs/qa/REPORTE_QA.md).
 
+[No publicado]: https://github.com/davidreyna1974/almacenes-frontend/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/davidreyna1974/almacenes-frontend/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/davidreyna1974/almacenes-frontend/releases/tag/v1.0.0
