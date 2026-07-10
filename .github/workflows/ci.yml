@@ -22,6 +22,12 @@ jobs:
           cache: npm                   # cachea ~/.npm según package-lock.json
       - name: Instalar dependencias (limpio y determinista)
         run: npm ci
+      - name: Auditoría de dependencias — informativa (high)
+        # No bloquea: los "high" actuales son de tooling de build (undici/vite vía el
+        # build system de Angular) y requieren saltos major. Los vigila Dependabot.
+        run: npm audit --audit-level=high || true
+      - name: Auditoría de dependencias — gate (critical bloquea)
+        run: npm audit --audit-level=critical
       - name: Build producción (AOT strict — atrapa errores de template)
         run: npx ng build --configuration production
       - name: Unit tests + cobertura (Vitest)
