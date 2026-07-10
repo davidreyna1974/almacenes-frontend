@@ -6,16 +6,21 @@ y el proyecto adopta [Versionado Semántico](https://semver.org/lang/es/).
 
 ## [No publicado]
 
-Cambios de documentación posteriores a 1.1.0 (integrados en `main`, aún sin liberar;
-se publicarán como v1.1.1).
+## [1.1.1] — 2026-07-10
+
+Documentación, organización de repositorios y gobernanza de seguridad (sin cambios funcionales).
+
+### Añadido
+- **Gobernanza de seguridad (Brecha 4):** `SECURITY.md` (canal *GitHub Private Vulnerability
+  Reporting*), Dependabot (`npm` + `github-actions`, agrupado minor/patch) y paso `npm audit` en el CI
+  (gate bloqueante en `critical`, informativo en `high`).
 
 ### Cambiado
-- **Organización documental:** los archivos `CLAUDE*.md` dejan de versionarse (gitignorados;
-  la plantilla `CLAUDE_TEMPLATE.md` vive solo en el directorio de plantillas). La documentación
-  general del sistema (memoria técnica global, guía rápida de usuario y planes de producción /
-  despliegue / implementación) se centraliza en el repo paraguas `almacenes`; este repositorio
-  conserva solo su documentación propia (arquitectura y estándares frontend, módulos, QA del
-  frontend). Enlaces de los README e índices de `docs/` actualizados.
+- **Organización documental:** los archivos `CLAUDE*.md` dejan de versionarse (gitignorados; la
+  plantilla vive solo en el directorio de plantillas). La documentación general del sistema (memoria
+  técnica global, guía rápida de usuario y planes) se centraliza en el repo paraguas `almacenes`; este
+  repositorio conserva solo su documentación propia. Enlaces de README e índices de `docs/` actualizados.
+- Actualización de dependencias minor/patch (Dependabot); `npm audit fix` (sin cambios funcionales).
 
 ## [1.1.0] — 2026-07-08
 
@@ -68,6 +73,7 @@ Primera versión estable. Sistema completo y certificado bajo el Protocolo de QA
 - Verificación de regresión cruzada final: 0 regresiones.
 - Reporte completo en [`docs/qa/REPORTE_QA.md`](docs/qa/REPORTE_QA.md).
 
-[No publicado]: https://github.com/davidreyna1974/almacenes-frontend/compare/v1.1.0...HEAD
+[No publicado]: https://github.com/davidreyna1974/almacenes-frontend/compare/v1.1.1...HEAD
+[1.1.1]: https://github.com/davidreyna1974/almacenes-frontend/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/davidreyna1974/almacenes-frontend/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/davidreyna1974/almacenes-frontend/releases/tag/v1.0.0
