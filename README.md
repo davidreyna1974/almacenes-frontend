@@ -10,7 +10,11 @@
 ![E2E](https://github.com/davidreyna1974/almacenes-frontend/actions/workflows/e2e.yml/badge.svg)
 ![cobertura](https://img.shields.io/badge/cobertura-88.94%25%20statements-2E7D32)
 ![QA](https://img.shields.io/badge/QA-certificado%20(4%20fases)-1565C0)
+![estado](https://img.shields.io/badge/estado-estable%20·%20mantenimiento-2E7D32)
 ![licencia](https://img.shields.io/badge/licencia-MIT-757575)
+
+> **Estado:** proyecto **cerrado en v1.1.1** — estable, en **modo mantenimiento**. Acta de cierre en el
+> repo paraguas [`almacenes`](https://github.com/davidreyna1974/almacenes/blob/main/docs/cierre_proyecto_almacenes.md).
 
 Este repositorio contiene el **frontend Angular**. Es parte de un sistema de dos capas:
 
