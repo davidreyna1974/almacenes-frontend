@@ -109,7 +109,7 @@ jobs:
               ('Cliente Demo E2E 2','XAXX010101001','cliente.e2e2@almacenes.local',true,605);"
 
       - name: Set up Node 20 + cache npm
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '20'
           cache: npm
